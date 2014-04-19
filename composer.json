@@ -1,0 +1,47 @@
+{
+    "name": "prooph/event-store",
+    "description": "PHP EventStore library",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/prooph/event-store/",
+    "authors": [
+        {
+            "name": "Alexander Miertsch",
+            "email": "contact@prooph.de",
+            "homepage": "http://www.prooph.de/"
+        }
+    ],
+    "keywords": [
+        "php",
+        "EventSourcing",
+        "EventStore",
+        "library",
+        "DDD",
+        "prooph",
+        "zf2"
+    ],
+    "require": {
+        "php": ">=5.4",
+        "rhumsaa/uuid" : "2.5.*",
+        "codeliner/php-equalsbuilder": "1.1.*",
+        "codeliner/array-reader": "1.0.*",
+        "codeliner/shared-domain-set": "1.2.*",
+        "beberlei/assert": "*",
+        "zendframework/zend-servicemanager" : "2.3.*",
+        "zendframework/zend-eventmanager" : "2.3.*",
+        "zendframework/zend-db" : "2.3.*",
+        "zendframework/zend-serializer" : "2.3.*"
+    },
+    "suggest": {
+        "doctrine/dbal": "Use Doctrine\\DBAL as EventStore-Adapter"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": { 
+            "Prooph\\EventStore\\": "src/",
+            "Prooph\\EventStoreTest\\": "tests/"
+        }
+    }
+}
