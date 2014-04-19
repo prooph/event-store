@@ -80,7 +80,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
 
     /**
      * @param string   $aggregateFQCN
-     * @param mixed    $aggregateId
+     * @param string   $aggregateId
      * @param null|int $version
      * @return AggregateChangedEvent[]
      * @throws \Prooph\EventStore\Adapter\Exception\InvalidArgumentException
@@ -89,6 +89,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     {
         try {
             \Assert\that($aggregateFQCN)->notEmpty()->string();
+            \Assert\that($aggregateId)->notEmpty()->string();
             \Assert\that($version)->nullOr()->integer();
         } catch (\InvalidArgumentException $ex) {
             throw new InvalidArgumentException(
@@ -107,7 +108,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
 
         $where = new \Zend\Db\Sql\Where();
 
-        $where->equalTo('aggregateId', AggregateIdBuilder::toString($aggregateId));
+        $where->equalTo('aggregateId', $aggregateId);
 
         if (!is_null($version)) {
             $where->AND->greaterThanOrEqualTo('version', $version);
@@ -151,6 +152,17 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
         foreach ($events as $event) {
             $this->insertEvent($aggregateFQCN, $aggregateId, $event);
         }
+    }
+
+    /**
+     * @param string $aggregateFQCN
+     * @param string $aggregateId
+     */
+    public function removeStream($aggregateFQCN, $aggregateId)
+    {
+        $tableGateway = $this->getTablegateway($aggregateFQCN);
+
+        $tableGateway->delete(array('aggregateId' => $aggregateId));
     }
 
     /**
@@ -221,7 +233,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     {
         $eventData = array(
             'uuid' => $e->uuid()->toString(),
-            'aggregateId' => AggregateIdBuilder::toString($aggregateId),
+            'aggregateId' => $aggregateId,
             'version' => $e->version(),
             'eventClass' => get_class($e),
             'payload' => Serializer::serialize($e->payload()),

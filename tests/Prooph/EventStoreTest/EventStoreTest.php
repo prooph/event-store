@@ -82,5 +82,47 @@ class EventStoreTest extends TestCase
 
         $this->assertInstanceOf('Prooph\EventStore\Repository\EventSourcingRepository', $repository);
     }
+
+    /**
+     * @test
+     */
+    public function it_detaches_an_aggregate()
+    {
+        $this->getTestEventStore()->beginTransaction();
+
+        $user = new User("Alex");
+
+        $this->getTestEventStore()->attach($user);
+
+        $user->changeName('Alexander');
+
+        $this->getTestEventStore()->commit();
+
+        $this->getTestEventStore()->clear();
+
+        $this->getTestEventStore()->beginTransaction();
+
+        $this->getTestEventStore()->detach($user);
+
+        $this->assertNull($this->getTestEventStore()->find(get_class($user), $user->id()));
+
+        //Without a commit no aggregates were actually removed
+        $this->getTestEventStore()->clear();
+
+        $notRemovedUser = $this->getTestEventStore()->find(get_class($user), $user->id());
+
+        $this->assertNotNull($notRemovedUser);
+
+        $this->getTestEventStore()->beginTransaction();
+
+        $this->getTestEventStore()->detach($notRemovedUser);
+
+        $this->getTestEventStore()->commit();
+
+        $this->getTestEventStore()->clear();
+
+        $this->assertNull($this->getTestEventStore()->find(get_class($user), $user->id()));
+
+    }
 }
  

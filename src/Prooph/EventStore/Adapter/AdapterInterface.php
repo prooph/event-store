@@ -41,4 +41,10 @@ interface AdapterInterface
      * @return void
      */
     public function addToStream($aggregateFQCN, $aggregateId, $events);
+
+    /**
+     * @param string $aggregateFQCN
+     * @param string $aggregateId
+     */
+    public function removeStream($aggregateFQCN, $aggregateId);
 }

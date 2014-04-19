@@ -16,6 +16,7 @@ use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Mapping\AggregateRootDecorator;
 use Prooph\EventStore\Repository\RepositoryInterface;
+
 /**
  * EventStore 
  * 
@@ -36,6 +37,11 @@ class EventStore
      * @var array
      */
     protected $identityMap = array();
+
+    /**
+     * @var array
+     */
+    protected $detachedAggregates = array();
            
     /**
      * Map of $aggregateFQCNs to $repositoryFQCNs
@@ -131,6 +137,31 @@ class EventStore
 
         //@TODO: trigger post attach event
     }
+
+    /**
+     * Detach an EventSourcedAggregateRoot
+     *
+     * It will be removed during commit
+     *
+     * @param EventSourcedAggregateRoot $anEventSourcedAggregateRoot
+     */
+    public function detach(EventSourcedAggregateRoot $anEventSourcedAggregateRoot)
+    {
+        //@TODO: trigger pre detach
+
+        $hash = $this->getIdentityHash(
+            get_class($anEventSourcedAggregateRoot),
+            AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($anEventSourcedAggregateRoot))
+        );
+
+        if (isset($this->identityMap[$hash])) {
+            unset($this->identityMap[$hash]);
+        }
+
+        $this->detachedAggregates[$hash] = $anEventSourcedAggregateRoot;
+
+        //@TODO: trigger post detach
+    }
    
     /**
      * Load an EventSourcedAggregateRoot by it's FQCN and id
@@ -147,11 +178,15 @@ class EventStore
         if (isset($this->identityMap[$hash])) {
             return $this->identityMap[$hash];
         }
+
+        if (isset($this->detachedAggregates[$hash])) {
+            return null;
+        }
         
         //@TODO: trigger pre find event with eventstore and check if result->last() is EventSourcedAggregateRoot,
         //@TODO: in that case the snapshotFeature has triggered the loading with last snapshot version
         
-        $historyEvents = $this->adapter->loadStream($aggregateFQCN, $aggregateId);
+        $historyEvents = $this->adapter->loadStream($aggregateFQCN, AggregateIdBuilder::toString($aggregateId));
         
         if (count($historyEvents) === 0) {
             return null;
@@ -174,6 +209,11 @@ class EventStore
     public function clear()
     {
         $this->identityMap = array();
+        $this->detachedAggregates = array();
+
+        if ($this->inTransaction) {
+            $this->rollback();
+        }
     }
     
     /**
@@ -213,7 +253,7 @@ class EventStore
 
                     $this->adapter->addToStream(
                         $aggregateFQCN,
-                        $this->getAggregateRootDecorator()->getAggregateId($object),
+                        AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($object)),
                         $pendingEvents
                     );
 
@@ -223,6 +263,15 @@ class EventStore
                 }
             }
         }
+
+        foreach ($this->detachedAggregates as $detachedAggregate) {
+            $this->adapter->removeStream(
+                get_class($detachedAggregate),
+                AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($detachedAggregate))
+            );
+        }
+
+        $this->detachedAggregates = array();
 
         if ($this->adapter instanceof TransactionFeatureInterface) {
             $this->adapter->commit();

@@ -62,5 +62,25 @@ class Zf2EventStoreAdapterTest extends TestCase
         $this->assertEquals($user->name(), $userCreatedEvent->name());
         $this->assertTrue($pendingEvents[0]->occurredOn()->sameValueAs($userCreatedEvent->occurredOn()));
     }
+
+    /**
+     * @test
+     */
+    public function it_removes_a_stream()
+    {
+        $this->adapter->createSchema(array('User'));
+
+        $user = new User("Alex");
+
+        $pendingEvents = $user->accessPendingEvents();
+
+        $this->adapter->addToStream(get_class($user), $user->id(), $pendingEvents);
+
+        $this->adapter->removeStream(get_class($user), $user->id());
+
+        $pendingEvents = $this->adapter->loadStream(get_class($user), $user->id());
+
+        $this->assertEquals(0, count($pendingEvents));
+    }
 }
  

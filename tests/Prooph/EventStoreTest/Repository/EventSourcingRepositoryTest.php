@@ -60,5 +60,23 @@ class EventSourcingRepositoryTest extends TestCase
 
         $this->assertEquals('Alex', $equalUser->name());
     }
+
+    /**
+     * @test
+     */
+    public function it_removes_an_aggregate()
+    {
+        $this->getTestEventStore()->beginTransaction();
+
+        $repository = $this->getTestEventStore()->getRepository('Prooph\EventStoreTest\Mock\User');
+
+        $user = new User("Alex");
+
+        $repository->add($user);
+
+        $repository->remove($user);
+
+        $this->assertNull($repository->get($user->id()));
+    }
 }
  

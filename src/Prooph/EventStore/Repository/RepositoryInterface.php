@@ -45,10 +45,10 @@ interface RepositoryInterface
     public function get($anAggregateId);
 
     /**
-     * Remove an EventSourcedAggregateRoot by it's id
+     * Remove an EventSourcedAggregateRoot
      *
-     * @param mixed $anAggregateId
+     * @param \Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot $anEventSourcedAggregateRoot
      * @return void
      */
-    public function remove($anAggregateId);
+    public function remove(EventSourcedAggregateRoot $anEventSourcedAggregateRoot);
 }
