@@ -26,7 +26,7 @@ class AggregateRootDecorator extends EventSourcedAggregateRoot
      * @param EventSourcedAggregateRoot $anAggregate
      * @return \Prooph\EventStore\EventSourcing\AggregateChangedEvent[]
      */
-    public function getPendingEvents(EventSourcedAggregateRoot $anAggregate)
+    public function extractPendingEvents(EventSourcedAggregateRoot $anAggregate)
     {
         return $anAggregate->getPendingEvents();
     }

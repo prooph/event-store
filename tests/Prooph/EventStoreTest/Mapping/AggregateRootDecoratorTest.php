@@ -32,7 +32,7 @@ class AggregateRootDecoratorTest extends TestCase
 
         $decorator = new AggregateRootDecorator();
 
-        $pendingEvents = $decorator->getPendingEvents($user);
+        $pendingEvents = $decorator->extractPendingEvents($user);
 
         $this->assertEquals(1, count($pendingEvents));
 

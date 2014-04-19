@@ -245,7 +245,7 @@ class EventStore
 
                 //@TODO: trigger pre persist event with eventstore pending events and aggregate and aggregateId
 
-                $pendingEvents = $this->getAggregateRootDecorator()->getPendingEvents($object);
+                $pendingEvents = $this->getAggregateRootDecorator()->extractPendingEvents($object);
 
                 if (count($pendingEvents)) {
 
@@ -291,7 +291,7 @@ class EventStore
         foreach ($this->identityMap as $object) {
             if ($object instanceof EventSourcedAggregateRoot) {
                 //clear all pending events
-                $this->getAggregateRootDecorator()->getPendingEvents($object);
+                $this->getAggregateRootDecorator()->extractPendingEvents($object);
             }
         }
 

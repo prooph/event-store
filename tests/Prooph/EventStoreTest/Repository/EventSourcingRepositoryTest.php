@@ -76,7 +76,7 @@ class EventSourcingRepositoryTest extends TestCase
 
         $repository->remove($user);
 
-        $this->assertNull($repository->get($user->id()));
+        $this->assertNull($repository->get($user->id()));//possibility
     }
 }
  
