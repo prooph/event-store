@@ -85,4 +85,6 @@ class EventSourcingRepository implements RepositoryInterface
     {
         $this->eventStore->detach($anEventSourcedAggregateRoot);
     }
+
+    //@TODO: add method removeAll
 }

@@ -51,4 +51,6 @@ interface RepositoryInterface
      * @return void
      */
     public function remove(EventSourcedAggregateRoot $anEventSourcedAggregateRoot);
+
+    //@TODO: add method removeAll
 }
