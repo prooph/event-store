@@ -36,7 +36,8 @@ namespace My\Model {
     use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
     use Rhumsaa\Uuid\Uuid;
 
-    //EventSourcing means your AggregateRoots are not persisted directly but all DomainEvents which occurs during a transaction
+    //EventSourcing means your AggregateRoots are not persisted directly
+    //but all DomainEvents which occurs during a transaction
     //Your AggregateRoots become EventSourcedAggregateRoots
     class User extends EventSourcedAggregateRoot
     {
@@ -56,10 +57,12 @@ namespace My\Model {
         public function __construct($name)
         {
             //Construct is only called once.
-            //When the EventStore reconstructs an AggregateRoot it does not call the constructor again
+            //When the EventStore reconstructs an AggregateRoot
+            //it does not call the constructor again
             $id = Uuid::uuid4()->toString();
 
-            //Validation must always be done before creating any events. Events should only contain valid information
+            //Validation must always be done before creating any events.
+            //Events should only contain valid information
             \Assert\that($name)->notEmpty()->string();
 
             //We do not set id and name directly but apply a new UserCreated event
@@ -79,10 +82,12 @@ namespace My\Model {
          */
         public function changeName($newName)
         {
-            //Validation must always be done before creating any events. Events should only contain valid information
+            //Validation must always be done before creating any events.
+            //Events should only contain valid information
             \Assert\that($newName)->notEmpty()->string();
 
-            //Also this time we do not set the new name but apply a UserNameChanged event with the new name
+            //Also this time we do not set the new name
+            //but apply a UserNameChanged event with the new name
             $this->apply(new UserNameChanged($this->id, array('username' => $newName)));
         }
 
@@ -97,8 +102,10 @@ namespace My\Model {
         /**
          * EventHandler for the UserCreated event
          *
-         * By default the system assumes that the AggregateRoot has one event handler method per event
-         * and each event handler method is named like the event (without namespace) with the prefix "on" before the name
+         * By default the system assumes that the AggregateRoot
+         * has one event handler method per event
+         * and each event handler method is named like the event (without namespace)
+         * with the prefix "on" before the name
          *
          * @param UserCreated $event
          */
@@ -112,8 +119,10 @@ namespace My\Model {
         /**
          * EventHandler for the UserNameChanged event
          *
-         * By default the system assumes that the AggregateRoot has one event handler method per event
-         * and each event handler method is named like the event (without namespace) with the prefix "on" before the name
+         * By default the system assumes that the AggregateRoot
+         * has one event handler method per event
+         * and each event handler method is named like the event (without namespace)
+         * with the prefix "on" before the name
          *
          * @param UserNameChanged $event
          */
@@ -123,7 +132,8 @@ namespace My\Model {
         }
     }
 
-    //All DomainEvents have to be of type AggregateChangedEvent, these are specific events including a version
+    //All DomainEvents have to be of type AggregateChangedEvent,
+    //these are specific events including a version
     //and the related AggregateId
     class UserCreated extends AggregateChangedEvent
     {
@@ -144,7 +154,8 @@ namespace My\Model {
         }
     }
 
-    //All DomainEvents have to be of type AggregateChangedEvent, these are specific events including a version
+    //All DomainEvents have to be of type AggregateChangedEvent,
+    //these are specific events including a version
     //and the related AggregateId
     class UserNameChanged extends AggregateChangedEvent
     {
@@ -180,7 +191,8 @@ namespace {
 
     $eventStore = new EventStore($config);
 
-    //We use a feature of the Zf2EventStoreAdapter to automatically create an event stream table for our User AggregateRoot
+    //We use a feature of the Zf2EventStoreAdapter
+    //to automatically create an event stream table for our User AggregateRoot
     //Normally you use this functionality in a set up or migration script
     $eventStore->getAdapter()->createSchema(array('My\Model\User'));
 
@@ -213,7 +225,8 @@ namespace {
     $repository = $eventStore->getRepository('My\Model\User');
 
     //Add new user to the repository
-    //The repositories behave like collections, you do not need to call save or something like that
+    //The repositories behave like collections,
+    //you do not need to call save or something like that
     //just add new AggregateRoots,
     //fetch them with $repository->get($aggregateId);
     //or remove them with $repository->remove($aggregate);
