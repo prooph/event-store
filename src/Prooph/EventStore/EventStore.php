@@ -83,6 +83,8 @@ class EventStore
     {
         $this->adapter               = $config->getAdapter();
         $this->repositoryMap         = $config->getRepositoryMap();
+
+        $config->setUpEventStoreEnvironment($this);
     }
 
     /**

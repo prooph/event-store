@@ -10,8 +10,10 @@ namespace Prooph\EventStore\Configuration;
 
 use Prooph\EventStore\Adapter\AdapterInterface;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Feature\FeatureManager;
+use Zend\ServiceManager\Config;
+
 /**
  * Configuration
  * 
@@ -19,10 +21,26 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class Configuration
 {
+    /**
+     * @var array
+     */
     protected $config = array();
-    
+
+    /**
+     * @var AdapterInterface
+     */
     protected $adapter;
 
+
+    /**
+     * @var FeatureManager
+     */
+    protected $featureManager;
+
+    /**
+     * @var array
+     */
+    protected $featureList = array();
 
     /**
      * @param array $config
@@ -36,6 +54,30 @@ class Configuration
                 //Set map again to trigger validation
                 $this->setRepositoryMap($config['repository_map']);
             }
+        }
+
+        if (isset($config['feature_manager'])) {
+            \Assert\that($config['feature_manager'])->isArray("EventStore.Configuration.feature_manager must be an array");
+
+            $this->featureManager = new FeatureManager(new Config($config['feature_manager']));
+        }
+
+        if (isset($config['features'])) {
+            \Assert\that($config['features'])->isArray("EventStore.Configuration.features must be an array");
+
+            $this->featureList = $config['features'];
+        }
+    }
+
+    /**
+     * @param EventStore $eventStore
+     */
+    public function setUpEventStoreEnvironment(EventStore $eventStore)
+    {
+        foreach ($this->featureList as $featureAlias) {
+            $feature = $this->getFeatureManager()->get($featureAlias);
+
+            $feature->setUp($eventStore);
         }
     }
     
@@ -134,5 +176,22 @@ class Configuration
         }
         
         $this->config['repository_map'][$aggregateFQCN] = $repositoryFQCN;
+    }
+
+    public function getFeatureManager()
+    {
+        if (is_null($this->featureManager)) {
+            $this->featureManager = new FeatureManager();
+        }
+
+        return $this->featureManager;
+    }
+
+    /**
+     * @param FeatureManager $featureManager
+     */
+    public function setFeatureManager(FeatureManager $featureManager)
+    {
+        $this->featureManager = $featureManager;
     }
 }

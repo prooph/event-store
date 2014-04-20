@@ -11,7 +11,6 @@
 namespace Prooph\EventStore\Adapter\Zf2;
 
 use Prooph\EventStore\Adapter\AdapterInterface;
-use Prooph\EventStore\Adapter\Builder\AggregateIdBuilder;
 use Prooph\EventStore\Adapter\Builder\EventBuilder;
 use Prooph\EventStore\Adapter\Exception\ConfigurationException;
 use Prooph\EventStore\Adapter\Exception\InvalidArgumentException;
@@ -20,9 +19,6 @@ use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
 use Rhumsaa\Uuid\Uuid;
 use ValueObjects\DateTime\DateTime;
 use Zend\Db\Adapter\Adapter as ZendDbAdapter;
-use Zend\Db\Sql\Ddl\Column\Blob;
-use Zend\Db\Sql\Ddl\Column\Char;
-use Zend\Db\Sql\Ddl\Column\Column;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Column\Text;
 use Zend\Db\Sql\Ddl\Column\Varchar;
