@@ -4,6 +4,8 @@ PHP 5.4+ EventSourcing library.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 
+The library is heavily inspired by [malocher/event-store](https://github.com/malocher/event-store), [beberlei/litecqrs-php](https://github.com/beberlei/litecqrs-php) and [szjani/predaddy](https://github.com/szjani/predaddy)
+
 ##Features
 - Event driven library [in progress]
 - Full DDD support [in progress]
@@ -16,13 +18,21 @@ PHP 5.4+ EventSourcing library.
 - Replay of all events [not started]
 - FeatureManager to ease customization [not started]
 - Changeable storage adapter like
--- ZF2 Tablegateway [in progress]
--- doctrine dbal [not started]
--- mongoDB [not started]
--- geteventstore client [not started]
+    - ZF2 Tablegateway [in progress]
+    - doctrine dbal [not started]
+    - mongoDB [not started]
+    - geteventstore client [not started]
 
-##ZF2 insight
-The ProophEventStore is based on ZF2 components which offer a lot of customization options.
+##Included libraries
+- The ProophEventStore is based on [ZF2 components](http://framework.zend.com/) which offer a lot of customization options.
+- Uuids of the AggregateChangedEvents are generated with [rhumsaa/uuid](https://github.com/ramsey/uuid)
+- Assertions are performed by [beberlei/assert](https://github.com/beberlei/assert)
+- Immutable DateTime ValueObjects are provided by [nicolopignatelli/valueobjects](https://github.com/nicolopignatelli/valueobjects)
+- ArrayReader to access payload properties of Events with ease is powered by [codeliner/array-reader](https://github.com/codeliner/array-reader)
+
+##Installation
+You can install ProophEventStore via composer by adding `"prooph/event-store": "dev-master"` as requirement to your composer.json.
+
 
 ##Quick start
 ```php
