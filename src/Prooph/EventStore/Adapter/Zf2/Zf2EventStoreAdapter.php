@@ -20,6 +20,15 @@ use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
 use Rhumsaa\Uuid\Uuid;
 use ValueObjects\DateTime\DateTime;
 use Zend\Db\Adapter\Adapter as ZendDbAdapter;
+use Zend\Db\Sql\Ddl\Column\Blob;
+use Zend\Db\Sql\Ddl\Column\Char;
+use Zend\Db\Sql\Ddl\Column\Column;
+use Zend\Db\Sql\Ddl\Column\Integer;
+use Zend\Db\Sql\Ddl\Column\Text;
+use Zend\Db\Sql\Ddl\Column\Varchar;
+use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Zend\Db\Sql\Ddl\CreateTable;
+use Zend\Db\Sql\Ddl\DropTable;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\Platform;
 use Zend\Serializer\Serializer;
@@ -172,37 +181,38 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
      */
     public function createSchema(array $streams)
     {
-        if ($this->dbAdapter->getPlatform() instanceof Platform\Sqlite) {
-            $this->createSqliteSchema($streams);
-            return true;
-        }
+        foreach ($streams as $stream) {
 
-        throw new \BadMethodCallException(
-        sprintf(
-            'The createSchema command is not supported for %s. Please create the schema of your own or try doctine/dbal adapter instead.',
-            $this->dbAdapter->getPlatform()->getName()
-        )
-        );
+            $createTable = new CreateTable($this->getTable($stream));
+
+            $createTable->addColumn(new Varchar('uuid', 36))
+                ->addColumn(new Varchar('aggregateId', 200))
+                ->addColumn(new Integer('version'))
+                ->addColumn(new Text('eventClass'))
+                ->addColumn(new Text('payload'))
+                ->addColumn(new Text('occurredOn'));
+
+            $createTable->addConstraint(new PrimaryKey('uuid'));
+
+            $this->dbAdapter->getDriver()
+                ->getConnection()
+                ->execute($createTable->getSqlString($this->dbAdapter->getPlatform()));
+
+        }
     }
 
     /**
      * @param array $streams
-     * @return bool
-     * @throws \BadMethodCallException
      */
     public function dropSchema(array $streams)
     {
-        if ($this->dbAdapter->getPlatform() instanceof Platform\Sqlite) {
-            $this->dropSqliteSchema($streams);
-            return true;
-        }
+        foreach ($streams as $stream) {
+            $dropTable = new DropTable($this->getTable($stream));
 
-        throw new \BadMethodCallException(
-        sprintf(
-            'The dropSchema command is not supported for %s. Please create the schema of your own or try doctine/dbal adapter instead.',
-            $this->dbAdapter->getPlatform()->getName()
-        )
-        );
+            $this->dbAdapter->getDriver()
+                ->getConnection()
+                ->execute($dropTable->getSqlString($this->dbAdapter->getPlatform()));
+        }
     }
 
     public function beginTransaction()
@@ -286,49 +296,4 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     {
         return join('', array_slice(explode('\\', $aggregateFQCN), -1));
     }
-
-    protected function createSqliteSchema(array $streams)
-    {
-        /*
-        $snapshot_sql = 'CREATE TABLE IF NOT EXISTS snapshot '
-            . '('
-            . 'id INTEGER PRIMARY KEY,'
-            . 'sourceType TEXT,'
-            . 'sourceId  TEXT,'
-            . 'snapshotVersion INTEGER'
-            . ')';
-
-         $this->dbAdatper->getDriver()->getConnection()->execute($snapshot_sql);
-         */
-
-
-
-        foreach ($streams as $stream) {
-            $streamSql = 'CREATE TABLE ' . $this->getTable($stream) . ' '
-                . '('
-                . 'uuid TEXT PRIMARY KEY,'
-                . 'aggregateId TEXT,'
-                . 'version INTEGER,'
-                . 'eventClass TEXT,'
-                . 'payload TEXT,'
-                . 'occurredOn TEXT'
-                . ')';
-
-            $this->dbAdapter->getDriver()->getConnection()->execute($streamSql);
-        }
-    }
-
-    protected function dropSqliteSchema(array $streams)
-    {
-        foreach ($streams as $stream) {
-            $streamSql = 'DROP TABLE IF EXISTS ' . $this->getTable($stream);
-            $this->dbAdapter->getDriver()->getConnection()->execute($streamSql);
-        }
-
-        /*
-        $snapshotSql = 'DROP TABLE IF EXISTS snapshot';
-        $this->dbAdatper->getDriver()->getConnection()->execute($snapshotSql);
-        */
-    }
-
 }
