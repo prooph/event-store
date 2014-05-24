@@ -19,6 +19,7 @@ use Prooph\EventStore\Mapping\AggregateRootDecorator;
 use Prooph\EventStore\Mapping\AggregateRootPrototypeManager;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
+use Prooph\EventStore\Repository\EventSourcingRepository;
 use Prooph\EventStore\Repository\RepositoryInterface;
 use Zend\EventManager\Event;
 use Zend\EventManager\EventManager;
@@ -118,14 +119,22 @@ class EventStore
      */
     public function getRepository($aggregateType)
     {
+        $hash = 'repository::' . $aggregateType;
+
+        if (isset($this->repositoryIdentityMap[$hash])) {
+            return $this->repositoryIdentityMap[$hash];
+        }
+
         $argv = compact('aggregateType');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
+        $event = new Event(__FUNCTION__, $this, $argv);
+
+        $repository = null;
+
         $result = $this->getPersistenceEvents()->triggerUntil(
-            __FUNCTION__ . '.pre',
-            $this,
-            $argv,
+            $event,
             function ($res) {
                 return $res instanceof RepositoryInterface;
             }
@@ -133,21 +142,9 @@ class EventStore
 
         if ($result->stopped()) {
             if ($result->last() instanceof RepositoryInterface) {
-                return $result->last();
+                $repository = $result->last();
             }
         }
-
-        $hash = 'repository::' . $aggregateType;
-        
-        if (isset($this->repositoryIdentityMap[$hash])) {
-            return $this->repositoryIdentityMap[$hash];
-        }
-        
-        $repositoryFQCN = (isset($this->repositoryMap[$aggregateType]))?
-            $this->repositoryMap[$aggregateType]
-            : 'Prooph\EventStore\Repository\EventSourcingRepository';
-        
-        $repository = new $repositoryFQCN($this, $aggregateType);
         
         $this->repositoryIdentityMap[$hash] = $repository;
 
@@ -498,6 +495,9 @@ class EventStore
             get_called_class()
         ));
 
+        $anEventManager->attach('getRepository', array($this, 'checkAggregateSpecificRepository'), 100);
+        $anEventManager->attach('getRepository', array($this, 'provideDefaultRepository'), -100);
+
         $this->persistenceEvents = $anEventManager;
     }
 
@@ -562,5 +562,29 @@ class EventStore
     {
         return ($anEventSourcedAggregateRoot instanceof AggregateTypeProviderInterface)?
             $anEventSourcedAggregateRoot->aggregateType() : get_class($anEventSourcedAggregateRoot);
+    }
+
+    /**
+     * @param Event $e
+     * @return RepositoryInterface
+     */
+    public function checkAggregateSpecificRepository(Event $e)
+    {
+        $aggregateType = $e->getParam('aggregateType');
+
+        if (isset($this->repositoryMap[$aggregateType])) {
+            $repositoryFQCN = $this->repositoryMap[$aggregateType];
+
+            return new $repositoryFQCN($this, $aggregateType);
+        }
+    }
+
+    /**
+     * @param Event $e
+     * @return \Prooph\EventStore\Repository\EventSourcingRepository
+     */
+    public function provideDefaultRepository(Event $e)
+    {
+        return new EventSourcingRepository($this, $e->getParam('aggregateType'));
     }
 }
