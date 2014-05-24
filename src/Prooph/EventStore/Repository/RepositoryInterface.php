@@ -23,9 +23,9 @@ interface RepositoryInterface
      * Construct
      * 
      * @param EventStore $eventStore
-     * @param string     $aggregateFQCN
+     * @param string     $aggregateType
      */
-    public function __construct(EventStore $eventStore, $aggregateFQCN);
+    public function __construct(EventStore $eventStore, $aggregateType);
 
     /**
      * Add an EventSourcedAggregateRoot

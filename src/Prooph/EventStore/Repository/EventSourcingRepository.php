@@ -28,21 +28,21 @@ class EventSourcingRepository implements RepositoryInterface
     protected $eventStore;
     
     /**
-     * FQCN of the EventSourcedAggregateRoot class for that the repository is responsible
+     * Type of the EventSourcedAggregateRoot for that the repository is responsible
      * 
      * @var string
      */
-    protected $aggregateFQCN;
+    protected $aggregateType;
 
 
     /**
      * @param EventStore $eventStore
-     * @param string $aggregateFQCN
+     * @param string $aggregateType
      */
-    public function __construct(EventStore $eventStore, $aggregateFQCN)
+    public function __construct(EventStore $eventStore, $aggregateType)
     {
         $this->eventStore = $eventStore;
-        $this->aggregateFQCN = $aggregateFQCN;
+        $this->aggregateType = $aggregateType;
     }
 
     /**
@@ -55,7 +55,7 @@ class EventSourcingRepository implements RepositoryInterface
     public function add(EventSourcedAggregateRoot $anEventSourcedAggregateRoot)
     {
         try {
-            \Assert\that($anEventSourcedAggregateRoot)->isInstanceOf($this->aggregateFQCN);
+            \Assert\that($anEventSourcedAggregateRoot)->isInstanceOf($this->aggregateType);
         } catch (\InvalidArgumentException $ex) {
             throw new InvalidArgumentException($ex->getMessage());
         }
@@ -72,7 +72,7 @@ class EventSourcingRepository implements RepositoryInterface
      */
     public function get($anAggregateId)
     {
-        return $this->eventStore->find($this->aggregateFQCN, $anAggregateId);
+        return $this->eventStore->find($this->aggregateType, $anAggregateId);
     }
 
     /**
