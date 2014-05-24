@@ -50,15 +50,11 @@ class AggregateRootDecorator extends EventSourcedAggregateRoot
         return $propertyRef->getValue($anAggregate);
     }
 
-    public function fromHistory($aggregateFQCN, $aggregateId, array $historyStream)
+    public function fromHistory($aggregatePrototype, $aggregateId, array $historyStream)
     {
-        $aggregateRef = new \ReflectionClass($aggregateFQCN);
+        $aggregatePrototype->initializeFromHistory($aggregateId, $historyStream);
 
-        $aggregate = $aggregateRef->newInstanceWithoutConstructor();
-
-        $aggregate->initializeFromHistory($aggregateId, $historyStream);
-
-        return $aggregate;
+        return $aggregatePrototype;
     }
 }
  

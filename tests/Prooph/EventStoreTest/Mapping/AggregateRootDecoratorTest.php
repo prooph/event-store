@@ -66,7 +66,11 @@ class AggregateRootDecoratorTest extends TestCase
 
         $decorator = new AggregateRootDecorator();
 
-        $equalUser = $decorator->fromHistory(get_class($user), $user->id(), $user->accessPendingEvents());
+        $refUser = new \ReflectionClass($user);
+
+        $userPrototype = $refUser->newInstanceWithoutConstructor();
+
+        $equalUser = $decorator->fromHistory($userPrototype, $user->id(), $user->accessPendingEvents());
 
         $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $equalUser);
         $this->assertEquals($equalUser->id(), $user->id());
