@@ -93,6 +93,7 @@ class EventStore
     {
         $this->adapter               = $config->getAdapter();
         $this->repositoryMap         = $config->getRepositoryMap();
+        $this->aggregateRootPrototypeManager = $config->getAggregateRootPrototypeManager();
 
         $config->setUpEventStoreEnvironment($this);
     }
