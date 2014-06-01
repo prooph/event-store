@@ -25,6 +25,8 @@ use Zend\ServiceManager\Exception;
  */
 class AggregateRootPrototypeManager extends AbstractPluginManager
 {
+    protected $shareByDefault = false;
+    
     /**
      * @param ConfigInterface $configuration
      */
