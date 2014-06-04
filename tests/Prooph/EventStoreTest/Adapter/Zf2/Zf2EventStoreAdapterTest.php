@@ -14,6 +14,7 @@ namespace Prooph\EventStoreTest\Adapter\Zf2;
 use Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter;
 use Prooph\EventStoreTest\Mock\User;
 use Prooph\EventStoreTest\TestCase;
+use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Zf2EventStoreAdapterTest
@@ -81,6 +82,22 @@ class Zf2EventStoreAdapterTest extends TestCase
         $pendingEvents = $this->adapter->loadStream(get_class($user), $user->id());
 
         $this->assertEquals(0, count($pendingEvents));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_be_constructed_with_existing_db_adapter()
+    {
+        $zendDbAdapter = new Adapter(array(
+                'driver' => 'Pdo_Sqlite',
+                'database' => ':memory:'
+            )
+        );
+
+        $esAdapter = new Zf2EventStoreAdapter(array('zend_db_adapter' => $zendDbAdapter));
+
+        $this->assertSame($zendDbAdapter, \PHPUnit_Framework_Assert::readAttribute($esAdapter, 'dbAdapter'));
     }
 }
  

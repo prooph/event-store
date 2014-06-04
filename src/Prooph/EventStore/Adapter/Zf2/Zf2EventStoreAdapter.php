@@ -68,8 +68,8 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
      */
     public function __construct(array $configuration)
     {
-        if (!isset($configuration['connection'])) {
-            throw new ConfigurationException('DB adapter connection configuration is missing');
+        if (!isset($configuration['connection']) && !isset($configuration['zend_db_adapter'])) {
+            throw new ConfigurationException('DB adapter configuration is missing');
         }
 
         if (isset($options['source_table_map'])) {
@@ -80,7 +80,9 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
             $this->snapshotTable = $options['snapshot_table'];
         }
 
-        $this->dbAdapter = new ZendDbAdapter($configuration['connection']);
+        $this->dbAdapter = (isset($configuration['zend_db_adapter']))?
+            $configuration['zend_db_adapter'] :
+            new ZendDbAdapter($configuration['connection']);
     }
 
     /**
