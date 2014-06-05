@@ -14,6 +14,7 @@ use Prooph\EventStore\Adapter\Feature\TransactionFeatureInterface;
 use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\EventSourcing\AggregateTypeProviderInterface;
 use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Mapping\AggregateRootDecorator;
 use Prooph\EventStore\Mapping\AggregateRootPrototypeManager;
@@ -41,12 +42,12 @@ class EventStore
     /**
      * The EventSourcedAggregateRoot identity map
      * 
-     * @var EventSourcedAggregateRoot[]
+     * @var EventSourcedAggregateRoot[$aggregateHash => eventSourcedAggregateRoot]
      */
     protected $identityMap = array();
 
     /**
-     * @var RepositoryInterface[]
+     * @var RepositoryInterface[$aggregateType => repository]
      */
     protected $repositoryIdentityMap = array();
 
@@ -73,16 +74,9 @@ class EventStore
     protected $aggregateRootDecorator;
 
     /**
-     * @var AggregateRootPrototypeManager
-     */
-    protected $aggregateRootPrototypeManager;
-
-    /**
      * @var EventManager
      */
     protected $persistenceEvents;
-
-
 
     /**
      * Construct
@@ -93,7 +87,6 @@ class EventStore
     {
         $this->adapter               = $config->getAdapter();
         $this->repositoryMap         = $config->getRepositoryMap();
-        $this->aggregateRootPrototypeManager = $config->getAggregateRootPrototypeManager();
 
         $config->setUpEventStoreEnvironment($this);
     }
@@ -127,6 +120,8 @@ class EventStore
         }
 
         $argv = compact('aggregateType');
+
+        $argv['eventStore'] = $this;
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -163,16 +158,26 @@ class EventStore
     /**
      * Register given EventSourcedAggregateRoot in the identity map
      *
-     * @param EventSourcedAggregateRoot $eventSourcedAggregateRoot
+     * @param object $anEventSourcedAggregateRoot
      *
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      * @triggers attach.pre
      * @triggers attach.post
-     * @throws Exception\RuntimeException If AggregateRoot is already attached
      * @return void
      */
-    public function attach(EventSourcedAggregateRoot $eventSourcedAggregateRoot)
+    public function attach($anEventSourcedAggregateRoot)
     {
-        $argv = compact('eventSourcedAggregateRoot');
+        if (!is_object($anEventSourcedAggregateRoot)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Given aggregate is not an object. It is of type %s',
+                    gettype($anEventSourcedAggregateRoot)
+                )
+            );
+        }
+
+        $argv = compact('anEventSourcedAggregateRoot');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -184,26 +189,24 @@ class EventStore
             return;
         }
 
+        $aggregateType = $this->getAggregateType($anEventSourcedAggregateRoot);
+        $aggregateId = $this->getRepository($aggregateType)->extractAggregateIdAsString($anEventSourcedAggregateRoot);
 
-
-        $hash = $this->getIdentityHash(
-            $this->getAggregateType($eventSourcedAggregateRoot),
-            AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($eventSourcedAggregateRoot))
-        );
+        $hash = $this->getIdentityHash($aggregateType, $aggregateId);
 
         if (isset($this->identityMap[$hash])) {
             throw new RuntimeException(
                 sprintf(
                     "Aggregate of type %s with AggregateId %s is already registered",
-                    get_class($eventSourcedAggregateRoot),
-                    AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($eventSourcedAggregateRoot))
+                    $aggregateType,
+                    $aggregateId
                 )
             );
         }
 
-        $this->identityMap[$hash] = $eventSourcedAggregateRoot;
+        $this->identityMap[$hash] = $anEventSourcedAggregateRoot;
 
-        $argv = compact('eventSourcedAggregateRoot', 'hash');
+        $argv = compact('anEventSourcedAggregateRoot', 'hash');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -217,13 +220,23 @@ class EventStore
      *
      * It will be removed during commit
      *
-     * @param EventSourcedAggregateRoot $eventSourcedAggregateRoot
+     * @param object $anEventSourcedAggregateRoot
+     * @throws Exception\InvalidArgumentException
      * @triggers detach.pre
      * @triggers detach.post
      */
-    public function detach(EventSourcedAggregateRoot $eventSourcedAggregateRoot)
+    public function detach($anEventSourcedAggregateRoot)
     {
-        $argv = compact('eventSourcedAggregateRoot');
+        if (!is_object($anEventSourcedAggregateRoot)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Given aggregate is not an object. It is of type %s',
+                    gettype($anEventSourcedAggregateRoot)
+                )
+            );
+        }
+
+        $argv = compact('anEventSourcedAggregateRoot');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -235,18 +248,19 @@ class EventStore
             return;
         }
 
-        $hash = $this->getIdentityHash(
-            $this->getAggregateType($eventSourcedAggregateRoot),
-            AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($eventSourcedAggregateRoot))
-        );
+        $aggregateType = $this->getAggregateType($anEventSourcedAggregateRoot);
+        $aggregateId = $this->getRepository($aggregateType)->extractAggregateIdAsString($anEventSourcedAggregateRoot);
+
+
+        $hash = $this->getIdentityHash($aggregateType, $aggregateId);
 
         if (isset($this->identityMap[$hash])) {
             unset($this->identityMap[$hash]);
         }
 
-        $this->detachedAggregates[$hash] = $eventSourcedAggregateRoot;
+        $this->detachedAggregates[$hash] = $anEventSourcedAggregateRoot;
 
-        $argv = compact('eventSourcedAggregateRoot', 'hash');
+        $argv = compact('anEventSourcedAggregateRoot', 'hash');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -259,14 +273,14 @@ class EventStore
      * Load an EventSourcedAggregateRoot by it's AggregateType and id
      * 
      * @param string $aggregateType
-     * @param mixed  $aggregateId
+     * @param string $aggregateId
      * @triggers find.pre
      * @triggers find.post
-     * @return EventSourcedAggregateRoot|null
+     * @return object|null
      */        
     public function find($aggregateType, $aggregateId)
     {
-        $hash = $this->getIdentityHash($aggregateType, AggregateIdBuilder::toString($aggregateId));
+        $hash = $this->getIdentityHash($aggregateType, $aggregateId);
         
         if (isset($this->identityMap[$hash])) {
             return $this->identityMap[$hash];
@@ -290,21 +304,21 @@ class EventStore
             return $result->last();
         }
         
-        $historyEvents = $this->adapter->loadStream($aggregateType, AggregateIdBuilder::toString($aggregateId));
+        $historyEvents = $this->adapter->loadStream($aggregateType, $aggregateId);
         
         if (count($historyEvents) === 0) {
             return null;
         }
 
-        $aggregateRoot = $this->getAggregateRootDecorator()->fromHistory(
-            $this->getAggregateRootPrototypeManager()->get($aggregateType),
+        $eventSourcedAggregateRoot = $this->getRepository($aggregateType)->constructAggregateFromHistory(
+            $aggregateType,
             $aggregateId,
             $historyEvents
         );
 
-        $this->attach($aggregateRoot);
+        $this->attach($eventSourcedAggregateRoot);
 
-        $argv = compact('aggregateType', 'aggregateId', 'hash', 'aggregateRoot');
+        $argv = compact('aggregateType', 'aggregateId', 'hash', 'eventSourcedAggregateRoot');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -312,7 +326,7 @@ class EventStore
 
         $this->getPersistenceEvents()->trigger($event);
 
-        return $event->getParam('aggregateRoot');
+        return $event->getParam('eventSourcedAggregateRoot');
     }
     
     /**
@@ -372,63 +386,64 @@ class EventStore
         $allPendingEvents = array();
 
         foreach ($this->identityMap as $hash => $object) {
-            if ($object instanceof EventSourcedAggregateRoot) {
 
-                $pendingEvents = $this->getAggregateRootDecorator()->extractPendingEvents($object);
+            $aggregateType = $this->getAggregateType($object);
 
-                $aggregateId = $this->getAggregateRootDecorator()->getAggregateId($object);
+            $pendingEvents = $this->getRepository($aggregateType)->extractPendingEvents($object);
+
+            $aggregateId = $this->getRepository($aggregateType)->extractAggregateIdAsString($object);
+
+            $argv = array(
+                'aggregateType' => $aggregateType,
+                'aggregate' => $object,
+                'aggregateId' => $aggregateId,
+                'pendingEvents' => $pendingEvents,
+                'hash' => $hash
+            );
+
+            $argv = $this->getPersistenceEvents()->prepareArgs($argv);
+
+            $event = new Event('persist.pre', $this, $argv);
+
+            $this->getPersistenceEvents()->trigger($event);
+
+            if ($event->propagationIsStopped()) {
+                continue;
+            }
+
+            $pendingEvents = $event->getParam('pendingEvents');
+
+            if (count($pendingEvents)) {
+
+                $this->adapter->addToStream(
+                    $aggregateType,
+                    $aggregateId,
+                    $pendingEvents
+                );
 
                 $argv = array(
                     'aggregate' => $object,
                     'aggregateId' => $aggregateId,
-                    'pendingEvents' => $pendingEvents,
+                    'persistedEvents' => $pendingEvents,
                     'hash' => $hash
                 );
 
                 $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
-                $event = new Event('persist.pre', $this, $argv);
+                $event = new Event('persist.post', $this, $argv);
 
                 $this->getPersistenceEvents()->trigger($event);
 
-                if ($event->propagationIsStopped()) {
-                    continue;
-                }
-
-                $pendingEvents = $event->getParam('pendingEvents');
-
-                if (count($pendingEvents)) {
-
-                    $aggregateType = $this->getAggregateType($object);
-
-                    $this->adapter->addToStream(
-                        $aggregateType,
-                        AggregateIdBuilder::toString($aggregateId),
-                        $pendingEvents
-                    );
-
-                    $argv = array(
-                        'aggregate' => $object,
-                        'aggregateId' => $aggregateId,
-                        'persistedEvents' => $pendingEvents,
-                        'hash' => $hash
-                    );
-
-                    $argv = $this->getPersistenceEvents()->prepareArgs($argv);
-
-                    $event = new Event('persist.post', $this, $argv);
-
-                    $this->getPersistenceEvents()->trigger($event);
-
-                    $allPendingEvents += $event->getParam('persistedEvents');
-                }
+                $allPendingEvents += $event->getParam('persistedEvents');
             }
         }
 
         foreach ($this->detachedAggregates as $detachedAggregate) {
+            $aggregateType = $this->getAggregateType($detachedAggregate);
+
             $this->adapter->removeStream(
-                $this->getAggregateType($detachedAggregate),
-                AggregateIdBuilder::toString($this->getAggregateRootDecorator()->getAggregateId($detachedAggregate))
+                $aggregateType,
+                $this->getRepository($aggregateType)->extractAggregateIdAsString($detachedAggregate)
             );
         }
 
@@ -457,10 +472,8 @@ class EventStore
     public function rollback()
     {
         foreach ($this->identityMap as $object) {
-            if ($object instanceof EventSourcedAggregateRoot) {
-                //clear all pending events
-                $this->getAggregateRootDecorator()->extractPendingEvents($object);
-            }
+            //clear all pending events by requesting them and throw them away
+            $this->getRepository($this->getAggregateType($object))->extractPendingEvents($object);
         }
 
         if ($this->adapter instanceof TransactionFeatureInterface) {
@@ -501,26 +514,6 @@ class EventStore
 
         $this->persistenceEvents = $anEventManager;
     }
-
-    /**
-     * @param \Prooph\EventStore\Mapping\AggregateRootPrototypeManager $aggregateRootPrototypeManager
-     */
-    public function setAggregateRootPrototypeManager($aggregateRootPrototypeManager)
-    {
-        $this->aggregateRootPrototypeManager = $aggregateRootPrototypeManager;
-    }
-
-    /**
-     * @return \Prooph\EventStore\Mapping\AggregateRootPrototypeManager
-     */
-    public function getAggregateRootPrototypeManager()
-    {
-        if (is_null($this->aggregateRootPrototypeManager)) {
-            $this->aggregateRootPrototypeManager = new AggregateRootPrototypeManager();
-        }
-
-        return $this->aggregateRootPrototypeManager;
-    }
     
     /**
      * Get hash to identify EventSourcedAggregateRoot in the IdentityMap
@@ -536,30 +529,10 @@ class EventStore
     }
 
     /**
-     * @return AggregateRootDecorator
-     */
-    protected function getAggregateRootDecorator()
-    {
-        if (is_null($this->aggregateRootDecorator)) {
-            $this->aggregateRootDecorator = new AggregateRootDecorator();
-        }
-
-        return $this->aggregateRootDecorator;
-    }
-
-    /**
-     * @param AggregateRootDecorator $anAggregateRootDecorator
-     */
-    protected function setAggregateRootDecorator(AggregateRootDecorator $anAggregateRootDecorator)
-    {
-        $this->aggregateRootDecorator = $anAggregateRootDecorator;
-    }
-
-    /**
-     * @param EventSourcedAggregateRoot $anEventSourcedAggregateRoot
+     * @param mixed $anEventSourcedAggregateRoot
      * @return string
      */
-    protected function getAggregateType(EventSourcedAggregateRoot $anEventSourcedAggregateRoot)
+    protected function getAggregateType($anEventSourcedAggregateRoot)
     {
         return ($anEventSourcedAggregateRoot instanceof AggregateTypeProviderInterface)?
             $anEventSourcedAggregateRoot->aggregateType() : get_class($anEventSourcedAggregateRoot);

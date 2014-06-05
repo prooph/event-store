@@ -8,9 +8,11 @@
  */
 namespace Prooph\EventStore\Repository;
 
+use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Mapping\AggregateRootDecorator;
 
 /**
  *  EventSourcingRepository
@@ -33,6 +35,11 @@ class EventSourcingRepository implements RepositoryInterface
      * @var string
      */
     protected $aggregateType;
+
+    /**
+     * @var AggregateRootDecorator
+     */
+    protected $aggregateRootDecorator;
 
 
     /**
@@ -66,7 +73,7 @@ class EventSourcingRepository implements RepositoryInterface
     /**
      * Get an EventSourcedAggregateRoot by it's id
      *
-     * @param mixed $anAggregateId
+     * @param string $anAggregateId
      *
      * @return EventSourcedAggregateRoot|null
      */
@@ -87,4 +94,59 @@ class EventSourcingRepository implements RepositoryInterface
     }
 
     //@TODO: add method removeAll
+
+
+
+    /**
+     * @param object $anEventSourcedAggregateRoot
+     * @return string representation of the EventSourcedAggregateRoot
+     */
+    public function extractAggregateIdAsString($anEventSourcedAggregateRoot)
+    {
+        return (string)$this->getAggregateRootDecorator()->getAggregateId($anEventSourcedAggregateRoot);
+    }
+
+    /**
+     * @param string $anAggregateType
+     * @param string $anAggregateId
+     * @param AggregateChangedEvent[] $historyEvents
+     * @return object reconstructed EventSourcedAggregateRoot
+     */
+    public function constructAggregateFromHistory($anAggregateType, $anAggregateId, array $historyEvents)
+    {
+        $ref = new \ReflectionClass($anAggregateType);
+
+        $prototype = $ref->newInstanceWithoutConstructor();
+
+        return $this->getAggregateRootDecorator()->fromHistory($prototype, $anAggregateId, $historyEvents);
+    }
+
+    /**
+     * @param object $anEventSourcedAggregateRoot
+     * @return AggregateChangedEvent[]
+     */
+    public function extractPendingEvents($anEventSourcedAggregateRoot)
+    {
+        return $this->getAggregateRootDecorator()->extractPendingEvents($anEventSourcedAggregateRoot);
+    }
+
+    /**
+     * @return AggregateRootDecorator
+     */
+    protected function getAggregateRootDecorator()
+    {
+        if (is_null($this->aggregateRootDecorator)) {
+            $this->aggregateRootDecorator = new AggregateRootDecorator();
+        }
+
+        return $this->aggregateRootDecorator;
+    }
+
+    /**
+     * @param AggregateRootDecorator $anAggregateRootDecorator
+     */
+    protected function setAggregateRootDecorator(AggregateRootDecorator $anAggregateRootDecorator)
+    {
+        $this->aggregateRootDecorator = $anAggregateRootDecorator;
+    }
 }

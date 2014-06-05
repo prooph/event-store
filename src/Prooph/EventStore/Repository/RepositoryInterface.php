@@ -8,8 +8,7 @@
  */
 namespace Prooph\EventStore\Repository;
 
-use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
-use Prooph\EventStore\EventStore;
+use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
 
 /**
  * RepositoryInterface
@@ -20,37 +19,22 @@ use Prooph\EventStore\EventStore;
 interface RepositoryInterface
 {
     /**
-     * Construct
-     * 
-     * @param EventStore $eventStore
-     * @param string     $aggregateType
+     * @param object $anEventSourcedAggregateRoot
+     * @return string representation of the EventSourcedAggregateRoot
      */
-    public function __construct(EventStore $eventStore, $aggregateType);
+    public function extractAggregateIdAsString($anEventSourcedAggregateRoot);
 
     /**
-     * Add an EventSourcedAggregateRoot
-     *
-     * @param EventSourcedAggregateRoot $anEventSourcedAggregateRoot
-     * @return void
+     * @param string $anAggregateType
+     * @param string $anAggregateId
+     * @param AggregateChangedEvent[] $historyEvents
+     * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function add(EventSourcedAggregateRoot $anEventSourcedAggregateRoot);
-    
-    /**
-     * Get an EventSourcedAggregateRoot by it's id
-     * 
-     * @param mixed $anAggregateId
-     * 
-     * @return EventSourcedAggregateRoot|null
-     */
-    public function get($anAggregateId);
+    public function constructAggregateFromHistory($anAggregateType, $anAggregateId, array $historyEvents);
 
     /**
-     * Remove an EventSourcedAggregateRoot
-     *
-     * @param \Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot $anEventSourcedAggregateRoot
-     * @return void
+     * @param object $anEventSourcedAggregateRoot
+     * @return AggregateChangedEvent[]
      */
-    public function remove(EventSourcedAggregateRoot $anEventSourcedAggregateRoot);
-
-    //@TODO: add method removeAll
+    public function extractPendingEvents($anEventSourcedAggregateRoot);
 }

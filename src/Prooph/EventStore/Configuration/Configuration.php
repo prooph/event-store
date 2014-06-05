@@ -44,11 +44,6 @@ class Configuration
     protected $featureList = array();
 
     /**
-     * @var AggregateRootPrototypeManager
-     */
-    protected $aggregateRootPrototypeManager;
-
-    /**
      * @param array $config
      */
     public function __construct(array $config = null)
@@ -72,15 +67,6 @@ class Configuration
             \Assert\that($config['features'])->isArray("EventStore.Configuration.features must be an array");
 
             $this->featureList = $config['features'];
-        }
-
-        if (isset($config['aggregate_root_prototype_manager'])) {
-            \Assert\that($config['aggregate_root_prototype_manager'])
-                ->isArray("EventStore.Configuration.aggregate_root_prototype_manager must be an array");
-
-            $this->aggregateRootPrototypeManager = new AggregateRootPrototypeManager(new Config(
-                $config['aggregate_root_prototype_manager']
-            ));
         }
     }
 
@@ -208,25 +194,5 @@ class Configuration
     public function setFeatureManager(FeatureManager $featureManager)
     {
         $this->featureManager = $featureManager;
-    }
-
-    /**
-     * @param \Prooph\EventStore\Mapping\AggregateRootPrototypeManager $aggregateRootPrototypeManager
-     */
-    public function setAggregateRootPrototypeManager($aggregateRootPrototypeManager)
-    {
-        $this->aggregateRootPrototypeManager = $aggregateRootPrototypeManager;
-    }
-
-    /**
-     * @return \Prooph\EventStore\Mapping\AggregateRootPrototypeManager
-     */
-    public function getAggregateRootPrototypeManager()
-    {
-        if (is_null($this->aggregateRootPrototypeManager)) {
-            $this->aggregateRootPrototypeManager = new AggregateRootPrototypeManager();
-        }
-
-        return $this->aggregateRootPrototypeManager;
     }
 }
