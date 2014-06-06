@@ -7,18 +7,19 @@ PHP 5.4+ EventSourcing library.
 The library is heavily inspired by [malocher/event-store](https://github.com/malocher/event-store), [beberlei/litecqrs-php](https://github.com/beberlei/litecqrs-php) and [szjani/predaddy](https://github.com/szjani/predaddy)
 
 ##Features
-- Event driven library [in progress]
-- Full DDD support [in progress]
-- Collection based repositories [in progress]
-- Support for ValueObjects as AggregateRoot identifiers [done]
+- Event-driven library [in progress]
+- Full DDD support (no dependency of ES in domain model) [in progress]
+- Default event sourcing AggregateRoot, DomainEvent and repository implementations to ease usage [done]
+- IdentityMap to support collection-oriented repositories [done]
 - Transaction handling [done]
 - Optional snapshot strategies [not started]
 - Optional concurrent logging [not started]
-- Link your own event dispatcher and/or connect ProophServiceBus [not started]
-- Replay of all events [not started]
-- FeatureManager to ease customization [not started]
+- Support for ValueObjects as AggregateRoot identifiers [done]
+- Link your own event dispatcher and/or connect ProophServiceBus [done]
+- FeatureManager to ease customization [done]
+- Support for [Buttercup.Protects](https://github.com/buttercup-php/protects) [not started]
 - Changeable storage adapter like
-    - ZF2 Tablegateway [in progress]
+    - ZF2 Tablegateway [done]
     - doctrine dbal [not started]
     - mongoDB [not started]
     - geteventstore client [not started]
