@@ -23,7 +23,7 @@ The library is heavily inspired by [malocher/event-store](https://github.com/mal
     - mongoDB [not started]
     - geteventstore client [not started]
 
-##Included libraries
+##Used Third-Party Libraries
 - The ProophEventStore is based on [ZF2 components](http://framework.zend.com/) which offer a lot of customization options.
 - Uuids of the StreamEvents are generated with [rhumsaa/uuid](https://github.com/ramsey/uuid)
 - Assertions are performed by [beberlei/assert](https://github.com/beberlei/assert)
