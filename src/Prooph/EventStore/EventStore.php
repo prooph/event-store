@@ -472,7 +472,7 @@ class EventStore
     {
         foreach ($this->identityMap as $object) {
             //clear all pending events by requesting them and throw them away
-            $this->getRepository($this->getAggregateType($object))->extractPendingEvents($object);
+            $this->getRepository($this->getAggregateType($object))->extractPendingStreamEvents($object);
         }
 
         if ($this->adapter instanceof TransactionFeatureInterface) {
