@@ -11,13 +11,15 @@
 namespace Prooph\EventStore\Adapter\Zf2;
 
 use Prooph\EventStore\Adapter\AdapterInterface;
-use Prooph\EventStore\Adapter\Builder\EventBuilder;
 use Prooph\EventStore\Adapter\Exception\ConfigurationException;
 use Prooph\EventStore\Adapter\Exception\InvalidArgumentException;
 use Prooph\EventStore\Adapter\Feature\TransactionFeatureInterface;
-use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
-use Rhumsaa\Uuid\Uuid;
-use ValueObjects\DateTime\DateTime;
+use Prooph\EventStore\Stream\AggregateType;
+use Prooph\EventStore\Stream\EventId;
+use Prooph\EventStore\Stream\EventName;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamEvent;
+use Prooph\EventStore\Stream\StreamId;
 use Zend\Db\Adapter\Adapter as ZendDbAdapter;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Column\Text;
@@ -86,36 +88,34 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     }
 
     /**
-     * @param string   $aggregateFQCN
-     * @param string   $aggregateId
+     * @param AggregateType $aggregateType
+     * @param StreamId $streamId
      * @param null|int $version
-     * @return AggregateChangedEvent[]
+     * @return Stream
      * @throws \Prooph\EventStore\Adapter\Exception\InvalidArgumentException
      */
-    public function loadStream($aggregateFQCN, $aggregateId, $version = null)
+    public function loadStream(AggregateType $aggregateType, StreamId $streamId, $version = null)
     {
         try {
-            \Assert\that($aggregateFQCN)->notEmpty()->string();
-            \Assert\that($aggregateId)->notEmpty()->string();
             \Assert\that($version)->nullOr()->integer();
         } catch (\InvalidArgumentException $ex) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Loading the stream for Aggregate %s (%s) failed cause invalid parameters were passed: %s',
-                    (string)$aggregateId,
-                    (string)$aggregateFQCN,
+                    'Loading the stream for AggregateType %s with id %s failed cause invalid parameters were passed: %s',
+                    $aggregateType->toString(),
+                    $streamId->toString(),
                     $ex->getMessage()
                 )
             );
         }
 
-        $tableGateway = $this->getTablegateway($aggregateFQCN);
+        $tableGateway = $this->getTablegateway($aggregateType);
 
         $sql = $tableGateway->getSql();
 
         $where = new \Zend\Db\Sql\Where();
 
-        $where->equalTo('aggregateId', $aggregateId);
+        $where->equalTo('streamId', $streamId->toString());
 
         if (!is_null($version)) {
             $where->AND->greaterThanOrEqualTo('version', $version);
@@ -130,46 +130,41 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
         foreach ($eventsData as $eventData) {
             $payload = Serializer::unserialize($eventData->payload);
 
-            $uuid = Uuid::fromString($eventData->uuid);
+            $eventId = new EventId($eventData->eventId);
 
-            $dateTime = new \DateTime($eventData->occurredOn);
+            $eventName = new EventName($eventData->eventName);
 
-            $occurredOn = DateTime::fromNativeDateTime($dateTime);
+            $occurredOn = new \DateTime($eventData->occurredOn);
 
-            $events[] = EventBuilder::reconstructEvent(
-                (string)$eventData->eventClass,
-                $uuid,
-                $aggregateId,
-                $occurredOn,
-                (int)$eventData->version,
-                (array)$payload
-            );
+            $events[] = new StreamEvent($eventId, $eventName, $payload, (int)$eventData->version, $occurredOn);
         }
 
-        return $events;
+        return new Stream($aggregateType, $streamId, $events);
     }
 
     /**
-     * @param string $aggregateFQCN
-     * @param string $aggregateId
-     * @param AggregateChangedEvent[] $events
+     * Add new stream to the source stream
+     *
+     * @param Stream $stream
+     *
+     * @return void
      */
-    public function addToStream($aggregateFQCN, $aggregateId, $events)
+    public function addToExistingStream(Stream $stream)
     {
-        foreach ($events as $event) {
-            $this->insertEvent($aggregateFQCN, $aggregateId, $event);
+        foreach ($stream->streamEvents() as $event) {
+            $this->insertEvent($stream->aggregateType(), $stream->streamId(), $event);
         }
     }
 
     /**
-     * @param string $aggregateFQCN
-     * @param string $aggregateId
+     * @param AggregateType $aggregateType
+     * @param StreamId $streamId
      */
-    public function removeStream($aggregateFQCN, $aggregateId)
+    public function removeStream(AggregateType $aggregateType, StreamId $streamId)
     {
-        $tableGateway = $this->getTablegateway($aggregateFQCN);
+        $tableGateway = $this->getTablegateway($aggregateType);
 
-        $tableGateway->delete(array('aggregateId' => $aggregateId));
+        $tableGateway->delete(array('streamId' => $streamId->toString()));
     }
 
     /**
@@ -181,16 +176,16 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     {
         foreach ($streams as $stream) {
 
-            $createTable = new CreateTable($this->getTable($stream));
+            $createTable = new CreateTable($this->getTable(new AggregateType($stream)));
 
-            $createTable->addColumn(new Varchar('uuid', 36))
-                ->addColumn(new Varchar('aggregateId', 200))
+            $createTable->addColumn(new Varchar('eventId', 200))
+                ->addColumn(new Varchar('streamId', 200))
                 ->addColumn(new Integer('version'))
-                ->addColumn(new Text('eventClass'))
+                ->addColumn(new Text('eventName'))
                 ->addColumn(new Text('payload'))
                 ->addColumn(new Text('occurredOn'));
 
-            $createTable->addConstraint(new PrimaryKey('uuid'));
+            $createTable->addConstraint(new PrimaryKey('eventId'));
 
             $this->dbAdapter->getDriver()
                 ->getConnection()
@@ -205,7 +200,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     public function dropSchema(array $streams)
     {
         foreach ($streams as $stream) {
-            $dropTable = new DropTable($this->getTable($stream));
+            $dropTable = new DropTable($this->getTable(new AggregateType($stream)));
 
             $this->dbAdapter->getDriver()
                 ->getConnection()
@@ -230,25 +225,24 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
 
     /**
      * Insert an event
-     * 
-     * @param string                $aggregateFQCN
-     * @param string                $aggregateId
-     * @param AggregateChangedEvent $e
-     * 
+     *
+     * @param \Prooph\EventStore\Stream\AggregateType $aggregateType
+     * @param \Prooph\EventStore\Stream\StreamId $streamId
+     * @param \Prooph\EventStore\Stream\StreamEvent $e
      * @return void
      */
-    protected function insertEvent($aggregateFQCN, $aggregateId, AggregateChangedEvent $e)
+    protected function insertEvent(AggregateType $aggregateType, StreamId $streamId, StreamEvent $e)
     {
         $eventData = array(
-            'uuid' => $e->uuid()->toString(),
-            'aggregateId' => $aggregateId,
+            'eventId' => $e->eventId()->toString(),
+            'streamId' => $streamId->toString(),
             'version' => $e->version(),
-            'eventClass' => get_class($e),
+            'eventName' => $e->eventName()->toString(),
             'payload' => Serializer::serialize($e->payload()),
-            'occurredOn' => $e->occurredOn()->toNativeDateTime()->format(\DateTime::ISO8601)
+            'occurredOn' => $e->occurredOn()->format(\DateTime::ISO8601)
         );
 
-        $tableGateway = $this->getTablegateway($aggregateFQCN);
+        $tableGateway = $this->getTablegateway($aggregateType);
 
         $tableGateway->insert($eventData);
     }
@@ -256,42 +250,42 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     /**
      * Get the corresponding Tablegateway of the given $aggregateFQCN
      * 
-     * @param string $aggregateFQCN
+     * @param AggregateType $aggregateType
      * 
      * @return TableGateway
      */
-    protected function getTablegateway($aggregateFQCN)
+    protected function getTablegateway(AggregateType $aggregateType)
     {
-        if (!isset($this->tableGateways[$aggregateFQCN])) {
-            $this->tableGateways[$aggregateFQCN] = new TableGateway($this->getTable($aggregateFQCN), $this->dbAdapter);
+        if (!isset($this->tableGateways[$aggregateType->toString()])) {
+            $this->tableGateways[$aggregateType->toString()] = new TableGateway($this->getTable($aggregateType), $this->dbAdapter);
         }
 
-        return $this->tableGateways[$aggregateFQCN];
+        return $this->tableGateways[$aggregateType->toString()];
     }
 
     /**
      * Get tablename for given $aggregateFQCN
      * 
-     * @param $aggregateFQCN
+     * @param AggregateType $aggregateType
      * @return string
      */
-    protected function getTable($aggregateFQCN)
+    protected function getTable(AggregateType $aggregateType)
     {
-        if (isset($this->aggregateTypeTableMap[$aggregateFQCN])) {
-            $tableName = $this->aggregateTypeTableMap[$aggregateFQCN];
+        if (isset($this->aggregateTypeTableMap[$aggregateType->toString()])) {
+            $tableName = $this->aggregateTypeTableMap[$aggregateType->toString()];
         } else {
-            $tableName = strtolower($this->getShortAggregateType($aggregateFQCN)) . "_stream";
+            $tableName = strtolower($this->getShortAggregateType($aggregateType)) . "_stream";
         }
 
         return $tableName;
     }
 
     /**
-     * @param string $aggregateFQCN
+     * @param AggregateType $aggregateType
      * @return string
      */
-    protected function getShortAggregateType($aggregateFQCN)
+    protected function getShortAggregateType(AggregateType $aggregateType)
     {
-        return join('', array_slice(explode('\\', $aggregateFQCN), -1));
+        return join('', array_slice(explode('\\', $aggregateType->toString()), -1));
     }
 }

@@ -15,6 +15,7 @@ use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Feature\FeatureInterface;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
+use Prooph\EventStore\Stream\Stream;
 
 /**
  * Class EventLoggerFeature
@@ -25,9 +26,9 @@ use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 class EventLoggerFeature implements FeatureInterface
 {
     /**
-     * @var AggregateChangedEvent[]
+     * @var Stream[]
      */
-    protected $loggedEvents = array();
+    protected $loggedStreams = array();
 
     /**
      * @param EventStore $eventStore
@@ -43,15 +44,15 @@ class EventLoggerFeature implements FeatureInterface
      */
     public function onPostCommit(PostCommitEvent $e)
     {
-        $this->loggedEvents = $e->getPersistedEvents();
+        $this->loggedStreams = $e->getPersistedStreams();
     }
 
     /**
-     * @return \Prooph\EventStore\EventSourcing\AggregateChangedEvent[]
+     * @return Stream[]
      */
-    public function getLoggedEvents()
+    public function getLoggedStreams()
     {
-        return $this->loggedEvents;
+        return $this->loggedStreams;
     }
 }
  

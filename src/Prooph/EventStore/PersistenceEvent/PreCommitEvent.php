@@ -32,7 +32,7 @@ class PreCommitEvent extends Event
     }
 
     /**
-     * @return EventSourcedAggregateRoot[]
+     * @return array[aggregateHash => eventSourcedAggregateRoot]
      */
     public function getIdentityMap()
     {

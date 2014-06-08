@@ -4,3 +4,4 @@
 /vendor
 .idea
 nbproject
+composer.lock

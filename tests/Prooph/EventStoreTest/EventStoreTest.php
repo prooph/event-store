@@ -10,6 +10,9 @@
  */
 
 namespace Prooph\EventStoreTest;
+use Prooph\EventStore\Stream\AggregateType;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamId;
 use Prooph\EventStoreTest\Mock\User;
 
 /**
@@ -40,7 +43,7 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->attach($user);
 
-        $sameUser = $this->getTestEventStore()->find(get_class($user), $user->id());
+        $sameUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id()));
 
         $this->assertSame($user, $sameUser);
     }
@@ -62,7 +65,7 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->clear();
 
-        $equalUser = $this->getTestEventStore()->find(get_class($user), $user->id());
+        $equalUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id()));
 
         $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $equalUser);
 
@@ -78,9 +81,9 @@ class EventStoreTest extends TestCase
      */
     public function it_returns_default_repository_for_unknown_aggregate_fqcn()
     {
-        $repository = $this->getTestEventStore()->getRepository('Prooph\EventStoreTest\Mock\User');
+        $repository = $this->getTestEventStore()->getRepository(new AggregateType('Prooph\EventStoreTest\Mock\User'));
 
-        $this->assertInstanceOf('Prooph\EventStore\Repository\EventSourcingRepository', $repository);
+        $this->assertInstanceOf('Prooph\EventSourcing\Repository\EventSourcingRepository', $repository);
     }
 
     /**
@@ -104,12 +107,12 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->detach($user);
 
-        $this->assertNull($this->getTestEventStore()->find(get_class($user), $user->id()));
+        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id())));
 
         //Without a commit no aggregates were actually removed
         $this->getTestEventStore()->clear();
 
-        $notRemovedUser = $this->getTestEventStore()->find(get_class($user), $user->id());
+        $notRemovedUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id()));
 
         $this->assertNotNull($notRemovedUser);
 
@@ -121,7 +124,7 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->clear();
 
-        $this->assertNull($this->getTestEventStore()->find(get_class($user), $user->id()));
+        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id())));
 
     }
 }

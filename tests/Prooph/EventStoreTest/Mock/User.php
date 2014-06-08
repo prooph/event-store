@@ -11,8 +11,8 @@
 
 namespace Prooph\EventStoreTest\Mock;
 
-use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
-use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
+use Prooph\EventSourcing\DomainEvent\AggregateChangedEvent;
+use Prooph\EventSourcing\EventSourcedAggregateRoot;
 use Rhumsaa\Uuid\Uuid;
 
 /**

@@ -41,11 +41,13 @@ class FeatureManagerTest extends TestCase
             ),
             "feature_manager" => array(
                 "invokables" => array(
-                    "eventlogger" => "Prooph\EventStoreTest\Mock\EventLoggerFeature"
+                    "eventlogger" => "Prooph\EventStoreTest\Mock\EventLoggerFeature",
+                    "ProophEventSourcingFeature" => "Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature"
                 )
             ),
             "features" => array(
-                "eventlogger"
+                "eventlogger",
+                "ProophEventSourcingFeature"
             )
         );
 
@@ -63,9 +65,9 @@ class FeatureManagerTest extends TestCase
 
         $eventStore->commit();
 
-        $persistedEvents = $esConfig->getFeatureManager()->get("eventlogger")->getLoggedEvents();
+        $loggedStreams = $esConfig->getFeatureManager()->get("eventlogger")->getLoggedStreams();
 
-        $this->assertEquals(1, count($persistedEvents));
+        $this->assertEquals(1, count($loggedStreams));
     }
 }
  

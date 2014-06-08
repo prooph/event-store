@@ -8,6 +8,7 @@
  */
 namespace Prooph\EventStoreTest;
 
+use Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature;
 use Prooph\EventStore\Adapter\AdapterInterface;
 use Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter;
 use Prooph\EventStore\Configuration\Configuration;
@@ -67,8 +68,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function getTestEventStore()
     {
         if(is_null($this->eventStore)) {
-            $config = new Configuration();
+            $config = new Configuration(array(
+                'features' => array('ProophEventSourcingFeature')
+            ));
             $config->setAdapter($this->getEventStoreAdapter());
+            $config->getFeatureManager()->setService('ProophEventSourcingFeature', new ProophEventSourcingFeature());
             $this->eventStore = new EventStore($config);
         }
 

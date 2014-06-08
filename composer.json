@@ -17,23 +17,27 @@
         "EventStore",
         "library",
         "DDD",
+        "domain-driven design",
         "prooph",
         "zf2"
     ],
     "require": {
         "php": ">=5.4",
         "rhumsaa/uuid" : "2.5.*",
-        "codeliner/php-equalsbuilder": "1.1.*",
-        "codeliner/array-reader": "1.0.*",
-        "codeliner/shared-domain-set": "1.2.*",
         "beberlei/assert": "*",
-        "zendframework/zend-servicemanager" : "2.3.*",
-        "zendframework/zend-eventmanager" : "2.3.*",
-        "zendframework/zend-db" : "2.3.*",
-        "zendframework/zend-serializer" : "2.3.*"
+        "zendframework/zend-servicemanager" : "~2.3",
+        "zendframework/zend-eventmanager" : "~2.3",
+        "zendframework/zend-db" : "~2.3",
+        "zendframework/zend-serializer" : "~2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*"
+        "phpunit/phpunit": "3.7.*",
+        "prooph/event-sourcing" : "dev-master"
+    },
+    "suggest" : {
+        "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
+        "prooph/service-bus" : "Enterprise Service Bus adapter to connect EventStore with messaging systems",
+        "prooph/crud-bridge" : "Handle CRUD-ish entities with CQRS + ES"
     },
     "autoload": {
         "psr-0": { 

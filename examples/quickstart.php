@@ -8,14 +8,38 @@
  * 
  * Date: 20.04.14 - 21:44
  */
+
+/**
+ * This Quick Start uses the ProophEventStore together with ProophEventSourcing.
+ * ProophEventSourcing is an event-sourcing library which seamlessly integrates with ProophEventStore
+ * With the help of an EventStoreFeature shipped with ProophEventSourcing you can connect EventSourcedAggregateRoots
+ * with the EventStore @see configuration of the EventStore near the line 176 of this file.
+ *
+ * Why is ProophEventSourcing not included in the library? Well, the answer is quite easy. Normally you do not want
+ * to couple your domain model with the infrastructure (which is definitely the right place for an EventStore) so
+ * the ProophEventStore does not force you to use specific event-sourcing interfaces or DomainEvent implementations.
+ * It is up to you if you use a library like ProophEventSourcing, Buttercup.Protects or provide your own
+ * implementation for your domain model. The only thing you need to do is, tell the EventStore which type of repository
+ * it should use. The EventStore defines it's own RepositoryInterface (Prooph\EventStore\Repository\RepositoryInterface)
+ * that you need to implement if you do not use ProophEventSourcing which ships with a ready to use repository implementation.
+ *
+ *
+ * Assume, we have the following requirements in the composer.json
+ *
+ * "require": {
+ * "php": ">=5.4",
+ *   "prooph/event-store" : "dev-master",
+ *   "prooph/event-sourcing": "dev-master" //Default event-sourcing library
+ * },
+ */
 namespace {
     require_once '../vendor/autoload.php';
 }
 
 namespace My\Model {
 
-    use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
-    use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
+    use Prooph\EventSourcing\DomainEvent\AggregateChangedEvent;
+    use Prooph\EventSourcing\EventSourcedAggregateRoot;
     use Rhumsaa\Uuid\Uuid;
 
     //EventSourcing means your AggregateRoots are not persisted directly but all DomainEvents which occurs during a transaction
@@ -141,24 +165,35 @@ namespace My\Model {
 }
 
 namespace {
-    //We set up a new EventStore with a Zf2EventStoreAdapter using a SQLite in memory db
 
     use My\Model\User;
     use Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter;
     use Prooph\EventStore\Configuration\Configuration;
     use Prooph\EventStore\EventStore;
     use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
+    use Prooph\EventStore\Stream\AggregateType;
 
-    $options = array(
-        'connection' => array(
-            'driver' => 'Pdo_Sqlite',
-            'database' => ':memory:'
+    $config = new Configuration(array(
+        //We set up a new EventStore with a Zf2EventStoreAdapter using a SQLite in memory db ...
+        'adapter' => array(
+            'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter' => array(
+                'connection' => array(
+                    'driver' => 'Pdo_Sqlite',
+                    'database' => ':memory:'
+                )
+            )
+        ),
+        //... and register the ProophEventSourcingFeature to connect the EventStore with our EventSourcedAggregateRoots
+        'features' => array(
+            'ProophEventSourcingFeature'
+        ),
+        //Features are loaded by a special ZF2 PluginManager which can be configured like all other ZF2 ServiceManagers
+        'feature_manager' => array(
+            'invokables' => array(
+                'ProophEventSourcingFeature' => 'Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature'
+            )
         )
-    );
-
-    $config = new Configuration();
-
-    $config->setAdapter(new Zf2EventStoreAdapter($options));
+    ));
 
     $eventStore = new EventStore($config);
 
@@ -166,18 +201,20 @@ namespace {
     //Normally you use this functionality in a set up or migration script
     $eventStore->getAdapter()->createSchema(array('My\Model\User'));
 
-    //We attach a listener to capture all persisted events within a transaction
+    //We attach a listener to capture all persisted streams within a transaction
     $eventStore->getPersistenceEvents()->attach(
         'commit.post',
         function (PostCommitEvent $event) {
-            foreach ($event->getPersistedEvents() as $persistedEvent) {
+            foreach ($event->getPersistedStreams() as $persistedStream) {
 
-                echo sprintf(
-                    "Event %s was persisted during last transaction<br>The related Aggregate is %s and the payload of the event is %s<br>",
-                    get_class($persistedEvent),
-                    (string)$persistedEvent->aggregateId(),
-                    json_encode($persistedEvent->payload())
-                );
+                foreach ($persistedStream->streamEvents() as $persistedStreamEvent) {
+                    echo sprintf(
+                        "Event %s was persisted during last transaction<br>The related Aggregate is %s and the payload of the event is %s<br>",
+                        $persistedStreamEvent->eventName()->toString(),
+                        (string)$persistedStream->streamId()->toString(),
+                        json_encode($persistedStreamEvent->payload())
+                    );
+                }
 
             }
         }
@@ -192,17 +229,25 @@ namespace {
     $user->changeName('Alex');
 
     //Request a repository for your AggregateRoot
-    $repository = $eventStore->getRepository('My\Model\User');
+    $repository = $eventStore->getRepository(new AggregateType('My\Model\User'));
 
-    //Add new user to the repository
-    //The repositories behave like collections, you do not need to call save or something like that
-    //just add new AggregateRoots,
-    //fetch them with $repository->get($aggregateId);
-    //or remove them with $repository->remove($aggregate);
+    /*
+     * Normally you want to define a repository interface in your domain
+     * with methods like add, get and remove and type hints that force you
+     * to pass in objects related to the repository.
+     *
+     * Therefor the default methods of the ProophEventSourcing repository are named with a suffix
+     * to avoid naming conflicts with your interfaces
+     *
+     * Add new user to the repository
+     * The repositories behave like collections, you do not need to call save or something like that
+     * just add new AggregateRoots,
+     * fetch them with $repository->getFromStore($aggregateId);
+     * or remove them with $repository->removeFromStore($aggregate);
+     */
+    $repository->addToStore($user);
 
-    $repository->add($user);
-
-    //Persist all occurred AggregateChangedEvents, commit active transaction and trigger commit.post event
+    //Persist all occurred DomainEvents, commit active transaction and trigger a commit.post LifeCycleEvent
     $eventStore->commit();
 
     //Output should be somehting like:

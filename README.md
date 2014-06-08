@@ -8,13 +8,12 @@ The library is heavily inspired by [malocher/event-store](https://github.com/mal
 
 ##Features
 - Event-driven library [in progress]
-- Full DDD support (no dependency of ES in domain model) [in progress]
-- Default event sourcing AggregateRoot, DomainEvent and repository implementations to ease usage [done]
+- Full DDD support (no dependency of ES in domain model) [done]
+- Default event-sourcing components [done] -> but live in a separate library: [prooph/event-sourcing](https://github.com/prooph/event-sourcing)
 - IdentityMap to support collection-oriented repositories [done]
 - Transaction handling [done]
 - Optional snapshot strategies [not started]
 - Optional concurrent logging [not started]
-- Support for ValueObjects as AggregateRoot identifiers [done]
 - Link your own event dispatcher and/or connect ProophServiceBus [done]
 - FeatureManager to ease customization [done]
 - Support for [Buttercup.Protects](https://github.com/buttercup-php/protects) [not started]
@@ -26,10 +25,8 @@ The library is heavily inspired by [malocher/event-store](https://github.com/mal
 
 ##Included libraries
 - The ProophEventStore is based on [ZF2 components](http://framework.zend.com/) which offer a lot of customization options.
-- Uuids of the AggregateChangedEvents are generated with [rhumsaa/uuid](https://github.com/ramsey/uuid)
+- Uuids of the StreamEvents are generated with [rhumsaa/uuid](https://github.com/ramsey/uuid)
 - Assertions are performed by [beberlei/assert](https://github.com/beberlei/assert)
-- Immutable DateTime ValueObjects are provided by [nicolopignatelli/valueobjects](https://github.com/nicolopignatelli/valueobjects)
-- ArrayReader to access payload properties of Events with ease is powered by [codeliner/array-reader](https://github.com/codeliner/array-reader)
 
 ##Installation
 You can install ProophEventStore via composer by adding `"prooph/event-store": "dev-master"` as requirement to your composer.json.

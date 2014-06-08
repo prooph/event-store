@@ -9,7 +9,8 @@
  * Date: 24.05.14 - 20:17
  */
 
-namespace Prooph\EventStore\EventSourcing;
+namespace Prooph\EventStore\Mapping;
+use Prooph\EventStore\Stream\AggregateType;
 
 /**
  * Interface AggregateTypeProviderInterface
@@ -20,7 +21,7 @@ namespace Prooph\EventStore\EventSourcing;
 interface AggregateTypeProviderInterface
 {
     /**
-     * @return string
+     * @return AggregateType
      */
     public function aggregateType();
 }

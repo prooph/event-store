@@ -8,7 +8,9 @@
  */
 namespace Prooph\EventStore\Adapter;
 
-use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
+use Prooph\EventStore\Stream\AggregateType;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamId;
 
 /**
  * Interface of an EventStore Adapter
@@ -23,28 +25,26 @@ interface AdapterInterface
      *
      * Pass null as version to get the complete stream
      *
-     * @param string $aggregateFQCN
-     * @param string $aggregateId
-     * @param int    $version
+     * @param AggregateType $aggregateType
+     * @param StreamId $streamId
+     * @param null|int $version
      *
-     * @return AggregateChangedEvent[]
+     * @return Stream[]
      */
-    public function loadStream($aggregateFQCN, $aggregateId, $version = null);
+    public function loadStream(AggregateType $aggregateType, StreamId $streamId, $version = null);
     
     /**
-     * Add events to the source stream
+     * Add new stream to the source stream
      * 
-     * @param string                  $aggregateFQCN
-     * @param string                  $aggregateId
-     * @param AggregateChangedEvent[] $events
+     * @param Stream $stream
      * 
      * @return void
      */
-    public function addToStream($aggregateFQCN, $aggregateId, $events);
+    public function addToExistingStream(Stream $stream);
 
     /**
-     * @param string $aggregateFQCN
-     * @param string $aggregateId
+     * @param AggregateType $aggregateType
+     * @param StreamId $streamId
      */
-    public function removeStream($aggregateFQCN, $aggregateId);
+    public function removeStream(AggregateType $aggregateType, StreamId $streamId);
 }

@@ -11,7 +11,7 @@
 
 namespace Prooph\EventStoreTest\Mock;
 
-use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
+use Prooph\EventSourcing\DomainEvent\AggregateChangedEvent;
 
 /**
  * Class UserCreated

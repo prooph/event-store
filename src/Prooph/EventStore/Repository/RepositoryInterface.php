@@ -8,7 +8,9 @@
  */
 namespace Prooph\EventStore\Repository;
 
-use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamEvent;
+use Prooph\EventStore\Stream\StreamId;
 
 /**
  * RepositoryInterface
@@ -20,21 +22,19 @@ interface RepositoryInterface
 {
     /**
      * @param object $anEventSourcedAggregateRoot
-     * @return string representation of the EventSourcedAggregateRoot
+     * @return StreamId representation of the EventSourcedAggregateRoot
      */
-    public function extractAggregateIdAsString($anEventSourcedAggregateRoot);
+    public function extractStreamId($anEventSourcedAggregateRoot);
 
     /**
-     * @param string $anAggregateType
-     * @param string $anAggregateId
-     * @param AggregateChangedEvent[] $historyEvents
+     * @param \Prooph\EventStore\Stream\Stream $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function constructAggregateFromHistory($anAggregateType, $anAggregateId, array $historyEvents);
+    public function constructAggregateFromHistory(Stream $historyEvents);
 
     /**
      * @param object $anEventSourcedAggregateRoot
-     * @return AggregateChangedEvent[]
+     * @return StreamEvent[]
      */
-    public function extractPendingEvents($anEventSourcedAggregateRoot);
+    public function extractPendingStreamEvents($anEventSourcedAggregateRoot);
 }
