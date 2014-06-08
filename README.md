@@ -1,6 +1,6 @@
 ProophEventStore
 ===================
-PHP 5.4+ EventSourcing library.
+PHP 5.4+ EventStore Implementation.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 
