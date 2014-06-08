@@ -1,6 +1,6 @@
 {
     "name": "prooph/event-store",
-    "description": "PHP EventStore library",
+    "description": "PHP EventStore Implementation",
     "type": "library",
     "license": "BSD-3-Clause",
     "homepage": "https://github.com/prooph/event-store/",
