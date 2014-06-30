@@ -68,7 +68,11 @@ You can install ProophEventStore via composer by adding `"prooph/event-store": "
  * (Prooph\EventStore\Repository\RepositoryInterface)
  * that you need to implement if you do not use ProophEventSourcing
  * which ships with a ready to use repository implementation.
- *
+ */
+ 
+ 
+/**
+ * tl;dr
  *
  * Assume, we have the following requirements in the composer.json
  *
