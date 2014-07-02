@@ -176,7 +176,8 @@ namespace {
     $config = new Configuration(array(
         //We set up a new EventStore with a Zf2EventStoreAdapter using a SQLite in memory db ...
         'adapter' => array(
-            'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter' => array(
+            'type' => 'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter',
+            'options' => array(
                 'connection' => array(
                     'driver' => 'Pdo_Sqlite',
                     'database' => ':memory:'
