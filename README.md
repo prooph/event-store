@@ -54,6 +54,11 @@ You can install ProophEventStore via composer by adding `"prooph/event-store": "
  *
  * But it is no hard dependency. It is up to you if you use a library like ProophEventSourcing,
  * Buttercup.Protects or provide your own implementation for your domain model.
+ * The only thing you need to do is, tell the EventStore which type of
+ * repository it should use. The EventStore defines it's own RepositoryInterface
+ * (Prooph\EventStore\Repository\RepositoryInterface)
+ * that you need to implement if you do not use ProophEventSourcing
+ * which ships with a ready to use repository implementation.
  *
  * Assume, we have the following requirements in the composer.json
  *
@@ -220,7 +225,8 @@ namespace {
         //We set up a new EventStore with a Zf2EventStoreAdapter
         //using a SQLite in memory db ...
         'adapter' => array(
-            'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter' => array(
+            'type' => 'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter',
+            'options' => array(
                 'connection' => array(
                     'driver' => 'Pdo_Sqlite',
                     'database' => ':memory:'

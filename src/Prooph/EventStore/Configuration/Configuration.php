@@ -32,6 +32,13 @@ class Configuration
      */
     protected $adapter;
 
+    /**
+     * @var array
+     */
+    protected $adapterMap = array(
+        'zf2_adapter' => 'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter'
+    );
+
 
     /**
      * @var FeatureManager
@@ -90,18 +97,30 @@ class Configuration
     {
         if (is_null($this->adapter)) {
             if (!isset($this->config['adapter'])) {
-                throw ConfigurationException::configurationError('Missing key adapter');
+                throw ConfigurationException::configurationError('Missing key adapter in event store configuration');
             }
             
             if (!is_array($this->config['adapter'])) {
-                throw ConfigurationException::configurationError('Adapter configuration must be an array');
+                throw ConfigurationException::configurationError('Event store adapter configuration must be an array');
+            }
+
+            if (!isset($this->config['adapter']['type'])) {
+                throw ConfigurationException::configurationError('Missing key type in event store adapter configuration.');
+            }
+
+            if (!isset($this->config['adapter']['options'])) {
+                $this->config['adapter']['options'] = array();
             }
             
-            $adapterClass = key($this->config['adapter']);
-            $adapterConfig = current($this->config['adapter']);
+            $adapterClass = $this->config['adapter']['type'];
+            $adapterConfig = $this->config['adapter']['options'];
             
             if (!is_string($adapterClass)) {
-                throw ConfigurationException::configurationError('AdapterClass must be a string');
+                throw ConfigurationException::configurationError('Adapter.type must be a string');
+            }
+
+            if (isset($this->adapterMap[$adapterClass])) {
+                $adapterClass = $this->adapterMap[$adapterClass];
             }
             
             if (!class_exists($adapterClass)) {
