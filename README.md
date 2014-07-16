@@ -4,7 +4,11 @@ PHP 5.4+ EventStore Implementation.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 
-The library is heavily inspired by [malocher/event-store](https://github.com/malocher/event-store), [beberlei/litecqrs-php](https://github.com/beberlei/litecqrs-php) and [szjani/predaddy](https://github.com/szjani/predaddy)
+##Goal of the library
+ProophEventStore is the favorite persistence layer for most of our projects. We love the idea behind [Event Sourcing](http://martinfowler.com/eaaDev/EventSourcing.html)
+not only within a DDD application but also in medium-sized projects. We've decided to develop a PHP EventStore implementation on basis
+of Zend Framework 2 components. Not only because it is our framework of choice, but also because we need a library that we can
+use flexible, without the need to reinvent the wheel for components like an Inversion Of Control Container, DBAL or event-driven logic.
 
 ##Features
 - Event-driven library [in progress]
@@ -14,9 +18,9 @@ The library is heavily inspired by [malocher/event-store](https://github.com/mal
 - Transaction handling [done]
 - Optional snapshot strategies [not started]
 - Optional concurrent logging [not started]
-- Link your own event dispatcher and/or connect ProophServiceBus [done]
+- Link your own event dispatcher and/or connect [ProophServiceBus](https://github.com/prooph/service-bus) [done]
 - FeatureManager to ease customization [done]
-- Support for [Buttercup.Protects](https://github.com/buttercup-php/protects) [not started]
+- Support for [event-centric/aggregates](https://github.com/event-centric/aggregates) [not started]
 - Changeable storage adapter like
     - ZF2 Tablegateway [done]
     - doctrine dbal [not started]
@@ -29,7 +33,7 @@ The library is heavily inspired by [malocher/event-store](https://github.com/mal
 - Assertions are performed by [beberlei/assert](https://github.com/beberlei/assert)
 
 ##Installation
-You can install ProophEventStore via composer by adding `"prooph/event-store": "dev-master"` as requirement to your composer.json.
+You can install ProophEventStore via composer by adding `"prooph/event-store": "~0.3"` as requirement to your composer.json.
 
 
 ##Quick start
@@ -46,29 +50,10 @@ You can install ProophEventStore via composer by adding `"prooph/event-store": "
  */
 
 /**
- * This Quick Start uses the ProophEventStore together with ProophEventSourcing.
- * ProophEventSourcing is an event-sourcing library which seamlessly
- * integrates with ProophEventStore.
+ * This Quick Start uses ProophEventStore together with ProophEventSourcing.
  *
- * With the help of an EventStoreFeature shipped with ProophEventSourcing
- * you can connect EventSourcedAggregateRoots with the EventStore
- * @see configuration of the EventStore near the line 176 of this file.
- *
- * Why is ProophEventSourcing not included in the library?
- *
- * Well, the answer is quite easy. Normally you do not want to couple
- * your domain model with the infrastructure (which is definitely the
- * right place for an EventStore) so the ProophEventStore does not force you
- * to use specific event-sourcing interfaces or DomainEvent implementations.
- *
- * It is up to you if you use a library like ProophEventSourcing,
+ * But it is no hard dependency. It is up to you if you use a library like ProophEventSourcing,
  * Buttercup.Protects or provide your own implementation for your domain model.
- * The only thing you need to do is, tell the EventStore which type of
- * repository it should use. The EventStore defines it's own RepositoryInterface
- * (Prooph\EventStore\Repository\RepositoryInterface)
- * that you need to implement if you do not use ProophEventSourcing
- * which ships with a ready to use repository implementation.
- *
  *
  * Assume, we have the following requirements in the composer.json
  *
@@ -301,9 +286,8 @@ namespace {
      * Therefor the default methods of the ProophEventSourcing repository are named with a suffix
      * to avoid naming conflicts with your interfaces
      *
-     * Add new user to the repository
      * The repositories behave like collections, you do not need to call save or something like that
-     * just add new AggregateRoots,
+     * just add new AggregateRoots with $repository->addToStore($aggregate);
      * fetch them with $repository->getFromStore($aggregateId);
      * or remove them with $repository->removeFromStore($aggregate);
      */
@@ -321,11 +305,15 @@ namespace {
 }
 ```
 
-##Contribution
-coming soon ...
+What's next?
+------------
 
-##Wiki
-coming soon ...
+The library is in an early state and a lot of features have to be implemented until we will release the first stable version. We apologize for the lack of documentation. We are working on it. With the 0.3.0 release ProophEventStore has made a huge step forward and the main functionality has its final structure so we can start to document some of the key features.
+
+
+Acknowledgements
+----------------
+The library is heavily inspired by [malocher/event-store](https://github.com/malocher/event-store), [beberlei/litecqrs-php](https://github.com/beberlei/litecqrs-php) and [szjani/predaddy](https://github.com/szjani/predaddy)
 
 
 
