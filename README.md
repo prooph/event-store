@@ -7,8 +7,7 @@ PHP 5.4+ EventStore Implementation.
 ##Goal of the library
 ProophEventStore is the favorite persistence layer for most of our projects. We love the idea behind [Event Sourcing](http://martinfowler.com/eaaDev/EventSourcing.html)
 not only within a DDD application but also in medium-sized projects. We've decided to develop a PHP EventStore implementation on basis
-of Zend Framework 2 components. Not only because it is our framework of choice, but also because we need a library that we can
-use flexible, without the need to reinvent the wheel for components like an Inversion Of Control Container, DBAL or event-driven logic.
+of Zend Framework 2 components. We need a flexible system but we did not want to reinvent the wheel for components like an inversion of control Container, DBAL or event-driven logic. The result is a very flexible event store library that can handle custom domain events and work together with a storage adapter and an event dispatcher of your choice.
 
 ##Features
 - Event-driven library [in progress]
