@@ -315,6 +315,10 @@ What's next?
 
 The library is in an early state and a lot of features have to be implemented until we will release the first stable version. We apologize for the lack of documentation. We are working on it. With the 0.3.0 release ProophEventStore has made a huge step forward and the main functionality has its final structure so we can start to document some of the key features.
 
+ZF2 Integration
+---------------
+
+[ProophEventStoreModule](https://github.com/prooph/ProophEventStoreModule) seamlessly integrates ProophEventStore with a ZF2 application.
 
 Acknowledgements
 ----------------
