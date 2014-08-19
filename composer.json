@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "rhumsaa/uuid" : "2.5.*",
+        "rhumsaa/uuid" : "~2.5",
         "beberlei/assert": "*",
         "zendframework/zend-servicemanager" : "~2.3",
         "zendframework/zend-eventmanager" : "~2.3",
