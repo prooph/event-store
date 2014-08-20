@@ -64,7 +64,9 @@ You can install ProophEventStore via composer by adding `"prooph/event-store": "
  * "require": {
  * "php": ">=5.4",
  *   "prooph/event-store" : "dev-master",
- *   "prooph/event-sourcing": "dev-master" //Default event-sourcing library
+ *   "prooph/event-sourcing": "dev-master", //Default event-sourcing library
+     "zendframework/zend-db" : "~2.3",
+     "zendframework/zend-serializer" : "~2.3"
  * },
  */
 namespace {

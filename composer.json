@@ -26,22 +26,28 @@
         "rhumsaa/uuid" : "~2.5",
         "beberlei/assert": "*",
         "zendframework/zend-servicemanager" : "~2.3",
-        "zendframework/zend-eventmanager" : "~2.3",
-        "zendframework/zend-db" : "~2.3",
-        "zendframework/zend-serializer" : "~2.3"
+        "zendframework/zend-eventmanager" : "~2.3"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
-        "prooph/event-sourcing" : "dev-master"
+        "prooph/event-sourcing" : "dev-master",
+        "zendframework/zend-db" : "~2.3",
+        "zendframework/zend-serializer" : "~2.3"
     },
     "suggest" : {
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
         "prooph/service-bus" : "Enterprise Service Bus adapter to connect EventStore with messaging systems",
-        "prooph/crud-bridge" : "Handle CRUD-ish entities with CQRS + ES"
+        "prooph/crud-bridge" : "Handle CRUD-ish entities with CQRS + ES",
+        "zendframework/zend-db" : "Required when using the Zf2EventStoreAdapter",
+        "zendframework/zend-serializer" : "Required when using the Zf2EventStoreAdapter"
     },
     "autoload": {
         "psr-0": { 
-            "Prooph\\EventStore\\": "src/",
+            "Prooph\\EventStore\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
             "Prooph\\EventStoreTest\\": "tests/"
         }
     }
