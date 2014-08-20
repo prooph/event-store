@@ -41,7 +41,11 @@
     },
     "autoload": {
         "psr-0": { 
-            "Prooph\\EventStore\\": "src/",
+            "Prooph\\EventStore\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
             "Prooph\\EventStoreTest\\": "tests/"
         }
     }
