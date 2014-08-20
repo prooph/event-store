@@ -22,7 +22,8 @@ of Zend Framework 2 components. We need a flexible system but we did not want to
 - Support for [event-centric/aggregates](https://github.com/event-centric/aggregates) [not started]
 - Changeable storage adapter like
     - ZF2 Tablegateway [done]
-    - doctrine dbal [not started]
+    - doctrine dbal [wip] 
+      - @jsor is working on [dotsunited/prooph-event-store-doctrine-adapter](https://github.com/dotsunited/prooph-event-store-doctrine-adapter/blob/master/composer.json)
     - mongoDB [not started]
     - geteventstore client [not started]
 
