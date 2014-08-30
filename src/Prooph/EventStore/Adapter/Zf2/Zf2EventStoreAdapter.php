@@ -19,7 +19,7 @@ use Prooph\EventStore\Stream\EventId;
 use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamEvent;
-use Prooph\EventStore\Stream\StreamId;
+use Prooph\EventStore\Stream\StreamName;
 use Zend\Db\Adapter\Adapter as ZendDbAdapter;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Column\Text;
@@ -89,19 +89,19 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
 
     /**
      * @param AggregateType $aggregateType
-     * @param StreamId $streamId
+     * @param StreamName $streamId
      * @param null|int $version
      * @return Stream
      * @throws \Prooph\EventStore\Adapter\Exception\InvalidArgumentException
      */
-    public function loadStream(AggregateType $aggregateType, StreamId $streamId, $version = null)
+    public function loadStream(AggregateType $aggregateType, StreamName $streamId, $version = null)
     {
         try {
             \Assert\that($version)->nullOr()->integer();
         } catch (\InvalidArgumentException $ex) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Loading the stream for AggregateType %s with id %s failed cause invalid parameters were passed: %s',
+                    'Loading the stream for AggregateType %s with name %s failed cause invalid parameters were passed: %s',
                     $aggregateType->toString(),
                     $streamId->toString(),
                     $ex->getMessage()
@@ -158,9 +158,9 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
 
     /**
      * @param AggregateType $aggregateType
-     * @param StreamId $streamId
+     * @param StreamName $streamId
      */
-    public function removeStream(AggregateType $aggregateType, StreamId $streamId)
+    public function removeStream(AggregateType $aggregateType, StreamName $streamId)
     {
         $tableGateway = $this->getTablegateway($aggregateType);
 
@@ -227,11 +227,11 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
      * Insert an event
      *
      * @param \Prooph\EventStore\Stream\AggregateType $aggregateType
-     * @param \Prooph\EventStore\Stream\StreamId $streamId
+     * @param \Prooph\EventStore\Stream\StreamName $streamId
      * @param \Prooph\EventStore\Stream\StreamEvent $e
      * @return void
      */
-    protected function insertEvent(AggregateType $aggregateType, StreamId $streamId, StreamEvent $e)
+    protected function insertEvent(AggregateType $aggregateType, StreamName $streamId, StreamEvent $e)
     {
         $eventData = array(
             'eventId' => $e->eventId()->toString(),

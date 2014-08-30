@@ -55,7 +55,7 @@ class User extends EventSourcedAggregateRoot
     public function __construct($name)
     {
         $id = Uuid::uuid4()->toString();
-        $this->apply(new UserCreated($id, array('id' => $id, 'name' => $name)));
+        $this->apply(new UserCreated($id, array('name' => $id, 'name' => $name)));
     }
 
     /**

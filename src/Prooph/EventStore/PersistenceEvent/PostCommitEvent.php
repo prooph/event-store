@@ -11,9 +11,8 @@
 
 namespace Prooph\EventStore\PersistenceEvent;
 
-use Prooph\EventStore\EventSourcing\AggregateChangedEvent;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamEvent;
 use Zend\EventManager\Event;
 
 /**
@@ -33,11 +32,11 @@ class PostCommitEvent extends Event
     }
 
     /**
-     * @return Stream[]
+     * @return StreamEvent[]
      */
-    public function getPersistedStreams()
+    public function getRecordedEvents()
     {
-        return $this->getParam('persistedStreams', array());
+        return $this->getParam('recordedEvents', array());
     }
 }
  

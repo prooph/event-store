@@ -10,29 +10,28 @@
  */
 
 namespace Prooph\EventStore\Stream;
-use Rhumsaa\Uuid\Uuid;
 
 /**
- * Class StreamId
+ * Class StreamName
  *
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class StreamId 
+class StreamName
 {
     /**
      * @var string
      */
-    protected $id;
+    protected $name;
 
     /**
-     * @param $id
+     * @param $name
      */
-    public function __construct($id)
+    public function __construct($name)
     {
-        \Assert\that($id)->notEmpty()->string('StreamId must be a string')->maxLength(200);
+        \Assert\that($name)->notEmpty()->string('StreamName must be a string')->maxLength(200);
 
-        $this->id = $id;
+        $this->name = $name;
     }
 
     /**
@@ -40,7 +39,7 @@ class StreamId
      */
     public function toString()
     {
-        return $this->id;
+        return $this->name;
     }
 
     /**

@@ -30,13 +30,5 @@ class PreCommitEvent extends Event
     {
         return $this->getTarget();
     }
-
-    /**
-     * @return array[aggregateHash => eventSourcedAggregateRoot]
-     */
-    public function getIdentityMap()
-    {
-        return $this->getParam('identityMap', array());
-    }
 }
  

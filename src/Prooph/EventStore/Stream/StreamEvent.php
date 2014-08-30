@@ -45,14 +45,28 @@ class StreamEvent
     protected $occurredOn;
 
     /**
+     * Metadata dictionary
+     *
+     * @var array
+     */
+    protected $metadata = array();
+
+    /**
      * @param EventId $eventId
      * @param EventName $eventName
      * @param array $payload
      * @param integer $version
      * @param \DateTime $occurredOn
+     * @param array $metadata
      */
-    public function __construct(EventId $eventId, EventName $eventName, array $payload, $version, \DateTime $occurredOn)
-    {
+    public function __construct(
+        EventId $eventId,
+        EventName $eventName,
+        array $payload,
+        $version,
+        \DateTime $occurredOn,
+        array $metadata = array()
+    ) {
         \Assert\that($version)->integer();
 
         $this->eventId = $eventId;
@@ -60,6 +74,7 @@ class StreamEvent
         $this->payload = $payload;
         $this->version = $version;
         $this->occurredOn = $occurredOn;
+        $this->metadata = $metadata;
     }
 
 
@@ -101,6 +116,14 @@ class StreamEvent
     public function payload()
     {
         return $this->payload;
+    }
+
+    /**
+     * @return array
+     */
+    public function metadata()
+    {
+        return $this->metadata;
     }
 }
  

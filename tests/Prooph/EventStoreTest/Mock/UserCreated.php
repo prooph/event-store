@@ -26,7 +26,7 @@ class UserCreated extends AggregateChangedEvent
      */
     public function userId()
     {
-        return $this->toPayloadReader()->stringValue('id');
+        return $this->toPayloadReader()->stringValue('name');
     }
 
     /**

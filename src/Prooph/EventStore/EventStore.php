@@ -11,6 +11,7 @@ namespace Prooph\EventStore;
 use Prooph\EventStore\Adapter\AdapterInterface;
 use Prooph\EventStore\Adapter\Feature\TransactionFeatureInterface;
 use Prooph\EventStore\Configuration\Configuration;
+use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Mapping\AggregateTypeProviderInterface;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
@@ -19,13 +20,14 @@ use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
 use Prooph\EventStore\Repository\RepositoryInterface;
 use Prooph\EventStore\Stream\AggregateType;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamId;
+use Prooph\EventStore\Stream\StreamEvent;
+use Prooph\EventStore\Stream\StreamName;
 use Zend\EventManager\Event;
 use Zend\EventManager\EventManager;
 
 /**
  * EventStore 
- * 
+ *
  * @author Alexander Miertsch <contact@prooph.de>
  * @package Prooph\EventStore
  */
@@ -35,41 +37,22 @@ class EventStore
      *
      * @var AdapterInterface 
      */
-    protected $adapter;    
-    
-    /**
-     * The EventSourcedAggregateRoot identity map
-     * 
-     * @var array[$aggregateHash => eventSourcedAggregateRoot]
-     */
-    protected $identityMap = array();
-
-    /**
-     * @var RepositoryInterface[aggregateType => repository]
-     */
-    protected $repositoryIdentityMap = array();
-
-    /**
-     * @var array
-     */
-    protected $detachedAggregates = array();
-           
-    /**
-     * Map of AggregateTypes to $repositoryFQCNs
-     * 
-     * @var array 
-     */
-    protected $repositoryMap = array();
-    
-    /**
-     * @var boolean
-     */
-    protected $inTransaction = false;
+    protected $adapter;
 
     /**
      * @var EventManager
      */
     protected $persistenceEvents;
+
+    /**
+     * @var array
+     */
+    protected $recordedEvents = array();
+
+    /**
+     * @var bool
+     */
+    protected $inTransaction = false;
 
     /**
      * Construct
@@ -78,8 +61,7 @@ class EventStore
      */
     public function __construct(Configuration $config)
     {
-        $this->adapter               = $config->getAdapter();
-        $this->repositoryMap         = $config->getRepositoryMap();
+        $this->adapter = $config->getAdapter();
 
         $config->setUpEventStoreEnvironment($this);
     }
@@ -93,60 +75,272 @@ class EventStore
     {
         return $this->adapter;
     }
-    
+
     /**
-     * Get responsible repository for given AggregateType
-     * 
-     * @param AggregateType $aggregateType
-     *
-     * @triggers getRepository.pre
-     * @triggers getRepository.post
-     *
-     * @return RepositoryInterface
+     * @param Stream $aStream
+     * @return void
      */
-    public function getRepository(AggregateType $aggregateType)
+    public function create(Stream $aStream)
     {
-        $hash = 'repository::' . $aggregateType->toString();
+        $argv = array('stream' => $aStream);
 
-        if (isset($this->repositoryIdentityMap[$hash])) {
-            return $this->repositoryIdentityMap[$hash];
-        }
-
-        $argv = compact('aggregateType');
-
-        $argv['eventStore'] = $this;
-
-        $argv = $this->getPersistenceEvents()->prepareArgs($argv);
-
-        $event = new Event(__FUNCTION__, $this, $argv);
-
-        $repository = null;
-
-        $result = $this->getPersistenceEvents()->triggerUntil(
-            $event,
-            function ($res) {
-                return $res instanceof RepositoryInterface;
-            }
-        );
-
-        if ($result->stopped()) {
-            if ($result->last() instanceof RepositoryInterface) {
-                $repository = $result->last();
-            }
-        }
-        
-        $this->repositoryIdentityMap[$hash] = $repository;
-
-        $argv = compact('aggregateType', 'hash', 'repository');
-
-        $argv = $this->getPersistenceEvents()->prepareArgs($argv);
-
-        $event = new Event(__FUNCTION__ . '.post', $this, $argv);
+        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
         $this->getPersistenceEvents()->trigger($event);
-        
-        return $event->getParam('repository');
+
+        if ($event->propagationIsStopped()) {
+            return;
+        }
+
+        $aStream = $event->getParam('stream');
+
+        $this->adapter->create($aStream);
+
+        $this->recordedEvents = array_merge($this->recordedEvents, $aStream->streamEvents());
+
+        $event->setName(__FUNCTION__ . '.post');
+
+        $this->getPersistenceEvents()->trigger($event);
     }
+
+    /**
+     * @param StreamName $aStreamName
+     * @param array $streamEvents
+     * @return void
+     */
+    public function appendTo(StreamName $aStreamName, array $streamEvents)
+    {
+        $argv = array('streamName' => $aStreamName, 'streamEvents' => $streamEvents);
+
+        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+
+        if ($event->propagationIsStopped()) {
+            return;
+        }
+
+        $aStreamName = $event->getParam('streamName');
+        $streamEvents = $event->getParam('streamEvents');
+
+        $this->adapter->appendTo($aStreamName, $streamEvents);
+
+        $this->recordedEvents = array_merge($this->recordedEvents, $streamEvents);
+
+        $event->setName(__FUNCTION__, '.post');
+
+        $this->getPersistenceEvents()->trigger($event);
+    }
+
+    /**
+     * @param StreamName $aStreamName
+     * @return void
+     */
+    public function remove(StreamName $aStreamName)
+    {
+        $argv = array('streamName' => $aStreamName);
+
+        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+
+        if ($event->propagationIsStopped()) {
+            return;
+        }
+
+        $aStreamName = $event->getParam('streamName');
+
+        $this->adapter->remove($aStreamName);
+
+        $event->setName(__FUNCTION__, '.post');
+
+        $this->getPersistenceEvents()->trigger($event);
+    }
+
+    /**
+     * @param StreamName $aStreamName
+     * @param array $metadata
+     * @return void
+     */
+    public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
+    {
+        $argv = array('streamName' => $aStreamName, 'metadata' => $metadata);
+
+        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+
+        if ($event->propagationIsStopped()) {
+            return;
+        }
+
+        $aStreamName = $event->getParam('streamName');
+        $metadata = $event->getParam('metadata');
+
+        $this->adapter->removeEventsByMetadataFrom($aStreamName, $metadata);
+
+        $event->setName(__FUNCTION__, '.post');
+
+        $this->getPersistenceEvents()->trigger($event);
+    }
+
+    /**
+     * @param StreamName $aStreamName
+     * @throws Exception\StreamNotFoundException
+     * @return Stream
+     */
+    public function load(StreamName $aStreamName)
+    {
+        $argv = array('streamName' => $aStreamName);
+
+        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+
+        if ($event->propagationIsStopped()) {
+            throw new StreamNotFoundException(
+                sprintf(
+                    'A stream with name %s could not be found',
+                    $aStreamName->toString()
+                )
+            );
+        }
+
+        $aStreamName = $event->getParam('streamName');
+
+        $stream = $this->adapter->load($aStreamName);
+
+        if (! $stream) {
+            throw new StreamNotFoundException(
+                sprintf(
+                    'A stream with name %s could not be found',
+                    $aStreamName->toString()
+                )
+            );
+        }
+
+        $event->setName(__FUNCTION__, '.post');
+
+        $event->setParam('stream', $stream);
+
+        $this->getPersistenceEvents()->trigger($event);
+
+        if ($event->propagationIsStopped()) {
+            throw new StreamNotFoundException(
+                sprintf(
+                    'A stream with name %s could not be found',
+                    $aStreamName->toString()
+                )
+            );
+        }
+
+        return $event->getParam('stream');
+    }
+
+    /**
+     * @param StreamName $aStreamName
+     * @param array $metadata
+     * @return StreamEvent[]
+     */
+    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
+    {
+        $argv = array('streamName' => $aStreamName, 'metadata' => $metadata);
+
+        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+
+        if ($event->propagationIsStopped()) {
+            return array();
+        }
+
+        $aStreamName = $event->getParam('streamName');
+        $metadata = $event->getParam('metadata');
+
+        $events = $this->adapter->loadEventsByMetadataFrom($aStreamName, $metadata);
+
+        $event->setName(__FUNCTION__, '.post');
+
+        $event->setParam('streamEvents', $events);
+
+        $this->getPersistenceEvents()->trigger($event);
+
+        if ($event->propagationIsStopped()) {
+            return array();
+        }
+
+        return $event->getParam('streamEvents');
+    }
+
+    /**
+     * Begin transaction
+     *
+     * @triggers beginTransaction
+     */
+    public function beginTransaction()
+    {
+        if ($this->inTransaction) {
+            throw new RuntimeException('Can not begin transaction. EventStore is already in a transaction');
+        }
+
+        if ($this->adapter instanceof TransactionFeatureInterface) {
+            $this->adapter->beginTransaction();
+        }
+
+        $this->inTransaction = true;
+
+        $this->getPersistenceEvents()->trigger(__FUNCTION__, $this);
+    }
+
+    /**
+     * Commit transaction
+     *
+     * @triggers commit.pre If a listener stops propagation, the ES performs a rollback
+     * @triggers commit.post with all recorded StreamEvents. Perfect event to attach a domain event dispatcher
+     */
+    public function commit()
+    {
+        if (! $this->inTransaction) {
+            throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
+        }
+
+        $event = new PreCommitEvent(__FUNCTION__ . '.pre', $this);
+
+        $this->getPersistenceEvents()->trigger($event);
+
+        if ($event->propagationIsStopped()) {
+            $this->rollback();
+            return;
+        }
+
+        if ($this->adapter instanceof TransactionFeatureInterface) {
+            $this->adapter->commit();
+        }
+
+        $this->inTransaction = false;
+
+        $argv = array('recordedEvents' => $this->recordedEvents);
+
+        $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
+
+        $this->getPersistenceEvents()->trigger($event);
+
+        $this->recordedEvents = array();
+    }
+
+    /**
+     * Rollback transaction
+     *
+     * @triggers rollback
+     */
+    public function rollback()
+    {
+        if (! $this->inTransaction) {
+            throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
+        }
+
+        if ($this->adapter instanceof TransactionFeatureInterface) {
+            $this->adapter->rollback();
+        }
+
+        $this->inTransaction = false;
+
+        $this->getPersistenceEvents()->trigger(__FUNCTION__, $this);
+
+        $this->recordedEvents = array();
+    }
+
+
 
     /**
      * Register given EventSourcedAggregateRoot in the identity map
@@ -263,15 +457,15 @@ class EventStore
     }
    
     /**
-     * Load an EventSourcedAggregateRoot by it's AggregateType and id
+     * Load an EventSourcedAggregateRoot by it's AggregateType and name
      * 
      * @param AggregateType $aggregateType
-     * @param StreamId $streamId
+     * @param StreamName $streamId
      * @triggers find.pre
      * @triggers find.post
      * @return object|null
      */        
-    public function find(AggregateType $aggregateType, StreamId $streamId)
+    public function find(AggregateType $aggregateType, StreamName $streamId)
     {
         $hash = $this->getIdentityHash($aggregateType, $streamId);
         
@@ -330,160 +524,7 @@ class EventStore
         return $event->getParam('aggregate');
     }
     
-    /**
-     * Clear cached objects
-     * 
-     * @return void
-     */
-    public function clear()
-    {
-        $this->identityMap = array();
-        $this->detachedAggregates = array();
-        $this->repositoryIdentityMap = array();
 
-        if ($this->inTransaction) {
-            $this->rollback();
-        }
-    }
-    
-    /**
-     * Begin transaction
-     *
-     * @triggers beginTransaction
-     */
-    public function beginTransaction()
-    {
-        if ($this->adapter instanceof TransactionFeatureInterface) {
-            $this->adapter->beginTransaction();
-        }
-        
-        $this->inTransaction = true;
-
-        $this->getPersistenceEvents()->trigger(__FUNCTION__, $this);
-    }
-    
-    /**
-     * Commit transaction
-     *
-     * @triggers commit.pre providing the identityMap as param
-     * @triggers persist.pre for each EventSourcedAggregateRoot
-     * @triggers persist.post for each EventSourcedAggregateRoot
-     * @triggers commit.post with all persisted Streams. Perfect event to attach a domain event dispatcher
-     */
-    public function commit()
-    {
-        $argv = array('identityMap' => $this->identityMap);
-
-        $argv = $this->getPersistenceEvents()->prepareArgs($argv);
-
-        $event = new PreCommitEvent(__FUNCTION__ . '.pre', $this, $argv);
-
-        $this->getPersistenceEvents()->trigger($event);
-
-        if ($event->propagationIsStopped()) {
-            return;
-        }
-
-        $persistedSteams = array();
-
-        foreach ($this->identityMap as $hash => $object) {
-
-            $aggregateType = $this->getAggregateType($object);
-
-            $pendingEvents = $this->getRepository($aggregateType)->extractPendingStreamEvents($object);
-
-            $streamId = $this->getRepository($aggregateType)->extractStreamId($object);
-
-            $argv = array(
-                'aggregateType' => $aggregateType,
-                'aggregate' => $object,
-                'streamId' => $streamId,
-                'pendingEvents' => $pendingEvents,
-                'hash' => $hash
-            );
-
-            $argv = $this->getPersistenceEvents()->prepareArgs($argv);
-
-            $event = new Event('persist.pre', $this, $argv);
-
-            $this->getPersistenceEvents()->trigger($event);
-
-            if ($event->propagationIsStopped()) {
-                continue;
-            }
-
-            $pendingEvents = $event->getParam('pendingEvents');
-
-            if (count($pendingEvents)) {
-
-                $stream = new Stream($aggregateType, $streamId, $pendingEvents);
-
-                $this->adapter->addToExistingStream($stream);
-
-                $argv = array(
-                    'aggregate' => $object,
-                    'streamId' => $streamId,
-                    'persistedEvents' => $stream->streamEvents(),
-                    'hash' => $hash
-                );
-
-                $argv = $this->getPersistenceEvents()->prepareArgs($argv);
-
-                $event = new Event('persist.post', $this, $argv);
-
-                $this->getPersistenceEvents()->trigger($event);
-
-                $persistedSteams[] = $stream;
-            }
-        }
-
-        foreach ($this->detachedAggregates as $detachedAggregate) {
-            $aggregateType = $this->getAggregateType($detachedAggregate);
-
-            $this->adapter->removeStream(
-                $aggregateType,
-                $this->getRepository($aggregateType)->extractStreamId($detachedAggregate)
-            );
-        }
-
-        $this->detachedAggregates = array();
-
-        if ($this->adapter instanceof TransactionFeatureInterface) {
-            $this->adapter->commit();
-        }
-
-        $this->inTransaction = false;
-
-        $argv = array('persistedStreams' => $persistedSteams);
-
-        $this->getPersistenceEvents()->prepareArgs($argv);
-
-        $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
-
-        $this->getPersistenceEvents()->trigger($event);
-    }
-    
-    /**
-     * Rollback transaction
-     *
-     * @triggers rollback
-     */
-    public function rollback()
-    {
-        foreach ($this->identityMap as $object) {
-            //clear all pending events by requesting them and throw them away
-            $this->getRepository($this->getAggregateType($object))->extractPendingStreamEvents($object);
-        }
-
-        if ($this->adapter instanceof TransactionFeatureInterface) {
-            $this->adapter->rollback();
-        }
-        
-
-        $this->inTransaction = false;
-
-        $this->getPersistenceEvents()->trigger(__FUNCTION__, $this);
-    }
 
     /**
      * @return EventManager
@@ -518,11 +559,11 @@ class EventStore
      * Get hash to identify EventSourcedAggregateRoot in the IdentityMap
      * 
      * @param AggregateType $aggregateType
-     * @param StreamId $streamId
+     * @param StreamName $streamId
      * 
      * @return string
      */
-    protected function getIdentityHash(AggregateType $aggregateType, StreamId $streamId)
+    protected function getIdentityHash(AggregateType $aggregateType, StreamName $streamId)
     {        
         return $aggregateType->toString() . '::' . $streamId->toString();
     }
@@ -550,19 +591,5 @@ class EventStore
 
             return new $repositoryFQCN($this, $aggregateType);
         }
-    }
-
-    /**
-     * @param Event $e
-     * @throws \RuntimeException
-     */
-    public function throwNoRepositoryFoundException(Event $e)
-    {
-        throw new RuntimeException(
-            sprintf(
-                "No Repository found for AggregateType %s. You can use the prooph/event-sourcing library and register the \Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature if you do not have an own event-sourcing implementation for your aggregates",
-                $e->getParam('aggregateType')->toString()
-            )
-        );
     }
 }

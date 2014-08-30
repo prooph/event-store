@@ -8,9 +8,9 @@
  */
 namespace Prooph\EventStore\Adapter;
 
-use Prooph\EventStore\Stream\AggregateType;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamId;
+use Prooph\EventStore\Stream\StreamEvent;
+use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Interface of an EventStore Adapter
@@ -21,30 +21,41 @@ use Prooph\EventStore\Stream\StreamId;
 interface AdapterInterface
 {
     /**
-     * Load EventStream of an EventSourcedAggregateRoot from given version on
-     *
-     * Pass null as version to get the complete stream
-     *
-     * @param AggregateType $aggregateType
-     * @param StreamId $streamId
-     * @param null|int $version
-     *
-     * @return Stream[]
-     */
-    public function loadStream(AggregateType $aggregateType, StreamId $streamId, $version = null);
-    
-    /**
-     * Add new stream to the source stream
-     * 
-     * @param Stream $stream
-     * 
+     * @param Stream $aStream
      * @return void
      */
-    public function addToExistingStream(Stream $stream);
+    public function create(Stream $aStream);
 
     /**
-     * @param AggregateType $aggregateType
-     * @param StreamId $streamId
+     * @param StreamName $aStreamName
+     * @param array $streamEvents
+     * @return void
      */
-    public function removeStream(AggregateType $aggregateType, StreamId $streamId);
+    public function appendTo(StreamName $aStreamName, array $streamEvents);
+
+    /**
+     * @param StreamName $aStreamName
+     * @return void
+     */
+    public function remove(StreamName $aStreamName);
+
+    /**
+     * @param StreamName $aStreamName
+     * @param array $metadata
+     * @return void
+     */
+    public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata);
+
+    /**
+     * @param StreamName $aStreamName
+     * @return Stream|null
+     */
+    public function load(StreamName $aStreamName);
+
+    /**
+     * @param StreamName $aStreamName
+     * @param array $metadata
+     * @return StreamEvent[]
+     */
+    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata);
 }

@@ -20,14 +20,9 @@ namespace Prooph\EventStore\Stream;
 class Stream 
 {
     /**
-     * @var StreamId
+     * @var StreamName
      */
     protected $streamId;
-
-    /**
-     * @var AggregateType
-     */
-    protected $aggregateType;
 
     /**
      * @var StreamEvent[]
@@ -35,35 +30,24 @@ class Stream
     protected $streamEvents;
 
     /**
-     * @param AggregateType $aggregateType
-     * @param StreamId $streamId
+     * @param StreamName $streamId
      * @param StreamEvent[] $streamEvents
      */
-    public function __construct(AggregateType $aggregateType, StreamId $streamId, array $streamEvents)
+    public function __construct(StreamName $streamId, array $streamEvents)
     {
         \Assert\that($streamEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
 
         $this->streamId = $streamId;
 
-        $this->aggregateType = $aggregateType;
-
         $this->streamEvents = $streamEvents;
     }
 
     /**
-     * @return StreamId
+     * @return StreamName
      */
     public function streamId()
     {
         return $this->streamId;
-    }
-
-    /**
-     * @return AggregateType
-     */
-    public function aggregateType()
-    {
-        return $this->aggregateType;
     }
 
     /**

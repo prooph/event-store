@@ -10,7 +10,7 @@ namespace Prooph\EventStore\Repository;
 
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamEvent;
-use Prooph\EventStore\Stream\StreamId;
+use Prooph\EventStore\Stream\StreamName;
 
 /**
  * RepositoryInterface
@@ -22,7 +22,7 @@ interface RepositoryInterface
 {
     /**
      * @param object $anEventSourcedAggregateRoot
-     * @return StreamId representation of the EventSourcedAggregateRoot
+     * @return StreamName representation of the EventSourcedAggregateRoot
      */
     public function extractStreamId($anEventSourcedAggregateRoot);
 

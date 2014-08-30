@@ -70,7 +70,7 @@ namespace My\Model {
             //Validation must always be done before creating any events. Events should only contain valid information
             \Assert\that($name)->notEmpty()->string();
 
-            //We do not set id and name directly but apply a new UserCreated event
+            //We do not set name and name directly but apply a new UserCreated event
             $this->apply(new UserCreated($id, array('name' => $name)));
         }
 

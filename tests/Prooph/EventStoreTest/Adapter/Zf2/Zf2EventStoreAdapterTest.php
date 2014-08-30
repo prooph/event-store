@@ -15,7 +15,7 @@ use Prooph\EventSourcing\Mapping\AggregateChangedEventHydrator;
 use Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter;
 use Prooph\EventStore\Stream\AggregateType;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamId;
+use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
 use Prooph\EventStoreTest\TestCase;
 use ValueObjects\DateTime\DateTime;
@@ -54,11 +54,11 @@ class Zf2EventStoreAdapterTest extends TestCase
 
         $streamEvents = $eventHydrator->toStreamEvents($pendingEvents);
 
-        $stream = new Stream(new AggregateType(get_class($user)), new StreamId($user->id()), $streamEvents);
+        $stream = new Stream(new AggregateType(get_class($user)), new StreamName($user->id()), $streamEvents);
 
         $this->adapter->addToExistingStream($stream);
 
-        $historyEventStream = $this->adapter->loadStream(new AggregateType(get_class($user)), new StreamId($user->id()));
+        $historyEventStream = $this->adapter->loadStream(new AggregateType(get_class($user)), new StreamName($user->id()));
 
         $historyEvents = $historyEventStream->streamEvents();
 
@@ -92,13 +92,13 @@ class Zf2EventStoreAdapterTest extends TestCase
 
         $streamEvents = $eventHydrator->toStreamEvents($pendingEvents);
 
-        $stream = new Stream(new AggregateType(get_class($user)), new StreamId($user->id()), $streamEvents);
+        $stream = new Stream(new AggregateType(get_class($user)), new StreamName($user->id()), $streamEvents);
 
         $this->adapter->addToExistingStream($stream);
 
-        $this->adapter->removeStream(new AggregateType(get_class($user)), new StreamId($user->id()));
+        $this->adapter->removeStream(new AggregateType(get_class($user)), new StreamName($user->id()));
 
-        $historyStream = $this->adapter->loadStream(new AggregateType(get_class($user)), new StreamId($user->id()));
+        $historyStream = $this->adapter->loadStream(new AggregateType(get_class($user)), new StreamName($user->id()));
 
         $this->assertEquals(0, count($historyStream->streamEvents()));
     }

@@ -12,7 +12,7 @@
 namespace Prooph\EventStoreTest;
 use Prooph\EventStore\Stream\AggregateType;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamId;
+use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
 
 /**
@@ -43,7 +43,7 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->attach($user);
 
-        $sameUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id()));
+        $sameUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id()));
 
         $this->assertSame($user, $sameUser);
     }
@@ -65,7 +65,7 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->clear();
 
-        $equalUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id()));
+        $equalUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id()));
 
         $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $equalUser);
 
@@ -107,12 +107,12 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->detach($user);
 
-        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id())));
+        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id())));
 
         //Without a commit no aggregates were actually removed
         $this->getTestEventStore()->clear();
 
-        $notRemovedUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id()));
+        $notRemovedUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id()));
 
         $this->assertNotNull($notRemovedUser);
 
@@ -124,7 +124,7 @@ class EventStoreTest extends TestCase
 
         $this->getTestEventStore()->clear();
 
-        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamId($user->id())));
+        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id())));
 
     }
 }
