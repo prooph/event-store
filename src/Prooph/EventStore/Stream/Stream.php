@@ -22,7 +22,7 @@ class Stream
     /**
      * @var StreamName
      */
-    protected $streamId;
+    protected $streamName;
 
     /**
      * @var StreamEvent[]
@@ -30,14 +30,14 @@ class Stream
     protected $streamEvents;
 
     /**
-     * @param StreamName $streamId
+     * @param StreamName $streamName
      * @param StreamEvent[] $streamEvents
      */
-    public function __construct(StreamName $streamId, array $streamEvents)
+    public function __construct(StreamName $streamName, array $streamEvents)
     {
         \Assert\that($streamEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
 
-        $this->streamId = $streamId;
+        $this->streamName = $streamName;
 
         $this->streamEvents = $streamEvents;
     }
@@ -45,9 +45,9 @@ class Stream
     /**
      * @return StreamName
      */
-    public function streamId()
+    public function streamName()
     {
-        return $this->streamId;
+        return $this->streamName;
     }
 
     /**

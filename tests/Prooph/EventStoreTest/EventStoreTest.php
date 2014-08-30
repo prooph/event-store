@@ -10,10 +10,16 @@
  */
 
 namespace Prooph\EventStoreTest;
-use Prooph\EventStore\Stream\AggregateType;
+
+use Prooph\EventStore\Adapter\InMemoryAdapter;
+use Prooph\EventStore\Configuration\Configuration;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
+use Prooph\EventStore\Stream\EventId;
+use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
-use Prooph\EventStoreTest\Mock\User;
 
 /**
  * Class EventStoreTest
@@ -23,109 +29,58 @@ use Prooph\EventStoreTest\Mock\User;
  */
 class EventStoreTest extends TestCase
 {
+    /**
+     * @var EventStore
+     */
+    private $eventStore;
+
     protected function setUp()
     {
-        $this->getTestEventStore()->getAdapter()->createSchema(array('User'));
-    }
+        $inMemoryAdapter = new InMemoryAdapter();
 
-    protected function tearDown()
-    {
-        $this->getTestEventStore()->getAdapter()->dropSchema(array('User'));
-        parent::tearDown();
-    }
+        $config = new Configuration();
 
-    /**
-     * @test
-     */
-    public function it_attaches_a_new_aggregate_and_fetches_it_from_identity_map()
-    {
-        $user = new User("Alex");
+        $config->setAdapter($inMemoryAdapter);
 
-        $this->getTestEventStore()->attach($user);
-
-        $sameUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id()));
-
-        $this->assertSame($user, $sameUser);
+        $this->eventStore = new EventStore($config);
     }
 
     /**
      * @test
      */
-    public function it_begins_transaction_and_saves_events_on_commit()
+    public function it_creates_a_new_stream_and_records_the_stream_events()
     {
-        $this->getTestEventStore()->beginTransaction();
+        $recordedEvents = array();
 
-        $user = new User("Alex");
+        $this->eventStore->getPersistenceEvents()->attach('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+            foreach ($event->getRecordedEvents() as $recordedEvent) {
+                $recordedEvents[] = $recordedEvent;
+            }
+        });
 
-        $this->getTestEventStore()->attach($user);
+        $this->eventStore->beginTransaction();
 
-        $user->changeName('Alexander');
+        $streamEvent = new StreamEvent(
+            EventId::generate(),
+            new EventName('UserCreated'),
+            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            1,
+            new \DateTime()
+        );
 
-        $this->getTestEventStore()->commit();
+        $stream = new Stream(new StreamName('user'), array($streamEvent));
 
-        $this->getTestEventStore()->clear();
+        $this->eventStore->create($stream);
 
-        $equalUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id()));
+        $this->eventStore->commit();
 
-        $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $equalUser);
+        $stream = $this->eventStore->load(new StreamName('user'));
 
-        $this->assertNotSame($user, $equalUser);
+        $this->assertEquals('user', $stream->streamName()->toString());
 
-        $this->assertEquals($user->id(), $equalUser->id());
+        $this->assertEquals(1, count($stream->streamEvents()));
 
-        $this->assertEquals('Alexander', $equalUser->name());
-    }
-
-    /**
-     * @test
-     */
-    public function it_returns_default_repository_for_unknown_aggregate_fqcn()
-    {
-        $repository = $this->getTestEventStore()->getRepository(new AggregateType('Prooph\EventStoreTest\Mock\User'));
-
-        $this->assertInstanceOf('Prooph\EventSourcing\Repository\EventSourcingRepository', $repository);
-    }
-
-    /**
-     * @test
-     */
-    public function it_detaches_an_aggregate()
-    {
-        $this->getTestEventStore()->beginTransaction();
-
-        $user = new User("Alex");
-
-        $this->getTestEventStore()->attach($user);
-
-        $user->changeName('Alexander');
-
-        $this->getTestEventStore()->commit();
-
-        $this->getTestEventStore()->clear();
-
-        $this->getTestEventStore()->beginTransaction();
-
-        $this->getTestEventStore()->detach($user);
-
-        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id())));
-
-        //Without a commit no aggregates were actually removed
-        $this->getTestEventStore()->clear();
-
-        $notRemovedUser = $this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id()));
-
-        $this->assertNotNull($notRemovedUser);
-
-        $this->getTestEventStore()->beginTransaction();
-
-        $this->getTestEventStore()->detach($notRemovedUser);
-
-        $this->getTestEventStore()->commit();
-
-        $this->getTestEventStore()->clear();
-
-        $this->assertNull($this->getTestEventStore()->find(new AggregateType(get_class($user)), new StreamName($user->id())));
-
+        $this->assertEquals(1, count($recordedEvents));
     }
 }
  

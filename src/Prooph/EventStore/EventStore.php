@@ -78,6 +78,7 @@ class EventStore
 
     /**
      * @param Stream $aStream
+     * @throws Exception\RuntimeException
      * @return void
      */
     public function create(Stream $aStream)
@@ -90,6 +91,10 @@ class EventStore
 
         if ($event->propagationIsStopped()) {
             return;
+        }
+
+        if (! $this->inTransaction) {
+            throw new RuntimeException('Stream creation failed. EventStore is not in an active transaction');
         }
 
         $aStream = $event->getParam('stream');
@@ -106,16 +111,23 @@ class EventStore
     /**
      * @param StreamName $aStreamName
      * @param array $streamEvents
+     * @throws Exception\RuntimeException
      * @return void
      */
     public function appendTo(StreamName $aStreamName, array $streamEvents)
     {
+        \Assert\that($streamEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
+
         $argv = array('streamName' => $aStreamName, 'streamEvents' => $streamEvents);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
         if ($event->propagationIsStopped()) {
             return;
+        }
+
+        if (! $this->inTransaction) {
+            throw new RuntimeException('Append events to stream failed. EventStore is not in an active transaction');
         }
 
         $aStreamName = $event->getParam('streamName');
@@ -132,6 +144,7 @@ class EventStore
 
     /**
      * @param StreamName $aStreamName
+     * @throws Exception\RuntimeException
      * @return void
      */
     public function remove(StreamName $aStreamName)
@@ -142,6 +155,10 @@ class EventStore
 
         if ($event->propagationIsStopped()) {
             return;
+        }
+
+        if (! $this->inTransaction) {
+            throw new RuntimeException('Remove stream failed. EventStore is not in an active transaction');
         }
 
         $aStreamName = $event->getParam('streamName');
@@ -156,6 +173,7 @@ class EventStore
     /**
      * @param StreamName $aStreamName
      * @param array $metadata
+     * @throws Exception\RuntimeException
      * @return void
      */
     public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
@@ -166,6 +184,10 @@ class EventStore
 
         if ($event->propagationIsStopped()) {
             return;
+        }
+
+        if (! $this->inTransaction) {
+            throw new RuntimeException('Remove events from stream failed. EventStore is not in an active transaction');
         }
 
         $aStreamName = $event->getParam('streamName');
@@ -477,7 +499,7 @@ class EventStore
             return null;
         }
 
-        $argv = compact('aggregateType', 'streamId', 'hash');
+        $argv = compact('aggregateType', 'streamName', 'hash');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -513,7 +535,7 @@ class EventStore
 
         $this->attach($aggregate);
 
-        $argv = compact('aggregateType', 'streamId', 'hash', 'aggregate');
+        $argv = compact('aggregateType', 'streamName', 'hash', 'aggregate');
 
         $argv = $this->getPersistenceEvents()->prepareArgs($argv);
 
@@ -548,9 +570,6 @@ class EventStore
             __CLASS__,
             get_called_class()
         ));
-
-        $anEventManager->attach('getRepository', array($this, 'checkAggregateSpecificRepository'), 100);
-        $anEventManager->attach('getRepository', array($this, 'throwNoRepositoryFoundException'), -1000);
 
         $this->persistenceEvents = $anEventManager;
     }

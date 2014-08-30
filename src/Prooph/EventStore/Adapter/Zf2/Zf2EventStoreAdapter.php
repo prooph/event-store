@@ -58,13 +58,6 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     protected $aggregateTypeTableMap = array();
 
     /**
-     * Name of the table that contains snapshot metadata
-     * 
-     * @var string 
-     */
-    protected $snapshotTable = 'snapshot';
-
-    /**
      * @param array $configuration
      * @throws \Prooph\EventStore\Adapter\Exception\ConfigurationException
      */
@@ -115,7 +108,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
 
         $where = new \Zend\Db\Sql\Where();
 
-        $where->equalTo('streamId', $streamId->toString());
+        $where->equalTo('streamName', $streamId->toString());
 
         if (!is_null($version)) {
             $where->AND->greaterThanOrEqualTo('version', $version);
@@ -152,7 +145,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     public function addToExistingStream(Stream $stream)
     {
         foreach ($stream->streamEvents() as $event) {
-            $this->insertEvent($stream->aggregateType(), $stream->streamId(), $event);
+            $this->insertEvent($stream->aggregateType(), $stream->streamName(), $event);
         }
     }
 
@@ -164,7 +157,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     {
         $tableGateway = $this->getTablegateway($aggregateType);
 
-        $tableGateway->delete(array('streamId' => $streamId->toString()));
+        $tableGateway->delete(array('streamName' => $streamId->toString()));
     }
 
     /**
@@ -179,7 +172,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
             $createTable = new CreateTable($this->getTable(new AggregateType($stream)));
 
             $createTable->addColumn(new Varchar('eventId', 200))
-                ->addColumn(new Varchar('streamId', 200))
+                ->addColumn(new Varchar('streamName', 200))
                 ->addColumn(new Integer('version'))
                 ->addColumn(new Text('eventName'))
                 ->addColumn(new Text('payload'))
@@ -235,7 +228,7 @@ class Zf2EventStoreAdapter implements AdapterInterface, TransactionFeatureInterf
     {
         $eventData = array(
             'eventId' => $e->eventId()->toString(),
-            'streamId' => $streamId->toString(),
+            'streamName' => $streamId->toString(),
             'version' => $e->version(),
             'eventName' => $e->eventName()->toString(),
             'payload' => Serializer::serialize($e->payload()),

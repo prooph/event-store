@@ -29,6 +29,7 @@ interface AdapterInterface
     /**
      * @param StreamName $aStreamName
      * @param array $streamEvents
+     * @throws \Prooph\EventStore\Exception\StreamNotFoundException If stream does not exist
      * @return void
      */
     public function appendTo(StreamName $aStreamName, array $streamEvents);
@@ -42,6 +43,7 @@ interface AdapterInterface
     /**
      * @param StreamName $aStreamName
      * @param array $metadata
+     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return void
      */
     public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata);
@@ -55,6 +57,7 @@ interface AdapterInterface
     /**
      * @param StreamName $aStreamName
      * @param array $metadata
+     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return StreamEvent[]
      */
     public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata);
