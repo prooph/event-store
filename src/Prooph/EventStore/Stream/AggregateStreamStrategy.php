@@ -73,7 +73,9 @@ class AggregateStreamStrategy implements StreamStrategyInterface
      */
     public function read(AggregateType $aggregateType, $aggregateId)
     {
-        return $this->eventStore->load($this->buildStreamName($aggregateType, $aggregateId));
+        $stream = $this->eventStore->load($this->buildStreamName($aggregateType, $aggregateId));
+
+        return $stream->streamEvents();
     }
 
     /**
