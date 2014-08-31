@@ -118,6 +118,8 @@ class EventStore
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
+        $this->getPersistenceEvents()->trigger($event);
+
         if ($event->propagationIsStopped()) {
             return;
         }
@@ -148,6 +150,8 @@ class EventStore
         $argv = array('streamName' => $aStreamName);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+
+        $this->getPersistenceEvents()->trigger($event);
 
         if ($event->propagationIsStopped()) {
             return;
@@ -207,7 +211,16 @@ class EventStore
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
+        $this->getPersistenceEvents()->trigger($event);
+
         if ($event->propagationIsStopped()) {
+
+            $stream = $event->getParam('stream', false);
+
+            if ($stream instanceof Stream && $stream->streamName()->toString() == $aStreamName->toString()) {
+                return $stream;
+            }
+
             throw new StreamNotFoundException(
                 sprintf(
                     'A stream with name %s could not be found',
@@ -259,7 +272,7 @@ class EventStore
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
         if ($event->propagationIsStopped()) {
-            return array();
+            return $event->getParam('streamEvents', array());
         }
 
         $aStreamName = $event->getParam('streamName');
