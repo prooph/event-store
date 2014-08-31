@@ -11,6 +11,8 @@
 
 namespace Prooph\EventStoreTest\Mock;
 
+use Prooph\EventStore\Stream\EventId;
+use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\StreamEvent;
 use Rhumsaa\Uuid\Uuid;
 
@@ -29,7 +31,7 @@ class DomainEvent extends StreamEvent
      */
     public static function with(array $payload, $version)
     {
-        return new static(Uuid::uuid4(), get_called_class(), $payload, $version, new \DateTime());
+        return new static(new EventId(Uuid::uuid4()->toString()), new EventName(get_called_class()), $payload, $version, new \DateTime());
     }
 }
  

@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStoreTest\Mock;
+
 use Prooph\EventStore\Stream\StreamEvent;
 use Rhumsaa\Uuid\Uuid;
 

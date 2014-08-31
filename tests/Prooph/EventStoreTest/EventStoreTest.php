@@ -31,22 +31,6 @@ use Zend\EventManager\Event;
 class EventStoreTest extends TestCase
 {
     /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    protected function setUp()
-    {
-        $inMemoryAdapter = new InMemoryAdapter();
-
-        $config = new Configuration();
-
-        $config->setAdapter($inMemoryAdapter);
-
-        $this->eventStore = new EventStore($config);
-    }
-
-    /**
      * @test
      */
     public function it_creates_a_new_stream_and_records_the_stream_events()
