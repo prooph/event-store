@@ -11,8 +11,11 @@
 
 namespace Prooph\EventStoreTest\Feature;
 
+use Prooph\EventStore\Aggregate\AggregateRepository;
+use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
 use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Stream\AggregateStreamStrategy;
 use Prooph\EventStoreTest\Mock\User;
 use Prooph\EventStoreTest\TestCase;
 
@@ -29,28 +32,17 @@ class FeatureManagerTest extends TestCase
      */
     public function an_invokable_feature_is_loaded_by_feature_manager_and_attached_to_event_store_by_configuration()
     {
-
-        $this->markTestSkipped("Rework FeatureManagerTest");
-
         $config = array(
             "adapter" => array(
-                "type" => "Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter",
-                 "options" => array(
-                    'connection' => array(
-                        'driver' => 'Pdo_Sqlite',
-                        'database' => ':memory:'
-                    )
-                )
+                "type" => "Prooph\EventStore\Adapter\InMemoryAdapter",
             ),
             "feature_manager" => array(
                 "invokables" => array(
-                    "eventlogger" => "Prooph\EventStoreTest\Mock\EventLoggerFeature",
-                    "ProophEventSourcingFeature" => "Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature"
+                    "eventlogger" => "Prooph\EventStoreTest\Mock\EventLoggerFeature"
                 )
             ),
             "features" => array(
                 "eventlogger",
-                "ProophEventSourcingFeature"
             )
         );
 
@@ -58,19 +50,23 @@ class FeatureManagerTest extends TestCase
 
         $eventStore = new EventStore($esConfig);
 
-        $eventStore->getAdapter()->createSchema(array("User"));
+        $repository = new AggregateRepository(
+            $eventStore,
+            new DefaultAggregateTranslator(),
+            new AggregateStreamStrategy($eventStore)
+        );
 
         $eventStore->beginTransaction();
 
-        $user = new User("Alex");
+        $user = new User("Alex", "contact@prooph.de");
 
-        $eventStore->attach($user);
+        $repository->addAggregateRoot($user);
 
         $eventStore->commit();
 
-        $loggedStreams = $esConfig->getFeatureManager()->get("eventlogger")->getLoggedStreams();
+        $loggedStreamEvents = $esConfig->getFeatureManager()->get("eventlogger")->getLoggedStreamEvents();
 
-        $this->assertEquals(1, count($loggedStreams));
+        $this->assertEquals(1, count($loggedStreamEvents));
     }
 }
  
