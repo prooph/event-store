@@ -88,21 +88,6 @@ class SingleStreamStrategy implements StreamStrategyInterface
     /**
      * @param AggregateType $aggregateType
      * @param string $aggregateId
-     * @return void
-     */
-    public function remove(AggregateType $aggregateType, $aggregateId)
-    {
-        \Assert\that($aggregateId)->string('AggregateId needs to be string');
-
-        $this->eventStore->removeEventsByMetadataFrom(
-            new StreamName($this->streamName),
-            array('aggregate_type' => $aggregateType->toString(), 'aggregate_id' => $aggregateId)
-        );
-    }
-
-    /**
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
      * @return StreamEvent[]
      */
     public function read(AggregateType $aggregateType, $aggregateId)

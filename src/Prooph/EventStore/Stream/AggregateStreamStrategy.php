@@ -69,16 +69,6 @@ class AggregateStreamStrategy implements StreamStrategyInterface
     /**
      * @param AggregateType $aggregateType
      * @param string $aggregateId
-     * @return void
-     */
-    public function remove(AggregateType $aggregateType, $aggregateId)
-    {
-        $this->eventStore->remove($this->buildStreamName($aggregateType, $aggregateId));
-    }
-
-    /**
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
      * @return StreamEvent[]
      */
     public function read(AggregateType $aggregateType, $aggregateId)

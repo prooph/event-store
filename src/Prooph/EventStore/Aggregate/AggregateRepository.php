@@ -108,30 +108,6 @@ class AggregateRepository
         return $anEventSourcedAggregateRoot;
     }
 
-    /**
-     * @param object $anEventSourcedAggregateRoot
-     * @throws Exception\AggregateTypeException
-     */
-    public function removeAggregateRoot($anEventSourcedAggregateRoot)
-    {
-        if (! is_object($anEventSourcedAggregateRoot)) {
-            throw new AggregateTypeException(
-                sprintf(
-                    'Invalid aggregate given. Aggregates need to be of type object but type of %s given',
-                    gettype($anEventSourcedAggregateRoot)
-                )
-            );
-        }
-
-        $aggregateType = $this->getAggregateType($anEventSourcedAggregateRoot);
-
-        $aggregateId = $this->aggregateTranslator->extractAggregateId($anEventSourcedAggregateRoot);
-
-        $this->streamStrategy->remove($aggregateType, $aggregateId);
-
-        unset($this->identityMap[$aggregateId]);
-    }
-
     public function onPreCommit()
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {

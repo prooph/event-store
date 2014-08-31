@@ -36,20 +36,6 @@ interface AdapterInterface
 
     /**
      * @param StreamName $aStreamName
-     * @return void
-     */
-    public function remove(StreamName $aStreamName);
-
-    /**
-     * @param StreamName $aStreamName
-     * @param array $metadata
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
-     * @return void
-     */
-    public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata);
-
-    /**
-     * @param StreamName $aStreamName
      * @return Stream|null
      */
     public function load(StreamName $aStreamName);

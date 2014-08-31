@@ -142,66 +142,6 @@ class EventStore
 
     /**
      * @param StreamName $aStreamName
-     * @throws Exception\RuntimeException
-     * @return void
-     */
-    public function remove(StreamName $aStreamName)
-    {
-        $argv = array('streamName' => $aStreamName);
-
-        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
-
-        $this->getPersistenceEvents()->trigger($event);
-
-        if ($event->propagationIsStopped()) {
-            return;
-        }
-
-        if (! $this->inTransaction) {
-            throw new RuntimeException('Remove stream failed. EventStore is not in an active transaction');
-        }
-
-        $aStreamName = $event->getParam('streamName');
-
-        $this->adapter->remove($aStreamName);
-
-        $event->setName(__FUNCTION__, '.post');
-
-        $this->getPersistenceEvents()->trigger($event);
-    }
-
-    /**
-     * @param StreamName $aStreamName
-     * @param array $metadata
-     * @throws Exception\RuntimeException
-     * @return void
-     */
-    public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
-    {
-        $argv = array('streamName' => $aStreamName, 'metadata' => $metadata);
-
-        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
-
-        if ($event->propagationIsStopped()) {
-            return;
-        }
-
-        if (! $this->inTransaction) {
-            throw new RuntimeException('Remove events from stream failed. EventStore is not in an active transaction');
-        }
-
-        $aStreamName = $event->getParam('streamName');
-        $metadata = $event->getParam('metadata');
-
-        $this->adapter->removeEventsByMetadataFrom($aStreamName, $metadata);
-
-        $event->setName(__FUNCTION__, '.post');
-
-        $this->getPersistenceEvents()->trigger($event);
-    }
-
-    /**
-     * @param StreamName $aStreamName
      * @throws Exception\StreamNotFoundException
      * @return Stream
      */

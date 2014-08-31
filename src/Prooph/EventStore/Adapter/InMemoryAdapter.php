@@ -60,39 +60,6 @@ class InMemoryAdapter implements AdapterInterface
 
     /**
      * @param StreamName $aStreamName
-     * @return void
-     */
-    public function remove(StreamName $aStreamName)
-    {
-        unset($this->streams[$aStreamName->toString()]);
-    }
-
-    /**
-     * @param StreamName $aStreamName
-     * @param array $metadata
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
-     * @return void
-     */
-    public function removeEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
-    {
-        if (! isset($this->streams[$aStreamName->toString()])) {
-            throw new StreamNotFoundException(
-                sprintf(
-                    'Stream with name %s cannot be found',
-                    $aStreamName->toString()
-                )
-            );
-        }
-
-        foreach ($this->streams[$aStreamName->toString()] as $index => $streamEvent) {
-            if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                unset($this->streams[$aStreamName->toString()][$index]);
-            }
-        }
-    }
-
-    /**
-     * @param StreamName $aStreamName
      * @return Stream|null
      */
     public function load(StreamName $aStreamName)
