@@ -47,7 +47,7 @@ class DefaultAggregateTranslator implements AggregateTranslatorInterface
      * @throws Exception\AggregateTranslationFailedException
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function constructAggregateFromHistory(AggregateType $aggregateType, array $historyEvents)
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, array $historyEvents)
     {
         if (! class_exists($aggregateType->toString())) {
             throw new AggregateTranslationFailedException(

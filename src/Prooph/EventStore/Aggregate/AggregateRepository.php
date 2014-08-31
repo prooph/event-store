@@ -101,7 +101,7 @@ class AggregateRepository
     {
         $streamEvents = $this->streamStrategy->read($anAggregateType, $anAggregateId);
 
-        $anEventSourcedAggregateRoot = $this->aggregateTranslator->constructAggregateFromHistory($streamEvents);
+        $anEventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory($streamEvents);
 
         $this->identityMap[$anAggregateId] = $anEventSourcedAggregateRoot;
 

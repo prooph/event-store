@@ -32,7 +32,7 @@ interface AggregateTranslatorInterface
      * @param StreamEvent[] $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function constructAggregateFromHistory(AggregateType $aggregateType, array $historyEvents);
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, array $historyEvents);
 
     /**
      * @param object $anEventSourcedAggregateRoot
