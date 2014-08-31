@@ -125,5 +125,14 @@ class StreamEvent
     {
         return $this->metadata;
     }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setMetadataEntry($key, $value)
+    {
+        $this->metadata[$key] = $value;
+    }
 }
  

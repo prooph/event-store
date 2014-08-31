@@ -12,7 +12,6 @@ use Prooph\EventStore\Adapter\AdapterInterface;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Feature\FeatureManager;
-use Prooph\EventStore\Mapping\AggregateRootPrototypeManager;
 use Zend\ServiceManager\Config;
 
 /**
@@ -33,14 +32,6 @@ class Configuration
     protected $adapter;
 
     /**
-     * @var array
-     */
-    protected $adapterMap = array(
-        'zf2_adapter' => 'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter'
-    );
-
-
-    /**
      * @var FeatureManager
      */
     protected $featureManager;
@@ -57,11 +48,6 @@ class Configuration
     {
         if (is_array($config)) {            
             $this->config = $config;
-            
-            if (isset($config['repository_map'])) {
-                //Set map again to trigger validation
-                $this->setRepositoryMap($config['repository_map']);
-            }
         }
 
         if (isset($config['feature_manager'])) {
@@ -99,6 +85,11 @@ class Configuration
             if (!isset($this->config['adapter'])) {
                 throw ConfigurationException::configurationError('Missing key adapter in event store configuration');
             }
+
+            if (is_object($this->config['adapter']) && $this->config['adapter'] instanceof AdapterInterface) {
+                $this->adapter = $this->config['adapter'];
+                return $this->config['adapter'];
+            }
             
             if (!is_array($this->config['adapter'])) {
                 throw ConfigurationException::configurationError('Event store adapter configuration must be an array');
@@ -117,10 +108,6 @@ class Configuration
             
             if (!is_string($adapterClass)) {
                 throw ConfigurationException::configurationError('Adapter.type must be a string');
-            }
-
-            if (isset($this->adapterMap[$adapterClass])) {
-                $adapterClass = $this->adapterMap[$adapterClass];
             }
             
             if (!class_exists($adapterClass)) {
@@ -148,54 +135,6 @@ class Configuration
     public function setAdapter(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
-    }
-    
-    /**
-     * Get map of $sourceFQCNs to $repositoryFQCNs
-     * 
-     * @return array
-     */
-    public function getRepositoryMap()
-    {
-        return (isset($this->config['repository_map']))? $this->config['repository_map'] : array();
-    }
-    
-    /**
-     * @param array $map
-     */
-    public function setRepositoryMap(array $map)
-    {
-        foreach ($map as $aggregateFQCN => $repositoryFQCN) {
-            $this->addRepositoryMapping($aggregateFQCN, $repositoryFQCN);
-        }
-    }
-    
-    /**
-     * @param string $aggregateFQCN
-     * @param string $repositoryFQCN
-     * @throws ConfigurationException
-     */
-    public function addRepositoryMapping($aggregateFQCN, $repositoryFQCN)
-    {
-        if (!class_exists($aggregateFQCN)) {
-            throw ConfigurationException::configurationError(sprintf(
-                'Unknown SourceClass: %s',
-                $aggregateFQCN
-            ));
-        }
-        
-        if (!class_exists($repositoryFQCN)) {
-            throw ConfigurationException::configurationError(sprintf(
-                'Unknown RepositoryClass: %s',
-                $repositoryFQCN
-            ));
-        }
-        
-        if (!isset($this->config['repository_map']) || !is_array($this->config['repository_map'])) {
-            $this->config['repository_map'] = array();
-        }
-        
-        $this->config['repository_map'][$aggregateFQCN] = $repositoryFQCN;
     }
 
     public function getFeatureManager()

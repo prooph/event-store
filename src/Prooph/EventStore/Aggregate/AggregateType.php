@@ -9,7 +9,7 @@
  * Date: 06.06.14 - 23:34
  */
 
-namespace Prooph\EventStore\Stream;
+namespace Prooph\EventStore\Aggregate;
 
 /**
  * Class AggregateType

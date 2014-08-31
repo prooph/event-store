@@ -9,8 +9,7 @@
  * Date: 24.05.14 - 20:17
  */
 
-namespace Prooph\EventStore\Mapping;
-use Prooph\EventStore\Stream\AggregateType;
+namespace Prooph\EventStore\Aggregate;
 
 /**
  * Interface AggregateTypeProviderInterface
