@@ -53,7 +53,7 @@ class SingleStreamStrategy implements StreamStrategyInterface
      * @param StreamEvent[] $streamEvents
      * @return void
      */
-    public function register(AggregateType $aggregateType, $aggregateId, array $streamEvents)
+    public function add(AggregateType $aggregateType, $aggregateId, array $streamEvents)
     {
         \Assert\that($aggregateId)->string('AggregateId needs to be string');
 

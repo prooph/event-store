@@ -89,7 +89,7 @@ class AggregateRepository
 
         $streamEvents = $this->aggregateTranslator->extractPendingStreamEvents($anEventSourcedAggregateRoot);
 
-        $this->streamStrategy->register($aggregateType, $aggregateId, $streamEvents);
+        $this->streamStrategy->add($aggregateType, $aggregateId, $streamEvents);
     }
 
     /**

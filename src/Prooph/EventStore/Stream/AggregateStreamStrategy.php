@@ -50,7 +50,7 @@ class AggregateStreamStrategy implements StreamStrategyInterface
      * @param StreamEvent[] $streamEvents
      * @return void
      */
-    public function register(AggregateType $aggregateType, $aggregateId, array $streamEvents)
+    public function add(AggregateType $aggregateType, $aggregateId, array $streamEvents)
     {
         $this->eventStore->create(new Stream($this->buildStreamName($aggregateType, $aggregateId), $streamEvents));
     }
