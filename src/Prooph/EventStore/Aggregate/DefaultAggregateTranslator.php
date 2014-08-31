@@ -89,20 +89,20 @@ class DefaultAggregateTranslator implements AggregateTranslatorInterface
     {
         $refObj = new \ReflectionClass($anEventSourcedAggregateRoot);
 
-        if (! $refObj->hasProperty('recordedEvents')) {
+        if (! $refObj->hasMethod('popRecordedEvents')) {
             throw new AggregateTranslationFailedException(
                 sprintf(
-                    'Cannot extract pending events of aggregate %s. Class is missing a recordedEvents property!',
+                    'Cannot extract pending events of aggregate %s. Class is missing a method with name popRecordedEvents!',
                     get_class($anEventSourcedAggregateRoot)
                 )
             );
         }
 
-        $recordedEventsProp = $refObj->getProperty('recordedEvent');
+        $popRecordedEventsMethod = $refObj->getMethod('popRecordedEvents');
 
-        $recordedEventsProp->setAccessible(true);
+        $popRecordedEventsMethod->setAccessible(true);
 
-        $recordedEvents = $recordedEventsProp->getValue($anEventSourcedAggregateRoot);
+        $recordedEvents = $popRecordedEventsMethod->invoke($anEventSourcedAggregateRoot);
 
         \Assert\that($recordedEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
 
