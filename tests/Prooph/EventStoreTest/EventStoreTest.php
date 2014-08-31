@@ -209,6 +209,203 @@ class EventStoreTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function it_loads_events_by_matching_metadata()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $streamEventWithMetadata = new StreamEvent(
+            EventId::generate(),
+            new EventName('UserSnapshot'),
+            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            1,
+            new \DateTime(),
+            array(
+                'snapshot' => true
+            )
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->appendTo($stream->streamName(), array($streamEventWithMetadata));
+
+        $this->eventStore->commit();
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array('snapshot' => true));
+
+        $this->assertEquals(1, count($loadedEvents));
+
+        $this->assertEquals('UserSnapshot', $loadedEvents[0]->eventName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_empty_array_when_listener_stops_loading_events_and_does_not_provide_loaded_events()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $streamEventWithMetadata = new StreamEvent(
+            EventId::generate(),
+            new EventName('UserSnapshot'),
+            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            1,
+            new \DateTime(),
+            array(
+                'snapshot' => true
+            )
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->appendTo($stream->streamName(), array($streamEventWithMetadata));
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getPersistenceEvents()->attach('loadEventsByMetadataFrom.pre', function (Event $event) {
+            $event->stopPropagation(true);
+        });
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array('snapshot' => true));
+
+        $this->assertEquals(0, count($loadedEvents));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_listener_events_when_listener_stops_loading_events_and_provide_loaded_events()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $streamEventWithMetadata = new StreamEvent(
+            EventId::generate(),
+            new EventName('UserSnapshot'),
+            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            1,
+            new \DateTime(),
+            array(
+                'snapshot' => true
+            )
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->appendTo($stream->streamName(), array($streamEventWithMetadata));
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getPersistenceEvents()->attach('loadEventsByMetadataFrom.pre', function (Event $event) {
+            $streamEventWithMetadataButOtherUuid = new StreamEvent(
+                EventId::generate(),
+                new EventName('UserSnapshot'),
+                array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+                1,
+                new \DateTime(),
+                array(
+                    'snapshot' => true
+                )
+            );
+
+            $event->setParam('streamEvents', array($streamEventWithMetadataButOtherUuid));
+            $event->stopPropagation(true);
+        });
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array('snapshot' => true));
+
+        $this->assertEquals(1, count($loadedEvents));
+
+        $this->assertNotEquals($streamEventWithMetadata->eventId()->toString(), $loadedEvents[0]->eventId()->toString());
+    }
+
+    /**
+     * @test
+     */
+    public function it_breaks_loading_a_stream_when_listener_stops_propagation_but_does_not_provide_a_stream()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getPersistenceEvents()->attach('load.pre', function (Event $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->setExpectedException('Prooph\EventStore\Exception\StreamNotFoundException');
+
+        $this->eventStore->load(new StreamName('user'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_breaks_loading_a_stream_when_listener_stops_propagation_and_provides_stream_with_wrong_name()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getPersistenceEvents()->attach('load.pre', function (Event $event) {
+            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), array()));
+            $event->stopPropagation(true);
+        });
+
+        $this->setExpectedException('Prooph\EventStore\Exception\StreamNotFoundException');
+
+        $this->eventStore->load(new StreamName('user'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_stream_provided_by_listener_when_listener_stops_propagation()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getPersistenceEvents()->attach('load.pre', function (Event $event) {
+            $event->setParam('stream', new Stream(new StreamName('user'), array()));
+            $event->stopPropagation(true);
+        });
+
+        $emptyStream = $this->eventStore->load($stream->streamName());
+
+        $this->assertEquals(0, count($emptyStream->streamEvents()));
+    }
+
+    /**
      * @return Stream
      */
     private function getTestStream()

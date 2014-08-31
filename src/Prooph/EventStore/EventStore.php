@@ -211,6 +211,8 @@ class EventStore
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
+        $this->getPersistenceEvents()->trigger($event);
+
         if ($event->propagationIsStopped()) {
             return $event->getParam('streamEvents', array());
         }
