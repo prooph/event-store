@@ -1,0 +1,3079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1409610039">
+  <project timestamp="1409610039">
+    <file name="/var/www/event-store/src/Prooph/EventStore/Adapter/AdapterInterface.php">
+      <line num="51" type="stmt" count="1"/>
+      <metrics loc="50" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Prooph\EventStore\Adapter">
+      <file name="/var/www/event-store/src/Prooph/EventStore/Adapter/InMemoryAdapter.php">
+        <class name="InMemoryAdapter" namespace="Prooph\EventStore\Adapter" fullPackage="Prooph" package="Prooph">
+          <metrics methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="25" elements="44" coveredelements="30"/>
+        </class>
+        <line num="36" type="method" name="create" crap="1" count="22"/>
+        <line num="38" type="stmt" count="22"/>
+        <line num="39" type="stmt" count="22"/>
+        <line num="47" type="method" name="appendTo" crap="3.19" count="13"/>
+        <line num="49" type="stmt" count="13"/>
+        <line num="50" type="stmt" count="0"/>
+        <line num="51" type="stmt" count="0"/>
+        <line num="52" type="stmt" count="0"/>
+        <line num="53" type="stmt" count="0"/>
+        <line num="54" type="stmt" count="0"/>
+        <line num="55" type="stmt" count="0"/>
+        <line num="58" type="stmt" count="13"/>
+        <line num="59" type="stmt" count="13"/>
+        <line num="65" type="method" name="load" crap="2.06" count="8"/>
+        <line num="67" type="stmt" count="8"/>
+        <line num="68" type="stmt" count="0"/>
+        <line num="71" type="stmt" count="8"/>
+        <line num="73" type="stmt" count="8"/>
+        <line num="82" type="method" name="loadEventsByMetadataFrom" crap="5.26" count="5"/>
+        <line num="84" type="stmt" count="5"/>
+        <line num="86" type="stmt" count="5"/>
+        <line num="87" type="stmt" count="0"/>
+        <line num="88" type="stmt" count="0"/>
+        <line num="89" type="stmt" count="0"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="92" type="stmt" count="0"/>
+        <line num="95" type="stmt" count="5"/>
+        <line num="96" type="stmt" count="5"/>
+        <line num="97" type="stmt" count="5"/>
+        <line num="98" type="stmt" count="5"/>
+        <line num="99" type="stmt" count="5"/>
+        <line num="101" type="stmt" count="5"/>
+        <line num="104" type="method" name="matchMetadataWith" crap="5.03" count="5"/>
+        <line num="106" type="stmt" count="5"/>
+        <line num="107" type="stmt" count="0"/>
+        <line num="110" type="stmt" count="5"/>
+        <line num="112" type="stmt" count="5"/>
+        <line num="113" type="stmt" count="5"/>
+        <line num="114" type="stmt" count="1"/>
+        <line num="117" type="stmt" count="5"/>
+        <line num="118" type="stmt" count="2"/>
+        <line num="120" type="stmt" count="5"/>
+        <line num="122" type="stmt" count="5"/>
+        <metrics loc="124" ncloc="86" classes="1" methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="25" elements="44" coveredelements="26"/>
+      </file>
+    </package>
+    <package name="Prooph\EventStore\Aggregate">
+      <file name="/var/www/event-store/src/Prooph/EventStore/Aggregate/AggregateRepository.php">
+        <class name="AggregateRepository" namespace="Prooph\EventStore\Aggregate" fullPackage="Prooph" package="Prooph">
+          <metrics methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="31" elements="44" coveredelements="36"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="57" type="method" name="__construct" crap="1" count="3"/>
+        <line num="63" type="stmt" count="3"/>
+        <line num="65" type="stmt" count="3"/>
+        <line num="67" type="stmt" count="3"/>
+        <line num="68" type="stmt" count="3"/>
+        <line num="69" type="stmt" count="3"/>
+        <line num="75" type="method" name="addAggregateRoot" crap="2.50" count="3"/>
+        <line num="77" type="stmt" count="3"/>
+        <line num="78" type="stmt" count="0"/>
+        <line num="79" type="stmt" count="0"/>
+        <line num="80" type="stmt" count="0"/>
+        <line num="81" type="stmt" count="0"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="83" type="stmt" count="0"/>
+        <line num="86" type="stmt" count="3"/>
+        <line num="88" type="stmt" count="3"/>
+        <line num="90" type="stmt" count="3"/>
+        <line num="92" type="stmt" count="3"/>
+        <line num="93" type="stmt" count="3"/>
+        <line num="100" type="method" name="getAggregateRoot" crap="1" count="2"/>
+        <line num="102" type="stmt" count="2"/>
+        <line num="104" type="stmt" count="2"/>
+        <line num="105" type="stmt" count="2"/>
+        <line num="107" type="stmt" count="2"/>
+        <line num="109" type="stmt" count="2"/>
+        <line num="111" type="stmt" count="2"/>
+        <line num="114" type="method" name="onPreCommit" crap="3" count="3"/>
+        <line num="116" type="stmt" count="3"/>
+        <line num="118" type="stmt" count="1"/>
+        <line num="120" type="stmt" count="1"/>
+        <line num="122" type="stmt" count="1"/>
+        <line num="124" type="stmt" count="1"/>
+        <line num="125" type="stmt" count="1"/>
+        <line num="126" type="stmt" count="1"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="1"/>
+        <line num="130" type="stmt" count="3"/>
+        <line num="131" type="stmt" count="3"/>
+        <line num="137" type="method" name="getAggregateType" crap="3.58" count="3"/>
+        <line num="139" type="stmt" count="3"/>
+        <line num="140" type="stmt" count="0"/>
+        <line num="143" type="stmt" count="3"/>
+        <line num="144" type="stmt" count="0"/>
+        <line num="147" type="stmt" count="3"/>
+        <line num="301" type="stmt" count="1"/>
+        <line num="305" type="stmt" count="1"/>
+        <line num="322" type="stmt" count="1"/>
+        <metrics loc="149" ncloc="100" classes="1" methods="5" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="31" elements="44" coveredelements="34"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Aggregate/AggregateType.php">
+        <class name="AggregateType" namespace="Prooph\EventStore\Aggregate" fullPackage="Prooph" package="Prooph">
+          <metrics methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" elements="8" coveredelements="6"/>
+        </class>
+        <line num="27" type="method" name="__construct" crap="1" count="12"/>
+        <line num="29" type="stmt" count="12"/>
+        <line num="31" type="stmt" count="12"/>
+        <line num="32" type="stmt" count="12"/>
+        <line num="37" type="method" name="toString" crap="1" count="12"/>
+        <line num="39" type="stmt" count="12"/>
+        <line num="45" type="method" name="__toString" crap="2" count="0"/>
+        <line num="47" type="stmt" count="0"/>
+        <metrics loc="49" ncloc="25" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" elements="8" coveredelements="6"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Aggregate/DefaultAggregateTranslator.php">
+        <class name="DefaultAggregateTranslator" namespace="Prooph\EventStore\Aggregate" fullPackage="Prooph" package="Prooph">
+          <metrics methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="17" elements="44" coveredelements="20"/>
+        </class>
+        <line num="30" type="method" name="extractAggregateId" crap="3.69" count="3"/>
+        <line num="32" type="stmt" count="3"/>
+        <line num="33" type="stmt" count="0"/>
+        <line num="34" type="stmt" count="0"/>
+        <line num="35" type="stmt" count="0"/>
+        <line num="36" type="stmt" count="0"/>
+        <line num="37" type="stmt" count="0"/>
+        <line num="38" type="stmt" count="0"/>
+        <line num="41" type="stmt" count="3"/>
+        <line num="50" type="method" name="reconstituteAggregateFromHistory" crap="4.94" count="2"/>
+        <line num="52" type="stmt" count="2"/>
+        <line num="53" type="stmt" count="0"/>
+        <line num="54" type="stmt" count="0"/>
+        <line num="55" type="stmt" count="0"/>
+        <line num="56" type="stmt" count="0"/>
+        <line num="57" type="stmt" count="0"/>
+        <line num="58" type="stmt" count="0"/>
+        <line num="61" type="stmt" count="2"/>
+        <line num="63" type="stmt" count="2"/>
+        <line num="64" type="stmt" count="0"/>
+        <line num="65" type="stmt" count="0"/>
+        <line num="66" type="stmt" count="0"/>
+        <line num="67" type="stmt" count="0"/>
+        <line num="68" type="stmt" count="0"/>
+        <line num="69" type="stmt" count="0"/>
+        <line num="72" type="stmt" count="2"/>
+        <line num="74" type="stmt" count="2"/>
+        <line num="76" type="stmt" count="2"/>
+        <line num="78" type="stmt" count="2"/>
+        <line num="80" type="stmt" count="2"/>
+        <line num="88" type="method" name="extractPendingStreamEvents" crap="2.39" count="3"/>
+        <line num="90" type="stmt" count="3"/>
+        <line num="92" type="stmt" count="3"/>
+        <line num="93" type="stmt" count="0"/>
+        <line num="94" type="stmt" count="0"/>
+        <line num="95" type="stmt" count="0"/>
+        <line num="96" type="stmt" count="0"/>
+        <line num="97" type="stmt" count="0"/>
+        <line num="98" type="stmt" count="0"/>
+        <line num="101" type="stmt" count="3"/>
+        <line num="103" type="stmt" count="3"/>
+        <line num="105" type="stmt" count="3"/>
+        <line num="107" type="stmt" count="3"/>
+        <line num="109" type="stmt" count="3"/>
+        <metrics loc="111" ncloc="80" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="17" elements="44" coveredelements="17"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/src/Prooph/EventStore/Aggregate/AggregateTranslatorInterface.php">
+      <metrics loc="42" ncloc="14" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Prooph\EventStore\Configuration">
+      <file name="/var/www/event-store/src/Prooph/EventStore/Configuration/Configuration.php">
+        <class name="Configuration" namespace="Prooph\EventStore\Configuration">
+          <metrics methods="6" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="37" elements="57" coveredelements="42"/>
+        </class>
+        <line num="47" type="method" name="__construct" crap="4" count="24"/>
+        <line num="49" type="stmt" count="24"/>
+        <line num="50" type="stmt" count="1"/>
+        <line num="51" type="stmt" count="1"/>
+        <line num="53" type="stmt" count="24"/>
+        <line num="54" type="stmt" count="1"/>
+        <line num="56" type="stmt" count="1"/>
+        <line num="57" type="stmt" count="1"/>
+        <line num="59" type="stmt" count="24"/>
+        <line num="60" type="stmt" count="1"/>
+        <line num="62" type="stmt" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <line num="64" type="stmt" count="24"/>
+        <line num="69" type="method" name="setUpEventStoreEnvironment" crap="2" count="24"/>
+        <line num="71" type="stmt" count="24"/>
+        <line num="72" type="stmt" count="1"/>
+        <line num="74" type="stmt" count="1"/>
+        <line num="75" type="stmt" count="24"/>
+        <line num="76" type="stmt" count="24"/>
+        <line num="82" type="method" name="getAdapter" crap="17.88" count="24"/>
+        <line num="84" type="stmt" count="24"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="86" type="stmt" count="0"/>
+        <line num="89" type="stmt" count="1"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="94" type="stmt" count="1"/>
+        <line num="95" type="stmt" count="0"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="99" type="stmt" count="0"/>
+        <line num="102" type="stmt" count="1"/>
+        <line num="103" type="stmt" count="1"/>
+        <line num="104" type="stmt" count="1"/>
+        <line num="106" type="stmt" count="1"/>
+        <line num="107" type="stmt" count="1"/>
+        <line num="109" type="stmt" count="1"/>
+        <line num="110" type="stmt" count="0"/>
+        <line num="113" type="stmt" count="1"/>
+        <line num="114" type="stmt" count="0"/>
+        <line num="115" type="stmt" count="0"/>
+        <line num="117" type="stmt" count="0"/>
+        <line num="120" type="stmt" count="1"/>
+        <line num="122" type="stmt" count="1"/>
+        <line num="123" type="stmt" count="0"/>
+        <line num="125" type="stmt" count="1"/>
+        <line num="127" type="stmt" count="24"/>
+        <line num="135" type="method" name="setAdapter" crap="1" count="24"/>
+        <line num="137" type="stmt" count="24"/>
+        <line num="138" type="stmt" count="24"/>
+        <line num="140" type="method" name="getFeatureManager" crap="2.50" count="1"/>
+        <line num="142" type="stmt" count="1"/>
+        <line num="143" type="stmt" count="0"/>
+        <line num="144" type="stmt" count="0"/>
+        <line num="146" type="stmt" count="1"/>
+        <line num="152" type="method" name="setFeatureManager" crap="2" count="0"/>
+        <line num="154" type="stmt" count="0"/>
+        <line num="155" type="stmt" count="0"/>
+        <line num="157" type="stmt" count="1"/>
+        <metrics loc="156" ncloc="114" classes="1" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="37" elements="57" coveredelements="40"/>
+      </file>
+    </package>
+    <package name="Prooph\EventStore">
+      <file name="/var/www/event-store/src/Prooph/EventStore/EventStore.php">
+        <class name="EventStore" namespace="Prooph\EventStore" fullPackage="Prooph" package="Prooph">
+          <metrics methods="11" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="123" coveredstatements="93" elements="134" coveredelements="102"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="58" type="method" name="__construct" crap="1" count="24"/>
+        <line num="60" type="stmt" count="24"/>
+        <line num="62" type="stmt" count="24"/>
+        <line num="63" type="stmt" count="24"/>
+        <line num="70" type="method" name="getAdapter" crap="2" count="0"/>
+        <line num="72" type="stmt" count="0"/>
+        <line num="80" type="method" name="create" crap="3" count="24"/>
+        <line num="82" type="stmt" count="24"/>
+        <line num="84" type="stmt" count="24"/>
+        <line num="86" type="stmt" count="24"/>
+        <line num="88" type="stmt" count="24"/>
+        <line num="89" type="stmt" count="1"/>
+        <line num="92" type="stmt" count="23"/>
+        <line num="93" type="stmt" count="1"/>
+        <line num="96" type="stmt" count="22"/>
+        <line num="98" type="stmt" count="22"/>
+        <line num="100" type="stmt" count="22"/>
+        <line num="102" type="stmt" count="22"/>
+        <line num="104" type="stmt" count="22"/>
+        <line num="105" type="stmt" count="22"/>
+        <line num="113" type="method" name="appendTo" crap="3" count="15"/>
+        <line num="115" type="stmt" count="15"/>
+        <line num="117" type="stmt" count="15"/>
+        <line num="119" type="stmt" count="15"/>
+        <line num="121" type="stmt" count="15"/>
+        <line num="123" type="stmt" count="15"/>
+        <line num="124" type="stmt" count="1"/>
+        <line num="127" type="stmt" count="14"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="131" type="stmt" count="13"/>
+        <line num="132" type="stmt" count="13"/>
+        <line num="134" type="stmt" count="13"/>
+        <line num="136" type="stmt" count="13"/>
+        <line num="138" type="stmt" count="13"/>
+        <line num="140" type="stmt" count="13"/>
+        <line num="141" type="stmt" count="13"/>
+        <line num="148" type="method" name="load" crap="7.33" count="11"/>
+        <line num="150" type="stmt" count="11"/>
+        <line num="152" type="stmt" count="11"/>
+        <line num="154" type="stmt" count="11"/>
+        <line num="156" type="stmt" count="11"/>
+        <line num="158" type="stmt" count="3"/>
+        <line num="160" type="stmt" count="3"/>
+        <line num="161" type="stmt" count="1"/>
+        <line num="164" type="stmt" count="2"/>
+        <line num="165" type="stmt" count="2"/>
+        <line num="166" type="stmt" count="2"/>
+        <line num="167" type="stmt" count="2"/>
+        <line num="168" type="stmt" count="2"/>
+        <line num="169" type="stmt" count="2"/>
+        <line num="172" type="stmt" count="8"/>
+        <line num="174" type="stmt" count="8"/>
+        <line num="176" type="stmt" count="8"/>
+        <line num="177" type="stmt" count="0"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="179" type="stmt" count="0"/>
+        <line num="180" type="stmt" count="0"/>
+        <line num="181" type="stmt" count="0"/>
+        <line num="182" type="stmt" count="0"/>
+        <line num="185" type="stmt" count="8"/>
+        <line num="187" type="stmt" count="8"/>
+        <line num="189" type="stmt" count="8"/>
+        <line num="191" type="stmt" count="8"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="193" type="stmt" count="0"/>
+        <line num="194" type="stmt" count="1"/>
+        <line num="195" type="stmt" count="0"/>
+        <line num="196" type="stmt" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="200" type="stmt" count="8"/>
+        <line num="208" type="method" name="loadEventsByMetadataFrom" crap="3.00" count="7"/>
+        <line num="210" type="stmt" count="7"/>
+        <line num="212" type="stmt" count="7"/>
+        <line num="214" type="stmt" count="7"/>
+        <line num="216" type="stmt" count="7"/>
+        <line num="217" type="stmt" count="2"/>
+        <line num="220" type="stmt" count="5"/>
+        <line num="221" type="stmt" count="5"/>
+        <line num="223" type="stmt" count="5"/>
+        <line num="225" type="stmt" count="5"/>
+        <line num="227" type="stmt" count="5"/>
+        <line num="229" type="stmt" count="5"/>
+        <line num="231" type="stmt" count="5"/>
+        <line num="232" type="stmt" count="0"/>
+        <line num="235" type="stmt" count="5"/>
+        <line num="243" type="method" name="beginTransaction" crap="3.47" count="23"/>
+        <line num="245" type="stmt" count="23"/>
+        <line num="246" type="stmt" count="0"/>
+        <line num="249" type="stmt" count="23"/>
+        <line num="250" type="stmt" count="0"/>
+        <line num="251" type="stmt" count="0"/>
+        <line num="253" type="stmt" count="23"/>
+        <line num="255" type="stmt" count="23"/>
+        <line num="256" type="stmt" count="23"/>
+        <line num="264" type="method" name="commit" crap="4.49" count="23"/>
+        <line num="266" type="stmt" count="23"/>
+        <line num="267" type="stmt" count="0"/>
+        <line num="270" type="stmt" count="23"/>
+        <line num="272" type="stmt" count="23"/>
+        <line num="274" type="stmt" count="23"/>
+        <line num="275" type="stmt" count="0"/>
+        <line num="276" type="stmt" count="0"/>
+        <line num="279" type="stmt" count="23"/>
+        <line num="280" type="stmt" count="0"/>
+        <line num="281" type="stmt" count="0"/>
+        <line num="283" type="stmt" count="23"/>
+        <line num="285" type="stmt" count="23"/>
+        <line num="287" type="stmt" count="23"/>
+        <line num="289" type="stmt" count="23"/>
+        <line num="291" type="stmt" count="23"/>
+        <line num="292" type="stmt" count="23"/>
+        <line num="299" type="method" name="rollback" crap="12" count="0"/>
+        <line num="301" type="stmt" count="0"/>
+        <line num="302" type="stmt" count="0"/>
+        <line num="305" type="stmt" count="0"/>
+        <line num="306" type="stmt" count="0"/>
+        <line num="307" type="stmt" count="0"/>
+        <line num="309" type="stmt" count="0"/>
+        <line num="311" type="stmt" count="0"/>
+        <line num="313" type="stmt" count="0"/>
+        <line num="314" type="stmt" count="0"/>
+        <line num="319" type="method" name="getPersistenceEvents" crap="2" count="24"/>
+        <line num="321" type="stmt" count="24"/>
+        <line num="322" type="stmt" count="24"/>
+        <line num="323" type="stmt" count="24"/>
+        <line num="325" type="stmt" count="24"/>
+        <line num="331" type="method" name="setPersistenceEvents" crap="1" count="24"/>
+        <line num="333" type="stmt" count="24"/>
+        <line num="334" type="stmt" count="24"/>
+        <line num="335" type="stmt" count="24"/>
+        <line num="336" type="stmt" count="24"/>
+        <line num="337" type="stmt" count="24"/>
+        <line num="339" type="stmt" count="24"/>
+        <line num="340" type="stmt" count="24"/>
+        <line num="342" type="stmt" count="1"/>
+        <metrics loc="341" ncloc="262" classes="1" methods="11" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="123" coveredstatements="93" elements="134" coveredelements="98"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/src/Prooph/EventStore/Exception/EventStoreException.php">
+      <metrics loc="22" ncloc="7" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Prooph\EventStore\Exception">
+      <file name="/var/www/event-store/src/Prooph/EventStore/Exception/RuntimeException.php">
+        <class name="RuntimeException" namespace="Prooph\EventStore\Exception" fullPackage="Prooph" package="Prooph">
+          <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <metrics loc="22" ncloc="7" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Exception/StreamNotFoundException.php">
+        <class name="StreamNotFoundException" namespace="Prooph\EventStore\Exception">
+          <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <metrics loc="16" ncloc="7" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/src/Prooph/EventStore/Feature/FeatureInterface.php">
+      <metrics loc="29" ncloc="10" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Prooph\EventStore\Feature">
+      <file name="/var/www/event-store/src/Prooph/EventStore/Feature/FeatureManager.php">
+        <class name="FeatureManager" namespace="Prooph\EventStore\Feature" fullPackage="Prooph" package="Prooph">
+          <metrics methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="2" elements="7" coveredelements="3"/>
+        </class>
+        <line num="38" type="method" name="validatePlugin" crap="5.67" count="1"/>
+        <line num="40" type="stmt" count="1"/>
+        <line num="41" type="stmt" count="0"/>
+        <line num="43" type="stmt" count="0"/>
+        <line num="44" type="stmt" count="0"/>
+        <line num="45" type="stmt" count="0"/>
+        <line num="47" type="stmt" count="1"/>
+        <metrics loc="48" ncloc="21" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="2" elements="7" coveredelements="2"/>
+      </file>
+    </package>
+    <package name="Prooph\EventStore\PersistenceEvent">
+      <file name="/var/www/event-store/src/Prooph/EventStore/PersistenceEvent/PostCommitEvent.php">
+        <class name="PostCommitEvent" namespace="Prooph\EventStore\PersistenceEvent" fullPackage="Prooph" package="Prooph">
+          <metrics methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="4" coveredelements="2"/>
+        </class>
+        <line num="29" type="method" name="getEventStore" crap="2" count="0"/>
+        <line num="31" type="stmt" count="0"/>
+        <line num="37" type="method" name="getRecordedEvents" crap="1" count="5"/>
+        <line num="39" type="stmt" count="5"/>
+        <metrics loc="41" ncloc="20" classes="1" methods="2" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="1" elements="4" coveredelements="2"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/PersistenceEvent/PreCommitEvent.php">
+        <class name="PreCommitEvent" namespace="Prooph\EventStore\PersistenceEvent" fullPackage="Prooph" package="Prooph">
+          <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
+        </class>
+        <line num="29" type="method" name="getEventStore" crap="2" count="0"/>
+        <line num="31" type="stmt" count="0"/>
+        <metrics loc="33" ncloc="15" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
+      </file>
+    </package>
+    <package name="Prooph\EventStore\Stream">
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/AggregateStreamStrategy.php">
+        <class name="AggregateStreamStrategy" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="13" elements="18" coveredelements="18"/>
+        </class>
+        <line num="41" type="method" name="__construct" crap="1" count="4"/>
+        <line num="43" type="stmt" count="4"/>
+        <line num="44" type="stmt" count="4"/>
+        <line num="45" type="stmt" count="4"/>
+        <line num="53" type="method" name="add" crap="1" count="4"/>
+        <line num="55" type="stmt" count="4"/>
+        <line num="56" type="stmt" count="4"/>
+        <line num="64" type="method" name="appendEvents" crap="1" count="1"/>
+        <line num="66" type="stmt" count="1"/>
+        <line num="67" type="stmt" count="1"/>
+        <line num="74" type="method" name="read" crap="1" count="1"/>
+        <line num="76" type="stmt" count="1"/>
+        <line num="78" type="stmt" count="1"/>
+        <line num="86" type="method" name="buildStreamName" crap="2" count="4"/>
+        <line num="88" type="stmt" count="4"/>
+        <line num="90" type="stmt" count="4"/>
+        <line num="91" type="stmt" count="4"/>
+        <line num="93" type="stmt" count="4"/>
+        <metrics loc="95" ncloc="46" classes="1" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="13" elements="18" coveredelements="18"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/AggregateTypeStreamStrategy.php">
+        <class name="AggregateTypeStreamStrategy" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="24" elements="30" coveredelements="29"/>
+        </class>
+        <line num="41" type="method" name="__construct" crap="1" count="3"/>
+        <line num="43" type="stmt" count="3"/>
+        <line num="44" type="stmt" count="3"/>
+        <line num="45" type="stmt" count="3"/>
+        <line num="53" type="method" name="add" crap="2" count="3"/>
+        <line num="55" type="stmt" count="3"/>
+        <line num="57" type="stmt" count="3"/>
+        <line num="59" type="stmt" count="3"/>
+        <line num="60" type="stmt" count="3"/>
+        <line num="61" type="stmt" count="3"/>
+        <line num="62" type="stmt" count="3"/>
+        <line num="64" type="stmt" count="3"/>
+        <line num="65" type="stmt" count="3"/>
+        <line num="73" type="method" name="appendEvents" crap="2" count="1"/>
+        <line num="75" type="stmt" count="1"/>
+        <line num="77" type="stmt" count="1"/>
+        <line num="79" type="stmt" count="1"/>
+        <line num="80" type="stmt" count="1"/>
+        <line num="81" type="stmt" count="1"/>
+        <line num="82" type="stmt" count="1"/>
+        <line num="84" type="stmt" count="1"/>
+        <line num="85" type="stmt" count="1"/>
+        <line num="92" type="method" name="read" crap="1" count="1"/>
+        <line num="94" type="stmt" count="1"/>
+        <line num="96" type="stmt" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="105" type="method" name="buildStreamName" crap="2.15" count="3"/>
+        <line num="107" type="stmt" count="3"/>
+        <line num="108" type="stmt" count="0"/>
+        <line num="111" type="stmt" count="3"/>
+        <metrics loc="113" ncloc="65" classes="1" methods="5" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="24" elements="30" coveredelements="28"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/EventId.php">
+        <class name="EventId" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="5" elements="10" coveredelements="8"/>
+        </class>
+        <line num="31" type="method" name="generate" crap="1" count="21"/>
+        <line num="33" type="stmt" count="21"/>
+        <line num="39" type="method" name="__construct" crap="1" count="24"/>
+        <line num="41" type="stmt" count="24"/>
+        <line num="43" type="stmt" count="24"/>
+        <line num="44" type="stmt" count="24"/>
+        <line num="49" type="method" name="toString" crap="1" count="1"/>
+        <line num="51" type="stmt" count="1"/>
+        <line num="57" type="method" name="__toString" crap="2" count="0"/>
+        <line num="59" type="stmt" count="0"/>
+        <metrics loc="61" ncloc="31" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="5" elements="10" coveredelements="8"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/EventName.php">
+        <class name="EventName" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+        </class>
+        <line num="30" type="method" name="__construct" crap="1" count="24"/>
+        <line num="32" type="stmt" count="24"/>
+        <line num="34" type="stmt" count="24"/>
+        <line num="35" type="stmt" count="24"/>
+        <line num="40" type="method" name="toString" crap="1" count="3"/>
+        <line num="42" type="stmt" count="3"/>
+        <line num="48" type="method" name="__toString" crap="1" count="1"/>
+        <line num="50" type="stmt" count="1"/>
+        <metrics loc="52" ncloc="25" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/SingleStreamStrategy.php">
+        <class name="SingleStreamStrategy" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="24" elements="30" coveredelements="28"/>
+        </class>
+        <line num="41" type="method" name="__construct" crap="2.26" count="5"/>
+        <line num="43" type="stmt" count="5"/>
+        <line num="45" type="stmt" count="5"/>
+        <line num="46" type="stmt" count="0"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="5"/>
+        <line num="56" type="method" name="add" crap="2" count="5"/>
+        <line num="58" type="stmt" count="5"/>
+        <line num="60" type="stmt" count="5"/>
+        <line num="61" type="stmt" count="5"/>
+        <line num="62" type="stmt" count="5"/>
+        <line num="63" type="stmt" count="5"/>
+        <line num="64" type="stmt" count="5"/>
+        <line num="66" type="stmt" count="5"/>
+        <line num="67" type="stmt" count="5"/>
+        <line num="75" type="method" name="appendEvents" crap="2" count="2"/>
+        <line num="77" type="stmt" count="2"/>
+        <line num="79" type="stmt" count="2"/>
+        <line num="80" type="stmt" count="2"/>
+        <line num="81" type="stmt" count="2"/>
+        <line num="82" type="stmt" count="2"/>
+        <line num="83" type="stmt" count="2"/>
+        <line num="85" type="stmt" count="2"/>
+        <line num="86" type="stmt" count="2"/>
+        <line num="93" type="method" name="read" crap="1" count="3"/>
+        <line num="95" type="stmt" count="3"/>
+        <line num="97" type="stmt" count="3"/>
+        <line num="98" type="stmt" count="3"/>
+        <line num="99" type="stmt" count="3"/>
+        <line num="100" type="stmt" count="3"/>
+        <metrics loc="102" ncloc="58" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="24" elements="30" coveredelements="27"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/Stream.php">
+        <class name="Stream" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="9" coveredelements="9"/>
+        </class>
+        <line num="36" type="method" name="__construct" crap="1" count="24"/>
+        <line num="38" type="stmt" count="24"/>
+        <line num="40" type="stmt" count="24"/>
+        <line num="42" type="stmt" count="24"/>
+        <line num="43" type="stmt" count="24"/>
+        <line num="48" type="method" name="streamName" crap="1" count="22"/>
+        <line num="50" type="stmt" count="22"/>
+        <line num="56" type="method" name="streamEvents" crap="1" count="22"/>
+        <line num="58" type="stmt" count="22"/>
+        <metrics loc="60" ncloc="29" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="6" elements="9" coveredelements="9"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/StreamEvent.php">
+        <class name="StreamEvent" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="24" coveredelements="24"/>
+        </class>
+        <line num="62" type="method" name="__construct" crap="1" count="24"/>
+        <line num="70" type="stmt" count="24"/>
+        <line num="72" type="stmt" count="24"/>
+        <line num="73" type="stmt" count="24"/>
+        <line num="74" type="stmt" count="24"/>
+        <line num="75" type="stmt" count="24"/>
+        <line num="76" type="stmt" count="24"/>
+        <line num="77" type="stmt" count="24"/>
+        <line num="78" type="stmt" count="24"/>
+        <line num="84" type="method" name="eventId" crap="1" count="3"/>
+        <line num="86" type="stmt" count="3"/>
+        <line num="92" type="method" name="eventName" crap="1" count="3"/>
+        <line num="94" type="stmt" count="3"/>
+        <line num="100" type="method" name="version" crap="1" count="2"/>
+        <line num="102" type="stmt" count="2"/>
+        <line num="108" type="method" name="occurredOn" crap="1" count="2"/>
+        <line num="110" type="stmt" count="2"/>
+        <line num="116" type="method" name="payload" crap="1" count="5"/>
+        <line num="118" type="stmt" count="5"/>
+        <line num="124" type="method" name="metadata" crap="1" count="5"/>
+        <line num="126" type="stmt" count="5"/>
+        <line num="133" type="method" name="setMetadataEntry" crap="1" count="8"/>
+        <line num="135" type="stmt" count="8"/>
+        <line num="136" type="stmt" count="8"/>
+        <metrics loc="137" ncloc="72" classes="1" methods="8" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="16" elements="24" coveredelements="24"/>
+      </file>
+      <file name="/var/www/event-store/src/Prooph/EventStore/Stream/StreamName.php">
+        <class name="StreamName" namespace="Prooph\EventStore\Stream" fullPackage="Prooph" package="Prooph">
+          <metrics methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" elements="8" coveredelements="6"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="30" type="method" name="__construct" crap="1" count="24"/>
+        <line num="32" type="stmt" count="24"/>
+        <line num="34" type="stmt" count="24"/>
+        <line num="35" type="stmt" count="24"/>
+        <line num="40" type="method" name="toString" crap="1" count="22"/>
+        <line num="42" type="stmt" count="22"/>
+        <line num="48" type="method" name="__toString" crap="2" count="0"/>
+        <line num="50" type="stmt" count="0"/>
+        <metrics loc="52" ncloc="25" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" elements="8" coveredelements="6"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/src/Prooph/EventStore/Stream/StreamStrategyInterface.php">
+      <metrics loc="46" ncloc="14" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Prooph\EventStoreTest\Mock">
+      <file name="/var/www/event-store/tests/Prooph/EventStoreTest/Mock/DomainEvent.php">
+        <class name="DomainEvent" namespace="Prooph\EventStoreTest\Mock" fullPackage="Prooph" package="Prooph">
+          <metrics methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+        </class>
+        <line num="32" type="method" name="with" crap="1" count="3"/>
+        <line num="34" type="stmt" count="3"/>
+        <metrics loc="36" ncloc="16" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+      </file>
+      <file name="/var/www/event-store/tests/Prooph/EventStoreTest/Mock/EventLoggerFeature.php">
+        <class name="EventLoggerFeature" namespace="Prooph\EventStoreTest\Mock" fullPackage="Prooph" package="Prooph">
+          <metrics methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+        </class>
+        <line num="36" type="method" name="setUp" crap="1" count="1"/>
+        <line num="38" type="stmt" count="1"/>
+        <line num="39" type="stmt" count="1"/>
+        <line num="44" type="method" name="onPostCommit" crap="1" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="47" type="stmt" count="1"/>
+        <line num="52" type="method" name="getLoggedStreamEvents" crap="1" count="1"/>
+        <line num="54" type="stmt" count="1"/>
+        <metrics loc="56" ncloc="28" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+      </file>
+      <file name="/var/www/event-store/tests/Prooph/EventStoreTest/Mock/User.php">
+        <class name="User" namespace="Prooph\EventStoreTest\Mock" fullPackage="Prooph" package="Prooph">
+          <metrics methods="12" coveredmethods="12" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="51" elements="63" coveredelements="63"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="54" type="method" name="__construct" crap="1" count="3"/>
+        <line num="56" type="stmt" count="3"/>
+        <line num="58" type="stmt" count="3"/>
+        <line num="59" type="stmt" count="3"/>
+        <line num="60" type="stmt" count="3"/>
+        <line num="61" type="stmt" count="3"/>
+        <line num="62" type="stmt" count="3"/>
+        <line num="63" type="stmt" count="3"/>
+        <line num="64" type="stmt" count="3"/>
+        <line num="69" type="method" name="id" crap="1" count="3"/>
+        <line num="71" type="stmt" count="3"/>
+        <line num="74" type="method" name="name" crap="1" count="2"/>
+        <line num="76" type="stmt" count="2"/>
+        <line num="79" type="method" name="email" crap="1" count="1"/>
+        <line num="81" type="stmt" count="1"/>
+        <line num="84" type="method" name="changeName" crap="1" count="1"/>
+        <line num="86" type="stmt" count="1"/>
+        <line num="88" type="stmt" count="1"/>
+        <line num="90" type="stmt" count="1"/>
+        <line num="91" type="stmt" count="1"/>
+        <line num="92" type="stmt" count="1"/>
+        <line num="93" type="stmt" count="1"/>
+        <line num="95" type="method" name="recordThat" crap="1" count="3"/>
+        <line num="97" type="stmt" count="3"/>
+        <line num="99" type="stmt" count="3"/>
+        <line num="100" type="stmt" count="3"/>
+        <line num="102" type="method" name="apply" crap="3" count="3"/>
+        <line num="104" type="stmt" count="3"/>
+        <line num="105" type="stmt" count="3"/>
+        <line num="106" type="stmt" count="3"/>
+        <line num="108" type="stmt" count="3"/>
+        <line num="109" type="stmt" count="1"/>
+        <line num="110" type="stmt" count="1"/>
+        <line num="111" type="stmt" count="3"/>
+        <line num="113" type="method" name="whenUserCreated" crap="1" count="3"/>
+        <line num="115" type="stmt" count="3"/>
+        <line num="117" type="stmt" count="3"/>
+        <line num="118" type="stmt" count="3"/>
+        <line num="119" type="stmt" count="3"/>
+        <line num="120" type="stmt" count="3"/>
+        <line num="122" type="method" name="whenUsernameChanged" crap="1" count="1"/>
+        <line num="124" type="stmt" count="1"/>
+        <line num="125" type="stmt" count="1"/>
+        <line num="127" type="method" name="popRecordedEvents" crap="1" count="3"/>
+        <line num="129" type="stmt" count="3"/>
+        <line num="131" type="stmt" count="3"/>
+        <line num="133" type="stmt" count="3"/>
+        <line num="139" type="method" name="replay" crap="2" count="2"/>
+        <line num="141" type="stmt" count="2"/>
+        <line num="143" type="stmt" count="2"/>
+        <line num="145" type="stmt" count="2"/>
+        <line num="146" type="stmt" count="2"/>
+        <line num="147" type="stmt" count="2"/>
+        <line num="148" type="stmt" count="2"/>
+        <line num="149" type="stmt" count="2"/>
+        <line num="150" type="stmt" count="2"/>
+        <line num="151" type="stmt" count="2"/>
+        <line num="153" type="stmt" count="2"/>
+        <line num="154" type="stmt" count="2"/>
+        <line num="155" type="stmt" count="2"/>
+        <line num="156" type="stmt" count="2"/>
+        <line num="158" type="method" name="nextVersion" crap="1" count="3"/>
+        <line num="160" type="stmt" count="3"/>
+        <metrics loc="162" ncloc="122" classes="1" methods="12" coveredmethods="12" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="51" elements="63" coveredelements="63"/>
+      </file>
+      <file name="/var/www/event-store/tests/Prooph/EventStoreTest/Mock/UserCreated.php">
+        <class name="UserCreated" namespace="Prooph\EventStoreTest\Mock" fullPackage="Prooph" package="Prooph">
+          <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <metrics loc="22" ncloc="7" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </file>
+      <file name="/var/www/event-store/tests/Prooph/EventStoreTest/Mock/UsernameChanged.php">
+        <class name="UsernameChanged" namespace="Prooph\EventStoreTest\Mock" fullPackage="Prooph" package="Prooph">
+          <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+        </class>
+        <metrics loc="22" ncloc="7" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </file>
+    </package>
+    <package name="Assert">
+      <file name="/var/www/event-store/vendor/beberlei/assert/lib/Assert/Assertion.php">
+        <class name="Assertion" namespace="Assert">
+          <metrics methods="49" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="423" coveredstatements="24" elements="472" coveredelements="31"/>
+        </class>
+        <line num="176" type="method" name="createException" crap="2" count="0"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="179" type="stmt" count="0"/>
+        <line num="192" type="method" name="eq" crap="12" count="0"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="195" type="stmt" count="0"/>
+        <line num="196" type="stmt" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="198" type="stmt" count="0"/>
+        <line num="199" type="stmt" count="0"/>
+        <line num="201" type="stmt" count="0"/>
+        <line num="203" type="stmt" count="0"/>
+        <line num="215" type="method" name="same" crap="12" count="0"/>
+        <line num="217" type="stmt" count="0"/>
+        <line num="218" type="stmt" count="0"/>
+        <line num="219" type="stmt" count="0"/>
+        <line num="220" type="stmt" count="0"/>
+        <line num="221" type="stmt" count="0"/>
+        <line num="222" type="stmt" count="0"/>
+        <line num="224" type="stmt" count="0"/>
+        <line num="226" type="stmt" count="0"/>
+        <line num="237" type="method" name="integer" crap="6.28" count="24"/>
+        <line num="239" type="stmt" count="24"/>
+        <line num="240" type="stmt" count="0"/>
+        <line num="241" type="stmt" count="0"/>
+        <line num="242" type="stmt" count="0"/>
+        <line num="243" type="stmt" count="0"/>
+        <line num="245" type="stmt" count="0"/>
+        <line num="247" type="stmt" count="24"/>
+        <line num="258" type="method" name="float" crap="12" count="0"/>
+        <line num="260" type="stmt" count="0"/>
+        <line num="261" type="stmt" count="0"/>
+        <line num="262" type="stmt" count="0"/>
+        <line num="263" type="stmt" count="0"/>
+        <line num="264" type="stmt" count="0"/>
+        <line num="266" type="stmt" count="0"/>
+        <line num="268" type="stmt" count="0"/>
+        <line num="279" type="method" name="digit" crap="12" count="0"/>
+        <line num="281" type="stmt" count="0"/>
+        <line num="282" type="stmt" count="0"/>
+        <line num="283" type="stmt" count="0"/>
+        <line num="284" type="stmt" count="0"/>
+        <line num="285" type="stmt" count="0"/>
+        <line num="287" type="stmt" count="0"/>
+        <line num="289" type="stmt" count="0"/>
+        <line num="299" type="method" name="integerish" crap="30" count="0"/>
+        <line num="301" type="stmt" count="0"/>
+        <line num="302" type="stmt" count="0"/>
+        <line num="303" type="stmt" count="0"/>
+        <line num="304" type="stmt" count="0"/>
+        <line num="305" type="stmt" count="0"/>
+        <line num="307" type="stmt" count="0"/>
+        <line num="309" type="stmt" count="0"/>
+        <line num="320" type="method" name="boolean" crap="12" count="0"/>
+        <line num="322" type="stmt" count="0"/>
+        <line num="323" type="stmt" count="0"/>
+        <line num="324" type="stmt" count="0"/>
+        <line num="325" type="stmt" count="0"/>
+        <line num="326" type="stmt" count="0"/>
+        <line num="328" type="stmt" count="0"/>
+        <line num="330" type="stmt" count="0"/>
+        <line num="341" type="method" name="notEmpty" crap="6.28" count="24"/>
+        <line num="343" type="stmt" count="24"/>
+        <line num="344" type="stmt" count="0"/>
+        <line num="345" type="stmt" count="0"/>
+        <line num="346" type="stmt" count="0"/>
+        <line num="347" type="stmt" count="0"/>
+        <line num="349" type="stmt" count="0"/>
+        <line num="351" type="stmt" count="24"/>
+        <line num="362" type="method" name="noContent" crap="12" count="0"/>
+        <line num="364" type="stmt" count="0"/>
+        <line num="365" type="stmt" count="0"/>
+        <line num="366" type="stmt" count="0"/>
+        <line num="367" type="stmt" count="0"/>
+        <line num="368" type="stmt" count="0"/>
+        <line num="370" type="stmt" count="0"/>
+        <line num="372" type="stmt" count="0"/>
+        <line num="383" type="method" name="notNull" crap="12" count="0"/>
+        <line num="385" type="stmt" count="0"/>
+        <line num="386" type="stmt" count="0"/>
+        <line num="387" type="stmt" count="0"/>
+        <line num="388" type="stmt" count="0"/>
+        <line num="389" type="stmt" count="0"/>
+        <line num="391" type="stmt" count="0"/>
+        <line num="393" type="stmt" count="0"/>
+        <line num="404" type="method" name="string" crap="6.80" count="24"/>
+        <line num="406" type="stmt" count="24"/>
+        <line num="407" type="stmt" count="0"/>
+        <line num="408" type="stmt" count="0"/>
+        <line num="409" type="stmt" count="0"/>
+        <line num="410" type="stmt" count="0"/>
+        <line num="411" type="stmt" count="0"/>
+        <line num="413" type="stmt" count="0"/>
+        <line num="415" type="stmt" count="24"/>
+        <line num="427" type="method" name="regex" crap="12" count="0"/>
+        <line num="429" type="stmt" count="0"/>
+        <line num="431" type="stmt" count="0"/>
+        <line num="432" type="stmt" count="0"/>
+        <line num="433" type="stmt" count="0"/>
+        <line num="434" type="stmt" count="0"/>
+        <line num="435" type="stmt" count="0"/>
+        <line num="437" type="stmt" count="0"/>
+        <line num="439" type="stmt" count="0"/>
+        <line num="452" type="method" name="length" crap="12" count="0"/>
+        <line num="454" type="stmt" count="0"/>
+        <line num="456" type="stmt" count="0"/>
+        <line num="457" type="stmt" count="0"/>
+        <line num="458" type="stmt" count="0"/>
+        <line num="459" type="stmt" count="0"/>
+        <line num="460" type="stmt" count="0"/>
+        <line num="461" type="stmt" count="0"/>
+        <line num="462" type="stmt" count="0"/>
+        <line num="464" type="stmt" count="0"/>
+        <line num="465" type="stmt" count="0"/>
+        <line num="467" type="stmt" count="0"/>
+        <line num="480" type="method" name="minLength" crap="12" count="0"/>
+        <line num="482" type="stmt" count="0"/>
+        <line num="484" type="stmt" count="0"/>
+        <line num="485" type="stmt" count="0"/>
+        <line num="486" type="stmt" count="0"/>
+        <line num="487" type="stmt" count="0"/>
+        <line num="488" type="stmt" count="0"/>
+        <line num="489" type="stmt" count="0"/>
+        <line num="490" type="stmt" count="0"/>
+        <line num="492" type="stmt" count="0"/>
+        <line num="493" type="stmt" count="0"/>
+        <line num="495" type="stmt" count="0"/>
+        <line num="508" type="method" name="maxLength" crap="6.46" count="24"/>
+        <line num="510" type="stmt" count="24"/>
+        <line num="512" type="stmt" count="24"/>
+        <line num="513" type="stmt" count="0"/>
+        <line num="514" type="stmt" count="0"/>
+        <line num="515" type="stmt" count="0"/>
+        <line num="516" type="stmt" count="0"/>
+        <line num="517" type="stmt" count="0"/>
+        <line num="518" type="stmt" count="0"/>
+        <line num="520" type="stmt" count="0"/>
+        <line num="521" type="stmt" count="0"/>
+        <line num="523" type="stmt" count="24"/>
+        <line num="537" type="method" name="betweenLength" crap="30" count="0"/>
+        <line num="539" type="stmt" count="0"/>
+        <line num="541" type="stmt" count="0"/>
+        <line num="542" type="stmt" count="0"/>
+        <line num="543" type="stmt" count="0"/>
+        <line num="544" type="stmt" count="0"/>
+        <line num="545" type="stmt" count="0"/>
+        <line num="546" type="stmt" count="0"/>
+        <line num="547" type="stmt" count="0"/>
+        <line num="549" type="stmt" count="0"/>
+        <line num="550" type="stmt" count="0"/>
+        <line num="553" type="stmt" count="0"/>
+        <line num="554" type="stmt" count="0"/>
+        <line num="555" type="stmt" count="0"/>
+        <line num="556" type="stmt" count="0"/>
+        <line num="557" type="stmt" count="0"/>
+        <line num="558" type="stmt" count="0"/>
+        <line num="559" type="stmt" count="0"/>
+        <line num="561" type="stmt" count="0"/>
+        <line num="562" type="stmt" count="0"/>
+        <line num="564" type="stmt" count="0"/>
+        <line num="577" type="method" name="startsWith" crap="12" count="0"/>
+        <line num="579" type="stmt" count="0"/>
+        <line num="581" type="stmt" count="0"/>
+        <line num="582" type="stmt" count="0"/>
+        <line num="583" type="stmt" count="0"/>
+        <line num="584" type="stmt" count="0"/>
+        <line num="585" type="stmt" count="0"/>
+        <line num="586" type="stmt" count="0"/>
+        <line num="588" type="stmt" count="0"/>
+        <line num="589" type="stmt" count="0"/>
+        <line num="591" type="stmt" count="0"/>
+        <line num="604" type="method" name="endsWith" crap="12" count="0"/>
+        <line num="606" type="stmt" count="0"/>
+        <line num="608" type="stmt" count="0"/>
+        <line num="610" type="stmt" count="0"/>
+        <line num="611" type="stmt" count="0"/>
+        <line num="612" type="stmt" count="0"/>
+        <line num="613" type="stmt" count="0"/>
+        <line num="614" type="stmt" count="0"/>
+        <line num="615" type="stmt" count="0"/>
+        <line num="617" type="stmt" count="0"/>
+        <line num="618" type="stmt" count="0"/>
+        <line num="620" type="stmt" count="0"/>
+        <line num="633" type="method" name="contains" crap="12" count="0"/>
+        <line num="635" type="stmt" count="0"/>
+        <line num="637" type="stmt" count="0"/>
+        <line num="638" type="stmt" count="0"/>
+        <line num="639" type="stmt" count="0"/>
+        <line num="640" type="stmt" count="0"/>
+        <line num="641" type="stmt" count="0"/>
+        <line num="642" type="stmt" count="0"/>
+        <line num="644" type="stmt" count="0"/>
+        <line num="645" type="stmt" count="0"/>
+        <line num="647" type="stmt" count="0"/>
+        <line num="659" type="method" name="choice" crap="12" count="0"/>
+        <line num="661" type="stmt" count="0"/>
+        <line num="662" type="stmt" count="0"/>
+        <line num="663" type="stmt" count="0"/>
+        <line num="664" type="stmt" count="0"/>
+        <line num="665" type="stmt" count="0"/>
+        <line num="666" type="stmt" count="0"/>
+        <line num="668" type="stmt" count="0"/>
+        <line num="670" type="stmt" count="0"/>
+        <line num="677" type="method" name="inArray" crap="2" count="0"/>
+        <line num="679" type="stmt" count="0"/>
+        <line num="680" type="stmt" count="0"/>
+        <line num="691" type="method" name="numeric" crap="12" count="0"/>
+        <line num="693" type="stmt" count="0"/>
+        <line num="694" type="stmt" count="0"/>
+        <line num="695" type="stmt" count="0"/>
+        <line num="696" type="stmt" count="0"/>
+        <line num="697" type="stmt" count="0"/>
+        <line num="699" type="stmt" count="0"/>
+        <line num="701" type="stmt" count="0"/>
+        <line num="712" type="method" name="isArray" crap="6.28" count="24"/>
+        <line num="714" type="stmt" count="24"/>
+        <line num="715" type="stmt" count="0"/>
+        <line num="716" type="stmt" count="0"/>
+        <line num="717" type="stmt" count="0"/>
+        <line num="718" type="stmt" count="0"/>
+        <line num="720" type="stmt" count="0"/>
+        <line num="722" type="stmt" count="24"/>
+        <line num="734" type="method" name="keyExists" crap="12" count="0"/>
+        <line num="736" type="stmt" count="0"/>
+        <line num="738" type="stmt" count="0"/>
+        <line num="739" type="stmt" count="0"/>
+        <line num="740" type="stmt" count="0"/>
+        <line num="741" type="stmt" count="0"/>
+        <line num="742" type="stmt" count="0"/>
+        <line num="744" type="stmt" count="0"/>
+        <line num="746" type="stmt" count="0"/>
+        <line num="758" type="method" name="notEmptyKey" crap="2" count="0"/>
+        <line num="760" type="stmt" count="0"/>
+        <line num="761" type="stmt" count="0"/>
+        <line num="762" type="stmt" count="0"/>
+        <line num="773" type="method" name="notBlank" crap="30" count="0"/>
+        <line num="775" type="stmt" count="0"/>
+        <line num="776" type="stmt" count="0"/>
+        <line num="777" type="stmt" count="0"/>
+        <line num="778" type="stmt" count="0"/>
+        <line num="779" type="stmt" count="0"/>
+        <line num="781" type="stmt" count="0"/>
+        <line num="783" type="stmt" count="0"/>
+        <line num="795" type="method" name="isInstanceOf" crap="6.28" count="24"/>
+        <line num="797" type="stmt" count="24"/>
+        <line num="798" type="stmt" count="0"/>
+        <line num="799" type="stmt" count="0"/>
+        <line num="800" type="stmt" count="0"/>
+        <line num="802" type="stmt" count="0"/>
+        <line num="804" type="stmt" count="0"/>
+        <line num="806" type="stmt" count="24"/>
+        <line num="818" type="method" name="notIsInstanceOf" crap="12" count="0"/>
+        <line num="820" type="stmt" count="0"/>
+        <line num="821" type="stmt" count="0"/>
+        <line num="822" type="stmt" count="0"/>
+        <line num="823" type="stmt" count="0"/>
+        <line num="825" type="stmt" count="0"/>
+        <line num="827" type="stmt" count="0"/>
+        <line num="829" type="stmt" count="0"/>
+        <line num="841" type="method" name="subclassOf" crap="12" count="0"/>
+        <line num="843" type="stmt" count="0"/>
+        <line num="844" type="stmt" count="0"/>
+        <line num="845" type="stmt" count="0"/>
+        <line num="846" type="stmt" count="0"/>
+        <line num="848" type="stmt" count="0"/>
+        <line num="850" type="stmt" count="0"/>
+        <line num="852" type="stmt" count="0"/>
+        <line num="865" type="method" name="range" crap="20" count="0"/>
+        <line num="867" type="stmt" count="0"/>
+        <line num="869" type="stmt" count="0"/>
+        <line num="870" type="stmt" count="0"/>
+        <line num="871" type="stmt" count="0"/>
+        <line num="872" type="stmt" count="0"/>
+        <line num="873" type="stmt" count="0"/>
+        <line num="874" type="stmt" count="0"/>
+        <line num="875" type="stmt" count="0"/>
+        <line num="877" type="stmt" count="0"/>
+        <line num="879" type="stmt" count="0"/>
+        <line num="891" type="method" name="min" crap="12" count="0"/>
+        <line num="893" type="stmt" count="0"/>
+        <line num="895" type="stmt" count="0"/>
+        <line num="896" type="stmt" count="0"/>
+        <line num="897" type="stmt" count="0"/>
+        <line num="898" type="stmt" count="0"/>
+        <line num="899" type="stmt" count="0"/>
+        <line num="900" type="stmt" count="0"/>
+        <line num="902" type="stmt" count="0"/>
+        <line num="904" type="stmt" count="0"/>
+        <line num="916" type="method" name="max" crap="12" count="0"/>
+        <line num="918" type="stmt" count="0"/>
+        <line num="920" type="stmt" count="0"/>
+        <line num="921" type="stmt" count="0"/>
+        <line num="922" type="stmt" count="0"/>
+        <line num="923" type="stmt" count="0"/>
+        <line num="924" type="stmt" count="0"/>
+        <line num="925" type="stmt" count="0"/>
+        <line num="927" type="stmt" count="0"/>
+        <line num="929" type="stmt" count="0"/>
+        <line num="940" type="method" name="file" crap="12" count="0"/>
+        <line num="942" type="stmt" count="0"/>
+        <line num="943" type="stmt" count="0"/>
+        <line num="945" type="stmt" count="0"/>
+        <line num="946" type="stmt" count="0"/>
+        <line num="947" type="stmt" count="0"/>
+        <line num="948" type="stmt" count="0"/>
+        <line num="949" type="stmt" count="0"/>
+        <line num="951" type="stmt" count="0"/>
+        <line num="953" type="stmt" count="0"/>
+        <line num="964" type="method" name="directory" crap="12" count="0"/>
+        <line num="966" type="stmt" count="0"/>
+        <line num="968" type="stmt" count="0"/>
+        <line num="969" type="stmt" count="0"/>
+        <line num="970" type="stmt" count="0"/>
+        <line num="971" type="stmt" count="0"/>
+        <line num="972" type="stmt" count="0"/>
+        <line num="974" type="stmt" count="0"/>
+        <line num="976" type="stmt" count="0"/>
+        <line num="987" type="method" name="readable" crap="12" count="0"/>
+        <line num="989" type="stmt" count="0"/>
+        <line num="991" type="stmt" count="0"/>
+        <line num="992" type="stmt" count="0"/>
+        <line num="993" type="stmt" count="0"/>
+        <line num="994" type="stmt" count="0"/>
+        <line num="995" type="stmt" count="0"/>
+        <line num="997" type="stmt" count="0"/>
+        <line num="999" type="stmt" count="0"/>
+        <line num="1010" type="method" name="writeable" crap="12" count="0"/>
+        <line num="1012" type="stmt" count="0"/>
+        <line num="1014" type="stmt" count="0"/>
+        <line num="1015" type="stmt" count="0"/>
+        <line num="1016" type="stmt" count="0"/>
+        <line num="1017" type="stmt" count="0"/>
+        <line num="1018" type="stmt" count="0"/>
+        <line num="1020" type="stmt" count="0"/>
+        <line num="1022" type="stmt" count="0"/>
+        <line num="1034" type="method" name="email" crap="42" count="0"/>
+        <line num="1036" type="stmt" count="0"/>
+        <line num="1038" type="stmt" count="0"/>
+        <line num="1039" type="stmt" count="0"/>
+        <line num="1040" type="stmt" count="0"/>
+        <line num="1041" type="stmt" count="0"/>
+        <line num="1042" type="stmt" count="0"/>
+        <line num="1044" type="stmt" count="0"/>
+        <line num="1046" type="stmt" count="0"/>
+        <line num="1049" type="stmt" count="0"/>
+        <line num="1050" type="stmt" count="0"/>
+        <line num="1051" type="stmt" count="0"/>
+        <line num="1052" type="stmt" count="0"/>
+        <line num="1053" type="stmt" count="0"/>
+        <line num="1055" type="stmt" count="0"/>
+        <line num="1058" type="stmt" count="0"/>
+        <line num="1075" type="method" name="url" crap="12" count="0"/>
+        <line num="1077" type="stmt" count="0"/>
+        <line num="1079" type="stmt" count="0"/>
+        <line num="1094" type="stmt" count="0"/>
+        <line num="1096" type="stmt" count="0"/>
+        <line num="1098" type="stmt" count="0"/>
+        <line num="1099" type="stmt" count="0"/>
+        <line num="1100" type="stmt" count="0"/>
+        <line num="1101" type="stmt" count="0"/>
+        <line num="1102" type="stmt" count="0"/>
+        <line num="1104" type="stmt" count="0"/>
+        <line num="1107" type="stmt" count="0"/>
+        <line num="1118" type="method" name="alnum" crap="12" count="0"/>
+        <line num="1121" type="stmt" count="0"/>
+        <line num="1122" type="stmt" count="0"/>
+        <line num="1123" type="stmt" count="0"/>
+        <line num="1124" type="stmt" count="0"/>
+        <line num="1125" type="stmt" count="0"/>
+        <line num="1126" type="stmt" count="0"/>
+        <line num="1128" type="stmt" count="0"/>
+        <line num="1130" type="stmt" count="0"/>
+        <line num="1141" type="method" name="true" crap="12" count="0"/>
+        <line num="1143" type="stmt" count="0"/>
+        <line num="1144" type="stmt" count="0"/>
+        <line num="1145" type="stmt" count="0"/>
+        <line num="1146" type="stmt" count="0"/>
+        <line num="1147" type="stmt" count="0"/>
+        <line num="1149" type="stmt" count="0"/>
+        <line num="1151" type="stmt" count="0"/>
+        <line num="1162" type="method" name="false" crap="12" count="0"/>
+        <line num="1164" type="stmt" count="0"/>
+        <line num="1165" type="stmt" count="0"/>
+        <line num="1166" type="stmt" count="0"/>
+        <line num="1167" type="stmt" count="0"/>
+        <line num="1168" type="stmt" count="0"/>
+        <line num="1170" type="stmt" count="0"/>
+        <line num="1172" type="stmt" count="0"/>
+        <line num="1183" type="method" name="classExists" crap="12" count="0"/>
+        <line num="1185" type="stmt" count="0"/>
+        <line num="1186" type="stmt" count="0"/>
+        <line num="1187" type="stmt" count="0"/>
+        <line num="1188" type="stmt" count="0"/>
+        <line num="1189" type="stmt" count="0"/>
+        <line num="1191" type="stmt" count="0"/>
+        <line num="1193" type="stmt" count="0"/>
+        <line num="1205" type="method" name="implementsInterface" crap="12" count="0"/>
+        <line num="1207" type="stmt" count="0"/>
+        <line num="1208" type="stmt" count="0"/>
+        <line num="1209" type="stmt" count="0"/>
+        <line num="1210" type="stmt" count="0"/>
+        <line num="1211" type="stmt" count="0"/>
+        <line num="1212" type="stmt" count="0"/>
+        <line num="1213" type="stmt" count="0"/>
+        <line num="1215" type="stmt" count="0"/>
+        <line num="1217" type="stmt" count="0"/>
+        <line num="1234" type="method" name="isJsonString" crap="20" count="0"/>
+        <line num="1236" type="stmt" count="0"/>
+        <line num="1237" type="stmt" count="0"/>
+        <line num="1238" type="stmt" count="0"/>
+        <line num="1239" type="stmt" count="0"/>
+        <line num="1240" type="stmt" count="0"/>
+        <line num="1242" type="stmt" count="0"/>
+        <line num="1244" type="stmt" count="0"/>
+        <line num="1257" type="method" name="uuid" crap="20" count="0"/>
+        <line num="1259" type="stmt" count="0"/>
+        <line num="1261" type="stmt" count="0"/>
+        <line num="1262" type="stmt" count="0"/>
+        <line num="1265" type="stmt" count="0"/>
+        <line num="1266" type="stmt" count="0"/>
+        <line num="1267" type="stmt" count="0"/>
+        <line num="1268" type="stmt" count="0"/>
+        <line num="1269" type="stmt" count="0"/>
+        <line num="1271" type="stmt" count="0"/>
+        <line num="1273" type="stmt" count="0"/>
+        <line num="1285" type="method" name="count" crap="12" count="0"/>
+        <line num="1287" type="stmt" count="0"/>
+        <line num="1288" type="stmt" count="0"/>
+        <line num="1289" type="stmt" count="0"/>
+        <line num="1290" type="stmt" count="0"/>
+        <line num="1291" type="stmt" count="0"/>
+        <line num="1292" type="stmt" count="0"/>
+        <line num="1294" type="stmt" count="0"/>
+        <line num="1296" type="stmt" count="0"/>
+        <line num="1303" type="method" name="__callStatic" crap="10.66" count="24"/>
+        <line num="1305" type="stmt" count="24"/>
+        <line num="1306" type="stmt" count="0"/>
+        <line num="1307" type="stmt" count="0"/>
+        <line num="1310" type="stmt" count="0"/>
+        <line num="1311" type="stmt" count="0"/>
+        <line num="1314" type="stmt" count="0"/>
+        <line num="1316" type="stmt" count="0"/>
+        <line num="1319" type="stmt" count="24"/>
+        <line num="1320" type="stmt" count="24"/>
+        <line num="1321" type="stmt" count="0"/>
+        <line num="1324" type="stmt" count="24"/>
+        <line num="1326" type="stmt" count="24"/>
+        <line num="1327" type="stmt" count="24"/>
+        <line num="1328" type="stmt" count="24"/>
+        <line num="1330" type="stmt" count="24"/>
+        <line num="1331" type="stmt" count="24"/>
+        <line num="1332" type="stmt" count="24"/>
+        <line num="1334" type="stmt" count="24"/>
+        <line num="1337" type="stmt" count="0"/>
+        <line num="1346" type="method" name="stringify" crap="90" count="0"/>
+        <line num="1348" type="stmt" count="0"/>
+        <line num="1349" type="stmt" count="0"/>
+        <line num="1352" type="stmt" count="0"/>
+        <line num="1353" type="stmt" count="0"/>
+        <line num="1355" type="stmt" count="0"/>
+        <line num="1356" type="stmt" count="0"/>
+        <line num="1357" type="stmt" count="0"/>
+        <line num="1359" type="stmt" count="0"/>
+        <line num="1362" type="stmt" count="0"/>
+        <line num="1363" type="stmt" count="0"/>
+        <line num="1366" type="stmt" count="0"/>
+        <line num="1367" type="stmt" count="0"/>
+        <line num="1370" type="stmt" count="0"/>
+        <line num="1371" type="stmt" count="0"/>
+        <line num="1374" type="stmt" count="0"/>
+        <line num="1375" type="stmt" count="0"/>
+        <line num="1378" type="stmt" count="0"/>
+        <line num="1382" type="stmt" count="1"/>
+        <metrics loc="1381" ncloc="793" classes="1" methods="49" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="423" coveredstatements="24" elements="472" coveredelements="24"/>
+      </file>
+      <file name="/var/www/event-store/vendor/beberlei/assert/lib/Assert/AssertionChain.php">
+        <class name="AssertionChain" namespace="Assert">
+          <metrics methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="33" coveredstatements="27" elements="37" coveredelements="30"/>
+        </class>
+        <line num="0" type="stmt" count="24"/>
+        <line num="93" type="method" name="__construct" crap="1" count="24"/>
+        <line num="95" type="stmt" count="24"/>
+        <line num="96" type="stmt" count="24"/>
+        <line num="97" type="stmt" count="24"/>
+        <line num="98" type="stmt" count="24"/>
+        <line num="108" type="method" name="__call" crap="8.04" count="24"/>
+        <line num="110" type="stmt" count="24"/>
+        <line num="111" type="stmt" count="0"/>
+        <line num="114" type="stmt" count="24"/>
+        <line num="115" type="stmt" count="0"/>
+        <line num="118" type="stmt" count="24"/>
+        <line num="119" type="stmt" count="24"/>
+        <line num="121" type="stmt" count="24"/>
+        <line num="122" type="stmt" count="24"/>
+        <line num="124" type="stmt" count="24"/>
+        <line num="125" type="stmt" count="24"/>
+        <line num="126" type="stmt" count="24"/>
+        <line num="129" type="stmt" count="24"/>
+        <line num="130" type="stmt" count="24"/>
+        <line num="131" type="stmt" count="24"/>
+        <line num="133" type="stmt" count="24"/>
+        <line num="134" type="stmt" count="24"/>
+        <line num="135" type="stmt" count="24"/>
+        <line num="136" type="stmt" count="24"/>
+        <line num="138" type="stmt" count="24"/>
+        <line num="139" type="stmt" count="24"/>
+        <line num="140" type="stmt" count="24"/>
+        <line num="142" type="stmt" count="24"/>
+        <line num="144" type="stmt" count="24"/>
+        <line num="152" type="method" name="all" crap="1" count="24"/>
+        <line num="154" type="stmt" count="24"/>
+        <line num="156" type="stmt" count="24"/>
+        <line num="164" type="method" name="nullOr" crap="6" count="0"/>
+        <line num="166" type="stmt" count="0"/>
+        <line num="167" type="stmt" count="0"/>
+        <line num="168" type="stmt" count="0"/>
+        <line num="170" type="stmt" count="0"/>
+        <line num="173" type="stmt" count="1"/>
+        <metrics loc="172" ncloc="78" classes="1" methods="4" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="33" coveredstatements="27" elements="37" coveredelements="29"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/vendor/beberlei/assert/lib/Assert/functions.php">
+      <line num="38" type="stmt" count="24"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="58" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <metrics loc="70" ncloc="24" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="1" elements="4" coveredelements="1"/>
+    </file>
+    <package name="Composer\Autoload">
+      <file name="/var/www/event-store/vendor/composer/ClassLoader.php">
+        <class name="ClassLoader" namespace="Composer\Autoload">
+          <metrics methods="17" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="139" coveredstatements="29" elements="156" coveredelements="34"/>
+        </class>
+        <line num="0" type="stmt" count="4"/>
+        <line num="57" type="method" name="getPrefixes" crap="1.04" count="1"/>
+        <line num="58" type="stmt" count="1"/>
+        <line num="59" type="stmt" count="0"/>
+        <line num="60" type="stmt" count="1"/>
+        <line num="62" type="method" name="getPrefixesPsr4" crap="1.12" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <line num="64" type="stmt" count="0"/>
+        <line num="67" type="method" name="getFallbackDirs" crap="2" count="0"/>
+        <line num="69" type="stmt" count="0"/>
+        <line num="72" type="method" name="getFallbackDirsPsr4" crap="2" count="0"/>
+        <line num="74" type="stmt" count="0"/>
+        <line num="77" type="method" name="getClassMap" crap="2" count="0"/>
+        <line num="79" type="stmt" count="0"/>
+        <line num="85" type="method" name="addClassMap" crap="6" count="0"/>
+        <line num="87" type="stmt" count="0"/>
+        <line num="88" type="stmt" count="0"/>
+        <line num="89" type="stmt" count="0"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="92" type="stmt" count="0"/>
+        <line num="102" type="method" name="add" crap="30" count="0"/>
+        <line num="104" type="stmt" count="0"/>
+        <line num="105" type="stmt" count="0"/>
+        <line num="106" type="stmt" count="0"/>
+        <line num="107" type="stmt" count="0"/>
+        <line num="108" type="stmt" count="0"/>
+        <line num="109" type="stmt" count="0"/>
+        <line num="110" type="stmt" count="0"/>
+        <line num="111" type="stmt" count="0"/>
+        <line num="112" type="stmt" count="0"/>
+        <line num="114" type="stmt" count="0"/>
+        <line num="117" type="stmt" count="0"/>
+        <line num="120" type="stmt" count="0"/>
+        <line num="121" type="stmt" count="0"/>
+        <line num="122" type="stmt" count="0"/>
+        <line num="124" type="stmt" count="0"/>
+        <line num="126" type="stmt" count="0"/>
+        <line num="127" type="stmt" count="0"/>
+        <line num="128" type="stmt" count="0"/>
+        <line num="129" type="stmt" count="0"/>
+        <line num="130" type="stmt" count="0"/>
+        <line num="131" type="stmt" count="0"/>
+        <line num="132" type="stmt" count="0"/>
+        <line num="133" type="stmt" count="0"/>
+        <line num="135" type="stmt" count="0"/>
+        <line num="137" type="stmt" count="0"/>
+        <line num="147" type="method" name="addPsr4" crap="42" count="0"/>
+        <line num="149" type="stmt" count="0"/>
+        <line num="151" type="stmt" count="0"/>
+        <line num="152" type="stmt" count="0"/>
+        <line num="153" type="stmt" count="0"/>
+        <line num="154" type="stmt" count="0"/>
+        <line num="155" type="stmt" count="0"/>
+        <line num="156" type="stmt" count="0"/>
+        <line num="157" type="stmt" count="0"/>
+        <line num="158" type="stmt" count="0"/>
+        <line num="160" type="stmt" count="0"/>
+        <line num="162" type="stmt" count="0"/>
+        <line num="164" type="stmt" count="0"/>
+        <line num="165" type="stmt" count="0"/>
+        <line num="166" type="stmt" count="0"/>
+        <line num="168" type="stmt" count="0"/>
+        <line num="169" type="stmt" count="0"/>
+        <line num="170" type="stmt" count="0"/>
+        <line num="172" type="stmt" count="0"/>
+        <line num="173" type="stmt" count="0"/>
+        <line num="174" type="stmt" count="0"/>
+        <line num="175" type="stmt" count="0"/>
+        <line num="176" type="stmt" count="0"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="179" type="stmt" count="0"/>
+        <line num="181" type="stmt" count="0"/>
+        <line num="183" type="stmt" count="0"/>
+        <line num="192" type="method" name="set" crap="6" count="0"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="195" type="stmt" count="0"/>
+        <line num="196" type="stmt" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="199" type="stmt" count="0"/>
+        <line num="208" type="method" name="setPsr4" crap="12" count="0"/>
+        <line num="210" type="stmt" count="0"/>
+        <line num="211" type="stmt" count="0"/>
+        <line num="212" type="stmt" count="0"/>
+        <line num="213" type="stmt" count="0"/>
+        <line num="214" type="stmt" count="0"/>
+        <line num="215" type="stmt" count="0"/>
+        <line num="217" type="stmt" count="0"/>
+        <line num="218" type="stmt" count="0"/>
+        <line num="220" type="stmt" count="0"/>
+        <line num="227" type="method" name="setUseIncludePath" crap="2" count="0"/>
+        <line num="229" type="stmt" count="0"/>
+        <line num="230" type="stmt" count="0"/>
+        <line num="238" type="method" name="getUseIncludePath" crap="2" count="0"/>
+        <line num="240" type="stmt" count="0"/>
+        <line num="248" type="method" name="register" crap="2" count="0"/>
+        <line num="250" type="stmt" count="0"/>
+        <line num="251" type="stmt" count="0"/>
+        <line num="256" type="method" name="unregister" crap="2" count="0"/>
+        <line num="258" type="stmt" count="0"/>
+        <line num="259" type="stmt" count="0"/>
+        <line num="267" type="method" name="loadClass" crap="2.06" count="7"/>
+        <line num="269" type="stmt" count="7"/>
+        <line num="270" type="stmt" count="7"/>
+        <line num="272" type="stmt" count="7"/>
+        <line num="274" type="stmt" count="0"/>
+        <line num="283" type="method" name="findFile" crap="8.60" count="7"/>
+        <line num="286" type="stmt" count="7"/>
+        <line num="287" type="stmt" count="0"/>
+        <line num="288" type="stmt" count="0"/>
+        <line num="291" type="stmt" count="7"/>
+        <line num="292" type="stmt" count="4"/>
+        <line num="295" type="stmt" count="5"/>
+        <line num="298" type="stmt" count="5"/>
+        <line num="299" type="stmt" count="0"/>
+        <line num="300" type="stmt" count="0"/>
+        <line num="302" type="stmt" count="5"/>
+        <line num="304" type="stmt" count="0"/>
+        <line num="307" type="stmt" count="5"/>
+        <line num="310" type="method" name="findFileWithExtension" crap="80.87" count="5"/>
+        <line num="313" type="stmt" count="5"/>
+        <line num="315" type="stmt" count="5"/>
+        <line num="316" type="stmt" count="5"/>
+        <line num="317" type="stmt" count="0"/>
+        <line num="318" type="stmt" count="0"/>
+        <line num="319" type="stmt" count="0"/>
+        <line num="320" type="stmt" count="0"/>
+        <line num="321" type="stmt" count="0"/>
+        <line num="323" type="stmt" count="0"/>
+        <line num="324" type="stmt" count="0"/>
+        <line num="325" type="stmt" count="0"/>
+        <line num="326" type="stmt" count="0"/>
+        <line num="329" type="stmt" count="5"/>
+        <line num="330" type="stmt" count="0"/>
+        <line num="331" type="stmt" count="0"/>
+        <line num="333" type="stmt" count="5"/>
+        <line num="336" type="stmt" count="5"/>
+        <line num="338" type="stmt" count="5"/>
+        <line num="339" type="stmt" count="5"/>
+        <line num="340" type="stmt" count="5"/>
+        <line num="342" type="stmt" count="0"/>
+        <line num="345" type="stmt" count="5"/>
+        <line num="346" type="stmt" count="5"/>
+        <line num="347" type="stmt" count="5"/>
+        <line num="348" type="stmt" count="5"/>
+        <line num="349" type="stmt" count="5"/>
+        <line num="350" type="stmt" count="5"/>
+        <line num="352" type="stmt" count="0"/>
+        <line num="353" type="stmt" count="0"/>
+        <line num="354" type="stmt" count="2"/>
+        <line num="355" type="stmt" count="0"/>
+        <line num="358" type="stmt" count="0"/>
+        <line num="359" type="stmt" count="0"/>
+        <line num="360" type="stmt" count="0"/>
+        <line num="362" type="stmt" count="0"/>
+        <line num="365" type="stmt" count="0"/>
+        <line num="366" type="stmt" count="0"/>
+        <line num="368" type="stmt" count="0"/>
+        <line num="378" type="stmt" count="7"/>
+        <line num="379" type="stmt" count="7"/>
+        <metrics loc="379" ncloc="238" classes="1" methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="141" coveredstatements="31" elements="158" coveredelements="31"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/vendor/composer/autoload_real.php">
+      <class name="ComposerAutoloaderInitcd7395f64c9effbcaec3e384631910ba" namespace="global">
+        <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="0" elements="32" coveredelements="0"/>
+      </class>
+      <line num="9" type="method" name="loadClassLoader" crap="6" count="0"/>
+      <line num="11" type="stmt" count="0"/>
+      <line num="12" type="stmt" count="0"/>
+      <line num="13" type="stmt" count="0"/>
+      <line num="14" type="stmt" count="0"/>
+      <line num="16" type="method" name="getLoader" crap="42" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="35" type="stmt" count="0"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="37" type="stmt" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="49" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="58" type="stmt" count="0"/>
+      <line num="59" type="stmt" count="0"/>
+      <metrics loc="59" ncloc="57" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="32" coveredstatements="0" elements="34" coveredelements="0"/>
+    </file>
+    <package name="Rhumsaa\Uuid">
+      <file name="/var/www/event-store/vendor/rhumsaa/uuid/src/Rhumsaa/Uuid/Uuid.php">
+        <class name="Uuid" namespace="Rhumsaa\Uuid">
+          <metrics methods="46" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="303" coveredstatements="48" elements="349" coveredelements="57"/>
+        </class>
+        <line num="151" type="method" name="__construct" crap="1" count="24"/>
+        <line num="153" type="stmt" count="24"/>
+        <line num="154" type="stmt" count="24"/>
+        <line num="163" type="method" name="__toString" crap="1" count="3"/>
+        <line num="165" type="stmt" count="3"/>
+        <line num="181" type="method" name="compareTo" crap="30" count="0"/>
+        <line num="183" type="stmt" count="0"/>
+        <line num="185" type="stmt" count="0"/>
+        <line num="186" type="stmt" count="0"/>
+        <line num="187" type="stmt" count="0"/>
+        <line num="188" type="stmt" count="0"/>
+        <line num="189" type="stmt" count="0"/>
+        <line num="190" type="stmt" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="193" type="stmt" count="0"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="210" type="method" name="equals" crap="6" count="0"/>
+        <line num="212" type="stmt" count="0"/>
+        <line num="213" type="stmt" count="0"/>
+        <line num="216" type="stmt" count="0"/>
+        <line num="225" type="method" name="getBytes" crap="6" count="0"/>
+        <line num="227" type="stmt" count="0"/>
+        <line num="229" type="stmt" count="0"/>
+        <line num="230" type="stmt" count="0"/>
+        <line num="232" type="stmt" count="0"/>
+        <line num="233" type="stmt" count="0"/>
+        <line num="234" type="stmt" count="0"/>
+        <line num="236" type="stmt" count="0"/>
+        <line num="245" type="method" name="getClockSeqHiAndReserved" crap="2" count="0"/>
+        <line num="247" type="stmt" count="0"/>
+        <line num="256" type="method" name="getClockSeqHiAndReservedHex" crap="2" count="0"/>
+        <line num="258" type="stmt" count="0"/>
+        <line num="266" type="method" name="getClockSeqLow" crap="2" count="0"/>
+        <line num="268" type="stmt" count="0"/>
+        <line num="276" type="method" name="getClockSeqLowHex" crap="2" count="0"/>
+        <line num="278" type="stmt" count="0"/>
+        <line num="297" type="method" name="getClockSequence" crap="2" count="0"/>
+        <line num="299" type="stmt" count="0"/>
+        <line num="300" type="stmt" count="0"/>
+        <line num="308" type="method" name="getClockSequenceHex" crap="2" count="0"/>
+        <line num="310" type="stmt" count="0"/>
+        <line num="325" type="method" name="getDateTime" crap="20" count="0"/>
+        <line num="327" type="stmt" count="0"/>
+        <line num="328" type="stmt" count="0"/>
+        <line num="332" type="stmt" count="0"/>
+        <line num="334" type="stmt" count="0"/>
+        <line num="335" type="stmt" count="0"/>
+        <line num="337" type="stmt" count="0"/>
+        <line num="339" type="stmt" count="0"/>
+        <line num="341" type="stmt" count="0"/>
+        <line num="342" type="stmt" count="0"/>
+        <line num="343" type="stmt" count="0"/>
+        <line num="344" type="stmt" count="0"/>
+        <line num="345" type="stmt" count="0"/>
+        <line num="347" type="stmt" count="0"/>
+        <line num="349" type="stmt" count="0"/>
+        <line num="350" type="stmt" count="0"/>
+        <line num="351" type="stmt" count="0"/>
+        <line num="352" type="stmt" count="0"/>
+        <line num="353" type="stmt" count="0"/>
+        <line num="357" type="stmt" count="0"/>
+        <line num="379" type="method" name="getFields" crap="6" count="0"/>
+        <line num="381" type="stmt" count="0"/>
+        <line num="382" type="stmt" count="0"/>
+        <line num="383" type="stmt" count="0"/>
+        <line num="384" type="stmt" count="0"/>
+        <line num="385" type="stmt" count="0"/>
+        <line num="386" type="stmt" count="0"/>
+        <line num="390" type="stmt" count="0"/>
+        <line num="391" type="stmt" count="0"/>
+        <line num="392" type="stmt" count="0"/>
+        <line num="393" type="stmt" count="0"/>
+        <line num="394" type="stmt" count="0"/>
+        <line num="395" type="stmt" count="0"/>
+        <line num="396" type="stmt" count="0"/>
+        <line num="416" type="method" name="getFieldsHex" crap="2" count="0"/>
+        <line num="418" type="stmt" count="0"/>
+        <line num="427" type="method" name="getLeastSignificantBits" crap="6" count="0"/>
+        <line num="429" type="stmt" count="0"/>
+        <line num="430" type="stmt" count="0"/>
+        <line num="431" type="stmt" count="0"/>
+        <line num="432" type="stmt" count="0"/>
+        <line num="433" type="stmt" count="0"/>
+        <line num="434" type="stmt" count="0"/>
+        <line num="435" type="stmt" count="0"/>
+        <line num="438" type="stmt" count="0"/>
+        <line num="439" type="stmt" count="0"/>
+        <line num="440" type="stmt" count="0"/>
+        <line num="442" type="stmt" count="0"/>
+        <line num="444" type="stmt" count="0"/>
+        <line num="452" type="method" name="getLeastSignificantBitsHex" crap="2" count="0"/>
+        <line num="454" type="stmt" count="0"/>
+        <line num="455" type="stmt" count="0"/>
+        <line num="456" type="stmt" count="0"/>
+        <line num="457" type="stmt" count="0"/>
+        <line num="458" type="stmt" count="0"/>
+        <line num="459" type="stmt" count="0"/>
+        <line num="468" type="method" name="getMostSignificantBits" crap="6" count="0"/>
+        <line num="470" type="stmt" count="0"/>
+        <line num="471" type="stmt" count="0"/>
+        <line num="472" type="stmt" count="0"/>
+        <line num="473" type="stmt" count="0"/>
+        <line num="474" type="stmt" count="0"/>
+        <line num="475" type="stmt" count="0"/>
+        <line num="476" type="stmt" count="0"/>
+        <line num="479" type="stmt" count="0"/>
+        <line num="480" type="stmt" count="0"/>
+        <line num="481" type="stmt" count="0"/>
+        <line num="483" type="stmt" count="0"/>
+        <line num="485" type="stmt" count="0"/>
+        <line num="493" type="method" name="getMostSignificantBitsHex" crap="2" count="0"/>
+        <line num="495" type="stmt" count="0"/>
+        <line num="496" type="stmt" count="0"/>
+        <line num="497" type="stmt" count="0"/>
+        <line num="498" type="stmt" count="0"/>
+        <line num="499" type="stmt" count="0"/>
+        <line num="500" type="stmt" count="0"/>
+        <line num="528" type="method" name="getNode" crap="6" count="0"/>
+        <line num="530" type="stmt" count="0"/>
+        <line num="531" type="stmt" count="0"/>
+        <line num="532" type="stmt" count="0"/>
+        <line num="533" type="stmt" count="0"/>
+        <line num="534" type="stmt" count="0"/>
+        <line num="535" type="stmt" count="0"/>
+        <line num="536" type="stmt" count="0"/>
+        <line num="539" type="stmt" count="0"/>
+        <line num="566" type="method" name="getNodeHex" crap="2" count="0"/>
+        <line num="568" type="stmt" count="0"/>
+        <line num="577" type="method" name="getTimeHiAndVersion" crap="2" count="0"/>
+        <line num="579" type="stmt" count="0"/>
+        <line num="588" type="method" name="getTimeHiAndVersionHex" crap="2" count="0"/>
+        <line num="590" type="stmt" count="0"/>
+        <line num="599" type="method" name="getTimeLow" crap="6" count="0"/>
+        <line num="601" type="stmt" count="0"/>
+        <line num="602" type="stmt" count="0"/>
+        <line num="603" type="stmt" count="0"/>
+        <line num="604" type="stmt" count="0"/>
+        <line num="605" type="stmt" count="0"/>
+        <line num="606" type="stmt" count="0"/>
+        <line num="607" type="stmt" count="0"/>
+        <line num="610" type="stmt" count="0"/>
+        <line num="618" type="method" name="getTimeLowHex" crap="2" count="0"/>
+        <line num="620" type="stmt" count="0"/>
+        <line num="628" type="method" name="getTimeMid" crap="2" count="0"/>
+        <line num="630" type="stmt" count="0"/>
+        <line num="638" type="method" name="getTimeMidHex" crap="2" count="0"/>
+        <line num="640" type="stmt" count="0"/>
+        <line num="660" type="method" name="getTimestamp" crap="12" count="0"/>
+        <line num="662" type="stmt" count="0"/>
+        <line num="663" type="stmt" count="0"/>
+        <line num="666" type="stmt" count="0"/>
+        <line num="667" type="stmt" count="0"/>
+        <line num="668" type="stmt" count="0"/>
+        <line num="669" type="stmt" count="0"/>
+        <line num="670" type="stmt" count="0"/>
+        <line num="671" type="stmt" count="0"/>
+        <line num="672" type="stmt" count="0"/>
+        <line num="675" type="stmt" count="0"/>
+        <line num="694" type="method" name="getTimestampHex" crap="6" count="0"/>
+        <line num="696" type="stmt" count="0"/>
+        <line num="697" type="stmt" count="0"/>
+        <line num="700" type="stmt" count="0"/>
+        <line num="701" type="stmt" count="0"/>
+        <line num="702" type="stmt" count="0"/>
+        <line num="703" type="stmt" count="0"/>
+        <line num="704" type="stmt" count="0"/>
+        <line num="705" type="stmt" count="0"/>
+        <line num="714" type="method" name="getUrn" crap="2" count="0"/>
+        <line num="716" type="stmt" count="0"/>
+        <line num="733" type="method" name="getVariant" crap="20" count="0"/>
+        <line num="735" type="stmt" count="0"/>
+        <line num="736" type="stmt" count="0"/>
+        <line num="737" type="stmt" count="0"/>
+        <line num="738" type="stmt" count="0"/>
+        <line num="739" type="stmt" count="0"/>
+        <line num="740" type="stmt" count="0"/>
+        <line num="741" type="stmt" count="0"/>
+        <line num="742" type="stmt" count="0"/>
+        <line num="743" type="stmt" count="0"/>
+        <line num="746" type="stmt" count="0"/>
+        <line num="767" type="method" name="getVersion" crap="6" count="0"/>
+        <line num="769" type="stmt" count="0"/>
+        <line num="770" type="stmt" count="0"/>
+        <line num="773" type="stmt" count="0"/>
+        <line num="781" type="method" name="toString" crap="1" count="24"/>
+        <line num="783" type="stmt" count="24"/>
+        <line num="784" type="stmt" count="24"/>
+        <line num="785" type="stmt" count="24"/>
+        <line num="786" type="stmt" count="24"/>
+        <line num="796" type="method" name="fromBytes" crap="20" count="0"/>
+        <line num="798" type="stmt" count="0"/>
+        <line num="799" type="stmt" count="0"/>
+        <line num="802" type="stmt" count="0"/>
+        <line num="803" type="stmt" count="0"/>
+        <line num="804" type="stmt" count="0"/>
+        <line num="806" type="stmt" count="0"/>
+        <line num="807" type="stmt" count="0"/>
+        <line num="808" type="stmt" count="0"/>
+        <line num="809" type="stmt" count="0"/>
+        <line num="811" type="stmt" count="0"/>
+        <line num="822" type="method" name="fromString" crap="2.00" count="3"/>
+        <line num="824" type="stmt" count="3"/>
+        <line num="830" type="stmt" count="3"/>
+        <line num="831" type="stmt" count="3"/>
+        <line num="832" type="stmt" count="3"/>
+        <line num="833" type="stmt" count="3"/>
+        <line num="834" type="stmt" count="3"/>
+        <line num="835" type="stmt" count="3"/>
+        <line num="836" type="stmt" count="3"/>
+        <line num="838" type="stmt" count="3"/>
+        <line num="839" type="stmt" count="0"/>
+        <line num="843" type="stmt" count="3"/>
+        <line num="844" type="stmt" count="3"/>
+        <line num="845" type="stmt" count="3"/>
+        <line num="846" type="stmt" count="3"/>
+        <line num="847" type="stmt" count="3"/>
+        <line num="848" type="stmt" count="3"/>
+        <line num="849" type="stmt" count="3"/>
+        <line num="851" type="stmt" count="3"/>
+        <line num="860" type="method" name="isValid" crap="3.33" count="3"/>
+        <line num="862" type="stmt" count="3"/>
+        <line num="864" type="stmt" count="3"/>
+        <line num="865" type="stmt" count="0"/>
+        <line num="868" type="stmt" count="3"/>
+        <line num="869" type="stmt" count="0"/>
+        <line num="871" type="stmt" count="3"/>
+        <line num="889" type="method" name="uuid1" crap="90" count="0"/>
+        <line num="891" type="stmt" count="0"/>
+        <line num="892" type="stmt" count="0"/>
+        <line num="893" type="stmt" count="0"/>
+        <line num="897" type="stmt" count="0"/>
+        <line num="898" type="stmt" count="0"/>
+        <line num="899" type="stmt" count="0"/>
+        <line num="902" type="stmt" count="0"/>
+        <line num="903" type="stmt" count="0"/>
+        <line num="904" type="stmt" count="0"/>
+        <line num="906" type="stmt" count="0"/>
+        <line num="907" type="stmt" count="0"/>
+        <line num="908" type="stmt" count="0"/>
+        <line num="909" type="stmt" count="0"/>
+        <line num="912" type="stmt" count="0"/>
+        <line num="914" type="stmt" count="0"/>
+        <line num="915" type="stmt" count="0"/>
+        <line num="919" type="stmt" count="0"/>
+        <line num="920" type="stmt" count="0"/>
+        <line num="921" type="stmt" count="0"/>
+        <line num="922" type="stmt" count="0"/>
+        <line num="924" type="stmt" count="0"/>
+        <line num="927" type="stmt" count="0"/>
+        <line num="928" type="stmt" count="0"/>
+        <line num="929" type="stmt" count="0"/>
+        <line num="932" type="stmt" count="0"/>
+        <line num="933" type="stmt" count="0"/>
+        <line num="934" type="stmt" count="0"/>
+        <line num="937" type="stmt" count="0"/>
+        <line num="938" type="stmt" count="0"/>
+        <line num="939" type="stmt" count="0"/>
+        <line num="940" type="stmt" count="0"/>
+        <line num="941" type="stmt" count="0"/>
+        <line num="942" type="stmt" count="0"/>
+        <line num="943" type="stmt" count="0"/>
+        <line num="945" type="stmt" count="0"/>
+        <line num="956" type="method" name="uuid3" crap="6" count="0"/>
+        <line num="958" type="stmt" count="0"/>
+        <line num="959" type="stmt" count="0"/>
+        <line num="960" type="stmt" count="0"/>
+        <line num="962" type="stmt" count="0"/>
+        <line num="964" type="stmt" count="0"/>
+        <line num="972" type="method" name="uuid4" crap="1" count="24"/>
+        <line num="974" type="stmt" count="24"/>
+        <line num="979" type="stmt" count="24"/>
+        <line num="980" type="stmt" count="24"/>
+        <line num="991" type="method" name="uuid5" crap="6" count="0"/>
+        <line num="993" type="stmt" count="0"/>
+        <line num="994" type="stmt" count="0"/>
+        <line num="995" type="stmt" count="0"/>
+        <line num="997" type="stmt" count="0"/>
+        <line num="999" type="stmt" count="0"/>
+        <line num="1013" type="method" name="calculateUuidTime" crap="12" count="0"/>
+        <line num="1015" type="stmt" count="0"/>
+        <line num="1019" type="stmt" count="0"/>
+        <line num="1022" type="stmt" count="0"/>
+        <line num="1023" type="stmt" count="0"/>
+        <line num="1024" type="stmt" count="0"/>
+        <line num="1025" type="stmt" count="0"/>
+        <line num="1028" type="stmt" count="0"/>
+        <line num="1030" type="stmt" count="0"/>
+        <line num="1032" type="stmt" count="0"/>
+        <line num="1033" type="stmt" count="0"/>
+        <line num="1035" type="stmt" count="0"/>
+        <line num="1036" type="stmt" count="0"/>
+        <line num="1038" type="stmt" count="0"/>
+        <line num="1039" type="stmt" count="0"/>
+        <line num="1040" type="stmt" count="0"/>
+        <line num="1042" type="stmt" count="0"/>
+        <line num="1045" type="stmt" count="0"/>
+        <line num="1046" type="stmt" count="0"/>
+        <line num="1047" type="stmt" count="0"/>
+        <line num="1048" type="stmt" count="0"/>
+        <line num="1051" type="stmt" count="0"/>
+        <line num="1052" type="stmt" count="0"/>
+        <line num="1053" type="stmt" count="0"/>
+        <line num="1054" type="stmt" count="0"/>
+        <line num="1055" type="stmt" count="0"/>
+        <line num="1070" type="method" name="getNodeFromSystem" crap="12" count="0"/>
+        <line num="1073" type="stmt" count="0"/>
+        <line num="1074" type="stmt" count="0"/>
+        <line num="1075" type="stmt" count="0"/>
+        <line num="1076" type="stmt" count="0"/>
+        <line num="1079" type="stmt" count="0"/>
+        <line num="1080" type="stmt" count="0"/>
+        <line num="1081" type="stmt" count="0"/>
+        <line num="1085" type="stmt" count="0"/>
+        <line num="1086" type="stmt" count="0"/>
+        <line num="1087" type="stmt" count="0"/>
+        <line num="1088" type="stmt" count="0"/>
+        <line num="1089" type="stmt" count="0"/>
+        <line num="1091" type="stmt" count="0"/>
+        <line num="1099" type="method" name="hasBigNumber" crap="6" count="0"/>
+        <line num="1101" type="stmt" count="0"/>
+        <line num="1109" type="method" name="hasOpensslRandomPseudoBytes" crap="2" count="24"/>
+        <line num="1111" type="stmt" count="24"/>
+        <line num="1119" type="method" name="is64BitSystem" crap="6" count="0"/>
+        <line num="1121" type="stmt" count="0"/>
+        <line num="1132" type="method" name="uuidFromHashedName" crap="1" count="24"/>
+        <line num="1135" type="stmt" count="24"/>
+        <line num="1136" type="stmt" count="24"/>
+        <line num="1137" type="stmt" count="24"/>
+        <line num="1140" type="stmt" count="24"/>
+        <line num="1141" type="stmt" count="24"/>
+        <line num="1142" type="stmt" count="24"/>
+        <line num="1145" type="stmt" count="24"/>
+        <line num="1146" type="stmt" count="24"/>
+        <line num="1147" type="stmt" count="24"/>
+        <line num="1148" type="stmt" count="24"/>
+        <line num="1149" type="stmt" count="24"/>
+        <line num="1150" type="stmt" count="24"/>
+        <line num="1151" type="stmt" count="24"/>
+        <line num="1153" type="stmt" count="24"/>
+        <line num="1160" type="method" name="generateBytes" crap="6.28" count="24"/>
+        <line num="1162" type="stmt" count="24"/>
+        <line num="1163" type="stmt" count="24"/>
+        <line num="1166" type="stmt" count="0"/>
+        <line num="1167" type="stmt" count="0"/>
+        <line num="1168" type="stmt" count="0"/>
+        <line num="1169" type="stmt" count="0"/>
+        <line num="1170" type="stmt" count="0"/>
+        <line num="1173" type="stmt" count="1"/>
+        <metrics loc="1172" ncloc="611" classes="1" methods="46" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="303" coveredstatements="48" elements="349" coveredelements="54"/>
+      </file>
+    </package>
+    <package name="Zend\EventManager">
+      <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/Event.php">
+        <class name="Event" namespace="Zend\EventManager">
+          <metrics methods="11" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="38" coveredstatements="29" elements="49" coveredelements="38"/>
+        </class>
+        <line num="51" type="method" name="__construct" crap="4" count="24"/>
+        <line num="53" type="stmt" count="24"/>
+        <line num="54" type="stmt" count="24"/>
+        <line num="55" type="stmt" count="24"/>
+        <line num="57" type="stmt" count="24"/>
+        <line num="58" type="stmt" count="24"/>
+        <line num="59" type="stmt" count="24"/>
+        <line num="61" type="stmt" count="24"/>
+        <line num="62" type="stmt" count="24"/>
+        <line num="63" type="stmt" count="24"/>
+        <line num="64" type="stmt" count="24"/>
+        <line num="71" type="method" name="getName" crap="1" count="24"/>
+        <line num="73" type="stmt" count="24"/>
+        <line num="83" type="method" name="getTarget" crap="2" count="0"/>
+        <line num="85" type="stmt" count="0"/>
+        <line num="97" type="method" name="setParams" crap="4.12" count="24"/>
+        <line num="99" type="stmt" count="24"/>
+        <line num="100" type="stmt" count="0"/>
+        <line num="101" type="stmt" count="0"/>
+        <line num="102" type="stmt" count="0"/>
+        <line num="105" type="stmt" count="24"/>
+        <line num="106" type="stmt" count="24"/>
+        <line num="114" type="method" name="getParams" crap="2" count="0"/>
+        <line num="116" type="stmt" count="0"/>
+        <line num="128" type="method" name="getParam" crap="6.97" count="23"/>
+        <line num="131" type="stmt" count="23"/>
+        <line num="132" type="stmt" count="23"/>
+        <line num="133" type="stmt" count="2"/>
+        <line num="136" type="stmt" count="23"/>
+        <line num="140" type="stmt" count="0"/>
+        <line num="141" type="stmt" count="0"/>
+        <line num="143" type="stmt" count="0"/>
+        <line num="152" type="method" name="setName" crap="1" count="24"/>
+        <line num="154" type="stmt" count="24"/>
+        <line num="155" type="stmt" count="24"/>
+        <line num="164" type="method" name="setTarget" crap="1" count="24"/>
+        <line num="166" type="stmt" count="24"/>
+        <line num="167" type="stmt" count="24"/>
+        <line num="177" type="method" name="setParam" crap="3.07" count="16"/>
+        <line num="179" type="stmt" count="16"/>
+        <line num="181" type="stmt" count="16"/>
+        <line num="182" type="stmt" count="16"/>
+        <line num="184" type="stmt" count="0"/>
+        <line num="186" type="stmt" count="16"/>
+        <line num="195" type="method" name="stopPropagation" crap="1" count="24"/>
+        <line num="197" type="stmt" count="24"/>
+        <line num="198" type="stmt" count="24"/>
+        <line num="205" type="method" name="propagationIsStopped" crap="1" count="24"/>
+        <line num="207" type="stmt" count="24"/>
+        <line num="210" type="stmt" count="1"/>
+        <metrics loc="209" ncloc="102" classes="1" methods="11" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="38" coveredstatements="29" elements="49" coveredelements="35"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/EventManager.php">
+        <class name="EventManager" namespace="Zend\EventManager">
+          <metrics methods="21" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="170" coveredstatements="53" elements="191" coveredelements="61"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="57" type="method" name="__construct" crap="1" count="24"/>
+        <line num="59" type="stmt" count="24"/>
+        <line num="60" type="stmt" count="24"/>
+        <line num="68" type="method" name="setEventClass" crap="2" count="0"/>
+        <line num="70" type="stmt" count="0"/>
+        <line num="71" type="stmt" count="0"/>
+        <line num="80" type="method" name="setSharedManager" crap="2" count="0"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="83" type="stmt" count="0"/>
+        <line num="84" type="stmt" count="0"/>
+        <line num="92" type="method" name="unsetSharedManager" crap="2" count="0"/>
+        <line num="94" type="stmt" count="0"/>
+        <line num="95" type="stmt" count="0"/>
+        <line num="108" type="method" name="getSharedManager" crap="4.84" count="24"/>
+        <line num="111" type="stmt" count="24"/>
+        <line num="112" type="stmt" count="24"/>
+        <line num="113" type="stmt" count="24"/>
+        <line num="114" type="stmt" count="0"/>
+        <line num="117" type="stmt" count="24"/>
+        <line num="118" type="stmt" count="24"/>
+        <line num="121" type="stmt" count="0"/>
+        <line num="122" type="stmt" count="0"/>
+        <line num="130" type="method" name="getIdentifiers" crap="2" count="0"/>
+        <line num="132" type="stmt" count="0"/>
+        <line num="141" type="method" name="setIdentifiers" crap="4.59" count="24"/>
+        <line num="143" type="stmt" count="24"/>
+        <line num="144" type="stmt" count="24"/>
+        <line num="145" type="stmt" count="24"/>
+        <line num="146" type="stmt" count="0"/>
+        <line num="147" type="stmt" count="0"/>
+        <line num="148" type="stmt" count="24"/>
+        <line num="157" type="method" name="addIdentifiers" crap="20" count="0"/>
+        <line num="159" type="stmt" count="0"/>
+        <line num="160" type="stmt" count="0"/>
+        <line num="161" type="stmt" count="0"/>
+        <line num="162" type="stmt" count="0"/>
+        <line num="163" type="stmt" count="0"/>
+        <line num="164" type="stmt" count="0"/>
+        <line num="179" type="method" name="trigger" crap="7.99" count="24"/>
+        <line num="181" type="stmt" count="24"/>
+        <line num="182" type="stmt" count="24"/>
+        <line num="183" type="stmt" count="24"/>
+        <line num="184" type="stmt" count="24"/>
+        <line num="185" type="stmt" count="24"/>
+        <line num="186" type="stmt" count="0"/>
+        <line num="187" type="stmt" count="0"/>
+        <line num="188" type="stmt" count="0"/>
+        <line num="189" type="stmt" count="23"/>
+        <line num="190" type="stmt" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="193" type="stmt" count="0"/>
+        <line num="194" type="stmt" count="23"/>
+        <line num="195" type="stmt" count="23"/>
+        <line num="196" type="stmt" count="23"/>
+        <line num="197" type="stmt" count="23"/>
+        <line num="200" type="stmt" count="24"/>
+        <line num="201" type="stmt" count="0"/>
+        <line num="205" type="stmt" count="24"/>
+        <line num="207" type="stmt" count="24"/>
+        <line num="224" type="method" name="triggerUntil" crap="30" count="0"/>
+        <line num="226" type="stmt" count="0"/>
+        <line num="227" type="stmt" count="0"/>
+        <line num="228" type="stmt" count="0"/>
+        <line num="229" type="stmt" count="0"/>
+        <line num="230" type="stmt" count="0"/>
+        <line num="231" type="stmt" count="0"/>
+        <line num="232" type="stmt" count="0"/>
+        <line num="233" type="stmt" count="0"/>
+        <line num="234" type="stmt" count="0"/>
+        <line num="235" type="stmt" count="0"/>
+        <line num="236" type="stmt" count="0"/>
+        <line num="237" type="stmt" count="0"/>
+        <line num="238" type="stmt" count="0"/>
+        <line num="239" type="stmt" count="0"/>
+        <line num="240" type="stmt" count="0"/>
+        <line num="241" type="stmt" count="0"/>
+        <line num="242" type="stmt" count="0"/>
+        <line num="245" type="stmt" count="0"/>
+        <line num="246" type="stmt" count="0"/>
+        <line num="250" type="stmt" count="0"/>
+        <line num="252" type="stmt" count="0"/>
+        <line num="275" type="method" name="attach" crap="10.50" count="12"/>
+        <line num="278" type="stmt" count="12"/>
+        <line num="279" type="stmt" count="0"/>
+        <line num="283" type="stmt" count="12"/>
+        <line num="284" type="stmt" count="0"/>
+        <line num="285" type="stmt" count="0"/>
+        <line num="287" type="stmt" count="0"/>
+        <line num="291" type="stmt" count="12"/>
+        <line num="292" type="stmt" count="0"/>
+        <line num="293" type="stmt" count="0"/>
+        <line num="294" type="stmt" count="0"/>
+        <line num="295" type="stmt" count="0"/>
+        <line num="296" type="stmt" count="0"/>
+        <line num="300" type="stmt" count="12"/>
+        <line num="301" type="stmt" count="12"/>
+        <line num="302" type="stmt" count="12"/>
+        <line num="305" type="stmt" count="12"/>
+        <line num="308" type="stmt" count="12"/>
+        <line num="309" type="stmt" count="12"/>
+        <line num="323" type="method" name="attachAggregate" crap="2" count="0"/>
+        <line num="325" type="stmt" count="0"/>
+        <line num="335" type="method" name="detach" crap="72" count="0"/>
+        <line num="337" type="stmt" count="0"/>
+        <line num="338" type="stmt" count="0"/>
+        <line num="341" type="stmt" count="0"/>
+        <line num="342" type="stmt" count="0"/>
+        <line num="343" type="stmt" count="0"/>
+        <line num="344" type="stmt" count="0"/>
+        <line num="345" type="stmt" count="0"/>
+        <line num="346" type="stmt" count="0"/>
+        <line num="349" type="stmt" count="0"/>
+        <line num="350" type="stmt" count="0"/>
+        <line num="351" type="stmt" count="0"/>
+        <line num="353" type="stmt" count="0"/>
+        <line num="354" type="stmt" count="0"/>
+        <line num="355" type="stmt" count="0"/>
+        <line num="357" type="stmt" count="0"/>
+        <line num="358" type="stmt" count="0"/>
+        <line num="359" type="stmt" count="0"/>
+        <line num="360" type="stmt" count="0"/>
+        <line num="372" type="method" name="detachAggregate" crap="2" count="0"/>
+        <line num="374" type="stmt" count="0"/>
+        <line num="382" type="method" name="getEvents" crap="2" count="0"/>
+        <line num="384" type="stmt" count="0"/>
+        <line num="393" type="method" name="getListeners" crap="2" count="24"/>
+        <line num="395" type="stmt" count="24"/>
+        <line num="396" type="stmt" count="24"/>
+        <line num="398" type="stmt" count="12"/>
+        <line num="407" type="method" name="clearListeners" crap="6" count="0"/>
+        <line num="409" type="stmt" count="0"/>
+        <line num="410" type="stmt" count="0"/>
+        <line num="411" type="stmt" count="0"/>
+        <line num="412" type="stmt" count="0"/>
+        <line num="424" type="method" name="prepareArgs" crap="2" count="0"/>
+        <line num="426" type="stmt" count="0"/>
+        <line num="440" type="method" name="triggerListeners" crap="10.06" count="24"/>
+        <line num="442" type="stmt" count="24"/>
+        <line num="443" type="stmt" count="24"/>
+        <line num="447" type="stmt" count="24"/>
+        <line num="448" type="stmt" count="24"/>
+        <line num="449" type="stmt" count="24"/>
+        <line num="450" type="stmt" count="24"/>
+        <line num="451" type="stmt" count="0"/>
+        <line num="454" type="stmt" count="0"/>
+        <line num="457" type="stmt" count="0"/>
+        <line num="460" type="stmt" count="0"/>
+        <line num="461" type="stmt" count="0"/>
+        <line num="463" type="stmt" count="24"/>
+        <line num="464" type="stmt" count="12"/>
+        <line num="468" type="stmt" count="12"/>
+        <line num="471" type="stmt" count="12"/>
+        <line num="472" type="stmt" count="7"/>
+        <line num="473" type="stmt" count="7"/>
+        <line num="478" type="stmt" count="7"/>
+        <line num="479" type="stmt" count="0"/>
+        <line num="480" type="stmt" count="0"/>
+        <line num="482" type="stmt" count="24"/>
+        <line num="484" type="stmt" count="24"/>
+        <line num="494" type="method" name="getSharedListeners" crap="67.02" count="24"/>
+        <line num="496" type="stmt" count="24"/>
+        <line num="497" type="stmt" count="24"/>
+        <line num="500" type="stmt" count="0"/>
+        <line num="502" type="stmt" count="0"/>
+        <line num="503" type="stmt" count="0"/>
+        <line num="504" type="stmt" count="0"/>
+        <line num="505" type="stmt" count="0"/>
+        <line num="507" type="stmt" count="0"/>
+        <line num="508" type="stmt" count="0"/>
+        <line num="509" type="stmt" count="0"/>
+        <line num="512" type="stmt" count="0"/>
+        <line num="513" type="stmt" count="0"/>
+        <line num="516" type="stmt" count="0"/>
+        <line num="517" type="stmt" count="0"/>
+        <line num="518" type="stmt" count="0"/>
+        <line num="520" type="stmt" count="0"/>
+        <line num="521" type="stmt" count="0"/>
+        <line num="522" type="stmt" count="0"/>
+        <line num="524" type="stmt" count="0"/>
+        <line num="536" type="method" name="insertListeners" crap="20" count="0"/>
+        <line num="538" type="stmt" count="0"/>
+        <line num="539" type="stmt" count="0"/>
+        <line num="540" type="stmt" count="0"/>
+        <line num="541" type="stmt" count="0"/>
+        <line num="542" type="stmt" count="0"/>
+        <line num="545" type="stmt" count="0"/>
+        <line num="546" type="stmt" count="0"/>
+        <line num="547" type="stmt" count="0"/>
+        <line num="548" type="stmt" count="0"/>
+        <line num="549" type="stmt" count="0"/>
+        <line num="551" type="stmt" count="1"/>
+        <metrics loc="550" ncloc="298" classes="1" methods="21" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="170" coveredstatements="53" elements="191" coveredelements="55"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/ResponseCollection.php">
+        <class name="ResponseCollection" namespace="Zend\EventManager">
+          <metrics methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="2" elements="17" coveredelements="3"/>
+        </class>
+        <line num="26" type="method" name="stopped" crap="2" count="0"/>
+        <line num="28" type="stmt" count="0"/>
+        <line num="37" type="method" name="setStopped" crap="1" count="7"/>
+        <line num="39" type="stmt" count="7"/>
+        <line num="40" type="stmt" count="7"/>
+        <line num="48" type="method" name="first" crap="2" count="0"/>
+        <line num="50" type="stmt" count="0"/>
+        <line num="61" type="method" name="last" crap="6" count="0"/>
+        <line num="63" type="stmt" count="0"/>
+        <line num="64" type="stmt" count="0"/>
+        <line num="66" type="stmt" count="0"/>
+        <line num="75" type="method" name="contains" crap="12" count="0"/>
+        <line num="77" type="stmt" count="0"/>
+        <line num="78" type="stmt" count="0"/>
+        <line num="79" type="stmt" count="0"/>
+        <line num="81" type="stmt" count="0"/>
+        <line num="82" type="stmt" count="0"/>
+        <line num="85" type="stmt" count="1"/>
+        <metrics loc="84" ncloc="44" classes="1" methods="5" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="2" elements="17" coveredelements="3"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/SharedEventManager.php">
+        <class name="SharedEventManager" namespace="Zend\EventManager">
+          <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="0" elements="37" coveredelements="0"/>
+        </class>
+        <line num="62" type="method" name="attach" crap="20" count="0"/>
+        <line num="64" type="stmt" count="0"/>
+        <line num="65" type="stmt" count="0"/>
+        <line num="66" type="stmt" count="0"/>
+        <line num="67" type="stmt" count="0"/>
+        <line num="68" type="stmt" count="0"/>
+        <line num="69" type="stmt" count="0"/>
+        <line num="70" type="stmt" count="0"/>
+        <line num="71" type="stmt" count="0"/>
+        <line num="72" type="stmt" count="0"/>
+        <line num="73" type="stmt" count="0"/>
+        <line num="75" type="stmt" count="0"/>
+        <line num="89" type="method" name="attachAggregate" crap="2" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="101" type="method" name="detach" crap="6" count="0"/>
+        <line num="103" type="stmt" count="0"/>
+        <line num="104" type="stmt" count="0"/>
+        <line num="106" type="stmt" count="0"/>
+        <line num="118" type="method" name="detachAggregate" crap="2" count="0"/>
+        <line num="120" type="stmt" count="0"/>
+        <line num="129" type="method" name="getEvents" crap="20" count="0"/>
+        <line num="131" type="stmt" count="0"/>
+        <line num="133" type="stmt" count="0"/>
+        <line num="134" type="stmt" count="0"/>
+        <line num="136" type="stmt" count="0"/>
+        <line num="138" type="stmt" count="0"/>
+        <line num="148" type="method" name="getListeners" crap="6" count="0"/>
+        <line num="150" type="stmt" count="0"/>
+        <line num="151" type="stmt" count="0"/>
+        <line num="153" type="stmt" count="0"/>
+        <line num="163" type="method" name="clearListeners" crap="12" count="0"/>
+        <line num="165" type="stmt" count="0"/>
+        <line num="166" type="stmt" count="0"/>
+        <line num="169" type="stmt" count="0"/>
+        <line num="170" type="stmt" count="0"/>
+        <line num="171" type="stmt" count="0"/>
+        <line num="174" type="stmt" count="0"/>
+        <line num="177" type="stmt" count="1"/>
+        <metrics loc="176" ncloc="79" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="0" elements="37" coveredelements="0"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/StaticEventManager.php">
+        <class name="StaticEventManager" namespace="Zend\EventManager">
+          <metrics methods="6" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="1" elements="17" coveredelements="2"/>
+        </class>
+        <line num="26" type="method" name="__construct" crap="2" count="0"/>
+        <line num="28" type="stmt" count="0"/>
+        <line num="35" type="method" name="__clone" crap="2" count="0"/>
+        <line num="37" type="stmt" count="0"/>
+        <line num="44" type="method" name="getInstance" crap="6" count="0"/>
+        <line num="46" type="stmt" count="0"/>
+        <line num="47" type="stmt" count="0"/>
+        <line num="48" type="stmt" count="0"/>
+        <line num="49" type="stmt" count="0"/>
+        <line num="58" type="method" name="setInstance" crap="2" count="0"/>
+        <line num="60" type="stmt" count="0"/>
+        <line num="61" type="stmt" count="0"/>
+        <line num="68" type="method" name="hasInstance" crap="1" count="24"/>
+        <line num="70" type="stmt" count="24"/>
+        <line num="78" type="method" name="resetInstance" crap="2" count="0"/>
+        <line num="80" type="stmt" count="0"/>
+        <line num="81" type="stmt" count="0"/>
+        <line num="83" type="stmt" count="1"/>
+        <metrics loc="82" ncloc="40" classes="1" methods="6" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="1" elements="17" coveredelements="2"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/EventInterface.php">
+      <line num="97" type="stmt" count="1"/>
+      <metrics loc="96" ncloc="28" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/EventManagerInterface.php">
+      <line num="145" type="stmt" count="1"/>
+      <metrics loc="144" ncloc="35" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/SharedEventAggregateAwareInterface.php">
+      <line num="35" type="stmt" count="1"/>
+      <metrics loc="34" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/SharedEventManagerAwareInterface.php">
+      <line num="39" type="stmt" count="1"/>
+      <metrics loc="38" ncloc="12" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/event-store/vendor/zendframework/zend-eventmanager/Zend/EventManager/SharedEventManagerInterface.php">
+      <line num="66" type="stmt" count="1"/>
+      <metrics loc="65" ncloc="19" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Zend\ServiceManager">
+      <file name="/var/www/event-store/vendor/zendframework/zend-servicemanager/Zend/ServiceManager/AbstractPluginManager.php">
+        <class name="AbstractPluginManager" namespace="Zend\ServiceManager">
+          <metrics methods="10" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="20" elements="76" coveredelements="24"/>
+        </class>
+        <line num="60" type="method" name="__construct" crap="2" count="1"/>
+        <line num="62" type="stmt" count="1"/>
+        <line num="63" type="stmt" count="1"/>
+        <line num="65" type="stmt" count="1"/>
+        <line num="66" type="stmt" count="0"/>
+        <line num="67" type="stmt" count="0"/>
+        <line num="68" type="stmt" count="1"/>
+        <line num="69" type="stmt" count="1"/>
+        <line num="81" type="method" name="validatePlugin" crap="1" count="0"/>
+        <line num="95" type="method" name="get" crap="4.25" count="1"/>
+        <line num="98" type="stmt" count="1"/>
+        <line num="99" type="stmt" count="0"/>
+        <line num="100" type="stmt" count="0"/>
+        <line num="102" type="stmt" count="1"/>
+        <line num="103" type="stmt" count="1"/>
+        <line num="104" type="stmt" count="1"/>
+        <line num="105" type="stmt" count="1"/>
+        <line num="106" type="stmt" count="1"/>
+        <line num="121" type="method" name="setService" crap="6" count="0"/>
+        <line num="123" type="stmt" count="0"/>
+        <line num="124" type="stmt" count="0"/>
+        <line num="125" type="stmt" count="0"/>
+        <line num="126" type="stmt" count="0"/>
+        <line num="127" type="stmt" count="0"/>
+        <line num="136" type="method" name="setServiceLocator" crap="2" count="0"/>
+        <line num="138" type="stmt" count="0"/>
+        <line num="139" type="stmt" count="0"/>
+        <line num="147" type="method" name="getServiceLocator" crap="2" count="0"/>
+        <line num="149" type="stmt" count="0"/>
+        <line num="163" type="method" name="createFromInvokable" crap="4.03" count="1"/>
+        <line num="165" type="stmt" count="1"/>
+        <line num="167" type="stmt" count="1"/>
+        <line num="168" type="stmt" count="1"/>
+        <line num="169" type="stmt" count="1"/>
+        <line num="170" type="stmt" count="1"/>
+        <line num="171" type="stmt" count="1"/>
+        <line num="172" type="stmt" count="0"/>
+        <line num="175" type="stmt" count="1"/>
+        <line num="189" type="method" name="createFromFactory" crap="90" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="195" type="stmt" count="0"/>
+        <line num="196" type="stmt" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="198" type="stmt" count="0"/>
+        <line num="201" type="stmt" count="0"/>
+        <line num="202" type="stmt" count="0"/>
+        <line num="204" type="stmt" count="0"/>
+        <line num="205" type="stmt" count="0"/>
+        <line num="206" type="stmt" count="0"/>
+        <line num="207" type="stmt" count="0"/>
+        <line num="208" type="stmt" count="0"/>
+        <line num="209" type="stmt" count="0"/>
+        <line num="210" type="stmt" count="0"/>
+        <line num="211" type="stmt" count="0"/>
+        <line num="214" type="stmt" count="0"/>
+        <line num="228" type="method" name="createServiceViaCallback" crap="56" count="0"/>
+        <line num="230" type="stmt" count="0"/>
+        <line num="231" type="stmt" count="0"/>
+        <line num="232" type="stmt" count="0"/>
+        <line num="234" type="stmt" count="0"/>
+        <line num="235" type="stmt" count="0"/>
+        <line num="237" type="stmt" count="0"/>
+        <line num="238" type="stmt" count="0"/>
+        <line num="239" type="stmt" count="0"/>
+        <line num="240" type="stmt" count="0"/>
+        <line num="241" type="stmt" count="0"/>
+        <line num="242" type="stmt" count="0"/>
+        <line num="243" type="stmt" count="0"/>
+        <line num="245" type="stmt" count="0"/>
+        <line num="248" type="stmt" count="1"/>
+        <metrics loc="247" ncloc="120" classes="1" methods="9" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="62" coveredstatements="18" elements="71" coveredelements="19"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-servicemanager/Zend/ServiceManager/Config.php">
+        <class name="Config" namespace="Zend\ServiceManager">
+          <metrics methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="30" elements="52" coveredelements="41"/>
+        </class>
+        <line num="24" type="method" name="__construct" crap="1" count="1"/>
+        <line num="26" type="stmt" count="1"/>
+        <line num="27" type="stmt" count="1"/>
+        <line num="34" type="method" name="getAllowOverride" crap="2" count="1"/>
+        <line num="36" type="stmt" count="1"/>
+        <line num="44" type="method" name="getFactories" crap="2" count="1"/>
+        <line num="46" type="stmt" count="1"/>
+        <line num="54" type="method" name="getAbstractFactories" crap="2" count="1"/>
+        <line num="56" type="stmt" count="1"/>
+        <line num="64" type="method" name="getInvokables" crap="2" count="1"/>
+        <line num="66" type="stmt" count="1"/>
+        <line num="74" type="method" name="getServices" crap="2" count="1"/>
+        <line num="76" type="stmt" count="1"/>
+        <line num="84" type="method" name="getAliases" crap="2" count="1"/>
+        <line num="86" type="stmt" count="1"/>
+        <line num="94" type="method" name="getInitializers" crap="2" count="1"/>
+        <line num="96" type="stmt" count="1"/>
+        <line num="104" type="method" name="getShared" crap="2" count="1"/>
+        <line num="106" type="stmt" count="1"/>
+        <line num="115" type="method" name="getDelegators" crap="2" count="1"/>
+        <line num="117" type="stmt" count="1"/>
+        <line num="126" type="method" name="configureServiceManager" crap="16.96" count="1"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="0"/>
+        <line num="130" type="stmt" count="0"/>
+        <line num="132" type="stmt" count="1"/>
+        <line num="133" type="stmt" count="0"/>
+        <line num="134" type="stmt" count="1"/>
+        <line num="136" type="stmt" count="1"/>
+        <line num="137" type="stmt" count="0"/>
+        <line num="138" type="stmt" count="1"/>
+        <line num="140" type="stmt" count="1"/>
+        <line num="141" type="stmt" count="1"/>
+        <line num="142" type="stmt" count="1"/>
+        <line num="144" type="stmt" count="1"/>
+        <line num="145" type="stmt" count="0"/>
+        <line num="146" type="stmt" count="1"/>
+        <line num="148" type="stmt" count="1"/>
+        <line num="149" type="stmt" count="0"/>
+        <line num="150" type="stmt" count="1"/>
+        <line num="152" type="stmt" count="1"/>
+        <line num="153" type="stmt" count="0"/>
+        <line num="154" type="stmt" count="1"/>
+        <line num="156" type="stmt" count="1"/>
+        <line num="157" type="stmt" count="0"/>
+        <line num="158" type="stmt" count="1"/>
+        <line num="160" type="stmt" count="1"/>
+        <line num="161" type="stmt" count="0"/>
+        <line num="162" type="stmt" count="0"/>
+        <line num="163" type="stmt" count="0"/>
+        <line num="164" type="stmt" count="1"/>
+        <line num="165" type="stmt" count="1"/>
+        <line num="167" type="stmt" count="1"/>
+        <metrics loc="166" ncloc="99" classes="1" methods="11" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="30" elements="52" coveredelements="40"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-servicemanager/Zend/ServiceManager/ServiceManager.php">
+        <class name="ServiceManager" namespace="Zend\ServiceManager">
+          <metrics methods="44" coveredmethods="12" conditionals="0" coveredconditionals="0" statements="455" coveredstatements="97" elements="499" coveredelements="109"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="125" type="method" name="__construct" crap="2" count="1"/>
+        <line num="127" type="stmt" count="1"/>
+        <line num="128" type="stmt" count="1"/>
+        <line num="129" type="stmt" count="1"/>
+        <line num="130" type="stmt" count="1"/>
+        <line num="138" type="method" name="setAllowOverride" crap="2" count="0"/>
+        <line num="140" type="stmt" count="0"/>
+        <line num="141" type="stmt" count="0"/>
+        <line num="149" type="method" name="getAllowOverride" crap="2" count="0"/>
+        <line num="151" type="stmt" count="0"/>
+        <line num="161" type="method" name="setShareByDefault" crap="4.52" count="1"/>
+        <line num="163" type="stmt" count="0"/>
+        <line num="164" type="stmt" count="0"/>
+        <line num="165" type="stmt" count="0"/>
+        <line num="166" type="stmt" count="0"/>
+        <line num="167" type="stmt" count="0"/>
+        <line num="169" type="stmt" count="0"/>
+        <line num="170" type="stmt" count="1"/>
+        <line num="178" type="method" name="shareByDefault" crap="2" count="0"/>
+        <line num="180" type="stmt" count="0"/>
+        <line num="189" type="method" name="setThrowExceptionInCreate" crap="2" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="200" type="method" name="getThrowExceptionInCreate" crap="2" count="0"/>
+        <line num="202" type="stmt" count="0"/>
+        <line num="211" type="method" name="setRetrieveFromPeeringManagerFirst" crap="2" count="0"/>
+        <line num="213" type="stmt" count="0"/>
+        <line num="214" type="stmt" count="0"/>
+        <line num="222" type="method" name="retrieveFromPeeringManagerFirst" crap="2" count="0"/>
+        <line num="224" type="stmt" count="0"/>
+        <line num="236" type="method" name="setInvokableClass" crap="5.26" count="1"/>
+        <line num="238" type="stmt" count="1"/>
+        <line num="240" type="stmt" count="1"/>
+        <line num="241" type="stmt" count="0"/>
+        <line num="242" type="stmt" count="0"/>
+        <line num="243" type="stmt" count="0"/>
+        <line num="245" type="stmt" count="0"/>
+        <line num="247" type="stmt" count="0"/>
+        <line num="248" type="stmt" count="0"/>
+        <line num="250" type="stmt" count="1"/>
+        <line num="251" type="stmt" count="1"/>
+        <line num="252" type="stmt" count="1"/>
+        <line num="254" type="stmt" count="1"/>
+        <line num="255" type="stmt" count="1"/>
+        <line num="257" type="stmt" count="1"/>
+        <line num="270" type="method" name="setFactory" crap="56" count="0"/>
+        <line num="272" type="stmt" count="0"/>
+        <line num="274" type="stmt" count="0"/>
+        <line num="275" type="stmt" count="0"/>
+        <line num="277" type="stmt" count="0"/>
+        <line num="280" type="stmt" count="0"/>
+        <line num="281" type="stmt" count="0"/>
+        <line num="282" type="stmt" count="0"/>
+        <line num="283" type="stmt" count="0"/>
+        <line num="285" type="stmt" count="0"/>
+        <line num="287" type="stmt" count="0"/>
+        <line num="288" type="stmt" count="0"/>
+        <line num="290" type="stmt" count="0"/>
+        <line num="291" type="stmt" count="0"/>
+        <line num="292" type="stmt" count="0"/>
+        <line num="294" type="stmt" count="0"/>
+        <line num="295" type="stmt" count="0"/>
+        <line num="297" type="stmt" count="0"/>
+        <line num="308" type="method" name="addAbstractFactory" crap="30" count="0"/>
+        <line num="310" type="stmt" count="0"/>
+        <line num="311" type="stmt" count="0"/>
+        <line num="312" type="stmt" count="0"/>
+        <line num="314" type="stmt" count="0"/>
+        <line num="315" type="stmt" count="0"/>
+        <line num="318" type="stmt" count="0"/>
+        <line num="321" type="stmt" count="0"/>
+        <line num="322" type="stmt" count="0"/>
+        <line num="323" type="stmt" count="0"/>
+        <line num="324" type="stmt" count="0"/>
+        <line num="326" type="stmt" count="0"/>
+        <line num="337" type="method" name="addDelegator" crap="6" count="0"/>
+        <line num="339" type="stmt" count="0"/>
+        <line num="341" type="stmt" count="0"/>
+        <line num="342" type="stmt" count="0"/>
+        <line num="343" type="stmt" count="0"/>
+        <line num="345" type="stmt" count="0"/>
+        <line num="347" type="stmt" count="0"/>
+        <line num="358" type="method" name="addInitializer" crap="16.73" count="1"/>
+        <line num="360" type="stmt" count="1"/>
+        <line num="361" type="stmt" count="0"/>
+        <line num="362" type="stmt" count="0"/>
+        <line num="363" type="stmt" count="0"/>
+        <line num="365" type="stmt" count="0"/>
+        <line num="366" type="stmt" count="0"/>
+        <line num="368" type="stmt" count="0"/>
+        <line num="370" type="stmt" count="1"/>
+        <line num="371" type="stmt" count="1"/>
+        <line num="372" type="stmt" count="1"/>
+        <line num="373" type="stmt" count="0"/>
+        <line num="375" type="stmt" count="1"/>
+        <line num="386" type="method" name="setService" crap="12" count="0"/>
+        <line num="388" type="stmt" count="0"/>
+        <line num="390" type="stmt" count="0"/>
+        <line num="391" type="stmt" count="0"/>
+        <line num="392" type="stmt" count="0"/>
+        <line num="393" type="stmt" count="0"/>
+        <line num="394" type="stmt" count="0"/>
+        <line num="396" type="stmt" count="0"/>
+        <line num="398" type="stmt" count="0"/>
+        <line num="399" type="stmt" count="0"/>
+        <line num="401" type="stmt" count="0"/>
+        <line num="403" type="stmt" count="0"/>
+        <line num="412" type="method" name="setShared" crap="20" count="0"/>
+        <line num="414" type="stmt" count="0"/>
+        <line num="417" type="stmt" count="0"/>
+        <line num="418" type="stmt" count="0"/>
+        <line num="419" type="stmt" count="0"/>
+        <line num="420" type="stmt" count="0"/>
+        <line num="421" type="stmt" count="0"/>
+        <line num="422" type="stmt" count="0"/>
+        <line num="423" type="stmt" count="0"/>
+        <line num="425" type="stmt" count="0"/>
+        <line num="428" type="stmt" count="0"/>
+        <line num="429" type="stmt" count="0"/>
+        <line num="438" type="method" name="resolveAlias" crap="12" count="0"/>
+        <line num="440" type="stmt" count="0"/>
+        <line num="442" type="stmt" count="0"/>
+        <line num="443" type="stmt" count="0"/>
+        <line num="444" type="stmt" count="0"/>
+        <line num="445" type="stmt" count="0"/>
+        <line num="446" type="stmt" count="0"/>
+        <line num="448" type="stmt" count="0"/>
+        <line num="451" type="stmt" count="0"/>
+        <line num="452" type="stmt" count="0"/>
+        <line num="453" type="stmt" count="0"/>
+        <line num="455" type="stmt" count="0"/>
+        <line num="466" type="method" name="get" crap="82.50" count="1"/>
+        <line num="469" type="stmt" count="1"/>
+        <line num="470" type="stmt" count="1"/>
+        <line num="471" type="stmt" count="1"/>
+        <line num="472" type="stmt" count="0"/>
+        <line num="475" type="stmt" count="1"/>
+        <line num="477" type="stmt" count="1"/>
+        <line num="478" type="stmt" count="0"/>
+        <line num="479" type="stmt" count="0"/>
+        <line num="480" type="stmt" count="0"/>
+        <line num="482" type="stmt" count="1"/>
+        <line num="484" type="stmt" count="1"/>
+        <line num="485" type="stmt" count="0"/>
+        <line num="487" type="stmt" count="0"/>
+        <line num="488" type="stmt" count="0"/>
+        <line num="490" type="stmt" count="0"/>
+        <line num="492" type="stmt" count="1"/>
+        <line num="493" type="stmt" count="1"/>
+        <line num="496" type="stmt" count="1"/>
+        <line num="497" type="stmt" count="1"/>
+        <line num="499" type="stmt" count="1"/>
+        <line num="500" type="stmt" count="0"/>
+        <line num="501" type="stmt" count="0"/>
+        <line num="502" type="stmt" count="0"/>
+        <line num="503" type="stmt" count="1"/>
+        <line num="504" type="stmt" count="1"/>
+        <line num="505" type="stmt" count="1"/>
+        <line num="512" type="stmt" count="0"/>
+        <line num="513" type="stmt" count="0"/>
+        <line num="514" type="stmt" count="0"/>
+        <line num="515" type="stmt" count="0"/>
+        <line num="516" type="stmt" count="1"/>
+        <line num="517" type="stmt" count="1"/>
+        <line num="520" type="stmt" count="1"/>
+        <line num="521" type="stmt" count="0"/>
+        <line num="522" type="stmt" count="0"/>
+        <line num="523" type="stmt" count="0"/>
+        <line num="524" type="stmt" count="0"/>
+        <line num="526" type="stmt" count="0"/>
+        <line num="529" type="stmt" count="0"/>
+        <line num="530" type="stmt" count="0"/>
+        <line num="531" type="stmt" count="0"/>
+        <line num="533" type="stmt" count="0"/>
+        <line num="537" type="stmt" count="1"/>
+        <line num="538" type="stmt" count="1"/>
+        <line num="539" type="stmt" count="1"/>
+        <line num="540" type="stmt" count="1"/>
+        <line num="541" type="stmt" count="1"/>
+        <line num="543" type="stmt" count="1"/>
+        <line num="553" type="method" name="create" crap="6.60" count="1"/>
+        <line num="555" type="stmt" count="1"/>
+        <line num="556" type="stmt" count="1"/>
+        <line num="557" type="stmt" count="1"/>
+        <line num="558" type="stmt" count="0"/>
+        <line num="561" type="stmt" count="0"/>
+        <line num="562" type="stmt" count="0"/>
+        <line num="563" type="stmt" count="0"/>
+        <line num="564" type="stmt" count="0"/>
+        <line num="568" type="stmt" count="1"/>
+        <line num="569" type="stmt" count="0"/>
+        <line num="572" type="stmt" count="1"/>
+        <line num="585" type="method" name="createDelegatorCallback" crap="6" count="0"/>
+        <line num="587" type="stmt" count="0"/>
+        <line num="591" type="stmt" count="0"/>
+        <line num="592" type="stmt" count="0"/>
+        <line num="593" type="stmt" count="0"/>
+        <line num="607" type="method" name="doCreate" crap="26.41" count="1"/>
+        <line num="609" type="stmt" count="1"/>
+        <line num="611" type="stmt" count="1"/>
+        <line num="612" type="stmt" count="0"/>
+        <line num="613" type="stmt" count="0"/>
+        <line num="615" type="stmt" count="1"/>
+        <line num="616" type="stmt" count="1"/>
+        <line num="617" type="stmt" count="1"/>
+        <line num="618" type="stmt" count="1"/>
+        <line num="619" type="stmt" count="1"/>
+        <line num="620" type="stmt" count="0"/>
+        <line num="621" type="stmt" count="0"/>
+        <line num="622" type="stmt" count="1"/>
+        <line num="624" type="stmt" count="1"/>
+        <line num="625" type="stmt" count="0"/>
+        <line num="626" type="stmt" count="0"/>
+        <line num="627" type="stmt" count="0"/>
+        <line num="628" type="stmt" count="0"/>
+        <line num="629" type="stmt" count="0"/>
+        <line num="630" type="stmt" count="0"/>
+        <line num="634" type="stmt" count="1"/>
+        <line num="635" type="stmt" count="0"/>
+        <line num="638" type="stmt" count="1"/>
+        <line num="639" type="stmt" count="1"/>
+        <line num="640" type="stmt" count="0"/>
+        <line num="641" type="stmt" count="0"/>
+        <line num="642" type="stmt" count="1"/>
+        <line num="644" type="stmt" count="1"/>
+        <line num="646" type="stmt" count="1"/>
+        <line num="658" type="method" name="canCreate" crap="2" count="0"/>
+        <line num="660" type="stmt" count="0"/>
+        <line num="661" type="stmt" count="0"/>
+        <line num="673" type="method" name="has" crap="14.91" count="1"/>
+        <line num="675" type="stmt" count="1"/>
+        <line num="676" type="stmt" count="1"/>
+        <line num="679" type="stmt" count="1"/>
+        <line num="680" type="stmt" count="1"/>
+        <line num="681" type="stmt" count="1"/>
+        <line num="682" type="stmt" count="0"/>
+        <line num="684" type="stmt" count="1"/>
+        <line num="685" type="stmt" count="1"/>
+        <line num="686" type="stmt" count="1"/>
+        <line num="687" type="stmt" count="0"/>
+        <line num="690" type="stmt" count="1"/>
+        <line num="691" type="stmt" count="1"/>
+        <line num="692" type="stmt" count="1"/>
+        <line num="693" type="stmt" count="1"/>
+        <line num="694" type="stmt" count="1"/>
+        <line num="695" type="stmt" count="1"/>
+        <line num="696" type="stmt" count="1"/>
+        <line num="699" type="stmt" count="1"/>
+        <line num="700" type="stmt" count="1"/>
+        <line num="701" type="stmt" count="0"/>
+        <line num="702" type="stmt" count="0"/>
+        <line num="704" type="stmt" count="1"/>
+        <line num="705" type="stmt" count="1"/>
+        <line num="707" type="stmt" count="1"/>
+        <line num="717" type="method" name="canCreateFromAbstractFactory" crap="56" count="0"/>
+        <line num="719" type="stmt" count="0"/>
+        <line num="720" type="stmt" count="0"/>
+        <line num="721" type="stmt" count="0"/>
+        <line num="722" type="stmt" count="0"/>
+        <line num="723" type="stmt" count="0"/>
+        <line num="724" type="stmt" count="0"/>
+        <line num="726" type="stmt" count="0"/>
+        <line num="727" type="stmt" count="0"/>
+        <line num="729" type="stmt" count="0"/>
+        <line num="730" type="stmt" count="0"/>
+        <line num="731" type="stmt" count="0"/>
+        <line num="732" type="stmt" count="0"/>
+        <line num="733" type="stmt" count="0"/>
+        <line num="734" type="stmt" count="0"/>
+        <line num="735" type="stmt" count="0"/>
+        <line num="738" type="stmt" count="0"/>
+        <line num="739" type="stmt" count="0"/>
+        <line num="740" type="stmt" count="0"/>
+        <line num="741" type="stmt" count="0"/>
+        <line num="743" type="stmt" count="0"/>
+        <line num="744" type="stmt" count="0"/>
+        <line num="745" type="stmt" count="0"/>
+        <line num="756" type="method" name="checkForCircularAliasReference" crap="12" count="0"/>
+        <line num="758" type="stmt" count="0"/>
+        <line num="759" type="stmt" count="0"/>
+        <line num="760" type="stmt" count="0"/>
+        <line num="762" type="stmt" count="0"/>
+        <line num="763" type="stmt" count="0"/>
+        <line num="764" type="stmt" count="0"/>
+        <line num="765" type="stmt" count="0"/>
+        <line num="766" type="stmt" count="0"/>
+        <line num="767" type="stmt" count="0"/>
+        <line num="768" type="stmt" count="0"/>
+        <line num="770" type="stmt" count="0"/>
+        <line num="773" type="stmt" count="0"/>
+        <line num="774" type="stmt" count="0"/>
+        <line num="775" type="stmt" count="0"/>
+        <line num="777" type="stmt" count="0"/>
+        <line num="787" type="method" name="setAlias" crap="72" count="0"/>
+        <line num="789" type="stmt" count="0"/>
+        <line num="790" type="stmt" count="0"/>
+        <line num="793" type="stmt" count="0"/>
+        <line num="794" type="stmt" count="0"/>
+        <line num="796" type="stmt" count="0"/>
+        <line num="797" type="stmt" count="0"/>
+        <line num="800" type="stmt" count="0"/>
+        <line num="801" type="stmt" count="0"/>
+        <line num="802" type="stmt" count="0"/>
+        <line num="803" type="stmt" count="0"/>
+        <line num="805" type="stmt" count="0"/>
+        <line num="808" type="stmt" count="0"/>
+        <line num="809" type="stmt" count="0"/>
+        <line num="810" type="stmt" count="0"/>
+        <line num="812" type="stmt" count="0"/>
+        <line num="813" type="stmt" count="0"/>
+        <line num="822" type="method" name="hasAlias" crap="1" count="1"/>
+        <line num="824" type="stmt" count="1"/>
+        <line num="833" type="method" name="createScopedServiceManager" crap="12" count="0"/>
+        <line num="835" type="stmt" count="0"/>
+        <line num="836" type="stmt" count="0"/>
+        <line num="837" type="stmt" count="0"/>
+        <line num="838" type="stmt" count="0"/>
+        <line num="839" type="stmt" count="0"/>
+        <line num="840" type="stmt" count="0"/>
+        <line num="841" type="stmt" count="0"/>
+        <line num="842" type="stmt" count="0"/>
+        <line num="852" type="method" name="addPeeringServiceManager" crap="12" count="0"/>
+        <line num="854" type="stmt" count="0"/>
+        <line num="855" type="stmt" count="0"/>
+        <line num="856" type="stmt" count="0"/>
+        <line num="857" type="stmt" count="0"/>
+        <line num="858" type="stmt" count="0"/>
+        <line num="859" type="stmt" count="0"/>
+        <line num="860" type="stmt" count="0"/>
+        <line num="869" type="method" name="canonicalizeName" crap="2" count="1"/>
+        <line num="871" type="stmt" count="1"/>
+        <line num="872" type="stmt" count="1"/>
+        <line num="876" type="stmt" count="1"/>
+        <line num="890" type="method" name="createServiceViaCallback" crap="30" count="0"/>
+        <line num="892" type="stmt" count="0"/>
+        <line num="893" type="stmt" count="0"/>
+        <line num="895" type="stmt" count="0"/>
+        <line num="896" type="stmt" count="0"/>
+        <line num="897" type="stmt" count="0"/>
+        <line num="901" type="stmt" count="0"/>
+        <line num="902" type="stmt" count="0"/>
+        <line num="903" type="stmt" count="0"/>
+        <line num="904" type="stmt" count="0"/>
+        <line num="905" type="stmt" count="0"/>
+        <line num="906" type="stmt" count="0"/>
+        <line num="907" type="stmt" count="0"/>
+        <line num="908" type="stmt" count="0"/>
+        <line num="909" type="stmt" count="0"/>
+        <line num="910" type="stmt" count="0"/>
+        <line num="911" type="stmt" count="0"/>
+        <line num="913" type="stmt" count="0"/>
+        <line num="915" type="stmt" count="0"/>
+        <line num="916" type="stmt" count="0"/>
+        <line num="919" type="stmt" count="0"/>
+        <line num="927" type="method" name="getRegisteredServices" crap="2" count="0"/>
+        <line num="930" type="stmt" count="0"/>
+        <line num="931" type="stmt" count="0"/>
+        <line num="932" type="stmt" count="0"/>
+        <line num="933" type="stmt" count="0"/>
+        <line num="934" type="stmt" count="0"/>
+        <line num="942" type="method" name="getCanonicalNames" crap="2" count="0"/>
+        <line num="944" type="stmt" count="0"/>
+        <line num="954" type="method" name="setCanonicalNames" crap="2" count="0"/>
+        <line num="956" type="stmt" count="0"/>
+        <line num="958" type="stmt" count="0"/>
+        <line num="967" type="method" name="retrieveFromPeeringManager" crap="56" count="0"/>
+        <line num="969" type="stmt" count="0"/>
+        <line num="970" type="stmt" count="0"/>
+        <line num="971" type="stmt" count="0"/>
+        <line num="973" type="stmt" count="0"/>
+        <line num="975" type="stmt" count="0"/>
+        <line num="977" type="stmt" count="0"/>
+        <line num="979" type="stmt" count="0"/>
+        <line num="980" type="stmt" count="0"/>
+        <line num="981" type="stmt" count="0"/>
+        <line num="983" type="stmt" count="0"/>
+        <line num="984" type="stmt" count="0"/>
+        <line num="985" type="stmt" count="0"/>
+        <line num="987" type="stmt" count="0"/>
+        <line num="989" type="stmt" count="0"/>
+        <line num="1000" type="method" name="createFromInvokable" crap="12" count="0"/>
+        <line num="1002" type="stmt" count="0"/>
+        <line num="1003" type="stmt" count="0"/>
+        <line num="1004" type="stmt" count="0"/>
+        <line num="1005" type="stmt" count="0"/>
+        <line num="1006" type="stmt" count="0"/>
+        <line num="1007" type="stmt" count="0"/>
+        <line num="1008" type="stmt" count="0"/>
+        <line num="1010" type="stmt" count="0"/>
+        <line num="1012" type="stmt" count="0"/>
+        <line num="1013" type="stmt" count="0"/>
+        <line num="1024" type="method" name="createFromFactory" crap="42" count="0"/>
+        <line num="1026" type="stmt" count="0"/>
+        <line num="1027" type="stmt" count="0"/>
+        <line num="1028" type="stmt" count="0"/>
+        <line num="1029" type="stmt" count="0"/>
+        <line num="1030" type="stmt" count="0"/>
+        <line num="1031" type="stmt" count="0"/>
+        <line num="1032" type="stmt" count="0"/>
+        <line num="1033" type="stmt" count="0"/>
+        <line num="1034" type="stmt" count="0"/>
+        <line num="1035" type="stmt" count="0"/>
+        <line num="1036" type="stmt" count="0"/>
+        <line num="1037" type="stmt" count="0"/>
+        <line num="1038" type="stmt" count="0"/>
+        <line num="1039" type="stmt" count="0"/>
+        <line num="1040" type="stmt" count="0"/>
+        <line num="1042" type="stmt" count="0"/>
+        <line num="1053" type="method" name="createFromAbstractFactory" crap="20" count="0"/>
+        <line num="1055" type="stmt" count="0"/>
+        <line num="1056" type="stmt" count="0"/>
+        <line num="1057" type="stmt" count="0"/>
+        <line num="1059" type="stmt" count="0"/>
+        <line num="1060" type="stmt" count="0"/>
+        <line num="1061" type="stmt" count="0"/>
+        <line num="1062" type="stmt" count="0"/>
+        <line num="1064" type="stmt" count="0"/>
+        <line num="1065" type="stmt" count="0"/>
+        <line num="1066" type="stmt" count="0"/>
+        <line num="1067" type="stmt" count="0"/>
+        <line num="1068" type="stmt" count="0"/>
+        <line num="1069" type="stmt" count="0"/>
+        <line num="1070" type="stmt" count="0"/>
+        <line num="1071" type="stmt" count="0"/>
+        <line num="1072" type="stmt" count="0"/>
+        <line num="1073" type="stmt" count="0"/>
+        <line num="1074" type="stmt" count="0"/>
+        <line num="1075" type="stmt" count="0"/>
+        <line num="1076" type="stmt" count="0"/>
+        <line num="1078" type="stmt" count="0"/>
+        <line num="1081" type="stmt" count="0"/>
+        <line num="1089" type="method" name="checkNestedContextStart" crap="3" count="1"/>
+        <line num="1091" type="stmt" count="1"/>
+        <line num="1092" type="stmt" count="1"/>
+        <line num="1093" type="stmt" count="1"/>
+        <line num="1094" type="stmt" count="1"/>
+        <line num="1095" type="stmt" count="1"/>
+        <line num="1103" type="method" name="checkNestedContextStop" crap="3.33" count="1"/>
+        <line num="1105" type="stmt" count="1"/>
+        <line num="1106" type="stmt" count="0"/>
+        <line num="1107" type="stmt" count="0"/>
+        <line num="1108" type="stmt" count="0"/>
+        <line num="1111" type="stmt" count="1"/>
+        <line num="1112" type="stmt" count="1"/>
+        <line num="1113" type="stmt" count="1"/>
+        <line num="1114" type="stmt" count="1"/>
+        <line num="1115" type="stmt" count="1"/>
+        <line num="1124" type="method" name="createDelegatorFromFactory" crap="72" count="0"/>
+        <line num="1126" type="stmt" count="0"/>
+        <line num="1127" type="stmt" count="0"/>
+        <line num="1129" type="stmt" count="0"/>
+        <line num="1130" type="stmt" count="0"/>
+        <line num="1132" type="stmt" count="0"/>
+        <line num="1134" type="stmt" count="0"/>
+        <line num="1136" type="stmt" count="0"/>
+        <line num="1137" type="stmt" count="0"/>
+        <line num="1138" type="stmt" count="0"/>
+        <line num="1139" type="stmt" count="0"/>
+        <line num="1140" type="stmt" count="0"/>
+        <line num="1141" type="stmt" count="0"/>
+        <line num="1143" type="stmt" count="0"/>
+        <line num="1144" type="stmt" count="0"/>
+        <line num="1145" type="stmt" count="0"/>
+        <line num="1146" type="stmt" count="0"/>
+        <line num="1147" type="stmt" count="0"/>
+        <line num="1148" type="stmt" count="0"/>
+        <line num="1151" type="stmt" count="0"/>
+        <line num="1152" type="stmt" count="0"/>
+        <line num="1153" type="stmt" count="0"/>
+        <line num="1154" type="stmt" count="0"/>
+        <line num="1156" type="stmt" count="0"/>
+        <line num="1157" type="stmt" count="0"/>
+        <line num="1159" type="stmt" count="0"/>
+        <line num="1174" type="method" name="isSubclassOf" crap="20" count="0"/>
+        <line num="1176" type="stmt" count="0"/>
+        <line num="1177" type="stmt" count="0"/>
+        <line num="1179" type="stmt" count="0"/>
+        <line num="1180" type="stmt" count="0"/>
+        <line num="1182" type="stmt" count="0"/>
+        <line num="1183" type="stmt" count="0"/>
+        <line num="1185" type="stmt" count="0"/>
+        <line num="1186" type="stmt" count="0"/>
+        <line num="1199" type="method" name="unregisterService" crap="30" count="0"/>
+        <line num="1201" type="stmt" count="0"/>
+        <line num="1202" type="stmt" count="0"/>
+        <line num="1203" type="stmt" count="0"/>
+        <line num="1204" type="stmt" count="0"/>
+        <line num="1205" type="stmt" count="0"/>
+        <line num="1207" type="stmt" count="0"/>
+        <line num="1209" type="stmt" count="0"/>
+        <line num="1210" type="stmt" count="0"/>
+        <line num="1211" type="stmt" count="0"/>
+        <line num="1213" type="stmt" count="0"/>
+        <line num="1214" type="stmt" count="0"/>
+        <line num="1215" type="stmt" count="0"/>
+        <line num="1216" type="stmt" count="0"/>
+        <line num="1218" type="stmt" count="1"/>
+        <metrics loc="1217" ncloc="816" classes="1" methods="44" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="453" coveredstatements="97" elements="497" coveredelements="101"/>
+      </file>
+    </package>
+    <file name="/var/www/event-store/vendor/zendframework/zend-servicemanager/Zend/ServiceManager/ConfigInterface.php">
+      <line num="22" type="stmt" count="1"/>
+      <metrics loc="21" ncloc="8" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/event-store/vendor/zendframework/zend-servicemanager/Zend/ServiceManager/ServiceLocatorAwareInterface.php">
+      <line num="28" type="stmt" count="1"/>
+      <metrics loc="27" ncloc="10" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/event-store/vendor/zendframework/zend-servicemanager/Zend/ServiceManager/ServiceLocatorInterface.php">
+      <line num="34" type="stmt" count="1"/>
+      <metrics loc="33" ncloc="10" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <package name="Zend\Stdlib">
+      <file name="/var/www/event-store/vendor/zendframework/zend-stdlib/Zend/Stdlib/CallbackHandler.php">
+        <class name="CallbackHandler" namespace="Zend\Stdlib">
+          <metrics methods="8" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="7" elements="75" coveredelements="10"/>
+        </class>
+        <line num="46" type="method" name="__construct" crap="1" count="12"/>
+        <line num="48" type="stmt" count="12"/>
+        <line num="49" type="stmt" count="12"/>
+        <line num="50" type="stmt" count="12"/>
+        <line num="59" type="method" name="registerCallback" crap="2.06" count="12"/>
+        <line num="61" type="stmt" count="12"/>
+        <line num="62" type="stmt" count="0"/>
+        <line num="65" type="stmt" count="12"/>
+        <line num="66" type="stmt" count="12"/>
+        <line num="73" type="method" name="getCallback" crap="1" count="12"/>
+        <line num="75" type="stmt" count="12"/>
+        <line num="84" type="method" name="call" crap="210" count="0"/>
+        <line num="86" type="stmt" count="0"/>
+        <line num="89" type="stmt" count="0"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="93" type="stmt" count="0"/>
+        <line num="95" type="stmt" count="0"/>
+        <line num="96" type="stmt" count="0"/>
+        <line num="98" type="stmt" count="0"/>
+        <line num="99" type="stmt" count="0"/>
+        <line num="102" type="stmt" count="0"/>
+        <line num="103" type="stmt" count="0"/>
+        <line num="104" type="stmt" count="0"/>
+        <line num="109" type="stmt" count="0"/>
+        <line num="110" type="stmt" count="0"/>
+        <line num="111" type="stmt" count="0"/>
+        <line num="113" type="stmt" count="0"/>
+        <line num="114" type="stmt" count="0"/>
+        <line num="115" type="stmt" count="0"/>
+        <line num="116" type="stmt" count="0"/>
+        <line num="118" type="stmt" count="0"/>
+        <line num="119" type="stmt" count="0"/>
+        <line num="120" type="stmt" count="0"/>
+        <line num="121" type="stmt" count="0"/>
+        <line num="122" type="stmt" count="0"/>
+        <line num="123" type="stmt" count="0"/>
+        <line num="125" type="stmt" count="0"/>
+        <line num="126" type="stmt" count="0"/>
+        <line num="127" type="stmt" count="0"/>
+        <line num="128" type="stmt" count="0"/>
+        <line num="129" type="stmt" count="0"/>
+        <line num="130" type="stmt" count="0"/>
+        <line num="131" type="stmt" count="0"/>
+        <line num="133" type="stmt" count="0"/>
+        <line num="134" type="stmt" count="0"/>
+        <line num="135" type="stmt" count="0"/>
+        <line num="136" type="stmt" count="0"/>
+        <line num="144" type="method" name="__invoke" crap="2" count="0"/>
+        <line num="146" type="stmt" count="0"/>
+        <line num="154" type="method" name="getMetadata" crap="2" count="0"/>
+        <line num="156" type="stmt" count="0"/>
+        <line num="165" type="method" name="getMetadatum" crap="6" count="0"/>
+        <line num="167" type="stmt" count="0"/>
+        <line num="168" type="stmt" count="0"/>
+        <line num="170" type="stmt" count="0"/>
+        <line num="182" type="method" name="validateStringCallbackFor54" crap="30" count="0"/>
+        <line num="184" type="stmt" count="0"/>
+        <line num="185" type="stmt" count="0"/>
+        <line num="188" type="stmt" count="0"/>
+        <line num="190" type="stmt" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="197" type="stmt" count="0"/>
+        <line num="198" type="stmt" count="0"/>
+        <line num="199" type="stmt" count="0"/>
+        <line num="200" type="stmt" count="0"/>
+        <line num="202" type="stmt" count="0"/>
+        <line num="204" type="stmt" count="0"/>
+        <line num="205" type="stmt" count="0"/>
+        <line num="206" type="stmt" count="0"/>
+        <line num="207" type="stmt" count="0"/>
+        <line num="209" type="stmt" count="0"/>
+        <line num="215" type="stmt" count="0"/>
+        <line num="218" type="stmt" count="1"/>
+        <metrics loc="217" ncloc="127" classes="1" methods="8" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="7" elements="75" coveredelements="9"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-stdlib/Zend/Stdlib/PriorityQueue.php">
+        <class name="PriorityQueue" namespace="Zend\Stdlib">
+          <metrics methods="16" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="74" coveredstatements="14" elements="90" coveredelements="18"/>
+        </class>
+        <line num="0" type="stmt" count="1"/>
+        <line num="62" type="method" name="insert" crap="1" count="12"/>
+        <line num="64" type="stmt" count="12"/>
+        <line num="65" type="stmt" count="12"/>
+        <line num="66" type="stmt" count="12"/>
+        <line num="67" type="stmt" count="12"/>
+        <line num="69" type="stmt" count="12"/>
+        <line num="70" type="stmt" count="12"/>
+        <line num="89" type="method" name="remove" crap="42" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="92" type="stmt" count="0"/>
+        <line num="93" type="stmt" count="0"/>
+        <line num="94" type="stmt" count="0"/>
+        <line num="95" type="stmt" count="0"/>
+        <line num="97" type="stmt" count="0"/>
+        <line num="98" type="stmt" count="0"/>
+        <line num="99" type="stmt" count="0"/>
+        <line num="100" type="stmt" count="0"/>
+        <line num="102" type="stmt" count="0"/>
+        <line num="103" type="stmt" count="0"/>
+        <line num="104" type="stmt" count="0"/>
+        <line num="105" type="stmt" count="0"/>
+        <line num="106" type="stmt" count="0"/>
+        <line num="107" type="stmt" count="0"/>
+        <line num="108" type="stmt" count="0"/>
+        <line num="110" type="stmt" count="0"/>
+        <line num="118" type="method" name="isEmpty" crap="2" count="0"/>
+        <line num="120" type="stmt" count="0"/>
+        <line num="128" type="method" name="count" crap="1" count="24"/>
+        <line num="130" type="stmt" count="24"/>
+        <line num="138" type="method" name="top" crap="2" count="0"/>
+        <line num="140" type="stmt" count="0"/>
+        <line num="148" type="method" name="extract" crap="2" count="0"/>
+        <line num="150" type="stmt" count="0"/>
+        <line num="165" type="method" name="getIterator" crap="1" count="24"/>
+        <line num="167" type="stmt" count="24"/>
+        <line num="168" type="stmt" count="24"/>
+        <line num="176" type="method" name="serialize" crap="2" count="0"/>
+        <line num="178" type="stmt" count="0"/>
+        <line num="189" type="method" name="unserialize" crap="6" count="0"/>
+        <line num="191" type="stmt" count="0"/>
+        <line num="192" type="stmt" count="0"/>
+        <line num="193" type="stmt" count="0"/>
+        <line num="194" type="stmt" count="0"/>
+        <line num="206" type="method" name="toArray" crap="20" count="0"/>
+        <line num="209" type="stmt" count="0"/>
+        <line num="210" type="stmt" count="0"/>
+        <line num="212" type="stmt" count="0"/>
+        <line num="213" type="stmt" count="0"/>
+        <line num="214" type="stmt" count="0"/>
+        <line num="215" type="stmt" count="0"/>
+        <line num="216" type="stmt" count="0"/>
+        <line num="217" type="stmt" count="0"/>
+        <line num="218" type="method" name="anonymous function" crap="2" count="0"/>
+        <line num="219" type="stmt" count="0"/>
+        <line num="220" type="stmt" count="0"/>
+        <line num="221" type="stmt" count="0"/>
+        <line num="233" type="method" name="setInternalQueueClass" crap="2" count="0"/>
+        <line num="235" type="stmt" count="0"/>
+        <line num="236" type="stmt" count="0"/>
+        <line num="245" type="method" name="contains" crap="12" count="0"/>
+        <line num="247" type="stmt" count="0"/>
+        <line num="248" type="stmt" count="0"/>
+        <line num="249" type="stmt" count="0"/>
+        <line num="251" type="stmt" count="0"/>
+        <line num="252" type="stmt" count="0"/>
+        <line num="261" type="method" name="hasPriority" crap="12" count="0"/>
+        <line num="263" type="stmt" count="0"/>
+        <line num="264" type="stmt" count="0"/>
+        <line num="265" type="stmt" count="0"/>
+        <line num="267" type="stmt" count="0"/>
+        <line num="268" type="stmt" count="0"/>
+        <line num="277" type="method" name="getQueue" crap="3.79" count="24"/>
+        <line num="279" type="stmt" count="24"/>
+        <line num="280" type="stmt" count="24"/>
+        <line num="281" type="stmt" count="24"/>
+        <line num="282" type="stmt" count="0"/>
+        <line num="283" type="stmt" count="0"/>
+        <line num="284" type="stmt" count="0"/>
+        <line num="285" type="stmt" count="0"/>
+        <line num="287" type="stmt" count="24"/>
+        <line num="288" type="stmt" count="24"/>
+        <line num="296" type="method" name="__clone" crap="6" count="0"/>
+        <line num="298" type="stmt" count="0"/>
+        <line num="299" type="stmt" count="0"/>
+        <line num="300" type="stmt" count="0"/>
+        <line num="301" type="stmt" count="0"/>
+        <line num="303" type="stmt" count="1"/>
+        <metrics loc="302" ncloc="158" classes="1" methods="16" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="71" coveredstatements="14" elements="87" coveredelements="17"/>
+      </file>
+      <file name="/var/www/event-store/vendor/zendframework/zend-stdlib/Zend/Stdlib/SplPriorityQueue.php">
+        <class name="SplPriorityQueue" namespace="Zend\Stdlib">
+          <metrics methods="4" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="5" elements="25" coveredelements="6"/>
+        </class>
+        <line num="37" type="method" name="insert" crap="2" count="12"/>
+        <line num="39" type="stmt" count="12"/>
+        <line num="40" type="stmt" count="12"/>
+        <line num="41" type="stmt" count="12"/>
+        <line num="42" type="stmt" count="12"/>
+        <line num="43" type="stmt" count="12"/>
+        <line num="53" type="method" name="toArray" crap="6" count="0"/>
+        <line num="55" type="stmt" count="0"/>
+        <line num="56" type="stmt" count="0"/>
+        <line num="57" type="stmt" count="0"/>
+        <line num="58" type="stmt" count="0"/>
+        <line num="59" type="stmt" count="0"/>
+        <line num="68" type="method" name="serialize" crap="6" count="0"/>
+        <line num="70" type="stmt" count="0"/>
+        <line num="71" type="stmt" count="0"/>
+        <line num="73" type="stmt" count="0"/>
+        <line num="74" type="stmt" count="0"/>
+        <line num="75" type="stmt" count="0"/>
+        <line num="76" type="stmt" count="0"/>
+        <line num="78" type="stmt" count="0"/>
+        <line num="87" type="method" name="unserialize" crap="6" count="0"/>
+        <line num="89" type="stmt" count="0"/>
+        <line num="90" type="stmt" count="0"/>
+        <line num="91" type="stmt" count="0"/>
+        <line num="92" type="stmt" count="0"/>
+        <line num="94" type="stmt" count="1"/>
+        <metrics loc="93" ncloc="49" classes="1" methods="4" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="5" elements="25" coveredelements="6"/>
+      </file>
+    </package>
+    <metrics files="54" loc="9283" ncloc="5196" classes="40" methods="348" coveredmethods="101" conditionals="0" coveredconditionals="0" statements="2378" coveredstatements="751" elements="2726" coveredelements="852"/>
+  </project>
+</coverage>
