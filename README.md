@@ -3,6 +3,8 @@ ProophEventStore
 PHP 5.4+ EventStore Implementation.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
+[![Coverage Status](https://coveralls.io/repos/prooph/event-store/badge.png)](https://coveralls.io/r/prooph/event-store)
+
 
 ##Goal of the library
 ProophEventStore is the favorite persistence layer for most of our projects. We love the idea behind [Event Sourcing](http://martinfowler.com/eaaDev/EventSourcing.html)
