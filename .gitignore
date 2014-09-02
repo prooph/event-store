@@ -2,6 +2,7 @@
 /.project
 /.buildpath
 /vendor
+/build
 .idea
 nbproject
 composer.lock
