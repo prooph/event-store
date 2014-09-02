@@ -142,12 +142,13 @@ class EventStore
 
     /**
      * @param StreamName $aStreamName
+     * @param null|int $minVersion
      * @throws Exception\StreamNotFoundException
      * @return Stream
      */
-    public function load(StreamName $aStreamName)
+    public function load(StreamName $aStreamName, $minVersion = null)
     {
-        $argv = array('streamName' => $aStreamName);
+        $argv = array('streamName' => $aStreamName, 'minVersion' => $minVersion);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -171,7 +172,9 @@ class EventStore
 
         $aStreamName = $event->getParam('streamName');
 
-        $stream = $this->adapter->load($aStreamName);
+        $minVersion = $event->getParam('minVersion');
+
+        $stream = $this->adapter->load($aStreamName, $minVersion);
 
         if (! $stream) {
             throw new StreamNotFoundException(
@@ -203,11 +206,12 @@ class EventStore
     /**
      * @param StreamName $aStreamName
      * @param array $metadata
+     * @param null|int $minVersion
      * @return StreamEvent[]
      */
-    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
+    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata, $minVersion = null)
     {
-        $argv = array('streamName' => $aStreamName, 'metadata' => $metadata);
+        $argv = array('streamName' => $aStreamName, 'metadata' => $metadata, 'minVersion' => $minVersion);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -219,8 +223,9 @@ class EventStore
 
         $aStreamName = $event->getParam('streamName');
         $metadata = $event->getParam('metadata');
+        $minVersion = $event->getParam('minVersion');
 
-        $events = $this->adapter->loadEventsByMetadataFrom($aStreamName, $metadata);
+        $events = $this->adapter->loadEventsByMetadataFrom($aStreamName, $metadata, $minVersion);
 
         $event->setName(__FUNCTION__, '.post');
 

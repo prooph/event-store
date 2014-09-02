@@ -209,7 +209,7 @@ class EventStoreTest extends TestCase
             EventId::generate(),
             new EventName('UserSnapshot'),
             array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-            1,
+            2,
             new \DateTime(),
             array(
                 'snapshot' => true
@@ -227,6 +227,62 @@ class EventStoreTest extends TestCase
         $this->assertEquals(1, count($loadedEvents));
 
         $this->assertEquals('UserSnapshot', $loadedEvents[0]->eventName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_loads_events_by_min_version()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $streamEventVersion2 = new StreamEvent(
+            EventId::generate(),
+            new EventName('UserSnapshot'),
+            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            2,
+            new \DateTime(),
+            array(
+                'snapshot' => true
+            )
+        );
+
+        $streamEventVersion3 = new StreamEvent(
+            EventId::generate(),
+            new EventName('UsernameChanged'),
+            array('name' => 'John Doe'),
+            3,
+            new \DateTime(),
+            array(
+                'snapshot' => false
+            )
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->appendTo($stream->streamName(), array($streamEventVersion2, $streamEventVersion3));
+
+        $this->eventStore->commit();
+
+        $loadedEventStream = $this->eventStore->load($stream->streamName(), 2);
+
+        $this->assertEquals(2, count($loadedEventStream->streamEvents()));
+
+        $this->assertEquals('UserSnapshot', $loadedEventStream->streamEvents()[0]->eventName());
+        $this->assertEquals('UsernameChanged', $loadedEventStream->streamEvents()[1]->eventName());
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array(), 2);
+
+        $this->assertEquals(2, count($loadedEvents));
+
+        $this->assertEquals('UserSnapshot', $loadedEvents[0]->eventName());
+        $this->assertEquals('UsernameChanged', $loadedEvents[1]->eventName());
     }
 
     /**

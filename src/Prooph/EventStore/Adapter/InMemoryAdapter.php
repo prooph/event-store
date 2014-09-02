@@ -60,9 +60,10 @@ class InMemoryAdapter implements AdapterInterface
 
     /**
      * @param StreamName $aStreamName
+     * @param null|int $minVersion
      * @return Stream|null
      */
-    public function load(StreamName $aStreamName)
+    public function load(StreamName $aStreamName, $minVersion = null)
     {
         if (! isset($this->streams[$aStreamName->toString()])) {
             return null;
@@ -70,16 +71,29 @@ class InMemoryAdapter implements AdapterInterface
 
         $streamEvents = $this->streams[$aStreamName->toString()];
 
+        if (!is_null($minVersion)) {
+            $filteredEvents = array();
+
+            foreach ($streamEvents as $streamEvent) {
+                if ($streamEvent->version() >= $minVersion) {
+                    $filteredEvents[] = $streamEvent;
+                }
+            }
+
+            return new Stream($aStreamName, $filteredEvents);
+        }
+
         return new Stream($aStreamName, $streamEvents);
     }
 
     /**
      * @param StreamName $aStreamName
      * @param array $metadata
+     * @param null|int $minVersion
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return StreamEvent[]
      */
-    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata)
+    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata, $minVersion = null)
     {
         $streamEvents = array();
 
@@ -94,7 +108,9 @@ class InMemoryAdapter implements AdapterInterface
 
         foreach ($this->streams[$aStreamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                $streamEvents[] = $streamEvent;
+                if (is_null($minVersion) || $streamEvent->version() >= $minVersion) {
+                    $streamEvents[] = $streamEvent;
+                }
             }
         }
 
@@ -104,7 +120,7 @@ class InMemoryAdapter implements AdapterInterface
     protected function matchMetadataWith(StreamEvent $streamEvent, array $metadata)
     {
         if (empty($metadata)) {
-            return false;
+            return true;
         }
 
         $streamEventMetadata = $streamEvent->metadata();

@@ -36,15 +36,16 @@ interface AdapterInterface
 
     /**
      * @param StreamName $aStreamName
+     * @param null|int $minVersion Minimum version an event should have
      * @return Stream|null
      */
-    public function load(StreamName $aStreamName);
+    public function load(StreamName $aStreamName, $minVersion = null);
 
     /**
      * @param StreamName $aStreamName
-     * @param array $metadata
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
+     * @param array $metadata If empty array is provided, then all events should be returned
+     * @param null|int $minVersion Minimum version an event should have
      * @return StreamEvent[]
      */
-    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata);
+    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata, $minVersion = null);
 }
