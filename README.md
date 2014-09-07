@@ -3,7 +3,7 @@ ProophEventStore
 PHP 5.4+ EventStore Implementation.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
-[![Coverage Status](https://coveralls.io/repos/prooph/event-store/badge.png)](https://coveralls.io/r/prooph/event-store)
+[![Coverage Status](https://img.shields.io/coveralls/prooph/event-store.svg)](https://coveralls.io/r/prooph/event-store?branch=master)
 
 
 ##Goal of the library
