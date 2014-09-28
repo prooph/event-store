@@ -16,7 +16,7 @@ other libraries.
 
 # Installation
 
-You can install ProophEventStore via composer by adding `"prooph/event-store": "~0.5"` as requirement to your composer.json.
+You can install ProophEventStore via composer by adding `"prooph/event-store": "~1.0"` as requirement to your composer.json.
 
 
 #Features
