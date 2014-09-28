@@ -21,7 +21,7 @@ You can install ProophEventStore via composer by adding `"prooph/event-store": "
 
 #Features
 
-ProophEventStore is capable of persisting event objects that are organized in streams. The [EventStore](../src/Prooph/EventStore/EventStore.php)
+ProophEventStore is capable of persisting event objects that are organized in streams. The [EventStore](src/Prooph/EventStore/EventStore.php)
 itself is a facade for different persistence adapters (check the list below) and adds event-driven hook points for features.
 Features can provide additional functionality like publishing persisted events on an event bus or validate events before they are stored.
 ProophEventStore ships with three different strategies to organize event streams and a base repository implementation for event sourced aggregate roots.
@@ -34,17 +34,17 @@ Each aggregate repository can work with another stream strategy to offer you max
 
 # StreamStrategies
 
-- [SingleStreamStrategy](../src/Prooph/EventStore/Stream/SingleStreamStrategy.php): Stores the events of all aggregates in one single stream
-- [AggregateStreamStrategy](../src/Prooph/EventStore/Stream/AggregateStreamStrategy.php): Creates a stream for each aggregate instance
-- [AggregateTypeStreamStrategy](../src/Prooph/EventStore/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
+- [SingleStreamStrategy](src/Prooph/EventStore/Stream/SingleStreamStrategy.php): Stores the events of all aggregates in one single stream
+- [AggregateStreamStrategy](src/Prooph/EventStore/Stream/AggregateStreamStrategy.php): Creates a stream for each aggregate instance
+- [AggregateTypeStreamStrategy](src/Prooph/EventStore/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
 
 ** Note ** Check the usage example to see how you can set up a repository with a stream strategy.
 
 # AggregateTranslator
 
 ProophEventStore wants to get out of your way as much as it can. To achieve this goal it requires neither a specific aggregate implementation
-nor a domain event implementation. Instead it uses translation adapters which are responsible for translating recorded domain events to [StreamEvents](../src/Prooph/EventStore/Stream/StreamEvent.php) and
-to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](../src/Prooph/EventStore/Aggregate/AggregateTranslatorInterface) for your aggregates or you use
+nor a domain event implementation. Instead it uses translation adapters which are responsible for translating recorded domain events to [StreamEvents](src/Prooph/EventStore/Stream/StreamEvent.php) and
+to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslatorInterface) for your aggregates or you use
 [ProophEventSourcing](https://github.com/prooph/event-sourcing) that has a ready-to-use [AggregateTranslator](https://github.com/prooph/event-sourcing/blob/master/src/Prooph/EventSourcing/EventStoreIntegration/AggregateTranslator.php) on board.
 
 ** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.
