@@ -37,8 +37,9 @@ Each aggregate repository can work with another stream strategy to offer you max
 - [SingleStreamStrategy](src/Prooph/EventStore/Stream/SingleStreamStrategy.php): Stores the events of all aggregates in one single stream
 - [AggregateStreamStrategy](src/Prooph/EventStore/Stream/AggregateStreamStrategy.php): Creates a stream for each aggregate instance
 - [AggregateTypeStreamStrategy](src/Prooph/EventStore/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
+- [MappedSuperclassStreamStrategy](src/Prooph/EventStore/Stream/MappedSuperclassStreamStrategy.php): Stores the events of all aggregates of the same superclass in one stream
 
-** Note ** Check the usage example to see how you can set up a repository with a stream strategy.
+** Note ** Check the usage example to see how you can set up a repository with a stream strategy.*
 
 # AggregateTranslator
 
@@ -47,7 +48,7 @@ nor a domain event implementation. Instead it uses translation adapters which ar
 to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslatorInterface.php) for your aggregates or you use
 [ProophEventSourcing](https://github.com/prooph/event-sourcing) that has a ready-to-use [AggregateTranslator](https://github.com/prooph/event-sourcing/blob/master/src/Prooph/EventSourcing/EventStoreIntegration/AggregateTranslator.php) on board.
 
-** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.
+** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.*
 
 # Usage
 
