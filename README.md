@@ -24,7 +24,7 @@ You can install ProophEventStore via composer by adding `"prooph/event-store": "
 ProophEventStore is capable of persisting event objects that are organized in streams. The [EventStore](src/Prooph/EventStore/EventStore.php)
 itself is a facade for different persistence adapters (check the list below) and adds event-driven hook points for features.
 Features can provide additional functionality like publishing persisted events on an event bus or validate events before they are stored.
-ProophEventStore ships with three different strategies to organize event streams and a base repository implementation for event sourced aggregate roots.
+ProophEventStore ships with different strategies to organize event streams and a base repository implementation for event sourced aggregate roots.
 Each aggregate repository can work with another stream strategy to offer you maximum flexibility.
 
 
@@ -39,7 +39,7 @@ Each aggregate repository can work with another stream strategy to offer you max
 - [AggregateTypeStreamStrategy](src/Prooph/EventStore/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
 - [MappedSuperclassStreamStrategy](src/Prooph/EventStore/Stream/MappedSuperclassStreamStrategy.php): Stores the events of all aggregates of the same superclass in one stream
 
-** Note ** Check the usage example to see how you can set up a repository with a stream strategy.*
+** Note ** Check the usage example to see how you can set up a repository with a stream strategy.
 
 # AggregateTranslator
 
@@ -48,7 +48,7 @@ nor a domain event implementation. Instead it uses translation adapters which ar
 to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslatorInterface.php) for your aggregates or you use
 [ProophEventSourcing](https://github.com/prooph/event-sourcing) that has a ready-to-use [AggregateTranslator](https://github.com/prooph/event-sourcing/blob/master/src/Prooph/EventSourcing/EventStoreIntegration/AggregateTranslator.php) on board.
 
-** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.*
+** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.
 
 # Usage
 
