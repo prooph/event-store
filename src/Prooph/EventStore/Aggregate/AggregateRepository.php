@@ -66,6 +66,7 @@ class AggregateRepository
 
         $this->aggregateTranslator = $aggregateTranslator;
         $this->streamStrategy = $streamStrategy;
+        $this->aggregateType = $aggregateType;
     }
 
     /**
