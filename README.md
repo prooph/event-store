@@ -5,7 +5,7 @@ PHP 5.4+ EventStore Implementation.
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 [![Coverage Status](https://img.shields.io/coveralls/prooph/event-store.svg)](https://coveralls.io/r/prooph/event-store?branch=master)
 
-# About Prooph
+# About Prooph Software
 
 Prooph is the organisation behind [gingerframework](https://github.com/gingerframework/gingerframework) - a workflow framework written in PHP.
 The founder and lead developer is [codeliner](https://github.com/codeliner). Prooph provides CQRS+ES infrastructure components for the gingerframework.
