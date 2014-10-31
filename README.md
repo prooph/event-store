@@ -62,7 +62,7 @@ Check the [example](https://github.com/prooph/event-sourcing/blob/master/example
 # Support
 
 - Ask questions on [prooph-users](https://groups.google.com/forum/?hl=de#!forum/prooph) google group.
-- File issues at [https://github.com/prooph/event-store/issues](https://github.com/prooph/service-bus/issues).
+- File issues at [https://github.com/prooph/event-store/issues](https://github.com/prooph/event-store/issues).
 
 # Contribute
 
