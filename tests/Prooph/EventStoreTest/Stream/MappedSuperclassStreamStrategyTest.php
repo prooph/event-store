@@ -203,5 +203,57 @@ class MappedSuperclassStreamStrategyTest extends TestCase
 
         $this->assertEquals('Employee', $aggregateType->toString());
     }
+
+    /**
+     * @test
+     */
+    public function it_uses_the_aggregate_type_map_to_write_to_a_global_stream()
+    {
+        $personType = new AggregateType('Person');
+
+        $strategyWithAggregateMap = new MappedSuperclassStreamStrategy(
+            $this->eventStore,
+            $personType, [
+                $personType->toString() => 'global_event_stream'
+            ]
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create(new Stream(new StreamName('global_event_stream'), array()));
+
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+
+        $employeeType = new AggregateType('Employee');
+
+        $aggregateId1 = Uuid::uuid4()->toString();
+
+        $streamEvents1 = array(
+            new StreamEvent(
+                EventId::generate(),
+                new EventName('EmployeeHired'),
+                array('user_id' => $aggregateId1),
+                1,
+                new \DateTime()
+            )
+        );
+
+        $strategyWithAggregateMap->add($employeeType, $aggregateId1, $streamEvents1);
+
+        $this->eventStore->commit();
+
+        $streamEvents = $strategyWithAggregateMap->read($personType, $aggregateId1);
+
+        $this->assertEquals(1, count($streamEvents));
+
+        $this->assertInstanceOf('Prooph\EventStore\Stream\StreamEvent', $streamEvents[0]);
+
+        $this->assertEquals($aggregateId1, $streamEvents[0]->payload()['user_id']);
+
+        //Person became Employee after reading the stream
+        $this->assertEquals('Employee', $personType->toString());
+    }
 }
  

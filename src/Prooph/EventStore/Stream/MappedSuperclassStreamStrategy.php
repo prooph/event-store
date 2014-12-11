@@ -52,9 +52,9 @@ class MappedSuperclassStreamStrategy implements StreamStrategyInterface
     {
         $this->eventStore = $eventStore;
 
-        $this->streamName = $this->buildStreamName($superclass);
-
         $this->aggregateTypeStreamMap = $aggregateTypeStreamMap;
+
+        $this->streamName = $this->buildStreamName($superclass);
     }
 
     /**
