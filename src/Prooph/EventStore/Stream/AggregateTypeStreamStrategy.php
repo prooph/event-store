@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStore\Stream;
 
+use Assert\Assertion;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 
@@ -54,7 +55,7 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
     {
         $streamName = $this->buildStreamName($aggregateType);
 
-        \Assert\that($aggregateId)->string('AggregateId needs to be string');
+        Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as $index => $streamEvent) {
             $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
@@ -74,7 +75,7 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
     {
         $streamName = $this->buildStreamName($aggregateType);
 
-        \Assert\that($aggregateId)->string('AggregateId needs to be string');
+        Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as $index => $streamEvent) {
             $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
@@ -93,7 +94,7 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
     {
         $streamName = $this->buildStreamName($aggregateType);
 
-        \Assert\that($aggregateId)->string('AggregateId needs to be string');
+        Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         return $this->eventStore->loadEventsByMetadataFrom($streamName, array('aggregate_id' => $aggregateId));
     }

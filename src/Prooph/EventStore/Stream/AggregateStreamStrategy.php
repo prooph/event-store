@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStore\Stream;
 
+use Assert\Assertion;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 
@@ -85,7 +86,7 @@ class AggregateStreamStrategy implements StreamStrategyInterface
      */
     protected function buildStreamName(AggregateType $aggregateType, $aggregateId)
     {
-        \Assert\that($aggregateId)->string('AggregateId needs to be string');
+        Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         $aggregateType = (isset($this->aggregateTypeStreamMap[$aggregateType->toString()]))?
             $this->aggregateTypeStreamMap[$aggregateType->toString()] : $aggregateType->toString();

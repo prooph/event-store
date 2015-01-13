@@ -52,7 +52,7 @@ class DefaultAggregateTranslator implements AggregateTranslatorInterface
         if (! class_exists($aggregateType->toString())) {
             throw new AggregateTranslationFailedException(
                 sprintf(
-                    'Cannot reconstitute aggregate of type %s. Class was not found',
+                    'Can not reconstitute aggregate of type %s. Class was not found',
                     $aggregateType->toString()
                 )
             );
@@ -92,7 +92,7 @@ class DefaultAggregateTranslator implements AggregateTranslatorInterface
         if (! $refObj->hasMethod('popRecordedEvents')) {
             throw new AggregateTranslationFailedException(
                 sprintf(
-                    'Cannot extract pending events of aggregate %s. Class is missing a method with name popRecordedEvents!',
+                    'Can not extract pending events of aggregate %s. Class is missing a method with name popRecordedEvents!',
                     get_class($anEventSourcedAggregateRoot)
                 )
             );
@@ -103,8 +103,6 @@ class DefaultAggregateTranslator implements AggregateTranslatorInterface
         $popRecordedEventsMethod->setAccessible(true);
 
         $recordedEvents = $popRecordedEventsMethod->invoke($anEventSourcedAggregateRoot);
-
-        \Assert\that($recordedEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
 
         return $recordedEvents;
     }

@@ -8,6 +8,7 @@
  */
 namespace Prooph\EventStore;
 
+use Assert\Assertion;
 use Prooph\EventStore\Adapter\AdapterInterface;
 use Prooph\EventStore\Adapter\Feature\TransactionFeatureInterface;
 use Prooph\EventStore\Configuration\Configuration;
@@ -112,7 +113,9 @@ class EventStore
      */
     public function appendTo(StreamName $aStreamName, array $streamEvents)
     {
-        \Assert\that($streamEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
+        foreach ($streamEvents as $streamEvent) {
+            Assertion::isInstanceOf($streamEvent, 'Prooph\EventStore\Stream\StreamEvent');
+        }
 
         $argv = array('streamName' => $aStreamName, 'streamEvents' => $streamEvents);
 
