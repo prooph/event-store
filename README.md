@@ -29,8 +29,9 @@ Each aggregate repository can work with another stream strategy to offer you max
 
 
 # Available Persistence Adapters
+- [Doctrine DBAL](https://github.com/prooph/event-store-doctrine-adapter)
 - [ZF2 Tablegateway](https://github.com/prooph/event-store-zf2-adapter)
-- [doctrine dbal](https://github.com/prooph/event-store-doctrine-adapter)
+
 
 # StreamStrategies
 
