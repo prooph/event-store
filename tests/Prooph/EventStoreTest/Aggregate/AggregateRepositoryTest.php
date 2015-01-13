@@ -40,7 +40,8 @@ class AggregateRepositoryTest extends TestCase
         $this->repository = new AggregateRepository(
             $this->eventStore,
             new DefaultAggregateTranslator(),
-            new SingleStreamStrategy($this->eventStore)
+            new SingleStreamStrategy($this->eventStore),
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User')
         );
 
         $this->eventStore->beginTransaction();
@@ -67,7 +68,6 @@ class AggregateRepositoryTest extends TestCase
         $this->clearRepositoryIdentityMap();
 
         $fetchedUser = $this->repository->getAggregateRoot(
-            new AggregateType('Prooph\EventStoreTest\Mock\User'),
             $user->id()->toString()
         );
 
@@ -96,7 +96,6 @@ class AggregateRepositoryTest extends TestCase
         $this->eventStore->beginTransaction();
 
         $fetchedUser = $this->repository->getAggregateRoot(
-            new AggregateType('Prooph\EventStoreTest\Mock\User'),
             $user->id()->toString()
         );
 
@@ -109,7 +108,6 @@ class AggregateRepositoryTest extends TestCase
         $this->clearRepositoryIdentityMap();
 
         $fetchedUser2 = $this->repository->getAggregateRoot(
-            new AggregateType('Prooph\EventStoreTest\Mock\User'),
             $user->id()->toString()
         );
 

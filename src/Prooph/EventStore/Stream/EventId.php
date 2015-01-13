@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Stream;
+use Assert\Assertion;
 use Rhumsaa\Uuid\Uuid;
 
 /**
@@ -38,7 +39,8 @@ class EventId
      */
     public function __construct($id)
     {
-        \Assert\that($id)->notEmpty()->string('EventId must be a string');
+        Assertion::string($id, 'EventId must be a string');
+        Assertion::notEmpty($id, 'EventId must not be empty');
 
         $this->id = $id;
     }

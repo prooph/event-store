@@ -37,7 +37,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
     {
         parent::setUp();
 
-        $this->strategy = new MappedSuperclassStreamStrategy($this->eventStore, new AggregateType('User'));
+        $this->strategy = new MappedSuperclassStreamStrategy($this->eventStore, AggregateType::fromString('User'));
 
         $this->eventStore->beginTransaction();
 
@@ -53,7 +53,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('Employee');
+        $aggregateType = AggregateType::fromString('Employee');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -85,7 +85,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('Employee');
+        $aggregateType = AggregateType::fromString('Employee');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -127,7 +127,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('Freelance');
+        $aggregateType = AggregateType::fromString('Freelance');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -157,7 +157,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('Employee');
+        $aggregateType = AggregateType::fromString('Employee');
 
         $aggregateId1 = Uuid::uuid4()->toString();
 
@@ -185,13 +185,13 @@ class MappedSuperclassStreamStrategyTest extends TestCase
             )
         );
 
-        $aggregateType = new AggregateType('Freelance');
+        $aggregateType = AggregateType::fromString('Freelance');
 
         $this->strategy->add($aggregateType, $aggregateId2, $streamEvents2);
 
         $this->eventStore->commit();
 
-        $aggregateType = new AggregateType('User');
+        $aggregateType = AggregateType::fromString('User');
 
         $streamEvents = $this->strategy->read($aggregateType, $aggregateId1);
 
@@ -209,7 +209,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
      */
     public function it_uses_the_aggregate_type_map_to_write_to_a_global_stream()
     {
-        $personType = new AggregateType('Person');
+        $personType = AggregateType::fromString('Person');
 
         $strategyWithAggregateMap = new MappedSuperclassStreamStrategy(
             $this->eventStore,
@@ -226,7 +226,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $employeeType = new AggregateType('Employee');
+        $employeeType = AggregateType::fromString('Employee');
 
         $aggregateId1 = Uuid::uuid4()->toString();
 
@@ -234,7 +234,7 @@ class MappedSuperclassStreamStrategyTest extends TestCase
             new StreamEvent(
                 EventId::generate(),
                 new EventName('EmployeeHired'),
-                array('user_id' => $aggregateId1),
+                array('user_id' => $aggregateId1, 'aggregate_type' => 'Person'),
                 1,
                 new \DateTime()
             )

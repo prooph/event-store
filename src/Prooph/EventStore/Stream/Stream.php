@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Stream;
+use Assert\Assertion;
 
 /**
  * Class Stream
@@ -35,7 +36,9 @@ class Stream
      */
     public function __construct(StreamName $streamName, array $streamEvents)
     {
-        \Assert\that($streamEvents)->all()->isInstanceOf('Prooph\EventStore\Stream\StreamEvent');
+        foreach ($streamEvents as $streamEvent) {
+            Assertion::isInstanceOf($streamEvent, 'Prooph\EventStore\Stream\StreamEvent');
+        }
 
         $this->streamName = $streamName;
 

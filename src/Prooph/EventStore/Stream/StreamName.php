@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Stream;
+use Assert\Assertion;
 
 /**
  * Class StreamName
@@ -29,7 +30,9 @@ class StreamName
      */
     public function __construct($name)
     {
-        \Assert\that($name)->notEmpty()->string('StreamName must be a string')->maxLength(200);
+        Assertion::string($name, 'StreamName must be a string');
+        Assertion::notEmpty($name, 'StreamName must not be empty');
+        Assertion::maxLength($name, 200, 'StreamName should not be longer than 200 chars');
 
         $this->name = $name;
     }

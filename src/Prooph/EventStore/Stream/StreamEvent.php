@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Stream;
+use Assert\Assertion;
 
 /**
  * Class StreamEvent
@@ -67,7 +68,7 @@ class StreamEvent
         \DateTime $occurredOn,
         array $metadata = array()
     ) {
-        \Assert\that($version)->integer();
+        Assertion::integer($version, 'Version must be an integer');
 
         $this->eventId = $eventId;
         $this->eventName = $eventName;

@@ -8,6 +8,7 @@
  */
 namespace Prooph\EventStore\Configuration;
 
+use Assert\Assertion;
 use Prooph\EventStore\Adapter\AdapterInterface;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
@@ -51,13 +52,13 @@ class Configuration
         }
 
         if (isset($config['feature_manager'])) {
-            \Assert\that($config['feature_manager'])->isArray("EventStore.Configuration.feature_manager must be an array");
+            Assertion::isArray($config['feature_manager'], "EventStore.Configuration.feature_manager must be an array");
 
             $this->featureManager = new FeatureManager(new Config($config['feature_manager']));
         }
 
         if (isset($config['features'])) {
-            \Assert\that($config['features'])->isArray("EventStore.Configuration.features must be an array");
+            Assertion::isArray($config['features'], "EventStore.Configuration.features must be an array");
 
             $this->featureList = $config['features'];
         }

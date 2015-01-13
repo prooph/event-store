@@ -12,6 +12,7 @@
 namespace Prooph\EventStoreTest\Feature;
 
 use Prooph\EventStore\Aggregate\AggregateRepository;
+use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
 use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\EventStore;
@@ -53,7 +54,8 @@ class FeatureManagerTest extends TestCase
         $repository = new AggregateRepository(
             $eventStore,
             new DefaultAggregateTranslator(),
-            new AggregateStreamStrategy($eventStore)
+            new AggregateStreamStrategy($eventStore),
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User')
         );
 
         $eventStore->beginTransaction();

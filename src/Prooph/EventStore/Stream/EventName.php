@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Stream;
+use Assert\Assertion;
 
 /**
  * Class EventName
@@ -29,7 +30,8 @@ class EventName
      */
     public function __construct($name)
     {
-        \Assert\that($name)->notEmpty()->string('EventName must be a string');
+        Assertion::string($name, 'EventName must be a string');
+        Assertion::notEmpty($name, 'EventName must not be empty');
 
         $this->name = $name;
     }
