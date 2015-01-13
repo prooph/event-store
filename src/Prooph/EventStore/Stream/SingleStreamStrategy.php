@@ -18,7 +18,16 @@ use Prooph\EventStore\EventStore;
 /**
  * Class SingleStreamStrategy
  *
- * This strategy manages all events of all aggregates in one stream
+ * This strategy manages all events of all aggregates in one stream.
+ * It requires global unique identifiers for all aggregate roots, because only the aggregate id is used to
+ * fetch related stream events!
+ *
+ * It can also be used to deal with aggregate hierarchies because the repository aggregate type is completely ignored
+ * by this strategy.
+ *
+ * When writing events the strategy adds the class of the aggregate root as aggregate_type metadata to each event.
+ * When the repository asks for the aggregate root type {@see getAggregateRootType} method, the strategy looks it
+ * up from the first stream event.
  *
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
@@ -49,17 +58,18 @@ class SingleStreamStrategy implements StreamStrategyInterface
     }
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param StreamEvent[] $streamEvents
+     * @param object $aggregateRoot
      * @return void
      */
-    public function add(AggregateType $aggregateType, $aggregateId, array $streamEvents)
+    public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as $index => $streamEvent) {
-            $streamEvent->setMetadataEntry('aggregate_type', $aggregateType->toString());
+            $streamEvent->setMetadataEntry('aggregate_type', get_class($aggregateRoot));
             $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
             $streamEvents[$index] = $streamEvent;
         }
@@ -68,17 +78,18 @@ class SingleStreamStrategy implements StreamStrategyInterface
     }
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param StreamEvent[] $streamEvents
+     * @param object $aggregateRoot
      * @return void
      */
-    public function appendEvents(AggregateType $aggregateType, $aggregateId, array $streamEvents)
+    public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as $index => $streamEvent) {
-            $streamEvent->setMetadataEntry('aggregate_type', $aggregateType->toString());
+            $streamEvent->setMetadataEntry('aggregate_type', get_class($aggregateRoot));
             $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
             $streamEvents[$index] = $streamEvent;
         }
@@ -87,18 +98,39 @@ class SingleStreamStrategy implements StreamStrategyInterface
     }
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @return StreamEvent[]
      */
-    public function read(AggregateType $aggregateType, $aggregateId)
+    public function read(AggregateType $repositoryAggregateType, $aggregateId)
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         return $this->eventStore->loadEventsByMetadataFrom(
             new StreamName($this->streamName),
-            array('aggregate_type' => $aggregateType->toString(), 'aggregate_id' => $aggregateId)
+            array('aggregate_id' => $aggregateId)
         );
+    }
+
+    /**
+     * @param AggregateType $repositoryAggregateType
+     * @param StreamEvent[] $streamEvents
+     * @throws \RuntimeException
+     * @return AggregateType
+     */
+    public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)
+    {
+        if (count($streamEvents)) {
+            $first = $streamEvents[0];
+
+            $metadata = $first->metadata();
+
+            if (isset($metadata['aggregate_type'])) {
+                return AggregateType::fromAggregateRootClass($metadata['aggregate_type']);
+            }
+        }
+
+        throw new \RuntimeException("The reconstitution aggregate type can not be detected");
     }
 }
  

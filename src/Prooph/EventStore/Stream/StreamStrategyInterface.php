@@ -22,26 +22,39 @@ use Prooph\EventStore\Aggregate\AggregateType;
 interface StreamStrategyInterface 
 {
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param StreamEvent[] $streamEvents
+     * @param object $aggregateRoot
      * @return void
      */
-    public function add(AggregateType $aggregateType, $aggregateId, array $streamEvents);
+    public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot);
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param StreamEvent[] $streamEvents
+     * @param object $aggregateRoots
      * @return void
      */
-    public function appendEvents(AggregateType $aggregateType, $aggregateId, array $streamEvents);
+    public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoots);
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @return StreamEvent[]
      */
-    public function read(AggregateType $aggregateType, $aggregateId);
+    public function read(AggregateType $repositoryAggregateType, $aggregateId);
+
+    /**
+     * A stream strategy can provide another AggregateType that should be used to reconstitute the aggregate root.
+     * This can be useful when working with aggregate hierarchies where all sub aggregate roots are managed
+     * within the same stream as the super aggregate root.
+     *
+     * @param AggregateType $repositoryAggregateType
+     * @param StreamEvent[] $streamEvents
+     * @return AggregateType
+     */
+    public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents);
 }
  

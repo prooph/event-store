@@ -19,6 +19,7 @@ use Prooph\EventStore\EventStore;
  * Class AggregateTypeStreamStrategy
  *
  * This strategy manages the events of aggregates of the same aggregate type in one stream.
+ * The AggregateType provided by the repository must be the same as the class of the AggregateRoot.
  *
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
@@ -46,14 +47,22 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
     }
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param StreamEvent[] $streamEvents
+     * @param object $aggregateRoot
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function add(AggregateType $aggregateType, $aggregateId, array $streamEvents)
+    public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
     {
-        $streamName = $this->buildStreamName($aggregateType);
+        $arType = AggregateType::fromAggregateRoot($aggregateRoot);
+
+        if (! $repositoryAggregateType->equals($arType)) {
+            throw new \InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
+        }
+
+        $streamName = $this->buildStreamName($repositoryAggregateType);
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
@@ -66,14 +75,22 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
     }
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param StreamEvent[] $streamEvents
+     * @param object $aggregateRoot
+     * @throws \InvalidArgumentException
      * @return void
      */
-    public function appendEvents(AggregateType $aggregateType, $aggregateId, array $streamEvents)
+    public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
     {
-        $streamName = $this->buildStreamName($aggregateType);
+        $arType = AggregateType::fromAggregateRoot($aggregateRoot);
+
+        if (! $repositoryAggregateType->equals($arType)) {
+            throw new \InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
+        }
+
+        $streamName = $this->buildStreamName($repositoryAggregateType);
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
@@ -86,13 +103,13 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
     }
 
     /**
-     * @param AggregateType $aggregateType
+     * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @return StreamEvent[]
      */
-    public function read(AggregateType $aggregateType, $aggregateId)
+    public function read(AggregateType $repositoryAggregateType, $aggregateId)
     {
-        $streamName = $this->buildStreamName($aggregateType);
+        $streamName = $this->buildStreamName($repositoryAggregateType);
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
@@ -110,6 +127,18 @@ class AggregateTypeStreamStrategy implements StreamStrategyInterface
         }
 
         return new StreamName($aggregateType->toString());
+    }
+
+    /**
+     * No aggregate type information stored as metadata. The repository aggregate type needs to be used.
+     *
+     * @param AggregateType $repositoryAggregateType
+     * @param StreamEvent[] $streamEvents
+     * @return AggregateType
+     */
+    public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)
+    {
+        return $repositoryAggregateType;
     }
 }
  

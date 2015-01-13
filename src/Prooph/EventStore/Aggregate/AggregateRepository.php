@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStore\Aggregate;
 
+use Assert\Assertion;
 use Prooph\EventStore\Aggregate\Exception\AggregateTypeException;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\StreamStrategyInterface;
@@ -88,19 +89,35 @@ class AggregateRepository
 
         $streamEvents = $this->aggregateTranslator->extractPendingStreamEvents($anEventSourcedAggregateRoot);
 
-        $this->streamStrategy->add($this->aggregateType, $aggregateId, $streamEvents);
+        $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $streamEvents, $anEventSourcedAggregateRoot);
+
+        $this->identityMap[$aggregateId] = $anEventSourcedAggregateRoot;
     }
 
     /**
+     * Returns null if no stream events can be found for aggregate root otherwise the reconstituted aggregate root
+     *
      * @param string $anAggregateId
-     * @return object
+     * @return null|object
      */
     public function getAggregateRoot($anAggregateId)
     {
+        Assertion::string($anAggregateId, 'AggregateId needs to be string');
+
+        if (isset($this->identityMap[$anAggregateId])) {
+            return $this->identityMap[$anAggregateId];
+        }
+
         $streamEvents = $this->streamStrategy->read($this->aggregateType, $anAggregateId);
 
+        if (count($streamEvents) === 0) {
+            return null;
+        }
+
+        $aggregateType = $this->streamStrategy->getAggregateRootType($this->aggregateType, $streamEvents);
+
         $anEventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory(
-            $this->aggregateType,
+            $aggregateType,
             $streamEvents
         );
 
@@ -120,7 +137,8 @@ class AggregateRepository
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
                     $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
-                    $pendingStreamEvents
+                    $pendingStreamEvents,
+                    $eventSourcedAggregateRoot
                 );
             }
         }
