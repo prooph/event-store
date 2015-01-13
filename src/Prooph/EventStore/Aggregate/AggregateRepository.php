@@ -58,7 +58,7 @@ class AggregateRepository
         EventStore $eventStore,
         AggregateTranslatorInterface $aggregateTranslator,
         StreamStrategyInterface $streamStrategy,
-        AggregateType $aggregateType = null
+        AggregateType $aggregateType
     ) {
         $this->eventStore = $eventStore;
 
@@ -84,26 +84,23 @@ class AggregateRepository
             );
         }
 
-        $aggregateType = $this->getAggregateType($anEventSourcedAggregateRoot);
-
         $aggregateId = $this->aggregateTranslator->extractAggregateId($anEventSourcedAggregateRoot);
 
         $streamEvents = $this->aggregateTranslator->extractPendingStreamEvents($anEventSourcedAggregateRoot);
 
-        $this->streamStrategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->streamStrategy->add($this->aggregateType, $aggregateId, $streamEvents);
     }
 
     /**
-     * @param AggregateType $anAggregateType
      * @param string $anAggregateId
      * @return object
      */
-    public function getAggregateRoot(AggregateType $anAggregateType, $anAggregateId)
+    public function getAggregateRoot($anAggregateId)
     {
-        $streamEvents = $this->streamStrategy->read($anAggregateType, $anAggregateId);
+        $streamEvents = $this->streamStrategy->read($this->aggregateType, $anAggregateId);
 
         $anEventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory(
-            $anAggregateType,
+            $this->aggregateType,
             $streamEvents
         );
 
@@ -120,32 +117,13 @@ class AggregateRepository
 
             if (count($pendingStreamEvents)) {
 
-                $aggregateType = $this->getAggregateType($eventSourcedAggregateRoot);
-
                 $this->streamStrategy->appendEvents(
-                    $aggregateType,
+                    $this->aggregateType,
                     $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
                     $pendingStreamEvents
                 );
             }
         }
-    }
-
-    /**
-     * @param $eventSourcedAggregateRoot
-     * @return AggregateType
-     */
-    protected function getAggregateType($eventSourcedAggregateRoot)
-    {
-        if (! is_null($this->aggregateType)) {
-            return $this->aggregateType;
-        }
-
-        if ($eventSourcedAggregateRoot instanceof AggregateTypeProviderInterface) {
-            return $eventSourcedAggregateRoot->aggregateType();
-        }
-
-        return new AggregateType(get_class($eventSourcedAggregateRoot));
     }
 }
  

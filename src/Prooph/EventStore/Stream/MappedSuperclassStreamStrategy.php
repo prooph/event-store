@@ -148,7 +148,7 @@ class MappedSuperclassStreamStrategy implements StreamStrategyInterface
     private function getSuperclassAggregateTypeChanger()
     {
         if (is_null($this->superclassAggregateTypeChanger)) {
-            $this->superclassAggregateTypeChanger = new SuperclassAggregateTypeChanger("__superclass__");
+            $this->superclassAggregateTypeChanger = SuperclassAggregateTypeChanger::fromString("__superclass__");
         }
 
         return $this->superclassAggregateTypeChanger;

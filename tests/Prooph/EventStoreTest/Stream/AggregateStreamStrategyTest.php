@@ -47,7 +47,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('User');
+        $aggregateType = AggregateType::fromString('User');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -77,7 +77,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('User');
+        $aggregateType = AggregateType::fromString('User');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -123,7 +123,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = new AggregateType('User');
+        $aggregateType = AggregateType::fromString('User');
 
         $aggregateId = Uuid::uuid4()->toString();
 
