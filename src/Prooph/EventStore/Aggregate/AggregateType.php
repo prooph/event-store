@@ -101,5 +101,14 @@ class AggregateType
     {
         return $this->toString();
     }
+
+    /**
+     * @param AggregateType $other
+     * @return bool
+     */
+    public function equals(AggregateType $other)
+    {
+        return $this->toString() === $other->toString();
+    }
 }
  

@@ -99,7 +99,7 @@ class AggregateRepositoryTest extends TestCase
             $user->id()->toString()
         );
 
-        $this->assertNotSame($user, $fetchedUser);
+        $this->assertSame($user, $fetchedUser);
 
         $fetchedUser->changeName('Max Mustermann');
 

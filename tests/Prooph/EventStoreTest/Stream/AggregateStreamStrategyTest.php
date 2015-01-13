@@ -17,6 +17,7 @@ use Prooph\EventStore\Stream\EventId;
 use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStoreTest\Mock\User;
 use Prooph\EventStoreTest\TestCase;
 use Rhumsaa\Uuid\Uuid;
 
@@ -47,7 +48,9 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = AggregateType::fromString('User');
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromAggregateRoot($user);
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -61,7 +64,7 @@ class AggregateStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -77,7 +80,9 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = AggregateType::fromString('User');
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromAggregateRoot($user);
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -91,7 +96,7 @@ class AggregateStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -107,7 +112,7 @@ class AggregateStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -123,7 +128,9 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = AggregateType::fromString('User');
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromAggregateRoot($user);
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -137,7 +144,7 @@ class AggregateStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -146,6 +153,79 @@ class AggregateStreamStrategyTest extends TestCase
         $this->assertEquals(1, count($streamEvents));
 
         $this->assertInstanceOf('Prooph\EventStore\Stream\StreamEvent', $streamEvents[0]);
+
+        $this->assertTrue($aggregateType->equals($this->strategy->getAggregateRootType($aggregateType, $streamEvents)));
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function it_does_not_allow_to_create_a_new_stream_with_wrong_repository_aggregate_type()
+    {
+        $this->eventStore->beginTransaction();
+
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromString("Product");
+
+        $aggregateId = Uuid::uuid4()->toString();
+
+        $streamEvents = array(
+            new StreamEvent(
+                EventId::generate(),
+                new EventName('UserCreated'),
+                array('user_id' => $aggregateId),
+                1,
+                new \DateTime()
+            )
+        );
+
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function it_does_not_allow_to_add_stream_events_with_wrong_repository_aggregate_type()
+    {
+        $this->eventStore->beginTransaction();
+
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromAggregateRoot($user);
+
+        $aggregateId = Uuid::uuid4()->toString();
+
+        $streamEvents = array(
+            new StreamEvent(
+                EventId::generate(),
+                new EventName('UserCreated'),
+                array('user_id' => $aggregateId),
+                1,
+                new \DateTime()
+            )
+        );
+
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+
+        $streamEvents = array(
+            new StreamEvent(
+                EventId::generate(),
+                new EventName('UsernameChanged'),
+                array('name' => 'John Doe'),
+                2,
+                new \DateTime()
+            )
+        );
+
+        $this->strategy->appendEvents(AggregateType::fromString("Product"), $aggregateId, $streamEvents, $user);
     }
 }
  

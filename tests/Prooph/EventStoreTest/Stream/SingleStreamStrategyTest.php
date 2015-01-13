@@ -18,6 +18,8 @@ use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStoreTest\Mock\Product;
+use Prooph\EventStoreTest\Mock\User;
 use Prooph\EventStoreTest\TestCase;
 use Rhumsaa\Uuid\Uuid;
 
@@ -54,7 +56,9 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = AggregateType::fromString('User');
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromString('SuperUser');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -68,7 +72,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -77,6 +81,10 @@ class SingleStreamStrategyTest extends TestCase
         $this->assertInstanceOf('Prooph\EventStore\Stream\Stream', $stream);
 
         $this->assertEquals(1, count($stream->streamEvents()));
+
+        $arType = $this->strategy->getAggregateRootType($aggregateType, $stream->streamEvents());
+
+        $this->assertEquals('Prooph\EventStoreTest\Mock\User', $arType->toString());
     }
 
     /**
@@ -86,7 +94,9 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = AggregateType::fromString('User');
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromString('SuperUser');
 
         $aggregateId = Uuid::uuid4()->toString();
 
@@ -100,7 +110,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -116,7 +126,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents, $user);
 
         $this->eventStore->commit();
 
@@ -127,6 +137,8 @@ class SingleStreamStrategyTest extends TestCase
         //Create a second aggregate
 
         $this->eventStore->beginTransaction();
+
+        $product = new Product();
 
         $aggregateType = AggregateType::fromString('Product');
 
@@ -142,7 +154,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId, $streamEvents);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $product);
 
         $this->eventStore->commit();
 
@@ -158,7 +170,9 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateType = AggregateType::fromString('User');
+        $user = new User("John Doe", "doe@test.com");
+
+        $aggregateType = AggregateType::fromString('Object');
 
         $aggregateId1 = Uuid::uuid4()->toString();
 
@@ -172,7 +186,9 @@ class SingleStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId1, $streamEvents1);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId1, $streamEvents1, $user);
+
+        $product = new Product();
 
         $aggregateId2 = Uuid::uuid4()->toString();
 
@@ -186,17 +202,21 @@ class SingleStreamStrategyTest extends TestCase
             )
         );
 
-        $this->strategy->add($aggregateType, $aggregateId2, $streamEvents2);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId2, $streamEvents2, $product);
 
         $this->eventStore->commit();
 
-        $streamEvents = $this->strategy->read($aggregateType, $aggregateId1);
+        $streamEvents = $this->strategy->read($aggregateType, $aggregateId2);
 
         $this->assertEquals(1, count($streamEvents));
 
         $this->assertInstanceOf('Prooph\EventStore\Stream\StreamEvent', $streamEvents[0]);
 
-        $this->assertEquals($aggregateId1, $streamEvents[0]->payload()['user_id']);
+        $this->assertEquals($aggregateId2, $streamEvents[0]->payload()['product_id']);
+
+        $arType = $this->strategy->getAggregateRootType($aggregateType, $streamEvents);
+
+        $this->assertEquals('Prooph\EventStoreTest\Mock\Product', $arType->toString());
     }
 }
  
