@@ -82,7 +82,9 @@ class SingleStreamStrategyTest extends TestCase
 
         $this->assertEquals(1, count($stream->streamEvents()));
 
-        $arType = $this->strategy->getAggregateRootType($aggregateType, $stream->streamEvents());
+        $events = $stream->streamEvents();
+
+        $arType = $this->strategy->getAggregateRootType($aggregateType, $events);
 
         $this->assertEquals('Prooph\EventStoreTest\Mock\User', $arType->toString());
     }
