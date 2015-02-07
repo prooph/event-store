@@ -5,14 +5,12 @@ PHP 5.4+ EventStore Implementation.
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 [![Coverage Status](https://img.shields.io/coveralls/prooph/event-store.svg)](https://coveralls.io/r/prooph/event-store?branch=master)
 
-# About Prooph Software
+# The Heart Of Prooph Link
 
-Prooph is the organisation behind [gingerframework](https://github.com/gingerframework/gingerframework) - a workflow framework written in PHP.
-The founder and lead developer is [codeliner](https://github.com/codeliner). Prooph provides CQRS+ES infrastructure components for the gingerframework.
-The components are split into 3 major libraries [ProophServiceBus](https://github.com/prooph/service-bus), [ProophEventSourcing](https://github.com/prooph/event-sourcing),
-[ProophEventStore](https://github.com/prooph/event-store) and various minor libraries which add additional features or provide support for other frameworks.
-The public APIs of the major components are stable. They are loosely coupled among each other and with the gingerframework, so you can mix and match them with
-other libraries.
+Prooph software GmbH is maintaining the open source software [prooph link](https://github.com/prooph/link),
+a data linking and workflow processing application based on PHP 5.5+ and some great libraries from the PHP universe.
+Four of these libraries are developed and maintained directly by us. ProophEventStore is one of them. The others are
+[ProophEventSourcing](https://github.com/prooph/event-sourcing), [ProophServiceBus](https://github.com/prooph/service-bus) and [prooph processing](https://github.com/prooph/processing).
 
 # Installation
 
