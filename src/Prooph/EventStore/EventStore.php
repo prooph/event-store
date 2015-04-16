@@ -42,7 +42,7 @@ class EventStore
     protected $persistenceEvents;
 
     /**
-     * @var array
+     * @var StreamEvent[]
      */
     protected $recordedEvents = array();
 
@@ -71,6 +71,14 @@ class EventStore
     public function getAdapter()
     {
         return $this->adapter;
+    }
+
+    /**
+     * @return StreamEvent[]
+     */
+    public function getRecordedEvents()
+    {
+        return $this->recordedEvents;
     }
 
     /**
@@ -107,7 +115,7 @@ class EventStore
 
     /**
      * @param StreamName $aStreamName
-     * @param array $streamEvents
+     * @param StreamEvent[] $streamEvents
      * @throws Exception\RuntimeException
      * @return void
      */
