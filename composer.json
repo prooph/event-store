@@ -22,7 +22,7 @@
         "zf2"
     ],
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "rhumsaa/uuid" : "~2.5",
         "beberlei/assert": "~2.0",
         "prooph/common" : "~1.5"

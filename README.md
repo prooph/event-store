@@ -1,6 +1,6 @@
 ProophEventStore
 ===================
-PHP 5.4+ EventStore Implementation.
+PHP 5.5+ EventStore Implementation.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 [![Coverage Status](https://img.shields.io/coveralls/prooph/event-store.svg)](https://coveralls.io/r/prooph/event-store?branch=master)
@@ -14,7 +14,7 @@ Four of these libraries are developed and maintained directly by us. ProophEvent
 
 # Installation
 
-You can install ProophEventStore via composer by adding `"prooph/event-store": "~1.0"` as requirement to your composer.json.
+You can install ProophEventStore via composer by adding `"prooph/event-store": "~3.0"` as requirement to your composer.json.
 
 
 #Features
@@ -43,7 +43,7 @@ Each aggregate repository can work with another stream strategy to offer you max
 
 ProophEventStore wants to get out of your way as much as it can. To achieve this goal it requires neither a specific aggregate implementation
 nor a domain event implementation. Instead it uses translation adapters which are responsible for translating recorded domain events to [StreamEvents](src/Prooph/EventStore/Stream/StreamEvent.php) and
-to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslatorInterface.php) for your aggregates or you use
+to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslator.php) for your aggregates or you use
 [ProophEventSourcing](https://github.com/prooph/event-sourcing) that has a ready-to-use [AggregateTranslator](https://github.com/prooph/event-sourcing/blob/master/src/Prooph/EventSourcing/EventStoreIntegration/AggregateTranslator.php) on board.
 
 ** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.
