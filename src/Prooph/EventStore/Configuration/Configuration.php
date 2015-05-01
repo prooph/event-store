@@ -9,6 +9,9 @@
 namespace Prooph\EventStore\Configuration;
 
 use Assert\Assertion;
+use Prooph\Common\Event\ActionEventDispatcher;
+use Prooph\Common\Event\ZF2\Zf2ActionEvent;
+use Prooph\Common\Event\ZF2\Zf2ActionEventDispatcher;
 use Prooph\Common\ServiceLocator\ServiceLocator;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
@@ -38,6 +41,11 @@ class Configuration
      * @var ServiceLocator
      */
     protected $featureManager;
+
+    /**
+     * @var ActionEventDispatcher
+     */
+    protected $actionEventDispatcher;
 
     /**
      * @var array
@@ -163,5 +171,25 @@ class Configuration
     public function setFeatureManager(ServiceLocator $featureManager)
     {
         $this->featureManager = $featureManager;
+    }
+
+    /**
+     * @return ActionEventDispatcher
+     */
+    public function getActionEventDispatcher()
+    {
+        if (is_null($this->actionEventDispatcher)) {
+            $this->actionEventDispatcher = new Zf2ActionEventDispatcher();
+        }
+
+        return $this->actionEventDispatcher;
+    }
+
+    /**
+     * @param ActionEventDispatcher $actionEventDispatcher
+     */
+    public function setActionEventDispatcher(ActionEventDispatcher $actionEventDispatcher)
+    {
+        $this->actionEventDispatcher = $actionEventDispatcher;
     }
 }

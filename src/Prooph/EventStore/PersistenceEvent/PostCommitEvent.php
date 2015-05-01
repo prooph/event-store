@@ -12,8 +12,8 @@
 namespace Prooph\EventStore\PersistenceEvent;
 
 use Prooph\Common\Event\ZF2\Zf2ActionEvent;
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\StreamEvent;
 
 /**
  * Class PostCommitEvent
@@ -32,7 +32,7 @@ class PostCommitEvent extends Zf2ActionEvent
     }
 
     /**
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
     public function getRecordedEvents()
     {

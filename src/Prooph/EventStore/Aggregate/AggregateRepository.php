@@ -63,7 +63,7 @@ class AggregateRepository
     ) {
         $this->eventStore = $eventStore;
 
-        $this->eventStore->getPersistenceEvents()->attach('commit.pre', array($this, 'onPreCommit'));
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.pre', array($this, 'onPreCommit'));
 
         $this->aggregateTranslator = $aggregateTranslator;
         $this->streamStrategy = $streamStrategy;

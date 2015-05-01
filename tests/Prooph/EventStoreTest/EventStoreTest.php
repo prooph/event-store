@@ -11,15 +11,10 @@
 
 namespace Prooph\EventStoreTest;
 
-use Prooph\EventStore\Adapter\InMemoryAdapter;
-use Prooph\EventStore\Configuration\Configuration;
-use Prooph\EventStore\EventStore;
+use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 use Prooph\EventStore\Stream\DomainEventMetadataWriter;
-use Prooph\EventStore\Stream\EventId;
-use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\TestDomainEvent;
 use Prooph\EventStoreTest\Mock\UserCreated;
@@ -41,7 +36,7 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getPersistenceEvents()->attach('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
@@ -71,13 +66,13 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getPersistenceEvents()->attach('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
 
-        $this->eventStore->getPersistenceEvents()->attach('create.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('create.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -109,7 +104,7 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getPersistenceEvents()->attach('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
@@ -142,7 +137,7 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getPersistenceEvents()->attach('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
@@ -154,7 +149,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getPersistenceEvents()->attach('appendTo.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('appendTo.pre', function (Event $event) {
             $event->stopPropagation(true);
         });
 
@@ -297,7 +292,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getPersistenceEvents()->attach('loadEventsByMetadataFrom.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -332,7 +327,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getPersistenceEvents()->attach('loadEventsByMetadataFrom.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
             $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
                 array('new_name' => 'John Doe'),
                 1
@@ -364,7 +359,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getPersistenceEvents()->attach('load.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -386,7 +381,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getPersistenceEvents()->attach('load.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (Event $event) {
             $event->setParam('stream', new Stream(new StreamName('EmptyStream'), array()));
             $event->stopPropagation(true);
         });
@@ -409,7 +404,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getPersistenceEvents()->attach('load.pre', function (Event $event) {
+        $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (ActionEvent $event) {
             $event->setParam('stream', new Stream(new StreamName('user'), array()));
             $event->stopPropagation(true);
         });

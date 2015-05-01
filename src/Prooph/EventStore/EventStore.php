@@ -9,6 +9,7 @@
 namespace Prooph\EventStore;
 
 use Assert\Assertion;
+use Prooph\Common\Event\ActionEventDispatcher;
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
@@ -19,8 +20,6 @@ use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
-use Zend\EventManager\Event;
-use Zend\EventManager\EventManager;
 
 /**
  * EventStore 
@@ -37,9 +36,9 @@ class EventStore
     protected $adapter;
 
     /**
-     * @var EventManager
+     * @var ActionEventDispatcher
      */
-    protected $persistenceEvents;
+    protected $actionEventDispatcher;
 
     /**
      * @var DomainEvent[]
@@ -59,6 +58,7 @@ class EventStore
     public function __construct(Configuration $config)
     {
         $this->adapter = $config->getAdapter();
+        $this->actionEventDispatcher = $config->getActionEventDispatcher();
 
         $config->setUpEventStoreEnvironment($this);
     }
@@ -82,9 +82,9 @@ class EventStore
     {
         $argv = array('stream' => $stream);
 
-        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->actionEventDispatcher->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return;
@@ -102,7 +102,7 @@ class EventStore
 
         $event->setName(__FUNCTION__ . '.post');
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->actionEventDispatcher->dispatch($event);
     }
 
     /**
@@ -119,9 +119,9 @@ class EventStore
 
         $argv = array('streamName' => $streamName, 'streamEvents' => $streamEvents);
 
-        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return;
@@ -140,7 +140,7 @@ class EventStore
 
         $event->setName(__FUNCTION__, '.post');
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
     }
 
     /**
@@ -153,9 +153,9 @@ class EventStore
     {
         $argv = array('streamName' => $streamName, 'minVersion' => $minVersion);
 
-        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
 
@@ -192,7 +192,7 @@ class EventStore
 
         $event->setParam('stream', $stream);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             throw new StreamNotFoundException(
@@ -216,9 +216,9 @@ class EventStore
     {
         $argv = array('streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion);
 
-        $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return $event->getParam('streamEvents', array());
@@ -234,7 +234,7 @@ class EventStore
 
         $event->setParam('streamEvents', $events);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return array();
@@ -260,7 +260,9 @@ class EventStore
 
         $this->inTransaction = true;
 
-        $this->getPersistenceEvents()->trigger(__FUNCTION__, $this);
+        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__, $this);
+
+        $this->getActionEventDispatcher()->dispatch($event);
     }
 
     /**
@@ -277,7 +279,7 @@ class EventStore
 
         $event = new PreCommitEvent(__FUNCTION__ . '.pre', $this);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             $this->rollback();
@@ -294,7 +296,7 @@ class EventStore
 
         $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
 
-        $this->getPersistenceEvents()->trigger($event);
+        $this->getActionEventDispatcher()->dispatch($event);
 
         $this->recordedEvents = array();
     }
@@ -316,34 +318,18 @@ class EventStore
 
         $this->inTransaction = false;
 
-        $this->getPersistenceEvents()->trigger(__FUNCTION__, $this);
+        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__, $this);
+
+        $this->actionEventDispatcher->dispatch($event);
 
         $this->recordedEvents = array();
     }
 
     /**
-     * @return EventManager
+     * @return ActionEventDispatcher
      */
-    public function getPersistenceEvents()
+    public function getActionEventDispatcher()
     {
-        if (is_null($this->persistenceEvents)) {
-            $this->setPersistenceEvents(new EventManager());
-        }
-
-        return $this->persistenceEvents;
-    }
-
-    /**
-     * @param EventManager $anEventManager
-     */
-    public function setPersistenceEvents(EventManager $anEventManager)
-    {
-        $anEventManager->setIdentifiers(array(
-            'prooph_event_store',
-            __CLASS__,
-            get_called_class()
-        ));
-
-        $this->persistenceEvents = $anEventManager;
+        return $this->actionEventDispatcher;
     }
 }
