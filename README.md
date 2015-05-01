@@ -5,18 +5,6 @@ PHP 5.5+ EventStore Implementation.
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 [![Coverage Status](https://img.shields.io/coveralls/prooph/event-store.svg)](https://coveralls.io/r/prooph/event-store?branch=master)
 
-# The Heart Of Prooph Link
-
-Prooph software GmbH is maintaining the open source software [prooph link](https://github.com/prooph/link),
-a data linking and workflow processing application based on PHP 5.5+ and some great libraries from the PHP universe.
-Four of these libraries are developed and maintained directly by us. ProophEventStore is one of them. The others are
-[ProophEventSourcing](https://github.com/prooph/event-sourcing), [ProophServiceBus](https://github.com/prooph/service-bus) and [prooph processing](https://github.com/prooph/processing).
-
-# Installation
-
-You can install ProophEventStore via composer by adding `"prooph/event-store": "~3.0"` as requirement to your composer.json.
-
-
 #Features
 
 ProophEventStore is capable of persisting event objects that are organized in streams. The [EventStore](src/Prooph/EventStore/EventStore.php)
@@ -24,6 +12,10 @@ itself is a facade for different persistence adapters (check the list below) and
 Features can provide additional functionality like publishing persisted events on an event bus or validate events before they are stored.
 ProophEventStore ships with different strategies to organize event streams and a base repository implementation for event sourced aggregate roots.
 Each aggregate repository can work with another stream strategy to offer you maximum flexibility.
+
+# Installation
+
+You can install ProophEventStore via composer by adding `"prooph/event-store": "~3.0"` as requirement to your composer.json.
 
 
 # Available Persistence Adapters
@@ -44,7 +36,7 @@ Each aggregate repository can work with another stream strategy to offer you max
 ProophEventStore wants to get out of your way as much as it can. To achieve this goal it requires neither a specific aggregate implementation
 nor a domain event implementation. Instead it uses translation adapters which are responsible for translating custom domain events to [Prooph\Common\Messaging\DomainEvent](https://github.com/prooph/common/blob/master/src/Messaging/DomainEvent.php) and
 to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslator.php) for your aggregates or you use
-[ProophEventSourcing](https://github.com/prooph/event-sourcing) which has build in support for prooph domain events.
+[ProophEventSourcing](https://github.com/prooph/event-sourcing) which has build in support for prooph/event-store.
 
 ** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.
 
