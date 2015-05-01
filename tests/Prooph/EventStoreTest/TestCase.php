@@ -9,7 +9,7 @@
 namespace Prooph\EventStoreTest;
 
 use Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature;
-use Prooph\EventStore\Adapter\AdapterInterface;
+use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter;
 use Prooph\EventStore\Configuration\Configuration;

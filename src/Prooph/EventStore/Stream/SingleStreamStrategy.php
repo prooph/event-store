@@ -32,7 +32,7 @@ use Prooph\EventStore\EventStore;
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class SingleStreamStrategy implements StreamStrategyInterface
+class SingleStreamStrategy implements StreamStrategy
 {
     /**
      * @var EventStore

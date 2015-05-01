@@ -39,7 +39,7 @@ class AggregateType
             );
         }
 
-        if ($eventSourcedAggregateRoot instanceof AggregateTypeProviderInterface) {
+        if ($eventSourcedAggregateRoot instanceof AggregateTypeProvider) {
             return $eventSourcedAggregateRoot->aggregateType();
         }
 

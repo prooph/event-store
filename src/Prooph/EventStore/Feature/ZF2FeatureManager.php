@@ -11,19 +11,20 @@
 
 namespace Prooph\EventStore\Feature;
 
+use Prooph\Common\ServiceLocator\ServiceLocator;
 use Prooph\EventStore\Exception\RuntimeException;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;
 
 /**
- * Class FeatureManager
+ * Class ZF2FeatureManager
  *
- * @method FeatureInterface get($name) Get Feature by name or alias
+ * @method Feature get($name) Get Feature by name or alias
  *
  * @package Prooph\EventStore\Feature
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class FeatureManager extends AbstractPluginManager
+class ZF2FeatureManager extends AbstractPluginManager implements ServiceLocator
 {
     /**
      * Validate the plugin
@@ -37,13 +38,22 @@ class FeatureManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if (! $plugin instanceof FeatureInterface) {
+        if (! $plugin instanceof Feature) {
             throw new RuntimeException(sprintf(
                 'Feature must be instance of Prooph\EventStore\Feature\FeatureInterface,'
                 . 'instance of type %s given',
                 ((is_object($plugin)? get_class($plugin) : gettype($plugin)))
             ));
         }
+    }
+
+    /**
+     * @param string $serviceName
+     * @param mixed $service
+     */
+    public function set($serviceName, $service)
+    {
+        $this->setService($serviceName, $service);
     }
 }
  

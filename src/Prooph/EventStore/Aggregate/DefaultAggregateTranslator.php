@@ -20,7 +20,7 @@ use Prooph\EventStore\Stream\StreamEvent;
  * @package Prooph\EventStore\Aggregate
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class DefaultAggregateTranslator implements AggregateTranslatorInterface
+class DefaultAggregateTranslator implements AggregateTranslator
 {
     /**
      * @param object $anEventSourcedAggregateRoot

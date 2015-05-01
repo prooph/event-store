@@ -14,12 +14,12 @@ namespace Prooph\EventStore\Aggregate;
 use Prooph\EventStore\Stream\StreamEvent;
 
 /**
- * Interface AggregateTranslatorInterface
+ * Interface AggregateTranslator
  *
  * @package Prooph\EventStore\Aggregate
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-interface AggregateTranslatorInterface 
+interface AggregateTranslator
 {
     /**
      * @param object $anEventSourcedAggregateRoot

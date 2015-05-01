@@ -11,9 +11,9 @@
 
 namespace Prooph\EventStore\PersistenceEvent;
 
+use Prooph\Common\Event\ZF2\Zf2ActionEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\StreamEvent;
-use Zend\EventManager\Event;
 
 /**
  * Class PostCommitEvent
@@ -21,7 +21,7 @@ use Zend\EventManager\Event;
  * @package Prooph\EventStore\PersistenceEvent
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class PostCommitEvent extends Event
+class PostCommitEvent extends Zf2ActionEvent
 {
     /**
      * @return EventStore

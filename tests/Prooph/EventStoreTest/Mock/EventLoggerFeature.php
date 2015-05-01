@@ -12,7 +12,7 @@
 namespace Prooph\EventStoreTest\Mock;
 
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Feature\FeatureInterface;
+use Prooph\EventStore\Feature\Feature;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 use Prooph\EventStore\Stream\StreamEvent;
 
@@ -22,7 +22,7 @@ use Prooph\EventStore\Stream\StreamEvent;
  * @package Prooph\EventStoreTest\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class EventLoggerFeature implements FeatureInterface
+class EventLoggerFeature implements Feature
 {
     /**
      * @var StreamEvent[]

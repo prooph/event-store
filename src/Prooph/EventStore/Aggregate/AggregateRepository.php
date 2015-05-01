@@ -14,7 +14,7 @@ namespace Prooph\EventStore\Aggregate;
 use Assert\Assertion;
 use Prooph\EventStore\Aggregate\Exception\AggregateTypeException;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\StreamStrategyInterface;
+use Prooph\EventStore\Stream\StreamStrategy;
 
 /**
  * Class AggregateRepository
@@ -30,12 +30,12 @@ class AggregateRepository
     protected $eventStore;
 
     /**
-     * @var StreamStrategyInterface
+     * @var StreamStrategy
      */
     protected $streamStrategy;
 
     /**
-     * @var AggregateTranslatorInterface
+     * @var AggregateTranslator
      */
     protected $aggregateTranslator;
 
@@ -51,14 +51,14 @@ class AggregateRepository
 
     /**
      * @param EventStore $eventStore
-     * @param AggregateTranslatorInterface $aggregateTranslator
-     * @param StreamStrategyInterface $streamStrategy
+     * @param AggregateTranslator $aggregateTranslator
+     * @param StreamStrategy $streamStrategy
      * @param AggregateType $aggregateType
      */
     public function __construct(
         EventStore $eventStore,
-        AggregateTranslatorInterface $aggregateTranslator,
-        StreamStrategyInterface $streamStrategy,
+        AggregateTranslator $aggregateTranslator,
+        StreamStrategy $streamStrategy,
         AggregateType $aggregateType
     ) {
         $this->eventStore = $eventStore;

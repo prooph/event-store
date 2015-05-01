@@ -14,12 +14,12 @@ namespace Prooph\EventStore\Stream;
 use Prooph\EventStore\Aggregate\AggregateType;
 
 /**
- * Interface StreamStrategyInterface
+ * Interface StreamStrategy
  *
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-interface StreamStrategyInterface 
+interface StreamStrategy
 {
     /**
      * @param AggregateType $repositoryAggregateType
@@ -42,9 +42,10 @@ interface StreamStrategyInterface
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
+     * @param null|int $minVersion
      * @return StreamEvent[]
      */
-    public function read(AggregateType $repositoryAggregateType, $aggregateId);
+    public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null);
 
     /**
      * A stream strategy can provide another AggregateType that should be used to reconstitute the aggregate root.

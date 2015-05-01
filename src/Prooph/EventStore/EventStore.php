@@ -9,8 +9,8 @@
 namespace Prooph\EventStore;
 
 use Assert\Assertion;
-use Prooph\EventStore\Adapter\AdapterInterface;
-use Prooph\EventStore\Adapter\Feature\TransactionFeatureInterface;
+use Prooph\EventStore\Adapter\Adapter;
+use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
@@ -32,7 +32,7 @@ class EventStore
 {
     /**
      *
-     * @var AdapterInterface 
+     * @var Adapter
      */
     protected $adapter;
 
@@ -66,7 +66,7 @@ class EventStore
     /**
      * Get the active EventStoreAdapter
      * 
-     * @return AdapterInterface
+     * @return Adapter
      */
     public function getAdapter()
     {
@@ -254,7 +254,7 @@ class EventStore
             throw new RuntimeException('Can not begin transaction. EventStore is already in a transaction');
         }
 
-        if ($this->adapter instanceof TransactionFeatureInterface) {
+        if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
         }
 
@@ -284,7 +284,7 @@ class EventStore
             return;
         }
 
-        if ($this->adapter instanceof TransactionFeatureInterface) {
+        if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->commit();
         }
 
@@ -310,7 +310,7 @@ class EventStore
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
-        if ($this->adapter instanceof TransactionFeatureInterface) {
+        if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->rollback();
         }
 

@@ -24,7 +24,7 @@ use Prooph\EventStore\EventStore;
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class AggregateStreamStrategy implements StreamStrategyInterface
+class AggregateStreamStrategy implements StreamStrategy
 {
     /**
      * @var EventStore

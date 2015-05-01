@@ -9,10 +9,12 @@
 namespace Prooph\EventStore\Configuration;
 
 use Assert\Assertion;
-use Prooph\EventStore\Adapter\AdapterInterface;
+use Prooph\Common\ServiceLocator\ServiceLocator;
+use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Feature\FeatureManager;
+use Prooph\EventStore\Feature\Feature;
+use Prooph\EventStore\Feature\ZF2FeatureManager;
 use Zend\ServiceManager\Config;
 
 /**
@@ -28,12 +30,12 @@ class Configuration
     protected $config = array();
 
     /**
-     * @var AdapterInterface
+     * @var Adapter
      */
     protected $adapter;
 
     /**
-     * @var FeatureManager
+     * @var ServiceLocator
      */
     protected $featureManager;
 
@@ -54,7 +56,7 @@ class Configuration
         if (isset($config['feature_manager'])) {
             Assertion::isArray($config['feature_manager'], "EventStore.Configuration.feature_manager must be an array");
 
-            $this->featureManager = new FeatureManager(new Config($config['feature_manager']));
+            $this->featureManager = new ZF2FeatureManager(new Config($config['feature_manager']));
         }
 
         if (isset($config['features'])) {
@@ -66,18 +68,23 @@ class Configuration
 
     /**
      * @param EventStore $eventStore
+     * @throws Exception\ConfigurationException
      */
     public function setUpEventStoreEnvironment(EventStore $eventStore)
     {
         foreach ($this->featureList as $featureAlias) {
             $feature = $this->getFeatureManager()->get($featureAlias);
 
+            if (! $feature instanceof Feature) {
+                throw ConfigurationException::configurationError(sprintf('Feature %s does not implement the Feature interface', $featureAlias));
+            }
+
             $feature->setUp($eventStore);
         }
     }
     
     /**
-     * @return AdapterInterface
+     * @return Adapter
      * @throws ConfigurationException
      */
     public function getAdapter()
@@ -87,7 +94,7 @@ class Configuration
                 throw ConfigurationException::configurationError('Missing key adapter in event store configuration');
             }
 
-            if (is_object($this->config['adapter']) && $this->config['adapter'] instanceof AdapterInterface) {
+            if (is_object($this->config['adapter']) && $this->config['adapter'] instanceof Adapter) {
                 $this->adapter = $this->config['adapter'];
                 return $this->config['adapter'];
             }
@@ -120,7 +127,7 @@ class Configuration
             
             $this->adapter = new $adapterClass($adapterConfig); 
             
-            if (!$this->adapter instanceof AdapterInterface) {
+            if (!$this->adapter instanceof Adapter) {
                 throw ConfigurationException::configurationError('EventStore Adapter must be instance of Prooph\EventStore\Adapter\AdapterInterface');
             }
         } 
@@ -131,26 +138,29 @@ class Configuration
     /**
      * Set the active adapter
      *
-     * @param AdapterInterface $adapter
+     * @param Adapter $adapter
      */
-    public function setAdapter(AdapterInterface $adapter)
+    public function setAdapter(Adapter $adapter)
     {
         $this->adapter = $adapter;
     }
 
+    /**
+     * @return ServiceLocator
+     */
     public function getFeatureManager()
     {
         if (is_null($this->featureManager)) {
-            $this->featureManager = new FeatureManager();
+            $this->featureManager = new ZF2FeatureManager();
         }
 
         return $this->featureManager;
     }
 
     /**
-     * @param FeatureManager $featureManager
+     * @param ServiceLocator $featureManager
      */
-    public function setFeatureManager(FeatureManager $featureManager)
+    public function setFeatureManager(ServiceLocator $featureManager)
     {
         $this->featureManager = $featureManager;
     }

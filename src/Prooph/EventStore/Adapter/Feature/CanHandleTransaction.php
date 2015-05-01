@@ -9,11 +9,13 @@
 namespace Prooph\EventStore\Adapter\Feature;
 
 /**
- * Interface TransactionFeatureInterface
+ * Interface CanHandleTransaction
+ *
+ * An adapter implementing this interface can handle transactions.
  * 
  * @author Alexander Miertsch <contact@prooph.de>
  */
-interface TransactionFeatureInterface
+interface CanHandleTransaction
 {
     public function beginTransaction();
     

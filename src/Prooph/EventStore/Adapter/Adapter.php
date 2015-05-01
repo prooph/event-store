@@ -18,34 +18,34 @@ use Prooph\EventStore\Stream\StreamName;
  * @author Alexander Miertsch <contact@prooph.de>
  * @package Prooph\EventStore\Adapter
  */
-interface AdapterInterface
+interface Adapter
 {
     /**
-     * @param Stream $aStream
+     * @param Stream $stream
      * @return void
      */
-    public function create(Stream $aStream);
+    public function create(Stream $stream);
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param array $streamEvents
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException If stream does not exist
      * @return void
      */
-    public function appendTo(StreamName $aStreamName, array $streamEvents);
+    public function appendTo(StreamName $streamName, array $streamEvents);
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param null|int $minVersion Minimum version an event should have
      * @return Stream|null
      */
-    public function load(StreamName $aStreamName, $minVersion = null);
+    public function load(StreamName $streamName, $minVersion = null);
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param array $metadata If empty array is provided, then all events should be returned
      * @param null|int $minVersion Minimum version an event should have
      * @return StreamEvent[]
      */
-    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata, $minVersion = null);
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null);
 }

@@ -11,9 +11,8 @@
 
 namespace Prooph\EventStore\PersistenceEvent;
 
-use Prooph\EventStore\EventSourcing\EventSourcedAggregateRoot;
+use Prooph\Common\Event\ZF2\Zf2ActionEvent;
 use Prooph\EventStore\EventStore;
-use Zend\EventManager\Event;
 
 /**
  * Class PreCommitEvent
@@ -21,7 +20,7 @@ use Zend\EventManager\Event;
  * @package Prooph\EventStore\PersistenceEvent
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class PreCommitEvent extends Event
+class PreCommitEvent extends Zf2ActionEvent
 {
     /**
      * @return EventStore

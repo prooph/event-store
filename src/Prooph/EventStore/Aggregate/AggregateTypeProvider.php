@@ -6,25 +6,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  * 
- * Date: 20.04.14 - 23:57
+ * Date: 24.05.14 - 20:17
  */
 
-namespace Prooph\EventStore\Feature;
-
-use Prooph\EventStore\EventStore;
+namespace Prooph\EventStore\Aggregate;
 
 /**
- * Class FeatureInterface
+ * Interface AggregateTypeProviderInterface
  *
- * @package Prooph\EventStore\Feature
+ * @package Prooph\EventStore\EventSourcing
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-interface FeatureInterface
+interface AggregateTypeProvider
 {
     /**
-     * @param EventStore $eventStore
-     * @return void
+     * @return AggregateType
      */
-    public function setUp(EventStore $eventStore);
+    public function aggregateType();
 }
  

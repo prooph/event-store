@@ -22,54 +22,54 @@ use Prooph\EventStore\Stream\StreamName;
  * @package Prooph\EventStore\Adapter
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class InMemoryAdapter implements AdapterInterface
+class InMemoryAdapter implements Adapter
 {
     /**
-     * @var Stream[]
+     * @var array
      */
     protected $streams = array();
 
     /**
-     * @param Stream $aStream
+     * @param Stream $stream
      * @return void
      */
-    public function create(Stream $aStream)
+    public function create(Stream $stream)
     {
-        $this->streams[$aStream->streamName()->toString()] = $aStream->streamEvents();
+        $this->streams[$stream->streamName()->toString()] = $stream->streamEvents();
     }
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param array $streamEvents
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return void
      */
-    public function appendTo(StreamName $aStreamName, array $streamEvents)
+    public function appendTo(StreamName $streamName, array $streamEvents)
     {
-        if (! isset($this->streams[$aStreamName->toString()])) {
+        if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
                 sprintf(
                     'Stream with name %s cannot be found',
-                    $aStreamName->toString()
+                    $streamName->toString()
                 )
             );
         }
 
-        $this->streams[$aStreamName->toString()] = array_merge($this->streams[$aStreamName->toString()], $streamEvents);
+        $this->streams[$streamName->toString()] = array_merge($this->streams[$streamName->toString()], $streamEvents);
     }
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param null|int $minVersion
      * @return Stream|null
      */
-    public function load(StreamName $aStreamName, $minVersion = null)
+    public function load(StreamName $streamName, $minVersion = null)
     {
-        if (! isset($this->streams[$aStreamName->toString()])) {
+        if (! isset($this->streams[$streamName->toString()])) {
             return null;
         }
 
-        $streamEvents = $this->streams[$aStreamName->toString()];
+        $streamEvents = $this->streams[$streamName->toString()];
 
         if (!is_null($minVersion)) {
             $filteredEvents = array();
@@ -80,33 +80,33 @@ class InMemoryAdapter implements AdapterInterface
                 }
             }
 
-            return new Stream($aStreamName, $filteredEvents);
+            return new Stream($streamName, $filteredEvents);
         }
 
-        return new Stream($aStreamName, $streamEvents);
+        return new Stream($streamName, $streamEvents);
     }
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return StreamEvent[]
      */
-    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata, $minVersion = null)
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
         $streamEvents = array();
 
-        if (! isset($this->streams[$aStreamName->toString()])) {
+        if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
                 sprintf(
                     'Stream with name %s cannot be found',
-                    $aStreamName->toString()
+                    $streamName->toString()
                 )
             );
         }
 
-        foreach ($this->streams[$aStreamName->toString()] as $index => $streamEvent) {
+        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
                 if (is_null($minVersion) || $streamEvent->version() >= $minVersion) {
                     $streamEvents[] = $streamEvent;
