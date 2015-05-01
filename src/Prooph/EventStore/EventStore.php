@@ -74,6 +74,14 @@ class EventStore
     }
 
     /**
+     * @return DomainEvent[]
+     */
+    public function getRecordedEvents()
+    {
+        return $this->recordedEvents;
+    }
+
+    /**
      * @param Stream $stream
      * @throws Exception\RuntimeException
      * @return void
