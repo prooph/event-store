@@ -87,11 +87,12 @@ class AggregateStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $aggregateType
      * @param string $aggregateId
+     * @param null|int $minVersion
      * @return StreamEvent[]
      */
-    public function read(AggregateType $aggregateType, $aggregateId)
+    public function read(AggregateType $aggregateType, $aggregateId, $minVersion = null)
     {
-        $stream = $this->eventStore->load($this->buildStreamName($aggregateType, $aggregateId));
+        $stream = $this->eventStore->load($this->buildStreamName($aggregateType, $aggregateId), $minVersion);
 
         return $stream->streamEvents();
     }

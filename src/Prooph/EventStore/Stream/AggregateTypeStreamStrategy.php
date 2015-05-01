@@ -105,15 +105,16 @@ class AggregateTypeStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
+     * @param null|int $minVersion
      * @return StreamEvent[]
      */
-    public function read(AggregateType $repositoryAggregateType, $aggregateId)
+    public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null)
     {
         $streamName = $this->buildStreamName($repositoryAggregateType);
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        return $this->eventStore->loadEventsByMetadataFrom($streamName, array('aggregate_id' => $aggregateId));
+        return $this->eventStore->loadEventsByMetadataFrom($streamName, array('aggregate_id' => $aggregateId), $minVersion);
     }
 
     /**

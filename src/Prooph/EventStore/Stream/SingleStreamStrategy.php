@@ -100,15 +100,17 @@ class SingleStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
+     * @param null|int $minVersion
      * @return StreamEvent[]
      */
-    public function read(AggregateType $repositoryAggregateType, $aggregateId)
+    public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null)
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         return $this->eventStore->loadEventsByMetadataFrom(
             new StreamName($this->streamName),
-            array('aggregate_id' => $aggregateId)
+            array('aggregate_id' => $aggregateId),
+            $minVersion
         );
     }
 
