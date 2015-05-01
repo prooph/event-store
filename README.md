@@ -42,9 +42,9 @@ Each aggregate repository can work with another stream strategy to offer you max
 # AggregateTranslator
 
 ProophEventStore wants to get out of your way as much as it can. To achieve this goal it requires neither a specific aggregate implementation
-nor a domain event implementation. Instead it uses translation adapters which are responsible for translating recorded domain events to [StreamEvents](src/Prooph/EventStore/Stream/StreamEvent.php) and
+nor a domain event implementation. Instead it uses translation adapters which are responsible for translating custom domain events to [Prooph\Common\Messaging\DomainEvent](https://github.com/prooph/common/blob/master/src/Messaging/DomainEvent.php) and
 to reconstitute an aggregate from it's event history. You are asked to provide an [AggregateTranslator](src/Prooph/EventStore/Aggregate/AggregateTranslator.php) for your aggregates or you use
-[ProophEventSourcing](https://github.com/prooph/event-sourcing) that has a ready-to-use [AggregateTranslator](https://github.com/prooph/event-sourcing/blob/master/src/Prooph/EventSourcing/EventStoreIntegration/AggregateTranslator.php) on board.
+[ProophEventSourcing](https://github.com/prooph/event-sourcing) which has build in support for prooph domain events.
 
 ** Note ** Check the usage example to see how you can set up a repository with an AggregateTranslator.
 
@@ -54,7 +54,7 @@ Check the [example](https://github.com/prooph/event-sourcing/blob/master/example
 
 # ZF2 Integration
 
-[ProophEventStoreModule](https://github.com/prooph/ProophEventStoreModule) seamlessly integrates ProophEventStore with a ZF2 application.
+[prooph/proophessor](https://github.com/prooph/proophessor) seamlessly integrates ProophEventStore with a ZF2 application.
 
 
 # Support

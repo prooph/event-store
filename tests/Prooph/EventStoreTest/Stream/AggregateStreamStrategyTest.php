@@ -11,13 +11,13 @@
 
 namespace Prooph\EventStoreTest\Stream;
 
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Stream\AggregateStreamStrategy;
-use Prooph\EventStore\Stream\EventId;
-use Prooph\EventStore\Stream\EventName;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
+use Prooph\EventStoreTest\Mock\UserCreated;
+use Prooph\EventStoreTest\Mock\UsernameChanged;
 use Prooph\EventStoreTest\TestCase;
 use Rhumsaa\Uuid\Uuid;
 
@@ -55,12 +55,9 @@ class AggregateStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -87,12 +84,9 @@ class AggregateStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -103,12 +97,9 @@ class AggregateStreamStrategyTest extends TestCase
         $this->eventStore->beginTransaction();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UsernameChanged'),
+            UsernameChanged::with(
                 array('name' => 'John Doe'),
-                2,
-                new \DateTime()
+                2
             )
         );
 
@@ -135,12 +126,9 @@ class AggregateStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -152,7 +140,7 @@ class AggregateStreamStrategyTest extends TestCase
 
         $this->assertEquals(1, count($streamEvents));
 
-        $this->assertInstanceOf('Prooph\EventStore\Stream\StreamEvent', $streamEvents[0]);
+        $this->assertInstanceOf(DomainEvent::class, $streamEvents[0]);
 
         $this->assertTrue($aggregateType->equals($this->strategy->getAggregateRootType($aggregateType, $streamEvents)));
     }
@@ -172,12 +160,9 @@ class AggregateStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -200,12 +185,9 @@ class AggregateStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -216,12 +198,9 @@ class AggregateStreamStrategyTest extends TestCase
         $this->eventStore->beginTransaction();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UsernameChanged'),
+            UsernameChanged::with(
                 array('name' => 'John Doe'),
-                2,
-                new \DateTime()
+                2
             )
         );
 

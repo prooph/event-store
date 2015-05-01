@@ -87,9 +87,9 @@ class AggregateRepository
 
         $aggregateId = $this->aggregateTranslator->extractAggregateId($anEventSourcedAggregateRoot);
 
-        $streamEvents = $this->aggregateTranslator->extractPendingStreamEvents($anEventSourcedAggregateRoot);
+        $domainEvents = $this->aggregateTranslator->extractPendingStreamEvents($anEventSourcedAggregateRoot);
 
-        $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $streamEvents, $anEventSourcedAggregateRoot);
+        $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $domainEvents, $anEventSourcedAggregateRoot);
 
         $this->identityMap[$aggregateId] = $anEventSourcedAggregateRoot;
     }

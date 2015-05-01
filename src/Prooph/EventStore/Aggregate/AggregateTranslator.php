@@ -10,8 +10,7 @@
  */
 
 namespace Prooph\EventStore\Aggregate;
-
-use Prooph\EventStore\Stream\StreamEvent;
+use Prooph\Common\Messaging\DomainEvent;
 
 /**
  * Interface AggregateTranslator
@@ -29,14 +28,14 @@ interface AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     * @param StreamEvent[] $historyEvents
+     * @param DomainEvent[] $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
     public function reconstituteAggregateFromHistory(AggregateType $aggregateType, array $historyEvents);
 
     /**
      * @param object $anEventSourcedAggregateRoot
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
     public function extractPendingStreamEvents($anEventSourcedAggregateRoot);
 }

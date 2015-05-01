@@ -17,7 +17,7 @@ namespace Prooph\EventStoreTest\Mock;
  * @package Prooph\EventStoreTest\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class UsernameChanged extends DomainEvent
+class UsernameChanged extends TestDomainEvent
 {
 }
  

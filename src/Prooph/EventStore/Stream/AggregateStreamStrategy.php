@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 
@@ -49,7 +50,7 @@ class AggregateStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @param object $aggregateRoot
      * @throws \InvalidArgumentException
      * @return void
@@ -68,7 +69,7 @@ class AggregateStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @param object $aggregateRoot
      * @throws \InvalidArgumentException
      * @return void
@@ -88,7 +89,7 @@ class AggregateStreamStrategy implements StreamStrategy
      * @param AggregateType $aggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
     public function read(AggregateType $aggregateType, $aggregateId, $minVersion = null)
     {
@@ -116,7 +117,7 @@ class AggregateStreamStrategy implements StreamStrategy
      * No aggregate type information stored as metadata. The repository aggregate type needs to be used.
      *
      * @param AggregateType $repositoryAggregateType
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @return AggregateType
      */
     public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)

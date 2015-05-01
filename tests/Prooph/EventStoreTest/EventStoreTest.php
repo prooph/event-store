@@ -15,11 +15,15 @@ use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
+use Prooph\EventStore\Stream\DomainEventMetadataWriter;
 use Prooph\EventStore\Stream\EventId;
 use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStoreTest\Mock\TestDomainEvent;
+use Prooph\EventStoreTest\Mock\UserCreated;
+use Prooph\EventStoreTest\Mock\UsernameChanged;
 use Zend\EventManager\Event;
 
 /**
@@ -117,12 +121,9 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $secondStreamEvent = new StreamEvent(
-            EventId::generate(),
-            new EventName('UsernameChanged'),
+        $secondStreamEvent = UsernameChanged::with(
             array('new_name' => 'John Doe'),
-            2,
-            new \DateTime()
+            2
         );
 
         $this->eventStore->beginTransaction();
@@ -157,12 +158,9 @@ class EventStoreTest extends TestCase
             $event->stopPropagation(true);
         });
 
-        $secondStreamEvent = new StreamEvent(
-            EventId::generate(),
-            new EventName('UsernameChanged'),
+        $secondStreamEvent = UsernameChanged::with(
             array('new_name' => 'John Doe'),
-            2,
-            new \DateTime()
+            2
         );
 
         $this->eventStore->beginTransaction();
@@ -205,16 +203,12 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $streamEventWithMetadata = new StreamEvent(
-            EventId::generate(),
-            new EventName('UserSnapshot'),
+        $streamEventWithMetadata = TestDomainEvent::with(
             array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-            2,
-            new \DateTime(),
-            array(
-                'snapshot' => true
-            )
+            2
         );
+
+        DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadata, 'snapshot', true);
 
         $this->eventStore->beginTransaction();
 
@@ -226,7 +220,7 @@ class EventStoreTest extends TestCase
 
         $this->assertEquals(1, count($loadedEvents));
 
-        $this->assertEquals('UserSnapshot', $loadedEvents[0]->eventName());
+        $this->assertTrue($loadedEvents[0]->metadata()['snapshot']);
     }
 
     /**
@@ -242,27 +236,19 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $streamEventVersion2 = new StreamEvent(
-            EventId::generate(),
-            new EventName('UserSnapshot'),
-            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-            2,
-            new \DateTime(),
-            array(
-                'snapshot' => true
-            )
+        $streamEventVersion2 = UsernameChanged::with(
+            array('new_name' => 'John Doe'),
+            2
         );
 
-        $streamEventVersion3 = new StreamEvent(
-            EventId::generate(),
-            new EventName('UsernameChanged'),
-            array('name' => 'John Doe'),
-            3,
-            new \DateTime(),
-            array(
-                'snapshot' => false
-            )
+        DomainEventMetadataWriter::setMetadataKey($streamEventVersion2, 'snapshot', true);
+
+        $streamEventVersion3 = UsernameChanged::with(
+            array('new_name' => 'John Doe'),
+            3
         );
+
+        DomainEventMetadataWriter::setMetadataKey($streamEventVersion3, 'snapshot', false);
 
         $this->eventStore->beginTransaction();
 
@@ -274,15 +260,15 @@ class EventStoreTest extends TestCase
 
         $this->assertEquals(2, count($loadedEventStream->streamEvents()));
 
-        $this->assertEquals('UserSnapshot', $loadedEventStream->streamEvents()[0]->eventName());
-        $this->assertEquals('UsernameChanged', $loadedEventStream->streamEvents()[1]->eventName());
+        $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
+        $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array(), 2);
 
         $this->assertEquals(2, count($loadedEvents));
 
-        $this->assertEquals('UserSnapshot', $loadedEvents[0]->eventName());
-        $this->assertEquals('UsernameChanged', $loadedEvents[1]->eventName());
+        $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
+        $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
     }
 
     /**
@@ -298,16 +284,12 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $streamEventWithMetadata = new StreamEvent(
-            EventId::generate(),
-            new EventName('UserSnapshot'),
-            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-            1,
-            new \DateTime(),
-            array(
-                'snapshot' => true
-            )
+        $streamEventWithMetadata = UsernameChanged::with(
+            array('new_name' => 'John Doe'),
+            2
         );
+
+        DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadata, 'snapshot', true);
 
         $this->eventStore->beginTransaction();
 
@@ -337,16 +319,12 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $streamEventWithMetadata = new StreamEvent(
-            EventId::generate(),
-            new EventName('UserSnapshot'),
-            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-            1,
-            new \DateTime(),
-            array(
-                'snapshot' => true
-            )
+        $streamEventWithMetadata = UsernameChanged::with(
+            array('new_name' => 'John Doe'),
+            2
         );
+
+        DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadata, 'snapshot', true);
 
         $this->eventStore->beginTransaction();
 
@@ -355,16 +333,12 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getPersistenceEvents()->attach('loadEventsByMetadataFrom.pre', function (Event $event) {
-            $streamEventWithMetadataButOtherUuid = new StreamEvent(
-                EventId::generate(),
-                new EventName('UserSnapshot'),
-                array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-                1,
-                new \DateTime(),
-                array(
-                    'snapshot' => true
-                )
+            $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
+                array('new_name' => 'John Doe'),
+                1
             );
+
+            DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadataButOtherUuid, 'snapshot', true);
 
             $event->setParam('streamEvents', array($streamEventWithMetadataButOtherUuid));
             $event->stopPropagation(true);
@@ -374,7 +348,7 @@ class EventStoreTest extends TestCase
 
         $this->assertEquals(1, count($loadedEvents));
 
-        $this->assertNotEquals($streamEventWithMetadata->eventId()->toString(), $loadedEvents[0]->eventId()->toString());
+        $this->assertNotEquals($streamEventWithMetadata->uuid()->toString(), $loadedEvents[0]->uuid()->toString());
     }
 
     /**
@@ -450,12 +424,9 @@ class EventStoreTest extends TestCase
      */
     private function getTestStream()
     {
-        $streamEvent = new StreamEvent(
-            EventId::generate(),
-            new EventName('UserCreated'),
+        $streamEvent = UserCreated::with(
             array('name' => 'Alex', 'email' => 'contact@prooph.de'),
-            1,
-            new \DateTime()
+            1
         );
 
         return new Stream(new StreamName('user'), array($streamEvent));

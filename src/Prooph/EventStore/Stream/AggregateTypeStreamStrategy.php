@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 
@@ -49,7 +50,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @param object $aggregateRoot
      * @throws \InvalidArgumentException
      * @return void
@@ -66,9 +67,8 @@ class AggregateTypeStreamStrategy implements StreamStrategy
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as $index => $streamEvent) {
-            $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
-            $streamEvents[$index] = $streamEvent;
+        foreach ( $streamEvents as &$streamEvent) {
+            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
         }
 
         $this->eventStore->appendTo($streamName, $streamEvents);
@@ -77,7 +77,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @param object $aggregateRoot
      * @throws \InvalidArgumentException
      * @return void
@@ -94,9 +94,8 @@ class AggregateTypeStreamStrategy implements StreamStrategy
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as $index => $streamEvent) {
-            $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
-            $streamEvents[$index] = $streamEvent;
+        foreach ($streamEvents as &$streamEvent) {
+            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
         }
 
         $this->eventStore->appendTo($streamName, $streamEvents);
@@ -106,7 +105,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null)
     {
@@ -134,7 +133,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
      * No aggregate type information stored as metadata. The repository aggregate type needs to be used.
      *
      * @param AggregateType $repositoryAggregateType
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @return AggregateType
      */
     public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)

@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 
@@ -40,7 +41,7 @@ class SingleStreamStrategy implements StreamStrategy
     protected $eventStore;
 
     /**
-     * @var string
+     * @var string|StreamName
      */
     protected $streamName = 'event_stream';
 
@@ -52,15 +53,17 @@ class SingleStreamStrategy implements StreamStrategy
     {
         $this->eventStore = $eventStore;
 
-        if (is_string($streamName)) {
-            $this->streamName = $streamName;
+        if (is_null($streamName)) {
+            $streamName = $this->streamName;
         }
+
+        $this->streamName = new StreamName($streamName);
     }
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
@@ -68,19 +71,18 @@ class SingleStreamStrategy implements StreamStrategy
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as $index => $streamEvent) {
-            $streamEvent->setMetadataEntry('aggregate_type', get_class($aggregateRoot));
-            $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
-            $streamEvents[$index] = $streamEvent;
+        foreach ( $streamEvents as &$streamEvent) {
+            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_type', get_class($aggregateRoot));
+            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
         }
 
-        $this->eventStore->appendTo(new StreamName($this->streamName), $streamEvents);
+        $this->eventStore->appendTo($this->streamName, $streamEvents);
     }
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
@@ -88,27 +90,26 @@ class SingleStreamStrategy implements StreamStrategy
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as $index => $streamEvent) {
-            $streamEvent->setMetadataEntry('aggregate_type', get_class($aggregateRoot));
-            $streamEvent->setMetadataEntry('aggregate_id', $aggregateId);
-            $streamEvents[$index] = $streamEvent;
+        foreach ( $streamEvents as &$streamEvent) {
+            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_type', get_class($aggregateRoot));
+            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
         }
 
-        $this->eventStore->appendTo(new StreamName($this->streamName), $streamEvents);
+        $this->eventStore->appendTo($this->streamName, $streamEvents);
     }
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null)
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         return $this->eventStore->loadEventsByMetadataFrom(
-            new StreamName($this->streamName),
+            $this->streamName,
             array('aggregate_id' => $aggregateId),
             $minVersion
         );
@@ -116,7 +117,7 @@ class SingleStreamStrategy implements StreamStrategy
 
     /**
      * @param AggregateType $repositoryAggregateType
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      * @throws \RuntimeException
      * @return AggregateType
      */
@@ -132,7 +133,7 @@ class SingleStreamStrategy implements StreamStrategy
             }
         }
 
-        throw new \RuntimeException("The reconstitution aggregate type can not be detected");
+        throw new \RuntimeException("The aggregate type cannot be detected");
     }
 }
  

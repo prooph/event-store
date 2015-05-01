@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStoreTest\Mock;
 
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Stream\StreamEvent;
 use Rhumsaa\Uuid\Uuid;
 
@@ -92,14 +93,14 @@ class User
         ));
     }
 
-    private function recordThat(DomainEvent $domainEvent)
+    private function recordThat(TestDomainEvent $domainEvent)
     {
         $this->recordedEvents[] = $domainEvent;
 
         $this->apply($domainEvent);
     }
 
-    private function apply(DomainEvent $event)
+    private function apply(TestDomainEvent $event)
     {
         if ($event instanceof UserCreated) {
             $this->whenUserCreated($event);
@@ -134,24 +135,14 @@ class User
     }
 
     /**
-     * @param StreamEvent[] $streamEvents
+     * @param DomainEvent[] $streamEvents
      */
     private function replay(array $streamEvents)
     {
         foreach ($streamEvents as $streamEvent)
         {
-            $eventClass = $streamEvent->eventName()->toString();
-
-            $event = new $eventClass(
-                $streamEvent->eventId(),
-                $streamEvent->eventName(),
-                $streamEvent->payload(),
-                $streamEvent->version(),
-                $streamEvent->occurredOn()
-            );
-
-            $this->apply($event);
-            $this->version = $event->version();
+            $this->apply($streamEvent);
+            $this->version = $streamEvent->version();
         }
     }
 

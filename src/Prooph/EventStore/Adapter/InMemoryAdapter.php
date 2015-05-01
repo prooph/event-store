@@ -11,9 +11,9 @@
 
 namespace Prooph\EventStore\Adapter;
 
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
@@ -40,11 +40,11 @@ class InMemoryAdapter implements Adapter
 
     /**
      * @param StreamName $streamName
-     * @param array $streamEvents
+     * @param DomainEvent[] $domainEvents
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $streamEvents)
+    public function appendTo(StreamName $streamName, array $domainEvents)
     {
         if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
@@ -55,7 +55,7 @@ class InMemoryAdapter implements Adapter
             );
         }
 
-        $this->streams[$streamName->toString()] = array_merge($this->streams[$streamName->toString()], $streamEvents);
+        $this->streams[$streamName->toString()] = array_merge($this->streams[$streamName->toString()], $domainEvents);
     }
 
     /**
@@ -69,6 +69,7 @@ class InMemoryAdapter implements Adapter
             return null;
         }
 
+        /** @var $streamEvents DomainEvent[] */
         $streamEvents = $this->streams[$streamName->toString()];
 
         if (!is_null($minVersion)) {
@@ -91,7 +92,7 @@ class InMemoryAdapter implements Adapter
      * @param array $metadata
      * @param null|int $minVersion
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
@@ -117,7 +118,7 @@ class InMemoryAdapter implements Adapter
         return $streamEvents;
     }
 
-    protected function matchMetadataWith(StreamEvent $streamEvent, array $metadata)
+    protected function matchMetadataWith(DomainEvent $streamEvent, array $metadata)
     {
         if (empty($metadata)) {
             return true;

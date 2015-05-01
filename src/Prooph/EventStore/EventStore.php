@@ -9,6 +9,7 @@
 namespace Prooph\EventStore;
 
 use Assert\Assertion;
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Configuration\Configuration;
@@ -17,7 +18,6 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 use Zend\EventManager\Event;
 use Zend\EventManager\EventManager;
@@ -42,7 +42,7 @@ class EventStore
     protected $persistenceEvents;
 
     /**
-     * @var array
+     * @var DomainEvent[]
      */
     protected $recordedEvents = array();
 
@@ -74,13 +74,13 @@ class EventStore
     }
 
     /**
-     * @param Stream $aStream
+     * @param Stream $stream
      * @throws Exception\RuntimeException
      * @return void
      */
-    public function create(Stream $aStream)
+    public function create(Stream $stream)
     {
-        $argv = array('stream' => $aStream);
+        $argv = array('stream' => $stream);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -94,11 +94,11 @@ class EventStore
             throw new RuntimeException('Stream creation failed. EventStore is not in an active transaction');
         }
 
-        $aStream = $event->getParam('stream');
+        $stream = $event->getParam('stream');
 
-        $this->adapter->create($aStream);
+        $this->adapter->create($stream);
 
-        $this->recordedEvents = array_merge($this->recordedEvents, $aStream->streamEvents());
+        $this->recordedEvents = array_merge($this->recordedEvents, $stream->streamEvents());
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -106,18 +106,18 @@ class EventStore
     }
 
     /**
-     * @param StreamName $aStreamName
-     * @param array $streamEvents
+     * @param StreamName $streamName
+     * @param DomainEvent[] $streamEvents
      * @throws Exception\RuntimeException
      * @return void
      */
-    public function appendTo(StreamName $aStreamName, array $streamEvents)
+    public function appendTo(StreamName $streamName, array $streamEvents)
     {
         foreach ($streamEvents as $streamEvent) {
-            Assertion::isInstanceOf($streamEvent, 'Prooph\EventStore\Stream\StreamEvent');
+            Assertion::isInstanceOf($streamEvent, DomainEvent::class);
         }
 
-        $argv = array('streamName' => $aStreamName, 'streamEvents' => $streamEvents);
+        $argv = array('streamName' => $streamName, 'streamEvents' => $streamEvents);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -131,10 +131,10 @@ class EventStore
             throw new RuntimeException('Append events to stream failed. EventStore is not in an active transaction');
         }
 
-        $aStreamName = $event->getParam('streamName');
+        $streamName = $event->getParam('streamName');
         $streamEvents = $event->getParam('streamEvents');
 
-        $this->adapter->appendTo($aStreamName, $streamEvents);
+        $this->adapter->appendTo($streamName, $streamEvents);
 
         $this->recordedEvents = array_merge($this->recordedEvents, $streamEvents);
 
@@ -144,14 +144,14 @@ class EventStore
     }
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param null|int $minVersion
      * @throws Exception\StreamNotFoundException
      * @return Stream
      */
-    public function load(StreamName $aStreamName, $minVersion = null)
+    public function load(StreamName $streamName, $minVersion = null)
     {
-        $argv = array('streamName' => $aStreamName, 'minVersion' => $minVersion);
+        $argv = array('streamName' => $streamName, 'minVersion' => $minVersion);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -161,29 +161,29 @@ class EventStore
 
             $stream = $event->getParam('stream', false);
 
-            if ($stream instanceof Stream && $stream->streamName()->toString() == $aStreamName->toString()) {
+            if ($stream instanceof Stream && $stream->streamName()->toString() == $streamName->toString()) {
                 return $stream;
             }
 
             throw new StreamNotFoundException(
                 sprintf(
                     'A stream with name %s could not be found',
-                    $aStreamName->toString()
+                    $streamName->toString()
                 )
             );
         }
 
-        $aStreamName = $event->getParam('streamName');
+        $streamName = $event->getParam('streamName');
 
         $minVersion = $event->getParam('minVersion');
 
-        $stream = $this->adapter->load($aStreamName, $minVersion);
+        $stream = $this->adapter->load($streamName, $minVersion);
 
         if (! $stream) {
             throw new StreamNotFoundException(
                 sprintf(
                     'A stream with name %s could not be found',
-                    $aStreamName->toString()
+                    $streamName->toString()
                 )
             );
         }
@@ -198,7 +198,7 @@ class EventStore
             throw new StreamNotFoundException(
                 sprintf(
                     'A stream with name %s could not be found',
-                    $aStreamName->toString()
+                    $streamName->toString()
                 )
             );
         }
@@ -207,14 +207,14 @@ class EventStore
     }
 
     /**
-     * @param StreamName $aStreamName
+     * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
-     * @return StreamEvent[]
+     * @return DomainEvent[]
      */
-    public function loadEventsByMetadataFrom(StreamName $aStreamName, array $metadata, $minVersion = null)
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
-        $argv = array('streamName' => $aStreamName, 'metadata' => $metadata, 'minVersion' => $minVersion);
+        $argv = array('streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion);
 
         $event = new Event(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -224,11 +224,11 @@ class EventStore
             return $event->getParam('streamEvents', array());
         }
 
-        $aStreamName = $event->getParam('streamName');
+        $streamName = $event->getParam('streamName');
         $metadata = $event->getParam('metadata');
         $minVersion = $event->getParam('minVersion');
 
-        $events = $this->adapter->loadEventsByMetadataFrom($aStreamName, $metadata, $minVersion);
+        $events = $this->adapter->loadEventsByMetadataFrom($streamName, $metadata, $minVersion);
 
         $event->setName(__FUNCTION__, '.post');
 

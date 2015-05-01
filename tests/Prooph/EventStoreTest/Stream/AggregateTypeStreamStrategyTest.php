@@ -11,14 +11,14 @@
 
 namespace Prooph\EventStoreTest\Stream;
 
+use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Stream\AggregateTypeStreamStrategy;
-use Prooph\EventStore\Stream\EventId;
-use Prooph\EventStore\Stream\EventName;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
+use Prooph\EventStoreTest\Mock\UserCreated;
+use Prooph\EventStoreTest\Mock\UsernameChanged;
 use Prooph\EventStoreTest\TestCase;
 use Rhumsaa\Uuid\Uuid;
 
@@ -62,12 +62,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -94,12 +91,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -110,12 +104,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $this->eventStore->beginTransaction();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UsernameChanged'),
+            UsernameChanged::with(
                 array('name' => 'John Doe'),
-                2,
-                new \DateTime()
+                2
             )
         );
 
@@ -138,12 +129,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -170,12 +158,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateId1 = Uuid::uuid4()->toString();
 
         $streamEvents1 = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId1),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -188,12 +173,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateType = AggregateType::fromAggregateRoot($user2);
 
         $streamEvents2 = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
-                array('user_id' => $aggregateId2),
-                1,
-                new \DateTime()
+            UsernameChanged::with(
+                array('name' => 'John Doe'),
+                2
             )
         );
 
@@ -205,7 +187,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
 
         $this->assertEquals(1, count($streamEvents));
 
-        $this->assertInstanceOf('Prooph\EventStore\Stream\StreamEvent', $streamEvents[0]);
+        $this->assertInstanceOf(DomainEvent::class, $streamEvents[0]);
 
         $this->assertEquals($aggregateId1, $streamEvents[0]->payload()['user_id']);
 
@@ -227,12 +209,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -255,12 +234,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $aggregateId = Uuid::uuid4()->toString();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UserCreated'),
+            UserCreated::with(
                 array('user_id' => $aggregateId),
-                1,
-                new \DateTime()
+                1
             )
         );
 
@@ -271,12 +247,9 @@ class AggregateTypeStreamStrategyTest extends TestCase
         $this->eventStore->beginTransaction();
 
         $streamEvents = array(
-            new StreamEvent(
-                EventId::generate(),
-                new EventName('UsernameChanged'),
+            UsernameChanged::with(
                 array('name' => 'John Doe'),
-                2,
-                new \DateTime()
+                2
             )
         );
 
