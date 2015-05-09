@@ -13,6 +13,7 @@ use Prooph\Common\Event\ActionEventDispatcher;
 use Prooph\Common\Event\ZF2\Zf2ActionEvent;
 use Prooph\Common\Event\ZF2\Zf2ActionEventDispatcher;
 use Prooph\Common\ServiceLocator\ServiceLocator;
+use Prooph\Common\ServiceLocator\ZF2\Zf2ServiceManagerProxy;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
@@ -159,7 +160,7 @@ class Configuration
     public function getFeatureManager()
     {
         if (is_null($this->featureManager)) {
-            $this->featureManager = new ZF2FeatureManager();
+            $this->featureManager = Zf2ServiceManagerProxy::proxy(new ZF2FeatureManager());
         }
 
         return $this->featureManager;

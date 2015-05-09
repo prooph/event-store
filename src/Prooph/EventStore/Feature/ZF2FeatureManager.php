@@ -24,7 +24,7 @@ use Zend\ServiceManager\Exception;
  * @package Prooph\EventStore\Feature
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class ZF2FeatureManager extends AbstractPluginManager implements ServiceLocator
+class ZF2FeatureManager extends AbstractPluginManager
 {
     /**
      * Validate the plugin
@@ -45,15 +45,6 @@ class ZF2FeatureManager extends AbstractPluginManager implements ServiceLocator
                 ((is_object($plugin)? get_class($plugin) : gettype($plugin)))
             ));
         }
-    }
-
-    /**
-     * @param string $serviceName
-     * @param mixed $service
-     */
-    public function set($serviceName, $service)
-    {
-        $this->setService($serviceName, $service);
     }
 }
  
