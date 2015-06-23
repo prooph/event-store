@@ -13,6 +13,7 @@ namespace Prooph\EventStoreTest;
 
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
+use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
 use Prooph\EventStore\Stream\DomainEventMetadataWriter;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
@@ -57,6 +58,152 @@ class EventStoreTest extends TestCase
         $this->assertEquals(1, count($stream->streamEvents()));
 
         $this->assertEquals(1, count($recordedEvents));
+    }
+
+    /**
+     * @test
+     */
+    function it_allows_nested_transactions_but_triggers_commit_post_event_only_once()
+    {
+        $postCommitEventCount = 0;
+
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$postCommitEventCount) {
+            $postCommitEventCount++;
+        });
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->beginTransaction();
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->commit();
+
+        $this->assertEquals(1, $postCommitEventCount);
+    }
+
+    /**
+     * @test
+     */
+    function it_triggers_commit_pre_event_for_nested_transaction_too()
+    {
+        $preCommitEventCount = 0;
+
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.pre', function (PreCommitEvent $event) use (&$preCommitEventCount) {
+            $preCommitEventCount++;
+        });
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->beginTransaction();
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->commit();
+
+        $this->assertEquals(2, $preCommitEventCount);
+    }
+
+    /**
+     * @test
+     */
+    function it_adds_information_about_transaction_level_to_commit_pre_event()
+    {
+        $transactionLevelOfNestedTransaction = null;
+        $transactionFlagOfNestedTransaction = null;
+        $transactionLevelOfMainTransaction = null;
+        $transactionFlagOfMainTransaction = null;
+        $triggerCount = 0;
+
+        $this->eventStore->getActionEventDispatcher()->attachListener(
+            'commit.pre',
+            function (PreCommitEvent $event) use (
+                &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
+                &$transactionLevelOfMainTransaction, &$transactionFlagOfMainTransaction
+            ) {
+                $triggerCount++;
+
+                if ($triggerCount === 2) {
+                    $transactionLevelOfMainTransaction = $event->getParam('transactionLevel');
+                    $transactionFlagOfMainTransaction  = $event->getParam('isNestedTransaction');
+                } else {
+                    $transactionLevelOfNestedTransaction = $event->getParam('transactionLevel');
+                    $transactionFlagOfNestedTransaction  = $event->getParam('isNestedTransaction');
+                }
+            }
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->beginTransaction();
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->commit();
+
+        $this->assertEquals(1, $transactionLevelOfMainTransaction);
+        $this->assertFalse($transactionFlagOfMainTransaction);
+        $this->assertEquals(2, $transactionLevelOfNestedTransaction);
+        $this->assertTrue($transactionFlagOfNestedTransaction);
+    }
+
+    /**
+     * @test
+     */
+    function it_adds_information_about_transaction_level_to_begin_transaction_event_and_triggers_the_event_on_every_call()
+    {
+        $transactionLevelOfNestedTransaction = null;
+        $transactionFlagOfNestedTransaction = null;
+        $transactionLevelOfMainTransaction = null;
+        $transactionFlagOfMainTransaction = null;
+        $triggerCount = 0;
+
+        $this->eventStore->getActionEventDispatcher()->attachListener(
+            'beginTransaction',
+            function (ActionEvent $event) use (
+                &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
+                &$transactionLevelOfMainTransaction, &$transactionFlagOfMainTransaction
+            ) {
+                $triggerCount++;
+
+                if ($triggerCount === 1) {
+                    $transactionLevelOfMainTransaction = $event->getParam('transactionLevel');
+                    $transactionFlagOfMainTransaction  = $event->getParam('isNestedTransaction');
+                } else {
+                    $transactionLevelOfNestedTransaction = $event->getParam('transactionLevel');
+                    $transactionFlagOfNestedTransaction  = $event->getParam('isNestedTransaction');
+                }
+            }
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->beginTransaction();
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->commit();
+
+        $this->assertEquals(1, $transactionLevelOfMainTransaction);
+        $this->assertFalse($transactionFlagOfMainTransaction);
+        $this->assertEquals(2, $transactionLevelOfNestedTransaction);
+        $this->assertTrue($transactionFlagOfNestedTransaction);
     }
 
     /**

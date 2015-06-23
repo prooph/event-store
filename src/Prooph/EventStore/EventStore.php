@@ -43,12 +43,12 @@ class EventStore
     /**
      * @var DomainEvent[]
      */
-    protected $recordedEvents = array();
+    protected $recordedEvents = [];
 
     /**
-     * @var bool
+     * @var int
      */
-    protected $inTransaction = false;
+    protected $transactionLevel = 0;
 
     /**
      * Construct
@@ -98,7 +98,7 @@ class EventStore
             return;
         }
 
-        if (! $this->inTransaction) {
+        if ($this->transactionLevel === 0) {
             throw new RuntimeException('Stream creation failed. EventStore is not in an active transaction');
         }
 
@@ -135,7 +135,7 @@ class EventStore
             return;
         }
 
-        if (! $this->inTransaction) {
+        if ($this->transactionLevel === 0) {
             throw new RuntimeException('Append events to stream failed. EventStore is not in an active transaction');
         }
 
@@ -258,17 +258,17 @@ class EventStore
      */
     public function beginTransaction()
     {
-        if ($this->inTransaction) {
-            throw new RuntimeException('Can not begin transaction. EventStore is already in a transaction');
-        }
-
-        if ($this->adapter instanceof CanHandleTransaction) {
+        if ($this->transactionLevel === 0 && $this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
         }
 
-        $this->inTransaction = true;
+        $this->transactionLevel++;
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__, $this);
+        $event = $this->actionEventDispatcher->getNewActionEvent(
+            __FUNCTION__,
+            $this,
+            ['isNestedTransaction' => $this->transactionLevel > 1, 'transactionLevel' => $this->transactionLevel]
+        );
 
         $this->getActionEventDispatcher()->dispatch($event);
     }
@@ -276,16 +276,20 @@ class EventStore
     /**
      * Commit transaction
      *
-     * @triggers commit.pre If a listener stops propagation, the ES performs a rollback
-     * @triggers commit.post with all recorded StreamEvents. Perfect event to attach a domain event dispatcher
+     * @triggers commit.pre  On every commit call. If a listener stops propagation, the ES performs a rollback
+     * @triggers commit.post Once after all started transactions are committed. Event includes all recorded StreamEvents.
+     *                       Perfect to attach a domain event dispatcher
      */
     public function commit()
     {
-        if (! $this->inTransaction) {
+        if ($this->transactionLevel === 0) {
             throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
         }
 
         $event = new PreCommitEvent(__FUNCTION__ . '.pre', $this);
+
+        $event->setParam('isNestedTransaction', $this->transactionLevel > 1);
+        $event->setParam('transactionLevel', $this->transactionLevel);
 
         $this->getActionEventDispatcher()->dispatch($event);
 
@@ -294,11 +298,14 @@ class EventStore
             return;
         }
 
+        $this->transactionLevel--;
+
+        //Nested transaction commit only decreases transaction level
+        if ($this->transactionLevel > 0) return;
+
         if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->commit();
         }
-
-        $this->inTransaction = false;
 
         $argv = array('recordedEvents' => $this->recordedEvents);
 
@@ -306,7 +313,7 @@ class EventStore
 
         $this->getActionEventDispatcher()->dispatch($event);
 
-        $this->recordedEvents = array();
+        $this->recordedEvents = [];
     }
 
     /**
@@ -316,7 +323,7 @@ class EventStore
      */
     public function rollback()
     {
-        if (! $this->inTransaction) {
+        if ($this->transactionLevel === 0) {
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
@@ -324,13 +331,13 @@ class EventStore
             $this->adapter->rollback();
         }
 
-        $this->inTransaction = false;
+        $this->transactionLevel = 0;
 
         $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__, $this);
 
         $this->actionEventDispatcher->dispatch($event);
 
-        $this->recordedEvents = array();
+        $this->recordedEvents = [];
     }
 
     /**
