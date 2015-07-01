@@ -311,9 +311,9 @@ class EventStore
 
         $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
 
-        $this->getActionEventDispatcher()->dispatch($event);
-
         $this->recordedEvents = [];
+
+        $this->getActionEventDispatcher()->dispatch($event);
     }
 
     /**
