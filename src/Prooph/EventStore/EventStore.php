@@ -302,9 +302,9 @@ class EventStore
 
         $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
 
-        $this->getPersistenceEvents()->trigger($event);
-
         $this->recordedEvents = array();
+
+        $this->getPersistenceEvents()->trigger($event);
     }
 
     /**
