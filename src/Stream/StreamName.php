@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Stream;
+
 use Assert\Assertion;
 
 /**
