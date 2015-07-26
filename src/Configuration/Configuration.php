@@ -9,17 +9,13 @@
 namespace Prooph\EventStore\Configuration;
 
 use Assert\Assertion;
-use Prooph\Common\Event\ActionEventDispatcher;
-use Prooph\Common\Event\ZF2\Zf2ActionEvent;
-use Prooph\Common\Event\ZF2\Zf2ActionEventDispatcher;
-use Prooph\Common\ServiceLocator\ServiceLocator;
-use Prooph\Common\ServiceLocator\ZF2\Zf2ServiceManagerProxy;
+use Interop\Container\ContainerInterface;
+use Prooph\Common\Event\ActionEventEmitter;
+use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Feature\Feature;
-use Prooph\EventStore\Feature\ZF2FeatureManager;
-use Zend\ServiceManager\Config;
 
 /**
  * Configuration
@@ -39,14 +35,14 @@ class Configuration
     protected $adapter;
 
     /**
-     * @var ServiceLocator
+     * @var ContainerInterface
      */
     protected $featureManager;
 
     /**
-     * @var ActionEventDispatcher
+     * @var ActionEventEmitter
      */
-    protected $actionEventDispatcher;
+    protected $actionEventEmitter;
 
     /**
      * @var array
@@ -63,15 +59,21 @@ class Configuration
         }
 
         if (isset($config['feature_manager'])) {
-            Assertion::isArray($config['feature_manager'], "EventStore.Configuration.feature_manager must be an array");
+            Assertion::isInstanceOf($config['feature_manager'], ContainerInterface::class);
 
-            $this->featureManager = new ZF2FeatureManager(new Config($config['feature_manager']));
+            $this->featureManager = $config['feature_manager'];
         }
 
         if (isset($config['features'])) {
             Assertion::isArray($config['features'], "EventStore.Configuration.features must be an array");
 
             $this->featureList = $config['features'];
+        }
+
+        if (isset($config['action_event_emitter'])) {
+            Assertion::isInstanceOf($config['action_event_emitter'], ActionEventEmitter::class);
+
+            $this->actionEventEmitter = $config['action_event_emitter'];
         }
     }
 
@@ -81,8 +83,12 @@ class Configuration
      */
     public function setUpEventStoreEnvironment(EventStore $eventStore)
     {
+        if ($this->featureManager === null) {
+            return;
+        }
+
         foreach ($this->featureList as $featureAlias) {
-            $feature = $this->getFeatureManager()->get($featureAlias);
+            $feature = $this->featureManager->get($featureAlias);
 
             if (! $feature instanceof Feature) {
                 throw ConfigurationException::configurationError(sprintf('Feature %s does not implement the Feature interface', $featureAlias));
@@ -155,42 +161,30 @@ class Configuration
     }
 
     /**
-     * @return ServiceLocator
+     * @param ContainerInterface $featureManager
      */
-    public function getFeatureManager()
-    {
-        if (is_null($this->featureManager)) {
-            $this->featureManager = Zf2ServiceManagerProxy::proxy(new ZF2FeatureManager());
-        }
-
-        return $this->featureManager;
-    }
-
-    /**
-     * @param ServiceLocator $featureManager
-     */
-    public function setFeatureManager(ServiceLocator $featureManager)
+    public function setFeatureManager(ContainerInterface $featureManager)
     {
         $this->featureManager = $featureManager;
     }
 
     /**
-     * @return ActionEventDispatcher
+     * @return ActionEventEmitter
      */
-    public function getActionEventDispatcher()
+    public function getActionEventEmitter()
     {
-        if (is_null($this->actionEventDispatcher)) {
-            $this->actionEventDispatcher = new Zf2ActionEventDispatcher();
+        if (is_null($this->actionEventEmitter)) {
+            $this->actionEventEmitter = new ProophActionEventEmitter();
         }
 
-        return $this->actionEventDispatcher;
+        return $this->actionEventEmitter;
     }
 
     /**
-     * @param ActionEventDispatcher $actionEventDispatcher
+     * @param ActionEventEmitter $actionEventEmitter
      */
-    public function setActionEventDispatcher(ActionEventDispatcher $actionEventDispatcher)
+    public function setActionEventEmitter(ActionEventEmitter $actionEventEmitter)
     {
-        $this->actionEventDispatcher = $actionEventDispatcher;
+        $this->actionEventEmitter = $actionEventEmitter;
     }
 }

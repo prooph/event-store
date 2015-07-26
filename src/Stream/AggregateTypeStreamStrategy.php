@@ -68,7 +68,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as &$streamEvent) {
-            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
         }
 
         $this->eventStore->appendTo($streamName, $streamEvents);
@@ -95,7 +95,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ($streamEvents as &$streamEvent) {
-            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
         }
 
         $this->eventStore->appendTo($streamName, $streamEvents);

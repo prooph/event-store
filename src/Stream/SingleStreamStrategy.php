@@ -72,8 +72,8 @@ class SingleStreamStrategy implements StreamStrategy
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as &$streamEvent) {
-            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_type', get_class($aggregateRoot));
-            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
 
         $this->eventStore->appendTo($this->streamName, $streamEvents);
@@ -91,8 +91,8 @@ class SingleStreamStrategy implements StreamStrategy
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         foreach ( $streamEvents as &$streamEvent) {
-            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_type', get_class($aggregateRoot));
-            DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
 
         $this->eventStore->appendTo($this->streamName, $streamEvents);

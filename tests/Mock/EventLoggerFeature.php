@@ -11,10 +11,10 @@
 
 namespace Prooph\EventStoreTest\Mock;
 
+use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Feature\Feature;
-use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
 
 /**
  * Class EventLoggerFeature
@@ -35,15 +35,15 @@ class EventLoggerFeature implements Feature
      */
     public function setUp(EventStore $eventStore)
     {
-        $eventStore->getActionEventDispatcher()->attachListener('commit.post', array($this, "onPostCommit"));
+        $eventStore->getActionEventEmitter()->attachListener('commit.post', array($this, "onPostCommit"));
     }
 
     /**
-     * @param PostCommitEvent $e
+     * @param ActionEvent $e
      */
-    public function onPostCommit(PostCommitEvent $e)
+    public function onPostCommit(ActionEvent $e)
     {
-        $this->loggedStreamEvents = $e->getRecordedEvents();
+        $this->loggedStreamEvents = $e->getParam('recordedEvents', []);
     }
 
     /**
