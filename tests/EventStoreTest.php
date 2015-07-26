@@ -12,15 +12,11 @@
 namespace Prooph\EventStoreTest;
 
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
-use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
-use Prooph\EventStore\Stream\DomainEventMetadataWriter;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\TestDomainEvent;
 use Prooph\EventStoreTest\Mock\UserCreated;
 use Prooph\EventStoreTest\Mock\UsernameChanged;
-use Zend\EventManager\Event;
 
 /**
  * Class EventStoreTest
@@ -37,8 +33,8 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
-            foreach ($event->getRecordedEvents() as $recordedEvent) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
+            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -67,7 +63,7 @@ class EventStoreTest extends TestCase
     {
         $postCommitEventCount = 0;
 
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$postCommitEventCount) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$postCommitEventCount) {
             $postCommitEventCount++;
         });
 
@@ -93,7 +89,7 @@ class EventStoreTest extends TestCase
     {
         $preCommitEventCount = 0;
 
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (PreCommitEvent $event) use (&$preCommitEventCount) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (ActionEvent $event) use (&$preCommitEventCount) {
             $preCommitEventCount++;
         });
 
@@ -125,7 +121,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'commit.pre',
-            function (PreCommitEvent $event) use (
+            function (ActionEvent $event) use (
                 &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
                 &$transactionLevelOfMainTransaction, &$transactionFlagOfMainTransaction
             ) {
@@ -213,8 +209,8 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
-            foreach ($event->getRecordedEvents() as $recordedEvent) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
+            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -251,8 +247,8 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
-            foreach ($event->getRecordedEvents() as $recordedEvent) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
+            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -284,8 +280,8 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
-            foreach ($event->getRecordedEvents() as $recordedEvent) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
+            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -296,7 +292,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventEmitter()->attachListener('appendTo.pre', function (Event $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('appendTo.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -350,7 +346,7 @@ class EventStoreTest extends TestCase
             2
         );
 
-        DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadata, 'snapshot', true);
+        $streamEventWithMetadata = $streamEventWithMetadata->withAddedMetadata('snapshot', true);
 
         $this->eventStore->beginTransaction();
 
@@ -383,14 +379,14 @@ class EventStoreTest extends TestCase
             2
         );
 
-        DomainEventMetadataWriter::setMetadataKey($streamEventVersion2, 'snapshot', true);
+        $streamEventVersion2 = $streamEventVersion2->withAddedMetadata('snapshot', true);
 
         $streamEventVersion3 = UsernameChanged::with(
             array('new_name' => 'John Doe'),
             3
         );
 
-        DomainEventMetadataWriter::setMetadataKey($streamEventVersion3, 'snapshot', false);
+        $streamEventVersion3 = $streamEventVersion3->withAddedMetadata('snapshot', false);
 
         $this->eventStore->beginTransaction();
 
@@ -431,7 +427,7 @@ class EventStoreTest extends TestCase
             2
         );
 
-        DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadata, 'snapshot', true);
+        $streamEventWithMetadata = $streamEventWithMetadata->withAddedMetadata('snapshot', true);
 
         $this->eventStore->beginTransaction();
 
@@ -466,7 +462,7 @@ class EventStoreTest extends TestCase
             2
         );
 
-        DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadata, 'snapshot', true);
+        $streamEventWithMetadata = $streamEventWithMetadata->withAddedMetadata('snapshot', true);
 
         $this->eventStore->beginTransaction();
 
@@ -480,7 +476,7 @@ class EventStoreTest extends TestCase
                 1
             );
 
-            DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadataButOtherUuid, 'snapshot', true);
+            $streamEventWithMetadataButOtherUuid = $streamEventWithMetadataButOtherUuid->withAddedMetadata('snapshot', true);
 
             $event->setParam('streamEvents', array($streamEventWithMetadataButOtherUuid));
             $event->stopPropagation(true);
@@ -528,7 +524,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (Event $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
             $event->setParam('stream', new Stream(new StreamName('EmptyStream'), array()));
             $event->stopPropagation(true);
         });

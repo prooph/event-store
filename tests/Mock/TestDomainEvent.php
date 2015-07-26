@@ -12,7 +12,8 @@
 namespace Prooph\EventStoreTest\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
-use Rhumsaa\Uuid\Uuid;
+use Prooph\Common\Messaging\PayloadConstructable;
+use Prooph\Common\Messaging\PayloadTrait;
 
 /**
  * Class DomainEvent
@@ -20,8 +21,10 @@ use Rhumsaa\Uuid\Uuid;
  * @package Prooph\EventStoreTest\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class TestDomainEvent extends DomainEvent
+class TestDomainEvent extends DomainEvent implements PayloadConstructable
 {
+    use PayloadTrait;
+
     /**
      * @param array $payload
      * @param int $version
@@ -29,7 +32,9 @@ class TestDomainEvent extends DomainEvent
      */
     public static function with(array $payload, $version)
     {
-        return new static(get_called_class(), $payload, $version);
+        $event = new static($payload);
+
+        return $event->withVersion($version);
     }
 }
  
