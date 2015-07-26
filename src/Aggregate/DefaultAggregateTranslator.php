@@ -23,22 +23,22 @@ use Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException;
 class DefaultAggregateTranslator implements AggregateTranslator
 {
     /**
-     * @param object $anEventSourcedAggregateRoot
+     * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTranslationFailedException
      * @return string
      */
-    public function extractAggregateId($anEventSourcedAggregateRoot)
+    public function extractAggregateId($eventSourcedAggregateRoot)
     {
-        if (! method_exists($anEventSourcedAggregateRoot, 'id')) {
+        if (! method_exists($eventSourcedAggregateRoot, 'id')) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Required method id does not exist for aggregate %s',
-                    get_class($anEventSourcedAggregateRoot)
+                    get_class($eventSourcedAggregateRoot)
                 )
             );
         }
 
-        return (string)$anEventSourcedAggregateRoot->id();
+        return (string)$eventSourcedAggregateRoot->id();
     }
 
     /**
@@ -81,19 +81,19 @@ class DefaultAggregateTranslator implements AggregateTranslator
     }
 
     /**
-     * @param object $anEventSourcedAggregateRoot
+     * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTranslationFailedException
      * @return DomainEvent[]
      */
-    public function extractPendingStreamEvents($anEventSourcedAggregateRoot)
+    public function extractPendingStreamEvents($eventSourcedAggregateRoot)
     {
-        $refObj = new \ReflectionClass($anEventSourcedAggregateRoot);
+        $refObj = new \ReflectionClass($eventSourcedAggregateRoot);
 
         if (! $refObj->hasMethod('popRecordedEvents')) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Can not extract pending events of aggregate %s. Class is missing a method with name popRecordedEvents!',
-                    get_class($anEventSourcedAggregateRoot)
+                    get_class($eventSourcedAggregateRoot)
                 )
             );
         }
@@ -102,7 +102,7 @@ class DefaultAggregateTranslator implements AggregateTranslator
 
         $popRecordedEventsMethod->setAccessible(true);
 
-        $recordedEvents = $popRecordedEventsMethod->invoke($anEventSourcedAggregateRoot);
+        $recordedEvents = $popRecordedEventsMethod->invoke($eventSourcedAggregateRoot);
 
         return $recordedEvents;
     }

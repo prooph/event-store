@@ -12,9 +12,9 @@
 namespace Prooph\EventStore\Aggregate;
 
 /**
- * Interface AggregateTypeProviderInterface
+ * Interface AggregateTypeProvider
  *
- * @package Prooph\EventStore\EventSourcing
+ * @package Prooph\EventStore\Aggregate
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 interface AggregateTypeProvider

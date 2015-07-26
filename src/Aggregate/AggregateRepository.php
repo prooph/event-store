@@ -63,7 +63,7 @@ class AggregateRepository
     ) {
         $this->eventStore = $eventStore;
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.pre', array($this, 'onPreCommit'));
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', $this);
 
         $this->aggregateTranslator = $aggregateTranslator;
         $this->streamStrategy = $streamStrategy;
@@ -71,62 +71,11 @@ class AggregateRepository
     }
 
     /**
-     * @param object $anEventSourcedAggregateRoot
-     * @throws Exception\AggregateTypeException
+     * Repository acts as listener on EventStore.commit.pre events
+     * In the listener method the repository checks its identity map for pending events
+     * and appends the events to the event stream.
      */
-    public function addAggregateRoot($anEventSourcedAggregateRoot)
-    {
-        if (! is_object($anEventSourcedAggregateRoot)) {
-            throw new AggregateTypeException(
-                sprintf(
-                    'Invalid aggregate given. Aggregates need to be of type object but type of %s given',
-                    gettype($anEventSourcedAggregateRoot)
-                )
-            );
-        }
-
-        $aggregateId = $this->aggregateTranslator->extractAggregateId($anEventSourcedAggregateRoot);
-
-        $domainEvents = $this->aggregateTranslator->extractPendingStreamEvents($anEventSourcedAggregateRoot);
-
-        $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $domainEvents, $anEventSourcedAggregateRoot);
-
-        $this->identityMap[$aggregateId] = $anEventSourcedAggregateRoot;
-    }
-
-    /**
-     * Returns null if no stream events can be found for aggregate root otherwise the reconstituted aggregate root
-     *
-     * @param string $anAggregateId
-     * @return null|object
-     */
-    public function getAggregateRoot($anAggregateId)
-    {
-        Assertion::string($anAggregateId, 'AggregateId needs to be string');
-
-        if (isset($this->identityMap[$anAggregateId])) {
-            return $this->identityMap[$anAggregateId];
-        }
-
-        $streamEvents = $this->streamStrategy->read($this->aggregateType, $anAggregateId);
-
-        if (count($streamEvents) === 0) {
-            return null;
-        }
-
-        $aggregateType = $this->streamStrategy->getAggregateRootType($this->aggregateType, $streamEvents);
-
-        $anEventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory(
-            $aggregateType,
-            $streamEvents
-        );
-
-        $this->identityMap[$anAggregateId] = $anEventSourcedAggregateRoot;
-
-        return $anEventSourcedAggregateRoot;
-    }
-
-    public function onPreCommit()
+    public function __invoke()
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {
 
@@ -142,6 +91,62 @@ class AggregateRepository
                 );
             }
         }
+    }
+
+    /**
+     * @param object $eventSourcedAggregateRoot
+     * @throws Exception\AggregateTypeException
+     */
+    public function addAggregateRoot($eventSourcedAggregateRoot)
+    {
+        if (! is_object($eventSourcedAggregateRoot)) {
+            throw new AggregateTypeException(
+                sprintf(
+                    'Invalid aggregate given. Aggregates need to be of type object but type of %s given',
+                    gettype($eventSourcedAggregateRoot)
+                )
+            );
+        }
+
+        $aggregateId = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
+
+        $domainEvents = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
+
+        $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $domainEvents, $eventSourcedAggregateRoot);
+
+        $this->identityMap[$aggregateId] = $eventSourcedAggregateRoot;
+    }
+
+    /**
+     * Returns null if no stream events can be found for aggregate root otherwise the reconstituted aggregate root
+     *
+     * @param string $aggregateId
+     * @return null|object
+     */
+    public function getAggregateRoot($aggregateId)
+    {
+        Assertion::string($aggregateId, 'AggregateId needs to be string');
+
+        if (isset($this->identityMap[$aggregateId])) {
+            return $this->identityMap[$aggregateId];
+        }
+
+        $streamEvents = $this->streamStrategy->read($this->aggregateType, $aggregateId);
+
+        if (count($streamEvents) === 0) {
+            return null;
+        }
+
+        $aggregateType = $this->streamStrategy->getAggregateRootType($this->aggregateType, $streamEvents);
+
+        $eventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory(
+            $aggregateType,
+            $streamEvents
+        );
+
+        $this->identityMap[$aggregateId] = $eventSourcedAggregateRoot;
+
+        return $eventSourcedAggregateRoot;
     }
 }
  

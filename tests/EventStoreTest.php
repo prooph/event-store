@@ -37,7 +37,7 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
@@ -67,7 +67,7 @@ class EventStoreTest extends TestCase
     {
         $postCommitEventCount = 0;
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$postCommitEventCount) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$postCommitEventCount) {
             $postCommitEventCount++;
         });
 
@@ -93,7 +93,7 @@ class EventStoreTest extends TestCase
     {
         $preCommitEventCount = 0;
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.pre', function (PreCommitEvent $event) use (&$preCommitEventCount) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (PreCommitEvent $event) use (&$preCommitEventCount) {
             $preCommitEventCount++;
         });
 
@@ -123,7 +123,7 @@ class EventStoreTest extends TestCase
         $transactionFlagOfMainTransaction = null;
         $triggerCount = 0;
 
-        $this->eventStore->getActionEventDispatcher()->attachListener(
+        $this->eventStore->getActionEventEmitter()->attachListener(
             'commit.pre',
             function (PreCommitEvent $event) use (
                 &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
@@ -170,7 +170,7 @@ class EventStoreTest extends TestCase
         $transactionFlagOfMainTransaction = null;
         $triggerCount = 0;
 
-        $this->eventStore->getActionEventDispatcher()->attachListener(
+        $this->eventStore->getActionEventEmitter()->attachListener(
             'beginTransaction',
             function (ActionEvent $event) use (
                 &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
@@ -213,13 +213,13 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('create.pre', function (ActionEvent $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('create.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -251,7 +251,7 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
@@ -284,7 +284,7 @@ class EventStoreTest extends TestCase
     {
         $recordedEvents = array();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
@@ -296,7 +296,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('appendTo.pre', function (Event $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('appendTo.pre', function (Event $event) {
             $event->stopPropagation(true);
         });
 
@@ -439,7 +439,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -474,7 +474,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
             $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
                 array('new_name' => 'John Doe'),
                 1
@@ -506,7 +506,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (ActionEvent $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
         });
 
@@ -528,7 +528,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (Event $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (Event $event) {
             $event->setParam('stream', new Stream(new StreamName('EmptyStream'), array()));
             $event->stopPropagation(true);
         });
@@ -551,7 +551,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (ActionEvent $event) {
+        $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
             $event->setParam('stream', new Stream(new StreamName('user'), array()));
             $event->stopPropagation(true);
         });

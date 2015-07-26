@@ -9,7 +9,7 @@
 namespace Prooph\EventStore;
 
 use Assert\Assertion;
-use Prooph\Common\Event\ActionEventDispatcher;
+use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
@@ -36,9 +36,9 @@ class EventStore
     protected $adapter;
 
     /**
-     * @var ActionEventDispatcher
+     * @var ActionEventEmitter
      */
-    protected $actionEventDispatcher;
+    protected $actionEventEmitter;
 
     /**
      * @var DomainEvent[]
@@ -58,7 +58,7 @@ class EventStore
     public function __construct(Configuration $config)
     {
         $this->adapter = $config->getAdapter();
-        $this->actionEventDispatcher = $config->getActionEventDispatcher();
+        $this->actionEventEmitter = $config->getActionEventEmitter();
 
         $config->setUpEventStoreEnvironment($this);
     }
@@ -90,9 +90,9 @@ class EventStore
     {
         $argv = array('stream' => $stream);
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->actionEventDispatcher->dispatch($event);
+        $this->actionEventEmitter->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return;
@@ -110,7 +110,7 @@ class EventStore
 
         $event->setName(__FUNCTION__ . '.post');
 
-        $this->actionEventDispatcher->dispatch($event);
+        $this->actionEventEmitter->dispatch($event);
     }
 
     /**
@@ -127,9 +127,9 @@ class EventStore
 
         $argv = array('streamName' => $streamName, 'streamEvents' => $streamEvents);
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return;
@@ -148,7 +148,7 @@ class EventStore
 
         $event->setName(__FUNCTION__, '.post');
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
     }
 
     /**
@@ -161,9 +161,9 @@ class EventStore
     {
         $argv = array('streamName' => $streamName, 'minVersion' => $minVersion);
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
 
@@ -200,7 +200,7 @@ class EventStore
 
         $event->setParam('stream', $stream);
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             throw new StreamNotFoundException(
@@ -224,9 +224,9 @@ class EventStore
     {
         $argv = array('streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion);
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return $event->getParam('streamEvents', array());
@@ -242,7 +242,7 @@ class EventStore
 
         $event->setParam('streamEvents', $events);
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             return array();
@@ -264,13 +264,13 @@ class EventStore
 
         $this->transactionLevel++;
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(
+        $event = $this->actionEventEmitter->getNewActionEvent(
             __FUNCTION__,
             $this,
             ['isNestedTransaction' => $this->transactionLevel > 1, 'transactionLevel' => $this->transactionLevel]
         );
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
     }
 
     /**
@@ -291,7 +291,7 @@ class EventStore
         $event->setParam('isNestedTransaction', $this->transactionLevel > 1);
         $event->setParam('transactionLevel', $this->transactionLevel);
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
             $this->rollback();
@@ -313,7 +313,7 @@ class EventStore
 
         $this->recordedEvents = [];
 
-        $this->getActionEventDispatcher()->dispatch($event);
+        $this->getActionEventEmitter()->dispatch($event);
     }
 
     /**
@@ -333,18 +333,18 @@ class EventStore
 
         $this->transactionLevel = 0;
 
-        $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__, $this);
+        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__, $this);
 
-        $this->actionEventDispatcher->dispatch($event);
+        $this->actionEventEmitter->dispatch($event);
 
         $this->recordedEvents = [];
     }
 
     /**
-     * @return ActionEventDispatcher
+     * @return ActionEventEmitter
      */
-    public function getActionEventDispatcher()
+    public function getActionEventEmitter()
     {
-        return $this->actionEventDispatcher;
+        return $this->actionEventEmitter;
     }
 }

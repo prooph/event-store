@@ -10,6 +10,7 @@
  */
 
 namespace Prooph\EventStore\Aggregate;
+
 use Prooph\Common\Messaging\DomainEvent;
 
 /**
@@ -21,10 +22,10 @@ use Prooph\Common\Messaging\DomainEvent;
 interface AggregateTranslator
 {
     /**
-     * @param object $anEventSourcedAggregateRoot
+     * @param object $eventSourcedAggregateRoot
      * @return string
      */
-    public function extractAggregateId($anEventSourcedAggregateRoot);
+    public function extractAggregateId($eventSourcedAggregateRoot);
 
     /**
      * @param AggregateType $aggregateType
@@ -34,9 +35,9 @@ interface AggregateTranslator
     public function reconstituteAggregateFromHistory(AggregateType $aggregateType, array $historyEvents);
 
     /**
-     * @param object $anEventSourcedAggregateRoot
+     * @param object $eventSourcedAggregateRoot
      * @return DomainEvent[]
      */
-    public function extractPendingStreamEvents($anEventSourcedAggregateRoot);
+    public function extractPendingStreamEvents($eventSourcedAggregateRoot);
 }
  

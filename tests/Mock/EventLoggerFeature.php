@@ -35,7 +35,7 @@ class EventLoggerFeature implements Feature
      */
     public function setUp(EventStore $eventStore)
     {
-        $eventStore->getActionEventDispatcher()->attachListener('commit.post', array($this, "onPostCommit"));
+        $eventStore->getActionEventEmitter()->attachListener('commit.post', array($this, "onPostCommit"));
     }
 
     /**
