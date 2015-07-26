@@ -16,8 +16,6 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
-use Prooph\EventStore\PersistenceEvent\PostCommitEvent;
-use Prooph\EventStore\PersistenceEvent\PreCommitEvent;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
@@ -277,7 +275,7 @@ class EventStore
      * Commit transaction
      *
      * @triggers commit.pre  On every commit call. If a listener stops propagation, the ES performs a rollback
-     * @triggers commit.post Once after all started transactions are committed. Event includes all recorded StreamEvents.
+     * @triggers commit.post Once after all started transactions are committed. Event includes all "recordedEvents".
      *                       Perfect to attach a domain event dispatcher
      */
     public function commit()
@@ -286,7 +284,7 @@ class EventStore
             throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
         }
 
-        $event = new PreCommitEvent(__FUNCTION__ . '.pre', $this);
+        $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.pre', $this);
 
         $event->setParam('isNestedTransaction', $this->transactionLevel > 1);
         $event->setParam('transactionLevel', $this->transactionLevel);
@@ -307,9 +305,7 @@ class EventStore
             $this->adapter->commit();
         }
 
-        $argv = array('recordedEvents' => $this->recordedEvents);
-
-        $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
+        $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.post', $this, ['recordedEvents' => $this->recordedEvents]);
 
         $this->recordedEvents = [];
 
