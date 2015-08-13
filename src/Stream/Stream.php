@@ -12,7 +12,7 @@
 namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 
 /**
  * Class Stream
@@ -28,18 +28,18 @@ class Stream
     protected $streamName;
 
     /**
-     * @var DomainEvent[]
+     * @var Message[]
      */
     protected $streamEvents;
 
     /**
      * @param StreamName $streamName
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      */
     public function __construct(StreamName $streamName, array $streamEvents)
     {
         foreach ($streamEvents as $streamEvent) {
-            Assertion::isInstanceOf($streamEvent, DomainEvent::class);
+            Assertion::isInstanceOf($streamEvent, Message::class);
         }
 
         $this->streamName = $streamName;
@@ -56,7 +56,7 @@ class Stream
     }
 
     /**
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function streamEvents()
     {

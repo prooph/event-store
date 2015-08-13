@@ -11,7 +11,7 @@
 
 namespace Prooph\EventStore\Aggregate;
 
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 
 /**
  * Interface AggregateTranslator
@@ -29,14 +29,14 @@ interface AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     * @param DomainEvent[] $historyEvents
+     * @param Message[] $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
     public function reconstituteAggregateFromHistory(AggregateType $aggregateType, array $historyEvents);
 
     /**
      * @param object $eventSourcedAggregateRoot
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function extractPendingStreamEvents($eventSourcedAggregateRoot);
 }

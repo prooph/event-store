@@ -11,7 +11,7 @@
 
 namespace Prooph\EventStore\Adapter;
 
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
@@ -40,7 +40,7 @@ class InMemoryAdapter implements Adapter
 
     /**
      * @param StreamName $streamName
-     * @param DomainEvent[] $domainEvents
+     * @param Message[] $domainEvents
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
      * @return void
      */
@@ -69,7 +69,7 @@ class InMemoryAdapter implements Adapter
             return null;
         }
 
-        /** @var $streamEvents DomainEvent[] */
+        /** @var $streamEvents Message[] */
         $streamEvents = $this->streams[$streamName->toString()];
 
         if (!is_null($minVersion)) {
@@ -92,7 +92,7 @@ class InMemoryAdapter implements Adapter
      * @param array $metadata
      * @param null|int $minVersion
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
@@ -118,7 +118,7 @@ class InMemoryAdapter implements Adapter
         return $streamEvents;
     }
 
-    protected function matchMetadataWith(DomainEvent $streamEvent, array $metadata)
+    protected function matchMetadataWith(Message $streamEvent, array $metadata)
     {
         if (empty($metadata)) {
             return true;
