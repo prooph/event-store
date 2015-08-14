@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="bootstrap.php">
+<phpunit bootstrap="bootstrap.php"
+         convertErrorsToExceptions="false">
     <testsuites>
         <testsuite name="EventStoreTest">
             <directory>.</directory>

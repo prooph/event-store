@@ -260,6 +260,10 @@ class EventStore
             $this->adapter->beginTransaction();
         }
 
+        if ($this->transactionLevel > 0) {
+            trigger_error("Nesting transactions is deprecated in prooph/event-store v5. Please align your transaction handling.", E_USER_DEPRECATED);
+        }
+
         $this->transactionLevel++;
 
         $event = $this->actionEventEmitter->getNewActionEvent(
