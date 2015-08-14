@@ -12,6 +12,10 @@ use Assert\Assertion;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\Common\Messaging\FQCNMessageFactory;
+use Prooph\Common\Messaging\MessageConverter;
+use Prooph\Common\Messaging\MessageFactory;
+use Prooph\Common\Messaging\NoOpMessageConverter;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Configuration\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
@@ -50,6 +54,16 @@ class Configuration
     protected $featureList = array();
 
     /**
+     * @var MessageFactory
+     */
+    protected $messageFactory;
+
+    /**
+     * @var MessageConverter
+     */
+    protected $messageConverter;
+
+    /**
      * @param array $config
      */
     public function __construct(array $config = null)
@@ -74,6 +88,18 @@ class Configuration
             Assertion::isInstanceOf($config['action_event_emitter'], ActionEventEmitter::class);
 
             $this->actionEventEmitter = $config['action_event_emitter'];
+        }
+
+        if (isset($config['message_factory'])) {
+            Assertion::isInstanceOf($config['message_factory'], MessageFactory::class);
+
+            $this->messageFactory = $config['message_factory'];
+        }
+
+        if (isset($config['message_converter'])) {
+            Assertion::isInstanceOf($config['message_converter'], MessageConverter::class);
+
+            $this->messageConverter = $config['message_converter'];
         }
     }
 
@@ -128,6 +154,14 @@ class Configuration
             
             $adapterClass = $this->config['adapter']['type'];
             $adapterConfig = $this->config['adapter']['options'];
+
+            if (!isset($adapterConfig['message_factory'])) {
+                $adapterConfig['message_factory'] = $this->getMessageFactory();
+            }
+
+            if (!isset($adapterConfig['message_converter'])) {
+                $adapterConfig['message_converter'] = $this->getMessageConverter();
+            }
             
             if (!is_string($adapterClass)) {
                 throw ConfigurationException::configurationError('Adapter.type must be a string');
@@ -186,5 +220,45 @@ class Configuration
     public function setActionEventEmitter(ActionEventEmitter $actionEventEmitter)
     {
         $this->actionEventEmitter = $actionEventEmitter;
+    }
+
+    /**
+     * @return MessageFactory
+     */
+    public function getMessageFactory()
+    {
+        if (is_null($this->messageFactory)) {
+            $this->messageFactory = new FQCNMessageFactory();
+        }
+
+        return $this->messageFactory;
+    }
+
+    /**
+     * @param MessageFactory $messageFactory
+     */
+    public function setMessageFactory(MessageFactory $messageFactory)
+    {
+        $this->messageFactory = $messageFactory;
+    }
+
+    /**
+     * @return MessageConverter
+     */
+    public function getMessageConverter()
+    {
+        if (is_null($this->messageConverter)) {
+            $this->messageConverter = new NoOpMessageConverter();
+        }
+
+        return $this->messageConverter;
+    }
+
+    /**
+     * @param MessageConverter $messageConverter
+     */
+    public function setMessageConverter(MessageConverter $messageConverter)
+    {
+        $this->messageConverter = $messageConverter;
     }
 }

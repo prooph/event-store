@@ -11,7 +11,7 @@
 
 namespace Prooph\EventStore\Stream;
 
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 
 /**
@@ -25,7 +25,7 @@ interface StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
@@ -34,7 +34,7 @@ interface StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @param object $aggregateRoots
      * @return void
      */
@@ -44,7 +44,7 @@ interface StreamStrategy
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null);
 
@@ -54,7 +54,7 @@ interface StreamStrategy
      * within the same stream as the super aggregate root.
      *
      * @param AggregateType $repositoryAggregateType
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @return AggregateType
      */
     public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents);

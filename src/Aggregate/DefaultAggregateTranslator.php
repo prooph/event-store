@@ -11,7 +11,7 @@
 
 namespace Prooph\EventStore\Aggregate;
 
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException;
 
 /**
@@ -43,7 +43,7 @@ class DefaultAggregateTranslator implements AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     * @param DomainEvent[] $historyEvents
+     * @param Message[] $historyEvents
      * @throws Exception\AggregateTranslationFailedException
      * @return object reconstructed EventSourcedAggregateRoot
      */
@@ -83,7 +83,7 @@ class DefaultAggregateTranslator implements AggregateTranslator
     /**
      * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTranslationFailedException
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function extractPendingStreamEvents($eventSourcedAggregateRoot)
     {

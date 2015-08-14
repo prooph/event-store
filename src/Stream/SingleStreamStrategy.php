@@ -12,7 +12,7 @@
 namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 
@@ -63,7 +63,7 @@ class SingleStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
@@ -82,7 +82,7 @@ class SingleStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
@@ -102,7 +102,7 @@ class SingleStreamStrategy implements StreamStrategy
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null)
     {
@@ -117,7 +117,7 @@ class SingleStreamStrategy implements StreamStrategy
 
     /**
      * @param AggregateType $repositoryAggregateType
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @throws \RuntimeException
      * @return AggregateType
      */

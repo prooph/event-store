@@ -10,7 +10,7 @@ namespace Prooph\EventStore;
 
 use Assert\Assertion;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Configuration\Configuration;
@@ -39,7 +39,7 @@ class EventStore
     protected $actionEventEmitter;
 
     /**
-     * @var DomainEvent[]
+     * @var Message[]
      */
     protected $recordedEvents = [];
 
@@ -72,7 +72,7 @@ class EventStore
     }
 
     /**
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function getRecordedEvents()
     {
@@ -113,14 +113,14 @@ class EventStore
 
     /**
      * @param StreamName $streamName
-     * @param DomainEvent[] $streamEvents
+     * @param Message[] $streamEvents
      * @throws Exception\RuntimeException
      * @return void
      */
     public function appendTo(StreamName $streamName, array $streamEvents)
     {
         foreach ($streamEvents as $streamEvent) {
-            Assertion::isInstanceOf($streamEvent, DomainEvent::class);
+            Assertion::isInstanceOf($streamEvent, Message::class);
         }
 
         $argv = array('streamName' => $streamName, 'streamEvents' => $streamEvents);
@@ -216,7 +216,7 @@ class EventStore
      * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {

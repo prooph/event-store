@@ -12,20 +12,16 @@
         }
     ],
     "keywords": [
-        "php",
-        "EventSourcing",
         "EventStore",
-        "library",
+        "EventSourcing",
         "DDD",
-        "domain-driven design",
-        "prooph",
-        "zf2"
+        "prooph"
     ],
     "require": {
         "php": ">=5.5",
         "ramsey/uuid" : "~2.8",
         "beberlei/assert": "~2.3",
-        "prooph/common" : "~3.1",
+        "prooph/common" : "~3.3",
         "container-interop/container-interop" : "~1.1"
     },
     "require-dev": {

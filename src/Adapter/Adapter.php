@@ -8,9 +8,8 @@
  */
 namespace Prooph\EventStore\Adapter;
 
-use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
@@ -29,7 +28,7 @@ interface Adapter
 
     /**
      * @param StreamName $streamName
-     * @param DomainEvent[] $domainEvents
+     * @param Message[] $domainEvents
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException If stream does not exist
      * @return void
      */
@@ -46,7 +45,7 @@ interface Adapter
      * @param StreamName $streamName
      * @param array $metadata If empty array is provided, then all events should be returned
      * @param null|int $minVersion Minimum version an event should have
-     * @return DomainEvent[]
+     * @return Message[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null);
 }
