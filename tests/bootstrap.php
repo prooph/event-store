@@ -11,3 +11,5 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 chdir(__DIR__);
+
+error_reporting(E_ALL & ~E_STRICT & ~E_DEPRECATED);
