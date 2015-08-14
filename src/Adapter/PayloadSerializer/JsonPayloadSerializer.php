@@ -38,4 +38,3 @@ final class JsonPayloadSerializer implements PayloadSerializer
         return json_decode($payloadStr, true);
     }
 }
- 

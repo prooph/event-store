@@ -45,4 +45,3 @@ final class AdapterMessageConverterMock
         return $this->unserializePayload($payloadStr);
     }
 }
- 

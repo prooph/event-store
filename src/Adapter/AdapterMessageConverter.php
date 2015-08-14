@@ -22,6 +22,10 @@ use Prooph\EventStore\Adapter\Exception\RuntimeException;
  *
  * This trait adds message conversion capabilities to any event store adapter.
  *
+ * Note: The PayloadSerializer is only required if the adapter can not store php arrays.
+ * For example the mongo db adapter don't need a PayloadSerializer and therefor the trait
+ * does not require it until it is actually used.
+ *
  * @package Prooph\EventStore\Adapter
  * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
  */
@@ -164,4 +168,3 @@ trait AdapterMessageConverter
         ));
     }
 }
- 

@@ -19,4 +19,3 @@ namespace Prooph\EventStore\Adapter\Exception;
 final class RuntimeException extends \RuntimeException implements AdapterException
 {
 }
- 
