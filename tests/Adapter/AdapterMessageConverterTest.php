@@ -22,8 +22,6 @@ final class AdapterMessageConverterTest extends TestCase
 {
     /**
      * @test
-     * @covers AdapterMessageConverter::initMessageConversion
-     * @covers AdapterMessageConverter::createMessageFromArray
      */
     function it_uses_message_factory_passed_via_adapter_options_to_create_message_from_array()
     {
@@ -38,8 +36,6 @@ final class AdapterMessageConverterTest extends TestCase
 
     /**
      * @test
-     * @covers AdapterMessageConverter::initMessageConversion
-     * @covers AdapterMessageConverter::convertMessageToArray
      */
     function it_uses_message_converter_passed_via_adapter_options_to_convert_message_to_array()
     {
@@ -57,8 +53,6 @@ final class AdapterMessageConverterTest extends TestCase
 
     /**
      * @test
-     * @covers AdapterMessageConverter::initMessageConversion
-     * @covers AdapterMessageConverter::serializePayload
      */
     function it_uses_payload_serializer_passed_via_adapter_options_to_serialize_payload_array()
     {
@@ -74,8 +68,6 @@ final class AdapterMessageConverterTest extends TestCase
 
     /**
      * @test
-     * @covers AdapterMessageConverter::initMessageConversion
-     * @covers AdapterMessageConverter::unserializePayload
      */
     function it_uses_payload_serializer_passed_via_adapter_options_to_unserialize_payload_string()
     {
@@ -90,7 +82,6 @@ final class AdapterMessageConverterTest extends TestCase
 
     /**
      * @test
-     * @covers AdapterMessageConverter::initMessageConversion
      * @dataProvider provideWrongDependency
      * @expectedException \Prooph\EventStore\Adapter\Exception\ConfigurationException
      */
@@ -110,10 +101,6 @@ final class AdapterMessageConverterTest extends TestCase
 
     /**
      * @test
-     * @covers AdapterMessageConverter::createMessageFromArray
-     * @covers AdapterMessageConverter::convertMessageToArray
-     * @covers AdapterMessageConverter::serializePayload
-     * @covers AdapterMessageConverter::unserializePayload
      * @dataProvider provideMethodCalls
      * @expectedException \Prooph\EventStore\Adapter\Exception\RuntimeException
      */
