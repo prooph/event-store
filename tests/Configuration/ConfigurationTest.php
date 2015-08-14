@@ -282,7 +282,7 @@ final class ConfigurationTest extends TestCase
     /**
      * @test
      */
-    function it_only_adds_message_factory_and_message_conveter_to_adapter_options_if_keys_are_not_set_already()
+    function it_only_adds_message_factory_and_message_converter_to_adapter_options_if_keys_are_not_set_already()
     {
         $messageFactory = $this->prophesize(MessageFactory::class);
         $messageConverter = $this->prophesize(MessageConverter::class);
