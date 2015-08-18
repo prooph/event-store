@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 19.04.14 - 21:27
  */
 
@@ -35,7 +35,7 @@ class EventStoreTest extends TestCase
      */
     public function it_creates_a_new_stream_and_records_the_stream_events()
     {
-        $recordedEvents = array();
+        $recordedEvents = [];
 
         $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
@@ -63,7 +63,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    function it_allows_nested_transactions_but_triggers_commit_post_event_only_once()
+    public function it_allows_nested_transactions_but_triggers_commit_post_event_only_once()
     {
         $postCommitEventCount = 0;
 
@@ -89,7 +89,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    function it_triggers_commit_pre_event_for_nested_transaction_too()
+    public function it_triggers_commit_pre_event_for_nested_transaction_too()
     {
         $preCommitEventCount = 0;
 
@@ -115,7 +115,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    function it_adds_information_about_transaction_level_to_commit_pre_event()
+    public function it_adds_information_about_transaction_level_to_commit_pre_event()
     {
         $transactionLevelOfNestedTransaction = null;
         $transactionFlagOfNestedTransaction = null;
@@ -162,7 +162,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    function it_adds_information_about_transaction_level_to_begin_transaction_event_and_triggers_the_event_on_every_call()
+    public function it_adds_information_about_transaction_level_to_begin_transaction_event_and_triggers_the_event_on_every_call()
     {
         $transactionLevelOfNestedTransaction = null;
         $transactionFlagOfNestedTransaction = null;
@@ -211,7 +211,7 @@ class EventStoreTest extends TestCase
      */
     public function it_stops_stream_creation_when_listener_stops_propagation()
     {
-        $recordedEvents = array();
+        $recordedEvents = [];
 
         $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
@@ -249,7 +249,7 @@ class EventStoreTest extends TestCase
      */
     public function it_appends_events_to_stream_and_records_them()
     {
-        $recordedEvents = array();
+        $recordedEvents = [];
 
         $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
@@ -264,13 +264,13 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $secondStreamEvent = UsernameChanged::with(
-            array('new_name' => 'John Doe'),
+            ['new_name' => 'John Doe'],
             2
         );
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo(new StreamName('user'), array($secondStreamEvent));
+        $this->eventStore->appendTo(new StreamName('user'), [$secondStreamEvent]);
 
         $this->eventStore->commit();
 
@@ -282,7 +282,7 @@ class EventStoreTest extends TestCase
      */
     public function it_does_not_append_events_when_listener_stops_propagation()
     {
-        $recordedEvents = array();
+        $recordedEvents = [];
 
         $this->eventStore->getActionEventDispatcher()->attachListener('commit.post', function (PostCommitEvent $event) use (&$recordedEvents) {
             foreach ($event->getRecordedEvents() as $recordedEvent) {
@@ -301,13 +301,13 @@ class EventStoreTest extends TestCase
         });
 
         $secondStreamEvent = UsernameChanged::with(
-            array('new_name' => 'John Doe'),
+            ['new_name' => 'John Doe'],
             2
         );
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo(new StreamName('user'), array($secondStreamEvent));
+        $this->eventStore->appendTo(new StreamName('user'), [$secondStreamEvent]);
 
         $this->eventStore->commit();
 
@@ -346,7 +346,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $streamEventWithMetadata = TestDomainEvent::with(
-            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
             2
         );
 
@@ -354,11 +354,11 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), array($streamEventWithMetadata));
+        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
 
         $this->eventStore->commit();
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array('snapshot' => true));
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
 
         $this->assertEquals(1, count($loadedEvents));
 
@@ -379,14 +379,14 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $streamEventVersion2 = UsernameChanged::with(
-            array('new_name' => 'John Doe'),
+            ['new_name' => 'John Doe'],
             2
         );
 
         DomainEventMetadataWriter::setMetadataKey($streamEventVersion2, 'snapshot', true);
 
         $streamEventVersion3 = UsernameChanged::with(
-            array('new_name' => 'John Doe'),
+            ['new_name' => 'John Doe'],
             3
         );
 
@@ -394,7 +394,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), array($streamEventVersion2, $streamEventVersion3));
+        $this->eventStore->appendTo($stream->streamName(), [$streamEventVersion2, $streamEventVersion3]);
 
         $this->eventStore->commit();
 
@@ -405,7 +405,7 @@ class EventStoreTest extends TestCase
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array(), 2);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 2);
 
         $this->assertEquals(2, count($loadedEvents));
 
@@ -427,7 +427,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $streamEventWithMetadata = UsernameChanged::with(
-            array('new_name' => 'John Doe'),
+            ['new_name' => 'John Doe'],
             2
         );
 
@@ -435,7 +435,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), array($streamEventWithMetadata));
+        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
 
         $this->eventStore->commit();
 
@@ -443,7 +443,7 @@ class EventStoreTest extends TestCase
             $event->stopPropagation(true);
         });
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array('snapshot' => true));
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
 
         $this->assertEquals(0, count($loadedEvents));
     }
@@ -462,7 +462,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $streamEventWithMetadata = UsernameChanged::with(
-            array('new_name' => 'John Doe'),
+            ['new_name' => 'John Doe'],
             2
         );
 
@@ -470,23 +470,23 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), array($streamEventWithMetadata));
+        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
 
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventDispatcher()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
             $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
-                array('new_name' => 'John Doe'),
+                ['new_name' => 'John Doe'],
                 1
             );
 
             DomainEventMetadataWriter::setMetadataKey($streamEventWithMetadataButOtherUuid, 'snapshot', true);
 
-            $event->setParam('streamEvents', array($streamEventWithMetadataButOtherUuid));
+            $event->setParam('streamEvents', [$streamEventWithMetadataButOtherUuid]);
             $event->stopPropagation(true);
         });
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), array('snapshot' => true));
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
 
         $this->assertEquals(1, count($loadedEvents));
 
@@ -529,7 +529,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (Event $event) {
-            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), array()));
+            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), []));
             $event->stopPropagation(true);
         });
 
@@ -552,7 +552,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventDispatcher()->attachListener('load.pre', function (ActionEvent $event) {
-            $event->setParam('stream', new Stream(new StreamName('user'), array()));
+            $event->setParam('stream', new Stream(new StreamName('user'), []));
             $event->stopPropagation(true);
         });
 
@@ -567,11 +567,10 @@ class EventStoreTest extends TestCase
     private function getTestStream()
     {
         $streamEvent = UserCreated::with(
-            array('name' => 'Alex', 'email' => 'contact@prooph.de'),
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
             1
         );
 
-        return new Stream(new StreamName('user'), array($streamEvent));
+        return new Stream(new StreamName('user'), [$streamEvent]);
     }
 }
- 

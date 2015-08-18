@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 17.04.14 - 20:46
  */
 
@@ -20,4 +20,3 @@ namespace Prooph\EventStore\Adapter\Exception;
 class InvalidArgumentException extends \InvalidArgumentException implements AdapterException
 {
 }
- 

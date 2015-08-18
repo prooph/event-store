@@ -5,14 +5,13 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 20:02
  */
 
 namespace Prooph\EventStoreTest\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
-use Rhumsaa\Uuid\Uuid;
 
 /**
  * Class DomainEvent
@@ -32,4 +31,3 @@ class TestDomainEvent extends DomainEvent
         return new static(get_called_class(), $payload, $version);
     }
 }
- 

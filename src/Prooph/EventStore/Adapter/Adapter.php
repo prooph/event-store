@@ -10,12 +10,11 @@ namespace Prooph\EventStore\Adapter;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamEvent;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Interface of an EventStore Adapter
- * 
+ *
  * @author Alexander Miertsch <contact@prooph.de>
  * @package Prooph\EventStore\Adapter
  */

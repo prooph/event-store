@@ -29,4 +29,4 @@ final class DomainEventMetadataWriter extends DomainEvent
     {
         $domainEvent->metadata[$key] = $value;
     }
-} 
+}

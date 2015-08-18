@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 02:13
  */
 
@@ -35,13 +35,13 @@ class AggregateStreamStrategy implements StreamStrategy
     /**
      * @var array
      */
-    protected $aggregateTypeStreamMap = array();
+    protected $aggregateTypeStreamMap = [];
 
     /**
      * @param EventStore $eventStore
      * @param array $aggregateTypeStreamMap
      */
-    public function __construct(EventStore $eventStore, array $aggregateTypeStreamMap = array())
+    public function __construct(EventStore $eventStore, array $aggregateTypeStreamMap = [])
     {
         $this->eventStore = $eventStore;
         $this->aggregateTypeStreamMap = $aggregateTypeStreamMap;
@@ -125,4 +125,3 @@ class AggregateStreamStrategy implements StreamStrategy
         return $repositoryAggregateType;
     }
 }
- 

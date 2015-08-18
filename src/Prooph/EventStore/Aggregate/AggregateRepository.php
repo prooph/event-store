@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 00:25
  */
 
@@ -42,7 +42,7 @@ class AggregateRepository
     /**
      * @var array
      */
-    protected $identityMap = array();
+    protected $identityMap = [];
 
     /**
      * @var AggregateType
@@ -63,7 +63,7 @@ class AggregateRepository
     ) {
         $this->eventStore = $eventStore;
 
-        $this->eventStore->getActionEventDispatcher()->attachListener('commit.pre', array($this, 'onPreCommit'));
+        $this->eventStore->getActionEventDispatcher()->attachListener('commit.pre', [$this, 'onPreCommit']);
 
         $this->aggregateTranslator = $aggregateTranslator;
         $this->streamStrategy = $streamStrategy;
@@ -111,7 +111,7 @@ class AggregateRepository
         $streamEvents = $this->streamStrategy->read($this->aggregateType, $anAggregateId);
 
         if (count($streamEvents) === 0) {
-            return null;
+            return;
         }
 
         $aggregateType = $this->streamStrategy->getAggregateRootType($this->aggregateType, $streamEvents);
@@ -129,11 +129,9 @@ class AggregateRepository
     public function onPreCommit()
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {
-
             $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
 
             if (count($pendingStreamEvents)) {
-
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
                     $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
@@ -144,4 +142,3 @@ class AggregateRepository
         }
     }
 }
- 

@@ -5,16 +5,14 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 20.04.14 - 23:56
  */
 
 namespace Prooph\EventStore\Feature;
 
-use Prooph\Common\ServiceLocator\ServiceLocator;
 use Prooph\EventStore\Exception\RuntimeException;
 use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception;
 
 /**
  * Class ZF2FeatureManager
@@ -47,4 +45,3 @@ class ZF2FeatureManager extends AbstractPluginManager
         }
     }
 }
- 

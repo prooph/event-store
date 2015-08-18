@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 01:28
  */
 
@@ -107,4 +107,3 @@ class DefaultAggregateTranslator implements AggregateTranslator
         return $recordedEvents;
     }
 }
- 
