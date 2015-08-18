@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 01:55
  */
 
@@ -35,13 +35,13 @@ class AggregateTypeStreamStrategy implements StreamStrategy
     /**
      * @var array
      */
-    protected $aggregateTypeStreamMap = array();
+    protected $aggregateTypeStreamMap = [];
 
     /**
      * @param EventStore $eventStore
      * @param array $aggregateTypeStreamMap
      */
-    public function __construct(EventStore $eventStore, array $aggregateTypeStreamMap = array())
+    public function __construct(EventStore $eventStore, array $aggregateTypeStreamMap = [])
     {
         $this->eventStore = $eventStore;
         $this->aggregateTypeStreamMap = $aggregateTypeStreamMap;
@@ -67,7 +67,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as &$streamEvent) {
+        foreach ($streamEvents as &$streamEvent) {
             DomainEventMetadataWriter::setMetadataKey($streamEvent, 'aggregate_id', $aggregateId);
         }
 
@@ -113,7 +113,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
 
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        return $this->eventStore->loadEventsByMetadataFrom($streamName, array('aggregate_id' => $aggregateId), $minVersion);
+        return $this->eventStore->loadEventsByMetadataFrom($streamName, ['aggregate_id' => $aggregateId], $minVersion);
     }
 
     /**
@@ -141,4 +141,3 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         return $repositoryAggregateType;
     }
 }
- 

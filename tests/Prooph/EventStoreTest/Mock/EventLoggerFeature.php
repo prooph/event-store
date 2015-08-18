@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 21.04.14 - 00:13
  */
 
@@ -27,7 +27,7 @@ class EventLoggerFeature implements Feature
     /**
      * @var DomainEvent[]
      */
-    protected $loggedStreamEvents = array();
+    protected $loggedStreamEvents = [];
 
     /**
      * @param EventStore $eventStore
@@ -35,7 +35,7 @@ class EventLoggerFeature implements Feature
      */
     public function setUp(EventStore $eventStore)
     {
-        $eventStore->getActionEventDispatcher()->attachListener('commit.post', array($this, "onPostCommit"));
+        $eventStore->getActionEventDispatcher()->attachListener('commit.post', [$this, "onPostCommit"]);
     }
 
     /**
@@ -54,4 +54,3 @@ class EventLoggerFeature implements Feature
         return $this->loggedStreamEvents;
     }
 }
- 

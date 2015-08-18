@@ -22,12 +22,12 @@ use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
- * EventStore 
+ * EventStore
  *
  * @author Alexander Miertsch <contact@prooph.de>
  * @package Prooph\EventStore
  */
-class EventStore 
+class EventStore
 {
     /**
      *
@@ -52,7 +52,7 @@ class EventStore
 
     /**
      * Construct
-     * 
+     *
      * @param Configuration $config
      */
     public function __construct(Configuration $config)
@@ -65,7 +65,7 @@ class EventStore
 
     /**
      * Get the active EventStoreAdapter
-     * 
+     *
      * @return Adapter
      */
     public function getAdapter()
@@ -88,7 +88,7 @@ class EventStore
      */
     public function create(Stream $stream)
     {
-        $argv = array('stream' => $stream);
+        $argv = ['stream' => $stream];
 
         $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -125,7 +125,7 @@ class EventStore
             Assertion::isInstanceOf($streamEvent, DomainEvent::class);
         }
 
-        $argv = array('streamName' => $streamName, 'streamEvents' => $streamEvents);
+        $argv = ['streamName' => $streamName, 'streamEvents' => $streamEvents];
 
         $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -159,14 +159,13 @@ class EventStore
      */
     public function load(StreamName $streamName, $minVersion = null)
     {
-        $argv = array('streamName' => $streamName, 'minVersion' => $minVersion);
+        $argv = ['streamName' => $streamName, 'minVersion' => $minVersion];
 
         $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
         $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-
             $stream = $event->getParam('stream', false);
 
             if ($stream instanceof Stream && $stream->streamName()->toString() == $streamName->toString()) {
@@ -222,14 +221,14 @@ class EventStore
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
-        $argv = array('streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion);
+        $argv = ['streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion];
 
         $event = $this->actionEventDispatcher->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
         $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            return $event->getParam('streamEvents', array());
+            return $event->getParam('streamEvents', []);
         }
 
         $streamName = $event->getParam('streamName');
@@ -245,7 +244,7 @@ class EventStore
         $this->getActionEventDispatcher()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            return array();
+            return [];
         }
 
         return $event->getParam('streamEvents');
@@ -301,13 +300,15 @@ class EventStore
         $this->transactionLevel--;
 
         //Nested transaction commit only decreases transaction level
-        if ($this->transactionLevel > 0) return;
+        if ($this->transactionLevel > 0) {
+            return;
+        }
 
         if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->commit();
         }
 
-        $argv = array('recordedEvents' => $this->recordedEvents);
+        $argv = ['recordedEvents' => $this->recordedEvents];
 
         $event = new PostCommitEvent(__FUNCTION__ . '.post', $this, $argv);
 

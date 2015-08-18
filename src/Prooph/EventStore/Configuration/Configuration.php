@@ -10,7 +10,6 @@ namespace Prooph\EventStore\Configuration;
 
 use Assert\Assertion;
 use Prooph\Common\Event\ActionEventDispatcher;
-use Prooph\Common\Event\ZF2\Zf2ActionEvent;
 use Prooph\Common\Event\ZF2\Zf2ActionEventDispatcher;
 use Prooph\Common\ServiceLocator\ServiceLocator;
 use Prooph\Common\ServiceLocator\ZF2\Zf2ServiceManagerProxy;
@@ -23,7 +22,7 @@ use Zend\ServiceManager\Config;
 
 /**
  * Configuration
- * 
+ *
  * @author Alexander Miertsch <contact@prooph.de>
  */
 class Configuration
@@ -31,7 +30,7 @@ class Configuration
     /**
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * @var Adapter
@@ -51,14 +50,14 @@ class Configuration
     /**
      * @var array
      */
-    protected $featureList = array();
+    protected $featureList = [];
 
     /**
      * @param array $config
      */
     public function __construct(array $config = null)
     {
-        if (is_array($config)) {            
+        if (is_array($config)) {
             $this->config = $config;
         }
 
@@ -91,7 +90,7 @@ class Configuration
             $feature->setUp($eventStore);
         }
     }
-    
+
     /**
      * @return Adapter
      * @throws ConfigurationException
@@ -107,7 +106,7 @@ class Configuration
                 $this->adapter = $this->config['adapter'];
                 return $this->config['adapter'];
             }
-            
+
             if (!is_array($this->config['adapter'])) {
                 throw ConfigurationException::configurationError('Event store adapter configuration must be an array');
             }
@@ -117,30 +116,30 @@ class Configuration
             }
 
             if (!isset($this->config['adapter']['options'])) {
-                $this->config['adapter']['options'] = array();
+                $this->config['adapter']['options'] = [];
             }
-            
+
             $adapterClass = $this->config['adapter']['type'];
             $adapterConfig = $this->config['adapter']['options'];
-            
+
             if (!is_string($adapterClass)) {
                 throw ConfigurationException::configurationError('Adapter.type must be a string');
             }
-            
+
             if (!class_exists($adapterClass)) {
                 throw ConfigurationException::configurationError(sprintf(
                     'Unknown AdapterClass: %s',
                     $adapterClass
                 ));
             }
-            
-            $this->adapter = new $adapterClass($adapterConfig); 
-            
+
+            $this->adapter = new $adapterClass($adapterConfig);
+
             if (!$this->adapter instanceof Adapter) {
                 throw ConfigurationException::configurationError('EventStore Adapter must be instance of Prooph\EventStore\Adapter\AdapterInterface');
             }
-        } 
-        
+        }
+
         return $this->adapter;
     }
 

@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 21.04.14 - 00:16
  */
 
@@ -33,19 +33,19 @@ class FeatureManagerTest extends TestCase
      */
     public function an_invokable_feature_is_loaded_by_feature_manager_and_attached_to_event_store_by_configuration()
     {
-        $config = array(
-            "adapter" => array(
+        $config = [
+            "adapter" => [
                 "type" => "Prooph\EventStore\Adapter\InMemoryAdapter",
-            ),
-            "feature_manager" => array(
-                "invokables" => array(
+            ],
+            "feature_manager" => [
+                "invokables" => [
                     "eventlogger" => "Prooph\EventStoreTest\Mock\EventLoggerFeature"
-                )
-            ),
-            "features" => array(
+                ]
+            ],
+            "features" => [
                 "eventlogger",
-            )
-        );
+            ]
+        ];
 
         $esConfig = new Configuration($config);
 
@@ -71,4 +71,3 @@ class FeatureManagerTest extends TestCase
         $this->assertEquals(1, count($loggedStreamEvents));
     }
 }
- 

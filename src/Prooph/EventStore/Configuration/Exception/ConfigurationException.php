@@ -12,7 +12,7 @@ use Prooph\EventStore\Exception\EventStoreException;
 
 /**
  * ConfigurationException
- * 
+ *
  * @author Alexander Miertsch <contact@prooph.de>
  */
 class ConfigurationException extends \RuntimeException implements EventStoreException

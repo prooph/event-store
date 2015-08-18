@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 20.04.14 - 20:53
  */
 
@@ -36,7 +36,6 @@ class PostCommitEvent extends Zf2ActionEvent
      */
     public function getRecordedEvents()
     {
-        return $this->getParam('recordedEvents', array());
+        return $this->getParam('recordedEvents', []);
     }
 }
- 
