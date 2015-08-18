@@ -10,6 +10,7 @@ before_script:
 
 script:
   - php ./vendor/bin/phpunit --coverage-text --coverage-clover ./../build/logs/clover.xml -c ./tests/.
+  - ./vendor/bin/php-cs-fixer fix -v --diff --dry-run
 
 after_script:
   - php vendor/bin/coveralls -v
