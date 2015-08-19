@@ -1,12 +1,7 @@
 <?php
 $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->in('src')
-    ->in('tests')
-    ->filter(function (SplFileInfo $file) {
-        if (strstr($file->getPath(), 'compatibility')) {
-            return false;
-        }
-    });
+    ->in('tests');
 $config = Symfony\CS\Config\Config::create();
 $config->level(null);
 $config->fixers(
