@@ -50,17 +50,15 @@ class EventStore
     protected $transactionLevel = 0;
 
     /**
-     * Construct
-     * 
-     * @param Configuration $config
+     * Constructor
+     *
+     * @param Adapter $adapter
+     * @param ActionEventEmitter $actionEventEmitter
      */
     public function __construct(Adapter $adapter, ActionEventEmitter $actionEventEmitter)
     {
         $this->adapter = $adapter;
         $this->actionEventEmitter = $actionEventEmitter;
-        $this->
-
-        $config->setUpEventStoreEnvironment($this);
     }
 
     /**
