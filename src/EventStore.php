@@ -9,6 +9,7 @@
 namespace Prooph\EventStore;
 
 use Assert\Assertion;
+use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
@@ -49,16 +50,15 @@ class EventStore
     protected $transactionLevel = 0;
 
     /**
-     * Construct
-     * 
-     * @param Configuration $config
+     * Constructor
+     *
+     * @param Adapter $adapter
+     * @param ActionEventEmitter $actionEventEmitter
      */
-    public function __construct(Configuration $config)
+    public function __construct(Adapter $adapter, ActionEventEmitter $actionEventEmitter)
     {
-        $this->adapter = $config->getAdapter();
-        $this->actionEventEmitter = $config->getActionEventEmitter();
-
-        $config->setUpEventStoreEnvironment($this);
+        $this->adapter = $adapter;
+        $this->actionEventEmitter = $actionEventEmitter;
     }
 
     /**

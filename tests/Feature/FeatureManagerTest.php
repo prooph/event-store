@@ -11,6 +11,8 @@
 
 namespace Prooph\EventStoreTest\Feature;
 
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
@@ -42,19 +44,10 @@ class FeatureManagerTest extends TestCase
             ]
         ]));
 
-        $config = array(
-            "adapter" => array(
-                "type" => "Prooph\EventStore\Adapter\InMemoryAdapter",
-            ),
-            "feature_manager" => $featureManager,
-            "features" => array(
-                "eventlogger",
-            )
-        );
+        $eventStore = new EventStore(new InMemoryAdapter(), new ProophActionEventEmitter());
 
-        $esConfig = new Configuration($config);
-
-        $eventStore = new EventStore($esConfig);
+        $logger = $featureManager->get('eventlogger');
+        $logger->setUp($eventStore);
 
         $repository = new AggregateRepository(
             $eventStore,
