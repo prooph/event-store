@@ -28,8 +28,8 @@ final class AggregateStreamStrategyFactory
     {
         $aggregateTypeStreamMap = [];
 
-        if ($container->has('Config')) {
-            $config = $container->get('Config');
+        if ($container->has('config')) {
+            $config = $container->get('config');
 
             if (isset($config['prooph']['event_store']['aggregate_type_stream_map'])) {
                 $aggregateTypeStreamMap = $config['prooph']['event_store']['aggregate_type_stream_map'];

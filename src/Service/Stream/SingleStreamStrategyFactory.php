@@ -28,8 +28,8 @@ final class SingleStreamStrategyFactory
     {
         $singleStreamName = null;
 
-        if ($container->has('Config')) {
-            $config = $container->get('Config');
+        if ($container->has('config')) {
+            $config = $container->get('config');
 
             if (isset($config['prooph']['event_store']['single_stream_name'])) {
                 $singleStreamName = $config['prooph']['event_store']['single_stream_name'];

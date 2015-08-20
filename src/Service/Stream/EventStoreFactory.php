@@ -31,7 +31,7 @@ final class EventStoreFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get('Config');
+        $config = $container->get('config');
 
         if (! isset($config['prooph'])) {
             throw ConfigurationException::configurationError('Missing prooph config key in application config');
