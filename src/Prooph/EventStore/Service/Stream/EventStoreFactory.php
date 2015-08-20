@@ -62,12 +62,12 @@ final class EventStoreFactory
             && isset($adapterOptions['doctrine_connection_alias'])
         ) {
             $config['adapter']['options']['connection'] = $container->get('doctrine.connection.' . $adapterOptions['doctrine_connection_alias']);
-        } else if ( $adapterType == 'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter'
+        } elseif ($adapterType == 'Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter'
             && isset($adapterOptions['zend_db_adapter'])
             && is_string($adapterOptions['zend_db_adapter'])
         ) {
             $config['adapter']['options']['zend_db_adapter'] = $container->get($adapterOptions['zend_db_adapter']);
-        } else if ($adapterType == 'Prooph\EventStore\Adapter\MongoDb\MongoDbEventStoreAdapter'
+        } elseif ($adapterType == 'Prooph\EventStore\Adapter\MongoDb\MongoDbEventStoreAdapter'
             && !isset($adapterOptions['mongo_client'])
         ) {
             isset($adapterOptions['mongo_connection_alias'])
