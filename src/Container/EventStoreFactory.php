@@ -9,7 +9,7 @@
  * Date: 20.08.15 - 16:20
  */
 
-namespace Prooph\EventStore\Service;
+namespace Prooph\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
@@ -21,7 +21,7 @@ use Prooph\EventStore\Stream\AggregateStreamStrategy;
 
 /**
  * Class EventStoreFactory
- * @package Prooph\EventStore\Service\Stream
+ * @package Prooph\EventStore\Container\Stream
  */
 final class EventStoreFactory
 {

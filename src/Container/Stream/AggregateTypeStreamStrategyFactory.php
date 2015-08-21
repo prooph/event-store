@@ -9,14 +9,14 @@
  * Date: 20.08.15 - 16:09
  */
 
-namespace Prooph\EventStore\Service\Stream;
+namespace Prooph\EventStore\Container\Stream;
 
 use Interop\Container\ContainerInterface;
 use Prooph\EventStore\Stream\AggregateTypeStreamStrategy;
 
 /**
  * Class AggregateTypeStreamStrategyFactory
- * @package Prooph\EventStore\Service\Stream
+ * @package Prooph\EventStore\Container\Stream
  */
 final class AggregateTypeStreamStrategyFactory
 {
