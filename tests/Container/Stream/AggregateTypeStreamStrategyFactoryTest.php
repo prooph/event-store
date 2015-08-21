@@ -6,22 +6,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 21.08.15 - 17:01
+ * Date: 21.08.15 - 17:10
  */
 
 namespace Prooph\EventStoreTest\Container\Stream;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Prooph\EventStore\Container\Stream\AggregateStreamStrategyFactory;
+use Prooph\EventStore\Container\Stream\AggregateTypeStreamStrategyFactory;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\AggregateStreamStrategy;
+use Prooph\EventStore\Stream\AggregateTypeStreamStrategy;
 
 /**
- * Class AggregateStreamStrategyFactoryTest
+ * Class AggregateTypeStreamStrategyFactory
  * @package Prooph\EventStoreTest\Container\Stream
  */
-class AggregateStreamStrategyFactoryTest extends TestCase
+class AggregateTypeStreamStrategyFactoryTest extends TestCase
 {
     /**
      * @test
@@ -34,10 +34,10 @@ class AggregateStreamStrategyFactoryTest extends TestCase
         $containerMock->expects($this->once())->method('has')->with('config')->willReturn(false);
         $containerMock->expects($this->once())->method('get')->with('prooph.event_store')->willReturn($eventStoreMock);
 
-        $factory = new AggregateStreamStrategyFactory();
+        $factory = new AggregateTypeStreamStrategyFactory();
         $streamStrategy = $factory($containerMock);
 
-        $this->assertInstanceOf(AggregateStreamStrategy::class, $streamStrategy);
+        $this->assertInstanceOf(AggregateTypeStreamStrategy::class, $streamStrategy);
     }
 
     /**
@@ -54,9 +54,9 @@ class AggregateStreamStrategyFactoryTest extends TestCase
         $containerMock->expects($this->at(1))->method('get')->with('config')->willReturn($config);
         $containerMock->expects($this->at(2))->method('get')->with('prooph.event_store')->willReturn($eventStoreMock);
 
-        $factory = new AggregateStreamStrategyFactory();
+        $factory = new AggregateTypeStreamStrategyFactory();
         $streamStrategy = $factory($containerMock);
 
-        $this->assertInstanceOf(AggregateStreamStrategy::class, $streamStrategy);
+        $this->assertInstanceOf(AggregateTypeStreamStrategy::class, $streamStrategy);
     }
 }
