@@ -51,9 +51,9 @@ class FeatureManagerTest extends TestCase
 
         $repository = new AggregateRepository(
             $eventStore,
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
             new DefaultAggregateTranslator(),
-            new AggregateStreamStrategy($eventStore),
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User')
+            new AggregateStreamStrategy($eventStore)
         );
 
         $eventStore->beginTransaction();
