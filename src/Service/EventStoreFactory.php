@@ -9,7 +9,7 @@
  * Date: 20.08.15 - 16:20
  */
 
-namespace Prooph\EventStore\Service\Stream;
+namespace Prooph\EventStore\Service;
 
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
