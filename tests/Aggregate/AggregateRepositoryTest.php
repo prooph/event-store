@@ -39,9 +39,8 @@ class AggregateRepositoryTest extends TestCase
 
         $this->repository = new AggregateRepository(
             $this->eventStore,
-            new DefaultAggregateTranslator(),
-            new SingleStreamStrategy($this->eventStore),
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User')
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            new DefaultAggregateTranslator()
         );
 
         $this->eventStore->beginTransaction();
