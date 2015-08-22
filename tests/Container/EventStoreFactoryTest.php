@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of the prooph/event-store.
- * (c) Alexander Miertsch <contact@prooph.de>
+ * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,9 @@ namespace Prooph\EventStoreTest\Container;
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
+use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
+use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Container\EventStoreFactory;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Feature\Feature;
@@ -28,7 +30,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_event_store()
+    public function it_creates_event_store_with_default_adapter_and_event_emitter()
     {
         $config['prooph']['event_store'] = [];
 
@@ -39,6 +41,8 @@ class EventStoreFactoryTest extends TestCase
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(EventStore::class, $eventStore);
+        $this->assertInstanceOf(InMemoryAdapter::class, $eventStore->getAdapter());
+        $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
     }
 
     /**
@@ -58,6 +62,7 @@ class EventStoreFactoryTest extends TestCase
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(EventStore::class, $eventStore);
+        $this->assertSame($adapterMock, $eventStore->getAdapter());
     }
 
     /**
@@ -77,6 +82,7 @@ class EventStoreFactoryTest extends TestCase
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(EventStore::class, $eventStore);
+        $this->assertSame($eventEmitterMock, $eventStore->getActionEventEmitter());
     }
 
     /**
@@ -87,6 +93,7 @@ class EventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['plugins'][] = 'plugin';
 
         $featureMock = $this->getMockForAbstractClass(Feature::class);
+        $featureMock->expects($this->once())->method('setUp');
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);

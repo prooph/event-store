@@ -27,7 +27,7 @@ final class EventStoreFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return AggregateStreamStrategy
+     * @return EventStore
      */
     public function __invoke(ContainerInterface $container)
     {
