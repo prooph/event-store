@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 30.08.14 - 23:41
  */
 
@@ -27,7 +27,7 @@ class InMemoryAdapter implements Adapter
     /**
      * @var array
      */
-    protected $streams = array();
+    protected $streams = [];
 
     /**
      * @param Stream $stream
@@ -66,14 +66,14 @@ class InMemoryAdapter implements Adapter
     public function load(StreamName $streamName, $minVersion = null)
     {
         if (! isset($this->streams[$streamName->toString()])) {
-            return null;
+            return;
         }
 
         /** @var $streamEvents Message[] */
         $streamEvents = $this->streams[$streamName->toString()];
 
         if (!is_null($minVersion)) {
-            $filteredEvents = array();
+            $filteredEvents = [];
 
             foreach ($streamEvents as $streamEvent) {
                 if ($streamEvent->version() >= $minVersion) {
@@ -96,7 +96,7 @@ class InMemoryAdapter implements Adapter
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
-        $streamEvents = array();
+        $streamEvents = [];
 
         if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
@@ -139,4 +139,3 @@ class InMemoryAdapter implements Adapter
         return true;
     }
 }
- 

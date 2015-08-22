@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 20.04.14 - 23:57
  */
 
@@ -27,4 +27,3 @@ interface Plugin
      */
     public function setUp(EventStore $eventStore);
 }
- 

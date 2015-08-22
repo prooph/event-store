@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 20:13
  */
 
@@ -20,4 +20,3 @@ namespace Prooph\EventStoreTest\Mock;
 class UserCreated extends TestDomainEvent
 {
 }
- 

@@ -8,7 +8,6 @@
  */
 namespace Prooph\EventStoreTest\Mock;
 
-
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Stream\Stream;
@@ -72,5 +71,3 @@ final class AdapterMock implements Adapter
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
 }
-
- 
