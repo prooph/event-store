@@ -17,7 +17,6 @@ use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
-use Prooph\EventStore\Stream\AggregateStreamStrategy;
 
 /**
  * Class EventStoreFactory
