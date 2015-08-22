@@ -16,7 +16,7 @@ use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Feature\Feature;
+use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\Stream\AggregateStreamStrategy;
 
 /**
@@ -62,9 +62,9 @@ final class EventStoreFactory
         foreach ($plugins as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
 
-            if (!$plugin instanceof Feature) {
+            if (!$plugin instanceof Plugin) {
                 throw ConfigurationException::configurationError(sprintf(
-                    'Feature %s does not implement the Feature interface',
+                    'Plugin %s does not implement the Plugin interface',
                     $pluginAlias
                 ));
             }

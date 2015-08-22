@@ -9,12 +9,10 @@
 namespace Prooph\EventStore;
 
 use Assert\Assertion;
-use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
-use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream\Stream;

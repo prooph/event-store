@@ -9,8 +9,8 @@ PHP 5.5+ EventStore Implementation.
 # Overview
 
 ProophEventStore is capable of persisting event objects that are organized in streams. The [EventStore](src/EventStore.php)
-itself is a facade for different persistence adapters (check the list below) and adds event-driven hook points for [features](src/Feature/Feature.php).
-Features can provide additional functionality like publishing persisted events on an event bus or validate events before they are stored.
+itself is a facade for different persistence adapters (check the list below) and adds event-driven hook points for [plugins](src/Plugin/Plugin.php).
+Plugins can provide additional functionality like publishing persisted events on an event bus or validate events before they are stored.
 ProophEventStore ships with different [strategies](src/Stream/StreamStrategy.php) to organize event streams and a basic [repository](src/Aggregate/AggregateRepository.php) implementation for event sourced aggregate roots.
 Each aggregate repository can work with another stream strategy to offer you maximum flexibility.
 
@@ -89,7 +89,7 @@ All aspects of the event store can be customized by setting custom implementatio
 the config array passed to the constructor of the `Configuration`:
 
 - [Adapter](src/Adapter/Adapter.php) (`adapter` config key or `setAdapter` method)
-- FeatureManager a DiC implementing [ContainerInterface](https://github.com/container-interop/container-interop/blob/master/src/Interop/Container/ContainerInterface.php)(`feature_manager` config key or `setFeatureManager` method)
+- PluginManager a DiC implementing [ContainerInterface](https://github.com/container-interop/container-interop/blob/master/src/Interop/Container/ContainerInterface.php)(`plugin_manager` config key or `setPluginManager` method)
 - [MessageFactory](https://github.com/prooph/common/blob/master/src/Messaging/MessageFactory.php) (`message_factory` config key or `setMessageFactory` method)
 - [MessageConverter](https://github.com/prooph/common/blob/master/src/Messaging/MessageConverter.php) (`message_converter` config key or `setMessageConverter` method)
 - [ActionEventEmitter](https://github.com/prooph/common/blob/master/src/Event/ActionEventEmitter.php) (`action_event_emitter` config key or `setActionEventEmitter` method)
@@ -104,10 +104,10 @@ such a constructor signature.
 
 You MUST provide the adapter in one way or the other. All other aspects are optional.
 
-# Features
+# Plugins
 
-The `FeatureManager` is only useful together with [Features](src/Feature/Feature.php).
-Features typically attach themselves as listeners to one or more action events triggered by the event store.
+The `PluginManager` is only useful together with [Plugins](src/Plugin/Plugin.php).
+Plugins typically attach themselves as listeners to one or more action events triggered by the event store.
 Action events are triggered when methods of the event store are invoked. The action events are named like the event store methods and most of them have
 a suffix to indicate whether they are triggered before or after the logic of the method is executed.
 The following events are available (event target is always the event store):
@@ -132,22 +132,22 @@ The following events are available (event target is always the event store):
   - This is the perfect action event to attach a `DomainEventDispatcher` which iterates over `recordedEvents` and publish them
 - `rollback`: no event params available
 
-## Feature Location
-You may have read somewhere that service location is evil. Bad news: we use service location to get features from the `FeatureManager`
-because the event store and/or the configuration cannot and do not want to know all the dependencies your features may have.
-So you have to set up your container of choice to provide features and then you only pass the service ids to the
+## Plugin Location
+You may have read somewhere that service location is evil. Bad news: we use service location to get plugins from the `PluginManager`
+because the event store and/or the configuration cannot and do not want to know all the dependencies your plugins may have.
+So you have to set up your container of choice to provide plugins and then you only pass the service ids to the
 event store configuration.
 
-Here is a very basic example setting a feature as a service to a container
-and using the service id to tell the config which feature to get from the container:
+Here is a very basic example setting a plugin as a service to a container
+and using the service id to tell the config which plugin to get from the container:
 
 ```php
-$container->set('my_event_store_feature', $myFeature);
+$container->set('my_event_store_plugin', $myPlugin);
 
 $eventStoreConfig = new Configuration([
-    'feature_manager' => $container,
-    'features' => [
-        'my_event_store_feature',
+    'plugin_manager' => $container,
+    'plugins' => [
+        'my_event_store_plugin',
     ]
 ]);
 ```
@@ -169,7 +169,7 @@ Check the [example](https://github.com/prooph/event-sourcing/blob/master/example
 
 # Contribute
 
-Please feel free to fork and extend existing or add new features and send a pull request with your changes!
+Please feel free to fork and extend existing or add new plugins and send a pull request with your changes!
 To establish a consistent code quality, please provide unit tests for all your changes and may adapt the documentation.
 
 # Dependencies
