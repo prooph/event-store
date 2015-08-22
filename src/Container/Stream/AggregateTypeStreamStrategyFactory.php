@@ -1,12 +1,12 @@
 <?php
 /*
- * This file is part of the prooph/proophessor.
- * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ * This file is part of the prooph/event-store.
+ * (c) Alexander Miertsch <contact@prooph.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 20.08.15 - 16:09
+ * Date: 20.08.15 - 18:08
  */
 
 namespace Prooph\EventStore\Container\Stream;
