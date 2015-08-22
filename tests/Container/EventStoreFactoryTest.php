@@ -19,7 +19,7 @@ use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Container\EventStoreFactory;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Feature\Feature;
+use Prooph\EventStore\Plugin\Plugin;
 
 /**
  * Class EventStoreFactoryTest
@@ -92,7 +92,7 @@ class EventStoreFactoryTest extends TestCase
     {
         $config['prooph']['event_store']['plugins'][] = 'plugin';
 
-        $featureMock = $this->getMockForAbstractClass(Feature::class);
+        $featureMock = $this->getMockForAbstractClass(Plugin::class);
         $featureMock->expects($this->once())->method('setUp');
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
@@ -107,8 +107,8 @@ class EventStoreFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Feature plugin does not implement the Feature interface
+     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
+     * @expectedExceptionMessage Plugin plugin does not implement the Plugin interface
      */
     public function it_throws_exception_when_invalid_plugin_configured()
     {
@@ -126,7 +126,7 @@ class EventStoreFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\ConfigurationException
+     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
      * @expectedExceptionMessage Missing prooph config key in application config
      */
     public function it_throws_exception_when_no_prooph_config_key_set()
@@ -142,7 +142,7 @@ class EventStoreFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\ConfigurationException
+     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
      * @expectedExceptionMessage Missing key event_store in prooph configuration
      */
     public function it_throws_exception_when_no_event_store_config_key_set()
