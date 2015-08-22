@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 01.09.14 - 00:07
  */
 
@@ -45,7 +45,7 @@ class SingleStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->create(new Stream(new StreamName('event_stream'), array()));
+        $this->eventStore->create(new Stream(new StreamName('event_stream'), []));
 
         $this->eventStore->commit();
     }
@@ -63,12 +63,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $aggregateId = Uuid::uuid4()->toString();
 
-        $streamEvents = array(
+        $streamEvents = [
             UserCreated::with(
-                array('user_id' => $aggregateId),
+                ['user_id' => $aggregateId],
                 1
             )
-        );
+        ];
 
         $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
@@ -100,12 +100,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $aggregateId = Uuid::uuid4()->toString();
 
-        $streamEvents = array(
+        $streamEvents = [
             UserCreated::with(
-                array('user_id' => $aggregateId),
+                ['user_id' => $aggregateId],
                 1
             )
-        );
+        ];
 
         $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
 
@@ -113,12 +113,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $streamEvents = array(
+        $streamEvents = [
             UsernameChanged::with(
-                array('name' => 'John Doe'),
+                ['name' => 'John Doe'],
                 2
             )
-        );
+        ];
 
         $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents, $user);
 
@@ -138,12 +138,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $aggregateId = Uuid::uuid4()->toString();
 
-        $streamEvents = array(
+        $streamEvents = [
             UserCreated::with(
-                array('user_id' => $aggregateId),
+                ['user_id' => $aggregateId],
                 1
             )
-        );
+        ];
 
         $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $product);
 
@@ -167,12 +167,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $aggregateId1 = Uuid::uuid4()->toString();
 
-        $streamEvents1 = array(
+        $streamEvents1 = [
             UserCreated::with(
-                array('user_id' => $aggregateId1),
+                ['user_id' => $aggregateId1],
                 1
             )
-        );
+        ];
 
         $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId1, $streamEvents1, $user);
 
@@ -180,12 +180,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $aggregateId2 = Uuid::uuid4()->toString();
 
-        $streamEvents2 = array(
+        $streamEvents2 = [
             TestDomainEvent::with(
-                array('product_id' => $aggregateId2),
+                ['product_id' => $aggregateId2],
                 1
             )
-        );
+        ];
 
         $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId2, $streamEvents2, $product);
 
@@ -204,4 +204,3 @@ class SingleStreamStrategyTest extends TestCase
         $this->assertEquals('Prooph\EventStoreTest\Mock\Product', $arType->toString());
     }
 }
- 

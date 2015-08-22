@@ -10,7 +10,7 @@ namespace Prooph\EventStore\Exception;
 
 /**
  * ConfigurationException
- * 
+ *
  * @author Alexander Miertsch <contact@prooph.de>
  */
 class ConfigurationException extends RuntimeException implements EventStoreException

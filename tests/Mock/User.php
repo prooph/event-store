@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 20:00
  */
 
@@ -21,7 +21,7 @@ use Rhumsaa\Uuid\Uuid;
  * @package Prooph\EventStoreTest\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class User 
+class User
 {
     /**
      * @var Uuid
@@ -55,11 +55,11 @@ class User
     public function __construct($name, $email)
     {
         $this->recordThat(UserCreated::with(
-            array(
+            [
                 'user_id' => Uuid::uuid4()->toString(),
                 'name' => $name,
                 'email' => $email,
-            ),
+            ],
             $this->nextVersion()
         ));
     }
@@ -85,10 +85,10 @@ class User
     public function changeName($newName)
     {
         $this->recordThat(UsernameChanged::with(
-            array(
+            [
                 'old_name' => $this->name,
                 'new_name' => $newName
-            ),
+            ],
             $this->nextVersion()
         ));
     }
@@ -129,7 +129,7 @@ class User
     {
         $recordedEvents = $this->recordedEvents;
 
-        $this->recordedEvents = array();
+        $this->recordedEvents = [];
 
         return $recordedEvents;
     }
@@ -139,8 +139,7 @@ class User
      */
     private function replay(array $streamEvents)
     {
-        foreach ($streamEvents as $streamEvent)
-        {
+        foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
             $this->version = $streamEvent->version();
         }
@@ -151,4 +150,3 @@ class User
         return ++$this->version;
     }
 }
- 

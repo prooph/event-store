@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 06.06.14 - 23:34
  */
 
@@ -17,7 +17,7 @@ namespace Prooph\EventStore\Aggregate;
  * @package Prooph\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class AggregateType 
+class AggregateType
 {
     /**
      * @var string
@@ -56,8 +56,12 @@ class AggregateType
      */
     public static function fromAggregateRootClass($aggregateRootClass)
     {
-        if (! is_string($aggregateRootClass)) throw new \InvalidArgumentException('Aggregate root class must be a string');
-        if (! class_exists($aggregateRootClass)) throw new \InvalidArgumentException(sprintf('Aggregate root class %s can not be found', $aggregateRootClass));
+        if (! is_string($aggregateRootClass)) {
+            throw new \InvalidArgumentException('Aggregate root class must be a string');
+        }
+        if (! class_exists($aggregateRootClass)) {
+            throw new \InvalidArgumentException(sprintf('Aggregate root class %s can not be found', $aggregateRootClass));
+        }
 
         return new static($aggregateRootClass);
     }
@@ -111,4 +115,3 @@ class AggregateType
         return $this->toString() === $other->toString();
     }
 }
- 

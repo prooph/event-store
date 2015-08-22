@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 00:37
  */
 
@@ -59,4 +59,3 @@ interface StreamStrategy
      */
     public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents);
 }
- 

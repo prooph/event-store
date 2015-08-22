@@ -14,7 +14,7 @@ use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Interface of an EventStore Adapter
- * 
+ *
  * @author Alexander Miertsch <contact@prooph.de>
  * @package Prooph\EventStore\Adapter
  */
