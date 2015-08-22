@@ -1,12 +1,12 @@
 <?php
 /*
- * This file is part of the prooph/proophessor.
- * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ * This file is part of the prooph/event-store.
+ * (c) Alexander Miertsch <contact@prooph.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 20.08.15 - 16:20
+ * Date: 20.08.15 - 18:31
  */
 
 namespace Prooph\EventStore\Container;
@@ -27,7 +27,7 @@ final class EventStoreFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return AggregateStreamStrategy
+     * @return EventStore
      */
     public function __invoke(ContainerInterface $container)
     {
