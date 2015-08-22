@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 02:16
  */
 
@@ -71,7 +71,7 @@ class SingleStreamStrategy implements StreamStrategy
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as &$streamEvent) {
+        foreach ($streamEvents as &$streamEvent) {
             $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
             $streamEvent = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
@@ -90,7 +90,7 @@ class SingleStreamStrategy implements StreamStrategy
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ( $streamEvents as &$streamEvent) {
+        foreach ($streamEvents as &$streamEvent) {
             $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
             $streamEvent = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
@@ -110,7 +110,7 @@ class SingleStreamStrategy implements StreamStrategy
 
         return $this->eventStore->loadEventsByMetadataFrom(
             $this->streamName,
-            array('aggregate_id' => $aggregateId),
+            ['aggregate_id' => $aggregateId],
             $minVersion
         );
     }
@@ -136,4 +136,3 @@ class SingleStreamStrategy implements StreamStrategy
         throw new \RuntimeException("The aggregate type cannot be detected");
     }
 }
- 

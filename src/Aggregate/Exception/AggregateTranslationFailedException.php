@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 01:29
  */
 
@@ -16,4 +16,3 @@ use Prooph\EventStore\Exception\EventStoreException;
 class AggregateTranslationFailedException extends \RuntimeException implements EventStoreException
 {
 }
- 

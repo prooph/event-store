@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 31.08.14 - 22:09
  */
 
@@ -14,7 +14,6 @@ namespace Prooph\EventStoreTest\Aggregate;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
-use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
@@ -45,7 +44,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->create(new Stream(new StreamName('event_stream'), array()));
+        $this->eventStore->create(new Stream(new StreamName('event_stream'), []));
 
         $this->eventStore->commit();
     }
@@ -123,7 +122,6 @@ class AggregateRepositoryTest extends TestCase
 
         $identityMap->setAccessible(true);
 
-        $identityMap->setValue($this->repository, array());
+        $identityMap->setValue($this->repository, []);
     }
 }
- 

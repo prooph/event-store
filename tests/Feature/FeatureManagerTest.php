@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 21.04.14 - 00:16
  */
 
@@ -16,7 +16,6 @@ use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
-use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\AggregateStreamStrategy;
 use Prooph\EventStoreTest\Mock\EventLoggerFeature;
@@ -69,4 +68,3 @@ class FeatureManagerTest extends TestCase
         $this->assertEquals(1, count($loggedStreamEvents));
     }
 }
- 

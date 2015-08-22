@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 8/14/15 - 8:11 PM
  */
 namespace Prooph\EventStore\Adapter;
@@ -16,7 +16,7 @@ namespace Prooph\EventStore\Adapter;
  * @package Prooph\EventStore\Adapter
  * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
  */
-interface PayloadSerializer 
+interface PayloadSerializer
 {
     /**
      * @param array $payload
