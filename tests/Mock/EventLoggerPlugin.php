@@ -14,7 +14,7 @@ namespace Prooph\EventStoreTest\Mock;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Feature\Feature;
+use Prooph\EventStore\Plugin\Plugin;
 
 /**
  * Class EventLoggerFeature
@@ -22,7 +22,7 @@ use Prooph\EventStore\Feature\Feature;
  * @package Prooph\EventStoreTest\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-class EventLoggerFeature implements Feature
+class EventLoggerPlugin implements Plugin
 {
     /**
      * @var DomainEvent[]

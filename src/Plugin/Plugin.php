@@ -9,17 +9,17 @@
  * Date: 20.04.14 - 23:57
  */
 
-namespace Prooph\EventStore\Feature;
+namespace Prooph\EventStore\Plugin;
 
 use Prooph\EventStore\EventStore;
 
 /**
  * Class FeatureInterface
  *
- * @package Prooph\EventStore\Feature
+ * @package Prooph\EventStore\Plugin
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
-interface Feature
+interface Plugin
 {
     /**
      * @param EventStore $eventStore

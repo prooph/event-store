@@ -8,11 +8,8 @@
  */
 namespace Prooph\EventStoreTest;
 
-use Prooph\EventSourcing\EventStoreFeature\ProophEventSourcingFeature;
-use Prooph\EventStore\Adapter\Adapter;
+use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
-use Prooph\EventStore\Adapter\Zf2\Zf2EventStoreAdapter;
-use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\EventStore;
 
 /**
@@ -31,11 +28,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $inMemoryAdapter = new InMemoryAdapter();
+        $eventEmitter    = new ProophActionEventEmitter();
 
-        $config = new Configuration();
-
-        $config->setAdapter($inMemoryAdapter);
-
-        $this->eventStore = new EventStore($config);
+        $this->eventStore = new EventStore($inMemoryAdapter, $eventEmitter);
     }
 }

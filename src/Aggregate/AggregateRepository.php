@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Aggregate;
 use Assert\Assertion;
 use Prooph\EventStore\Aggregate\Exception\AggregateTypeException;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\StreamStrategy;
 
 /**
@@ -51,23 +52,27 @@ class AggregateRepository
 
     /**
      * @param EventStore $eventStore
-     * @param AggregateTranslator $aggregateTranslator
-     * @param StreamStrategy $streamStrategy
      * @param AggregateType $aggregateType
+     * @param AggregateTranslator $aggregateTranslator
+     * @param StreamStrategy|null $streamStrategy
      */
     public function __construct(
         EventStore $eventStore,
+        AggregateType $aggregateType,
         AggregateTranslator $aggregateTranslator,
-        StreamStrategy $streamStrategy,
-        AggregateType $aggregateType
+        StreamStrategy $streamStrategy = null
     ) {
         $this->eventStore = $eventStore;
-
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', $this);
 
-        $this->aggregateTranslator = $aggregateTranslator;
-        $this->streamStrategy = $streamStrategy;
         $this->aggregateType = $aggregateType;
+        $this->aggregateTranslator = $aggregateTranslator;
+
+        if (null === $streamStrategy) {
+            $streamStrategy = new SingleStreamStrategy($this->eventStore);
+        }
+
+        $this->streamStrategy = $streamStrategy;
     }
 
     /**

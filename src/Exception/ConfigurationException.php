@@ -6,16 +6,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Prooph\EventStore\Configuration\Exception;
-
-use Prooph\EventStore\Exception\EventStoreException;
+namespace Prooph\EventStore\Exception;
 
 /**
  * ConfigurationException
  * 
  * @author Alexander Miertsch <contact@prooph.de>
  */
-class ConfigurationException extends \RuntimeException implements EventStoreException
+class ConfigurationException extends RuntimeException implements EventStoreException
 {
     /**
      * @param string $msg

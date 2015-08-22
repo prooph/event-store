@@ -13,7 +13,6 @@ use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
-use Prooph\EventStore\Configuration\Configuration;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream\Stream;
@@ -49,16 +48,15 @@ class EventStore
     protected $transactionLevel = 0;
 
     /**
-     * Construct
-     * 
-     * @param Configuration $config
+     * Constructor
+     *
+     * @param Adapter $adapter
+     * @param ActionEventEmitter $actionEventEmitter
      */
-    public function __construct(Configuration $config)
+    public function __construct(Adapter $adapter, ActionEventEmitter $actionEventEmitter)
     {
-        $this->adapter = $config->getAdapter();
-        $this->actionEventEmitter = $config->getActionEventEmitter();
-
-        $config->setUpEventStoreEnvironment($this);
+        $this->adapter = $adapter;
+        $this->actionEventEmitter = $actionEventEmitter;
     }
 
     /**
@@ -258,6 +256,10 @@ class EventStore
     {
         if ($this->transactionLevel === 0 && $this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
+        }
+
+        if ($this->transactionLevel > 0) {
+            trigger_error("Nesting transactions is deprecated in prooph/event-store v5. Please align your transaction handling.", E_USER_DEPRECATED);
         }
 
         $this->transactionLevel++;
