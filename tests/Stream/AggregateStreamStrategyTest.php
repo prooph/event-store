@@ -48,7 +48,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 
@@ -77,7 +77,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 
@@ -119,7 +119,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 
@@ -153,7 +153,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString("Product");
 
@@ -177,7 +177,7 @@ class AggregateStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 

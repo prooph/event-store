@@ -12,7 +12,7 @@
 namespace Prooph\EventStoreTest\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
-use Prooph\EventStore\Stream\StreamEvent;
+use Prooph\Common\Messaging\Message;
 use Rhumsaa\Uuid\Uuid;
 
 /**
@@ -39,7 +39,7 @@ class User
     private $email;
 
     /**
-     * @var StreamEvent[]
+     * @var DomainEvent[]
      */
     private $recordedEvents;
 
@@ -51,23 +51,45 @@ class User
     /**
      * @param string $name
      * @param string $email
+     * @return User
      */
-    public function __construct($name, $email)
+    public static function create($name, $email)
     {
-        $this->recordThat(UserCreated::with(
+        $self = new self();
+
+        $self->recordThat(UserCreated::with(
             [
                 'user_id' => Uuid::uuid4()->toString(),
                 'name' => $name,
                 'email' => $email,
             ],
-            $this->nextVersion()
+            $self->nextVersion()
         ));
+
+        return $self;
+    }
+
+    /**
+     * @param Message[] $historyEvents
+     * @return User
+     */
+    public static function reconstituteFromHistory(array $historyEvents)
+    {
+        $self = new self();
+
+        $self->replay($historyEvents);
+
+        return $self;
+    }
+
+    private function __construct()
+    {
     }
 
     /**
      * @return Uuid
      */
-    public function id()
+    public function getId()
     {
         return $this->userId;
     }
@@ -125,7 +147,7 @@ class User
         $this->name = $usernameChanged->payload()['new_name'];
     }
 
-    private function popRecordedEvents()
+    public function popRecordedEvents()
     {
         $recordedEvents = $this->recordedEvents;
 

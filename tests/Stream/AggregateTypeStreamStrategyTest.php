@@ -55,7 +55,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 
@@ -84,7 +84,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 
@@ -122,7 +122,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 
@@ -151,7 +151,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user1 = new User("John Doe", "doe@test.com");
+        $user1 = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user1);
 
@@ -168,7 +168,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
 
         $aggregateId2 = Uuid::uuid4()->toString();
 
-        $user2 = new User("John Doe", "doe@test.com");
+        $user2 = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user2);
 
@@ -202,7 +202,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString("Product");
 
@@ -226,7 +226,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromAggregateRoot($user);
 

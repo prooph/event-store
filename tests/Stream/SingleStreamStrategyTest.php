@@ -57,7 +57,7 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString('SuperUser');
 
@@ -94,7 +94,7 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString('SuperUser');
 
@@ -161,7 +161,7 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString('Object');
 

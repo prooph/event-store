@@ -32,7 +32,7 @@ interface AggregateTranslator
      * @param Message[] $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, array $historyEvents);
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, $historyEvents);
 
     /**
      * @param object $eventSourcedAggregateRoot
