@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 8/22/15 - 9:42 PM
  */
 namespace Prooph\EventStoreTest\Aggregate;
@@ -31,7 +31,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_default_method_name_to_get_the_identifier_from_aggregate_root()
+    public function it_uses_default_method_name_to_get_the_identifier_from_aggregate_root()
     {
         $ar = $this->prophesize(DefaultAggregateRootContract::class);
 
@@ -45,7 +45,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_configured_method_name_to_get_the_identifier_from_aggregate_root_if_injected()
+    public function it_uses_configured_method_name_to_get_the_identifier_from_aggregate_root_if_injected()
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
@@ -60,7 +60,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    function it_forces_identifier_method_name_to_be_a_string()
+    public function it_forces_identifier_method_name_to_be_a_string()
     {
         new ConfigurableAggregateTranslator(666);
     }
@@ -69,7 +69,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
-    function it_throws_exception_if_identifier_method_does_not_exist()
+    public function it_throws_exception_if_identifier_method_does_not_exist()
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
@@ -81,7 +81,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_default_method_name_to_extract_pending_events()
+    public function it_uses_default_method_name_to_extract_pending_events()
     {
         $ar = $this->prophesize(DefaultAggregateRootContract::class);
 
@@ -101,7 +101,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_configured_method_name_to_extract_pending_events()
+    public function it_uses_configured_method_name_to_extract_pending_events()
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
@@ -122,7 +122,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    function it_forces_pop_recorded_events_method_name_to_be_a_string()
+    public function it_forces_pop_recorded_events_method_name_to_be_a_string()
     {
         new ConfigurableAggregateTranslator(null, 666);
     }
@@ -131,7 +131,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
-    function it_throws_exception_if_pop_recorded_events_method_does_not_exist()
+    public function it_throws_exception_if_pop_recorded_events_method_does_not_exist()
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
@@ -144,7 +144,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
-    function it_throws_exception_if_pop_recored_evens_method_returns_invalid_message()
+    public function it_throws_exception_if_pop_recored_evens_method_returns_invalid_message()
     {
         $ar = $this->prophesize(DefaultAggregateRootContract::class);
 
@@ -158,7 +158,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_invokes_event_to_message_callback_for_each_event()
+    public function it_invokes_event_to_message_callback_for_each_event()
     {
         $message = $this->prophesize(Message::class);
 
@@ -179,7 +179,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    function it_forces_event_to_message_callback_to_be_a_callable()
+    public function it_forces_event_to_message_callback_to_be_a_callable()
     {
         new ConfigurableAggregateTranslator(null, null, null, 666);
     }
@@ -187,7 +187,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_default_method_name_to_reconstitute_an_aggregate_root_from_history()
+    public function it_uses_default_method_name_to_reconstitute_an_aggregate_root_from_history()
     {
         $historyEvent = $this->prophesize(Message::class);
 
@@ -203,7 +203,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_configured_name_to_reconstitute_an_aggregate_root_from_history()
+    public function it_uses_configured_name_to_reconstitute_an_aggregate_root_from_history()
     {
         $historyEvent = $this->prophesize(Message::class);
 
@@ -220,7 +220,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    function it_forces_reconstitute_form_history_method_name_to_be_a_string()
+    public function it_forces_reconstitute_form_history_method_name_to_be_a_string()
     {
         new ConfigurableAggregateTranslator(null, null, 666);
     }
@@ -229,7 +229,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
-    function it_throws_exception_if_aggregate_root_does_not_exist()
+    public function it_throws_exception_if_aggregate_root_does_not_exist()
     {
         $translator = new ConfigurableAggregateTranslator();
 
@@ -240,7 +240,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
-    function it_throws_exception_if_reconstitute_form_history_method_name_does_not_exist()
+    public function it_throws_exception_if_reconstitute_form_history_method_name_does_not_exist()
     {
         $translator = new ConfigurableAggregateTranslator(null, null, 'unknownMethod');
 
@@ -251,7 +251,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
-    function it_throws_exception_if_reconstitute_form_history_method_name_does_not_return_an_instance_of_aggregate_type()
+    public function it_throws_exception_if_reconstitute_form_history_method_name_does_not_return_an_instance_of_aggregate_type()
     {
         $translator = new ConfigurableAggregateTranslator();
 
@@ -261,7 +261,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    function it_uses_callback_to_convert_message_into_custom_domain_event()
+    public function it_uses_callback_to_convert_message_into_custom_domain_event()
     {
         $historyEvent = $this->prophesize(Message::class);
 
@@ -280,9 +280,8 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \InvalidArgumentException
      */
-    function it_forces_message_to_event_callback_to_be_a_callable()
+    public function it_forces_message_to_event_callback_to_be_a_callable()
     {
         new ConfigurableAggregateTranslator(null, null, null, null, 666);
     }
 }
- 

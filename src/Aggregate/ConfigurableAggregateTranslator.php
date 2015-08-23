@@ -195,7 +195,6 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         $callback = $this->eventToMessageCallback;
 
         foreach ($recordedEvents as $i => $recordedEvent) {
-
             if ($callback) {
                 $recordedEvent = $callback($recordedEvent);
                 $recordedEvents[$i] = $recordedEvent;

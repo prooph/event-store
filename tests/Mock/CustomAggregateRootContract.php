@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Date: 8/22/15 - 10:08 PM
  */
 
@@ -19,7 +19,7 @@ use Prooph\Common\Messaging\Message;
  * @package Prooph\EventStoreTest\Mock
  * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
  */
-interface CustomAggregateRootContract 
+interface CustomAggregateRootContract
 {
     /**
      * @param Message[] $historyEvents
@@ -37,4 +37,3 @@ interface CustomAggregateRootContract
      */
     public function getPendingEvents();
 }
- 
