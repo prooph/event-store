@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 17.04.14 - 20:46
+ * Date: 04/17/14 - 8:46 PM
  */
 
 namespace Prooph\EventStore\Adapter\Exception;

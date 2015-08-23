@@ -14,7 +14,7 @@ namespace Prooph\EventStore\Adapter\Exception;
  * Class RuntimeException
  *
  * @package Prooph\EventStore\Adapter\Exception
- * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class RuntimeException extends \RuntimeException implements AdapterException
 {

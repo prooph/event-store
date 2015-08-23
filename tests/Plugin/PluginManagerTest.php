@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 21.04.14 - 00:16
+ * Date: 04/21/14 - 00:16 AM
  */
 
 namespace Prooph\EventStoreTest\Plugin;
@@ -15,7 +15,7 @@ use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
-use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
+use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\AggregateStreamStrategy;
 use Prooph\EventStoreTest\Mock\EventLoggerPlugin;
@@ -51,13 +51,13 @@ class PluginManagerTest extends TestCase
         $repository = new AggregateRepository(
             $eventStore,
             AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
-            new DefaultAggregateTranslator(),
+            new ConfigurableAggregateTranslator(),
             new AggregateStreamStrategy($eventStore)
         );
 
         $eventStore->beginTransaction();
 
-        $user = new User("Alex", "contact@prooph.de");
+        $user = User::create("Alex", "contact@prooph.de");
 
         $repository->addAggregateRoot($user);
 

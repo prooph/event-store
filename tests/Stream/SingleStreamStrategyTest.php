@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 01.09.14 - 00:07
+ * Date: 09/01/14 - 00:07 AM
  */
 
 namespace Prooph\EventStoreTest\Stream;
@@ -57,7 +57,7 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString('SuperUser');
 
@@ -94,7 +94,7 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString('SuperUser');
 
@@ -161,7 +161,7 @@ class SingleStreamStrategyTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User("John Doe", "doe@test.com");
+        $user = User::create("John Doe", "doe@test.com");
 
         $aggregateType = AggregateType::fromString('Object');
 

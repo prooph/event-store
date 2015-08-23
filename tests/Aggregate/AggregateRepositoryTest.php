@@ -13,7 +13,7 @@ namespace Prooph\EventStoreTest\Aggregate;
 
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
-use Prooph\EventStore\Aggregate\DefaultAggregateTranslator;
+use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
@@ -39,7 +39,7 @@ class AggregateRepositoryTest extends TestCase
         $this->repository = new AggregateRepository(
             $this->eventStore,
             AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
-            new DefaultAggregateTranslator()
+            new ConfigurableAggregateTranslator()
         );
 
         $this->eventStore->beginTransaction();
@@ -57,7 +57,7 @@ class AggregateRepositoryTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User('John Doe', 'contact@prooph.de');
+        $user = User::create('John Doe', 'contact@prooph.de');
 
         $this->repository->addAggregateRoot($user);
 
@@ -66,7 +66,7 @@ class AggregateRepositoryTest extends TestCase
         $this->clearRepositoryIdentityMap();
 
         $fetchedUser = $this->repository->getAggregateRoot(
-            $user->id()->toString()
+            $user->getId()->toString()
         );
 
         $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $user);
@@ -85,7 +85,7 @@ class AggregateRepositoryTest extends TestCase
     {
         $this->eventStore->beginTransaction();
 
-        $user = new User('John Doe', 'contact@prooph.de');
+        $user = User::create('John Doe', 'contact@prooph.de');
 
         $this->repository->addAggregateRoot($user);
 
@@ -94,7 +94,7 @@ class AggregateRepositoryTest extends TestCase
         $this->eventStore->beginTransaction();
 
         $fetchedUser = $this->repository->getAggregateRoot(
-            $user->id()->toString()
+            $user->getId()->toString()
         );
 
         $this->assertSame($user, $fetchedUser);
@@ -106,7 +106,7 @@ class AggregateRepositoryTest extends TestCase
         $this->clearRepositoryIdentityMap();
 
         $fetchedUser2 = $this->repository->getAggregateRoot(
-            $user->id()->toString()
+            $user->getId()->toString()
         );
 
         $this->assertNotSame($fetchedUser, $fetchedUser2);

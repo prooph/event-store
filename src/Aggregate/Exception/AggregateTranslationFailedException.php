@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 31.08.14 - 01:29
+ * Date: 08/31/14 - 01:29 AM
  */
 
 namespace Prooph\EventStore\Aggregate\Exception;
