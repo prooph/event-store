@@ -16,7 +16,7 @@ use Prooph\Common\Messaging\Message;
  * Class CustomAggregateRoot
  *
  * @package Prooph\EventStoreTest\Mock
- * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class CustomAggregateRoot implements CustomAggregateRootContract
 {

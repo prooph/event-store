@@ -24,7 +24,7 @@ use Prooph\EventStoreTest\TestCase;
  * Class ConfigurableAggregateTranslatorTest
  *
  * @package Prooph\EventStoreTest\Aggregate
- * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class ConfigurableAggregateTranslatorTest extends TestCase
 {
@@ -62,7 +62,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_identifier_method_name_to_be_a_string()
     {
-        new ConfigurableAggregateTranslator(666);
+        new ConfigurableAggregateTranslator(0);
     }
 
     /**
@@ -124,7 +124,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_pop_recorded_events_method_name_to_be_a_string()
     {
-        new ConfigurableAggregateTranslator(null, 666);
+        new ConfigurableAggregateTranslator(null, 0);
     }
 
     /**
@@ -181,7 +181,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_event_to_message_callback_to_be_a_callable()
     {
-        new ConfigurableAggregateTranslator(null, null, null, 666);
+        new ConfigurableAggregateTranslator(null, null, null, 0);
     }
 
     /**
@@ -222,7 +222,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_reconstitute_form_history_method_name_to_be_a_string()
     {
-        new ConfigurableAggregateTranslator(null, null, 666);
+        new ConfigurableAggregateTranslator(null, null, 0);
     }
 
     /**
@@ -282,6 +282,6 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_message_to_event_callback_to_be_a_callable()
     {
-        new ConfigurableAggregateTranslator(null, null, null, null, 666);
+        new ConfigurableAggregateTranslator(null, null, null, null, 0);
     }
 }

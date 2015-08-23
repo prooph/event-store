@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 31.08.14 - 23:59
+ * Date: 08/31/14 - 11:59 PM
  */
 
 namespace Prooph\EventStoreTest\Stream;

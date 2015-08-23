@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 30.08.14 - 23:41
+ * Date: 08/30/14 - 11:41 PM
  */
 
 namespace Prooph\EventStore\Adapter;

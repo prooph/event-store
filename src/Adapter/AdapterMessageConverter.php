@@ -27,7 +27,7 @@ use Prooph\EventStore\Adapter\Exception\RuntimeException;
  * does not require it until it is actually used.
  *
  * @package Prooph\EventStore\Adapter
- * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 trait AdapterMessageConverter
 {

@@ -16,7 +16,7 @@ use Prooph\Common\Messaging\Message;
  * Class DefaultAggregateRoot
  *
  * @package Prooph\EventStoreTest\Mock
- * @author Alexander Miertsch <alexander.miertsch.extern@sixt.com>
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class DefaultAggregateRoot implements DefaultAggregateRootContract
 {

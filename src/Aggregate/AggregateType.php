@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 06.06.14 - 23:34
+ * Date: 06/06/14 - 11:34 PM
  */
 
 namespace Prooph\EventStore\Aggregate;

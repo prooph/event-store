@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 31.08.14 - 01:28
+ * Date: 08/31/14 - 01:28 AM
  */
 
 namespace Prooph\EventStore\Aggregate;
@@ -63,17 +63,17 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         $messageToEventCallback = null)
     {
         if (null !== $identifierMethodName) {
-            Assertion::string($identifierMethodName, 'Identifier method name needs to be a string');
+            Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
             $this->identifierMethodName = $identifierMethodName;
         }
 
         if (null !== $popRecordedEventsMethodName) {
-            Assertion::string($popRecordedEventsMethodName, 'Pop recorded events method name needs to be a string');
+            Assertion::minLength($popRecordedEventsMethodName, 1, 'Pop recorded events method name needs to be a non empty string');
             $this->popRecordedEventsMethodName = $popRecordedEventsMethodName;
         }
 
         if (null !== $staticReconstituteFromHistoryMethodName) {
-            Assertion::string($staticReconstituteFromHistoryMethodName, 'Method name for static method reconstitute from history needs to be string');
+            Assertion::minLength($staticReconstituteFromHistoryMethodName, 1, 'Method name for static method reconstitute from history needs to be non empty string');
             $this->staticReconstituteFromHistoryMethodName = $staticReconstituteFromHistoryMethodName;
         }
 
