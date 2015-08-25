@@ -65,7 +65,7 @@ The event-driven system opens the door for customizations. Here are some ideas w
 
 If you are familiar with the factory pattern and you use an implementation of [interop-container](https://github.com/container-interop/container-interop)
 in your project you may want to have a look at the factories shipped with prooph/event-store.
-You can find them in the [Container](src/Container) folder.
+You can find them in the [Container](../src/Container) folder.
 
 ### Requirements
 
@@ -102,7 +102,7 @@ If the requirements are met you just need to add a new section in your applicati
 ```
 
 ... and register the factory in your IoC container. We recommend using the service id `prooph.event_store` for the event store
-because other factories like the [stream factories](src/Container/Stream) try to locate the event store
+because other factories like the [stream factories](../src/Container/Stream) try to locate the event store
 by using this service id.
 
 *Note: The available event store adapters also ship with factories. Please refer to the adapter packages for details.*

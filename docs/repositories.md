@@ -24,7 +24,7 @@ It is our internal event sourcing package and ships with support for prooph/even
 ## AggregateTranslator
 
 To achieve 100% decoupling between layers and/or contexts you can make use of translation adapters.
-For prooph/event-store such a translation adapter is called an [AggregateTranslator](src/Aggregate/AggregateTranslator.php).
+For prooph/event-store such a translation adapter is called an [AggregateTranslator](../src/Aggregate/AggregateTranslator.php).
 
 The interface requires you to implement three methods:
 
@@ -33,7 +33,7 @@ The interface requires you to implement three methods:
 - reconstituteAggregateFromHistory
 
 That is all a repository needs to handle your event sourced aggregates. But to make it even more simple to get started
-prooph/event-store ships with a [ConfigurableAggregateTranslator](src/Aggregate/ConfigurableAggregateTranslator.php) which implements the interface.
+prooph/event-store ships with a [ConfigurableAggregateTranslator](../src/Aggregate/ConfigurableAggregateTranslator.php) which implements the interface.
 
 Let's have a look at the constructor
 
@@ -91,15 +91,15 @@ how the event store should organize the event streams. The default behaviour of 
 But depending on the amount of events and the adapter used you may want to have a stream per aggregate instance or a stream per aggregate type.
 See the list below:
 
-- [SingleStreamStrategy](src/Stream/SingleStreamStrategy.php): Stores the events of all aggregates in one single stream
-- [AggregateStreamStrategy](src/Stream/AggregateStreamStrategy.php): Creates a stream for each aggregate instance
-- [AggregateTypeStreamStrategy](src/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
+- [SingleStreamStrategy](../src/Stream/SingleStreamStrategy.php): Stores the events of all aggregates in one single stream
+- [AggregateStreamStrategy](../src/Stream/AggregateStreamStrategy.php): Creates a stream for each aggregate instance
+- [AggregateTypeStreamStrategy](../src/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
 
 ## Wiring It Together
 
 Now that you know the customization options you may ask: **How to put all that together?**
 The answer is: **With a repository!**
-The best way to see it in action is by looking at the [AggregateRepositoryTest](tests/Aggregate/AggregateRepositoryTest.php).
+The best way to see it in action is by looking at the [AggregateRepositoryTest](../tests/Aggregate/AggregateRepositoryTest.php).
 
 ### Set Up
 
