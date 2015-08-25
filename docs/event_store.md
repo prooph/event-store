@@ -47,7 +47,7 @@ $eventStore->getActionEventEmitter()->attachListener(
 ```
 
 More complex plugins are typically provided as classes with own dependencies. A plugin can implement the [Plugin](src/Plugin/Plugin.php) interface
-and can than attach itself to the event store in the `Plugin::setUp($eventStore)` method.
+and can then attach itself to the event store in the `Plugin::setUp($eventStore)` method.
 Implementing the interface is especially useful when you use the event store factory described in the [Container-Driven Creation](#container-driven-creation) section.
 
 ## Plugin Use Cases
@@ -89,7 +89,7 @@ If the requirements are met you just need to add a new section in your applicati
             'event_emitter' => 'emitter_service_id' //The factory will use this id to get the event emitter from the container
             'plugins' => [
                 //And again the factory will use each service id to get the plugin from the container
-                //Plugin::setUp($eventStore) is than invoked by the factory so your plugins get attached automatically
+                //Plugin::setUp($eventStore) is then invoked by the factory so your plugins get attached automatically
                 //Awesome, isn't it?
                 'plugin_1_service_id',
                 'plugin_2_service_id',
