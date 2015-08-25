@@ -50,7 +50,7 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_injects_custom_adapter()
     {
-        $config['prooph']['event_store']['adapter'] = 'adapter';
+        $config['prooph']['event_store']['adapter']['type'] = 'adapter';
 
         $adapterMock = $this->getMockForAbstractClass(Adapter::class);
 
