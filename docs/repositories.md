@@ -13,7 +13,7 @@ Afterwards you should be able to integrate `prooph/event-store` into your infras
 
 We assume that you want to work with event sourced aggregates. If you are not sure what we are talking about
 please refer to the great educational project [Buttercup.Protects](http://buttercup-php.github.io/protects/) by Mathias Verraes.
-prooph/event-store does not include base classes or traits to added event sourced capabilities to your entities.
+prooph/event-store does not include base classes or traits to add event sourced capabilities to your entities.
 
 Sounds bad? It isn't!
 
