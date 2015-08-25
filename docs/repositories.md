@@ -151,7 +151,7 @@ public function it_adds_a_new_aggregate()
 }
 ```
 
-In the first tes case you can see how a aggregate (the user entity in this case) can be added to the repository.
+In the first tes case you can see how an aggregate (the user entity in this case) can be added to the repository.
 Under the hood the `ConfigurableAggregateTranslator` and the `SingleStreamStrategy` do their jobs so that the
 recorded domain events of the `user aggregate root` are stored in the `event_stream`.
 

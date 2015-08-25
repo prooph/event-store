@@ -2,7 +2,7 @@
 
 Prooph Event Store is the central component of this package. If you are familiar with doctrine
 you can compare it with doctrine's EntityManager.
-However, Prooph Event Store is especially designed to add an centralized, event-driven system on top
+However, Prooph Event Store is especially designed to add a centralized, event-driven system on top
 of different low level event stream persistence adapters.
 The event-driven store is the unique selling point of prooph/event-store compared to other libraries.
 So let's directly jump into it and see what you can do with it.
