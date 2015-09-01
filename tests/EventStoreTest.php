@@ -627,6 +627,24 @@ class EventStoreTest extends TestCase
     }
 
     /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     */
+    public function it_throws_exception_when_trying_to_commit_transaction_without_open_transation()
+    {
+        $this->eventStore->commit();
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     */
+    public function it_throws_exception_when_trying_to_rollback_transaction_without_open_transation()
+    {
+        $this->eventStore->rollback();
+    }
+
+    /**
      * @return Stream
      */
     private function getTestStream()
