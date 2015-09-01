@@ -12,11 +12,16 @@
 namespace Prooph\EventStoreTest;
 
 use Prooph\Common\Event\ActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\Adapter\Adapter;
+use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\TestDomainEvent;
 use Prooph\EventStoreTest\Mock\UserCreated;
 use Prooph\EventStoreTest\Mock\UsernameChanged;
+use Prophecy\Argument;
 
 /**
  * Class EventStoreTest
@@ -44,6 +49,8 @@ class EventStoreTest extends TestCase
         $stream = $this->getTestStream();
 
         $this->eventStore->create($stream);
+
+        $this->assertEquals(1, count($this->eventStore->getRecordedEvents()));
 
         $this->eventStore->commit();
 
@@ -555,6 +562,182 @@ class EventStoreTest extends TestCase
         $emptyStream = $this->eventStore->load($stream->streamName());
 
         $this->assertEquals(0, count($emptyStream->streamEvents()));
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_throws_stream_not_found_exception_if_adapter_loads_nothing()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+
+        $eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create($stream);
+
+        $eventStore->commit();
+
+        $eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_post()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getActionEventEmitter()->attachListener('load.post', function (ActionEvent $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_event_by_metadata_from_post()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getActionEventEmitter()->attachListener('loadEventsByMetadataFrom.post', function (ActionEvent $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->assertEmpty($this->eventStore->loadEventsByMetadataFrom($stream->streamName(), []));
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     */
+    public function it_throws_exception_when_trying_to_commit_transaction_without_open_transation()
+    {
+        $this->eventStore->commit();
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     */
+    public function it_throws_exception_when_trying_to_rollback_transaction_without_open_transation()
+    {
+        $this->eventStore->rollback();
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     * @expectedExceptionMessage Adapter cannot handle transaction and therefore cannot rollback
+     */
+    public function it_cannot_rollback_transaction_if_adapter_cannot_handle_transaction()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->rollback();
+
+        $this->assertEmpty($this->eventStore->load($stream->streamName()));
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_can_rollback_transaction()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+        $adapter->willImplement(CanHandleTransaction::class);
+
+        $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->rollback();
+
+        $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_makes_rollback_when_event_is_stopped_during_commit()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+        $adapter->willImplement(CanHandleTransaction::class);
+
+        $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
+
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (ActionEvent $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_commits_transaction_if_adapter_implements_can_handle_transaction()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+        $adapter->willImplement(CanHandleTransaction::class);
+
+        $adapter->beginTransaction()->shouldBeCalled();
+        $adapter->create($stream)->shouldBeCalled();
+        $adapter->commit()->shouldBeCalled();
+        $adapter->load(Argument::any(), null)->willReturn($stream);
+
+        $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $stream = $this->eventStore->load($stream->streamName());
+
+        $this->assertEquals('user', $stream->streamName()->toString());
+
+        $this->assertEquals(1, count($stream->streamEvents()));
     }
 
     /**

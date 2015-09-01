@@ -191,7 +191,7 @@ class EventStore
             );
         }
 
-        $event->setName(__FUNCTION__, '.post');
+        $event->setName(__FUNCTION__ . '.post');
 
         $event->setParam('stream', $stream);
 
@@ -233,7 +233,7 @@ class EventStore
 
         $events = $this->adapter->loadEventsByMetadataFrom($streamName, $metadata, $minVersion);
 
-        $event->setName(__FUNCTION__, '.post');
+        $event->setName(__FUNCTION__ . '.post');
 
         $event->setParam('streamEvents', $events);
 
@@ -326,9 +326,11 @@ class EventStore
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
-        if ($this->adapter instanceof CanHandleTransaction) {
-            $this->adapter->rollback();
+        if (!$this->adapter instanceof CanHandleTransaction) {
+            throw new RuntimeException('Adapter cannot handle transaction and therefore cannot rollback');
         }
+
+        $this->adapter->rollback();
 
         $this->transactionLevel = 0;
 
