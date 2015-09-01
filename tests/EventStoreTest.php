@@ -12,6 +12,9 @@
 namespace Prooph\EventStoreTest;
 
 use Prooph\Common\Event\ActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\Adapter\Adapter;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\TestDomainEvent;
@@ -44,6 +47,8 @@ class EventStoreTest extends TestCase
         $stream = $this->getTestStream();
 
         $this->eventStore->create($stream);
+
+        $this->assertEquals(1, count($this->eventStore->getRecordedEvents()));
 
         $this->eventStore->commit();
 
@@ -555,6 +560,29 @@ class EventStoreTest extends TestCase
         $emptyStream = $this->eventStore->load($stream->streamName());
 
         $this->assertEquals(0, count($emptyStream->streamEvents()));
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_throws_stream_not_found_exception_if_adapter_loads_nothing()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+
+        $eventEmitter    = new ProophActionEventEmitter();
+
+        $eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create($stream);
+
+        $eventStore->commit();
+
+        $eventStore->load($stream->streamName());
     }
 
     /**
