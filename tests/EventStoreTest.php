@@ -574,9 +574,7 @@ class EventStoreTest extends TestCase
 
         $adapter = $this->prophesize(Adapter::class);
 
-        $eventEmitter    = new ProophActionEventEmitter();
-
-        $eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+        $eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
 
         $eventStore->beginTransaction();
 
@@ -675,9 +673,7 @@ class EventStoreTest extends TestCase
         $adapter = $this->prophesize(Adapter::class);
         $adapter->willImplement(CanHandleTransaction::class);
 
-        $eventEmitter = new ProophActionEventEmitter();
-
-        $this->eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+        $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
 
         $this->eventStore->beginTransaction();
 
@@ -699,9 +695,7 @@ class EventStoreTest extends TestCase
         $adapter = $this->prophesize(Adapter::class);
         $adapter->willImplement(CanHandleTransaction::class);
 
-        $eventEmitter = new ProophActionEventEmitter();
-
-        $this->eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+        $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
 
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (ActionEvent $event) {
             $event->stopPropagation(true);
@@ -731,9 +725,7 @@ class EventStoreTest extends TestCase
         $adapter->commit()->shouldBeCalled();
         $adapter->load(Argument::any(), null)->willReturn($stream);
 
-        $eventEmitter = new ProophActionEventEmitter();
-
-        $this->eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+        $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
 
         $this->eventStore->beginTransaction();
 
