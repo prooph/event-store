@@ -326,9 +326,11 @@ class EventStore
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
-        if ($this->adapter instanceof CanHandleTransaction) {
-            $this->adapter->rollback();
+        if (!$this->adapter instanceof CanHandleTransaction) {
+            throw new RuntimeException('Adapter cannot handle transaction and therefore cannot rollback');
         }
+
+        $this->adapter->rollback();
 
         $this->transactionLevel = 0;
 

@@ -14,6 +14,7 @@ namespace Prooph\EventStoreTest;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
+use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
@@ -642,6 +643,48 @@ class EventStoreTest extends TestCase
     public function it_throws_exception_when_trying_to_rollback_transaction_without_open_transation()
     {
         $this->eventStore->rollback();
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     * @expectedExceptionMessage Adapter cannot handle transaction and therefore cannot rollback
+     */
+    public function it_cannot_rollback_transaction_if_adapter_cannot_handle_transaction()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->rollback();
+
+        $this->assertEmpty($this->eventStore->load($stream->streamName()));
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_can_rollback_transaction()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+        $adapter->willImplement(CanHandleTransaction::class);
+
+        $eventEmitter = new ProophActionEventEmitter();
+
+        $this->eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->rollback();
+
+        $this->eventStore->load($stream->streamName());
     }
 
     /**
