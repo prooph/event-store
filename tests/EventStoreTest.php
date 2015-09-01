@@ -607,6 +607,26 @@ class EventStoreTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_event_by_metadata_from_post()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getActionEventEmitter()->attachListener('loadEventsByMetadataFrom.post', function (ActionEvent $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->assertEmpty($this->eventStore->loadEventsByMetadataFrom($stream->streamName(), []));
+    }
+
+    /**
      * @return Stream
      */
     private function getTestStream()

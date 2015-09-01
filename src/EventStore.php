@@ -233,7 +233,7 @@ class EventStore
 
         $events = $this->adapter->loadEventsByMetadataFrom($streamName, $metadata, $minVersion);
 
-        $event->setName(__FUNCTION__, '.post');
+        $event->setName(__FUNCTION__ . '.post');
 
         $event->setParam('streamEvents', $events);
 
