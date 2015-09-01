@@ -688,6 +688,34 @@ class EventStoreTest extends TestCase
     }
 
     /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_makes_rollback_when_event_is_stopped_during_commit()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+        $adapter->willImplement(CanHandleTransaction::class);
+
+        $eventEmitter = new ProophActionEventEmitter();
+
+        $this->eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (ActionEvent $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->load($stream->streamName());
+    }
+
+    /**
      * @return Stream
      */
     private function getTestStream()
