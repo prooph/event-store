@@ -586,6 +586,27 @@ class EventStoreTest extends TestCase
     }
 
     /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_post()
+    {
+        $stream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->getActionEventEmitter()->attachListener('load.post', function (ActionEvent $event) {
+            $event->stopPropagation(true);
+        });
+
+        $this->eventStore->load($stream->streamName());
+    }
+
+    /**
      * @return Stream
      */
     private function getTestStream()

@@ -191,7 +191,7 @@ class EventStore
             );
         }
 
-        $event->setName(__FUNCTION__, '.post');
+        $event->setName(__FUNCTION__ . '.post');
 
         $event->setParam('stream', $stream);
 
