@@ -21,6 +21,7 @@ use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\TestDomainEvent;
 use Prooph\EventStoreTest\Mock\UserCreated;
 use Prooph\EventStoreTest\Mock\UsernameChanged;
+use Prophecy\Argument;
 
 /**
  * Class EventStoreTest
@@ -713,6 +714,38 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_commits_transaction_if_adapter_implements_can_handle_transaction()
+    {
+        $stream = $this->getTestStream();
+
+        $adapter = $this->prophesize(Adapter::class);
+        $adapter->willImplement(CanHandleTransaction::class);
+
+        $adapter->beginTransaction()->shouldBeCalled();
+        $adapter->create($stream)->shouldBeCalled();
+        $adapter->commit()->shouldBeCalled();
+        $adapter->load(Argument::any(), null)->willReturn($stream);
+
+        $eventEmitter = new ProophActionEventEmitter();
+
+        $this->eventStore = new EventStore($adapter->reveal(), $eventEmitter);
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream);
+
+        $this->eventStore->commit();
+
+        $stream = $this->eventStore->load($stream->streamName());
+
+        $this->assertEquals('user', $stream->streamName()->toString());
+
+        $this->assertEquals(1, count($stream->streamEvents()));
     }
 
     /**
