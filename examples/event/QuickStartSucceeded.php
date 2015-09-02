@@ -8,6 +8,7 @@
  *
  * Date: 8/23/15 - 12:26 AM
  */
+
 namespace Example\Event;
 
 use Assert\Assertion;
