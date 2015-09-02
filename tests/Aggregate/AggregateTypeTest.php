@@ -1,7 +1,84 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sasa
- * Date: 02/09/15
- * Time: 20:04
+/*
+ * This file is part of the prooph/event-store.
+ * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 09/02/15 - 20:04
  */
+
+namespace Prooph\EventStore\Aggregate;
+
+use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStoreTest\Aggregate\AggregateRepositoryTest;
+
+/**
+ * Class AggregateTypeTest
+ *
+ * @package Prooph\EventStore\Stream
+ */
+class AggregateTypeTest extends TestCase
+{
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
+     */
+    public function it_throws_exception_when_trying_to_create_from_string_as_aggregate_root()
+    {
+        AggregateType::fromAggregateRoot('invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function it_delegates_on_creating_from_aggregate_root_when_it_implements_aggregate_type_provider()
+    {
+        $expected = new \stdClass();
+
+        $aggregateRoot = $this->prophesize(AggregateTypeProvider::class);
+        $aggregateRoot->aggregateType()->willReturn($expected)->shouldBeCalled();
+
+        $this->assertSame($expected, AggregateType::fromAggregateRoot($aggregateRoot->reveal()));
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Aggregate root class must be a string
+     */
+    public function it_throws_exception_on_creating_from_aggregate_root_class_when_no_string_given()
+    {
+        AggregateType::fromAggregateRootClass(666);
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Aggregate root class unknown_class can not be found
+     */
+    public function it_throws_exception_on_creating_from_aggregate_root_class_when_unknown_class_given()
+    {
+        AggregateType::fromAggregateRootClass('unknown_class');
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
+     * @expectedExceptionMessage AggregateType must be a non empty string
+     */
+    public function it_throws_exception_when_trying_to_create_from_empty_string()
+    {
+        AggregateType::fromString(null);
+    }
+
+    /**
+     * @test
+     */
+    public function it_delegates_to_string()
+    {
+        $type = AggregateType::fromAggregateRootClass('stdClass');
+        $this->assertEquals('stdClass', (string) $type);
+    }
+}

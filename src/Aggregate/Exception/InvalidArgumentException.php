@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 08/31/14 - 01:29 AM
+ * Date: 09/02/15 - 20:07
  */
 
 namespace Prooph\EventStore\Aggregate\Exception;
@@ -14,9 +14,9 @@ namespace Prooph\EventStore\Aggregate\Exception;
 use Prooph\EventStore\Exception\EventStoreException;
 
 /**
- * Class AggregateTranslationFailedException
+ * Class InvalidArgumentException
  * @package Prooph\EventStore\Aggregate\Exception
  */
-class AggregateTranslationFailedException extends \RuntimeException implements EventStoreException
+class InvalidArgumentException extends \InvalidArgumentException implements EventStoreException
 {
 }
