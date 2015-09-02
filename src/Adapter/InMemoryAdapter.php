@@ -99,12 +99,7 @@ class InMemoryAdapter implements Adapter
         $streamEvents = [];
 
         if (! isset($this->streams[$streamName->toString()])) {
-            throw new StreamNotFoundException(
-                sprintf(
-                    'Stream with name %s cannot be found',
-                    $streamName->toString()
-                )
-            );
+            return [];
         }
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {

@@ -1,0 +1,67 @@
+<?php
+/*
+ * This file is part of the prooph/event-store.
+ * (c) 2014-2015 prooph software GmbH <contact@prooph.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 09/02/15 - 19:41
+ */
+
+namespace Prooph\EventStoreTest\Adapter;
+
+use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStore\Adapter\InMemoryAdapter;
+use Prooph\EventStore\Stream\StreamName;
+
+/**
+ * Class InMemoryAdapterTest
+ * @package Prooph\EventStoreTest\Adapter
+ */
+final class InMemoryAdapterTest extends TestCase
+{
+    /**
+     * @var InMemoryAdapter
+     */
+    private $adapter;
+
+    protected function setUp()
+    {
+        $this->adapter = new InMemoryAdapter();
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
+     */
+    public function it_throws_exception_when_trying_to_append_on_non_existing_stream()
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test');
+
+        $this->adapter->appendTo($streamName->reveal(), []);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_nothing_when_trying_to_load_non_existing_stream()
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test');
+
+        $this->assertNull($this->adapter->load($streamName->reveal()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_nothing_when_trying_to_load_events_by_metadata_from_on_non_existing_stream()
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test');
+
+        $this->assertEmpty($this->adapter->loadEventsByMetadataFrom($streamName->reveal(), []));
+    }
+}

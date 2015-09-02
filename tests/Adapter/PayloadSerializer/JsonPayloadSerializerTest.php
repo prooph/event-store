@@ -8,6 +8,7 @@
  *
  * Date: 8/14/15 - 8:21 PM
  */
+
 namespace Prooph\EventStoreTest\Adapter\PayloadSerializer;
 
 use Prooph\EventStore\Adapter\PayloadSerializer\JsonPayloadSerializer;
