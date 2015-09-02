@@ -15,6 +15,7 @@ use Assert\Assertion;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception;
 
 /**
  * Class AggregateTypeStreamStrategy
@@ -52,7 +53,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
      * @param string $aggregateId
      * @param Message[] $streamEvents
      * @param object $aggregateRoot
-     * @throws \InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      * @return void
      */
     public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
@@ -60,7 +61,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         $arType = AggregateType::fromAggregateRoot($aggregateRoot);
 
         if (! $repositoryAggregateType->equals($arType)) {
-            throw new \InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
+            throw new Exception\InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
         }
 
         $streamName = $this->buildStreamName($repositoryAggregateType);
@@ -79,7 +80,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
      * @param string $aggregateId
      * @param Message[] $streamEvents
      * @param object $aggregateRoot
-     * @throws \InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      * @return void
      */
     public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
@@ -87,7 +88,7 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         $arType = AggregateType::fromAggregateRoot($aggregateRoot);
 
         if (! $repositoryAggregateType->equals($arType)) {
-            throw new \InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
+            throw new Exception\InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
         }
 
         $streamName = $this->buildStreamName($repositoryAggregateType);

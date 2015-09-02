@@ -8,6 +8,7 @@
  *
  * Date: 8/22/15 - 9:42 PM
  */
+
 namespace Prooph\EventStoreTest\Aggregate;
 
 use Prooph\Common\Messaging\Message;
@@ -283,5 +284,30 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     public function it_forces_message_to_event_callback_to_be_a_callable()
     {
         new ConfigurableAggregateTranslator(null, null, null, null, 0);
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_fails_on_extracting_pending_stream_events_when_event_sourced_aggregate_root_is_not_an_object()
+    {
+        $translator = new ConfigurableAggregateTranslator();
+        $translator->extractPendingStreamEvents('invalid');
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_fails_when_popped_recorded_events_are_not_an_array_or_traversable()
+    {
+        $ar = $this->prophesize(DefaultAggregateRootContract::class);
+
+        $ar->popRecordedEvents()->willReturn('invalid');
+
+        $translator = new ConfigurableAggregateTranslator();
+
+        $translator->extractPendingStreamEvents($ar->reveal());
     }
 }

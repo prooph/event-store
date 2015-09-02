@@ -254,4 +254,17 @@ class AggregateTypeStreamStrategyTest extends TestCase
 
         $this->strategy->appendEvents(AggregateType::fromString("Product"), $aggregateId, $streamEvents, $user);
     }
+
+    /**
+     * @test
+     */
+    public function it_builds_stream_name_from_stream_map()
+    {
+        $aggregateType = $this->prophesize(AggregateType::class);
+        $aggregateType->toString()->willReturn('foo')->shouldBeCalledTimes(2);
+
+        $strategy = new AggregateTypeStreamStrategy($this->eventStore, ['foo' => 'bar']);
+
+        $strategy->read($aggregateType->reveal(), 'someId');
+    }
 }

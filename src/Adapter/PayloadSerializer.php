@@ -8,6 +8,7 @@
  *
  * Date: 8/14/15 - 8:11 PM
  */
+
 namespace Prooph\EventStore\Adapter;
 
 /**

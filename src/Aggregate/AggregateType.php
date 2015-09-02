@@ -29,12 +29,12 @@ class AggregateType
      *
      * @param mixed $eventSourcedAggregateRoot
      * @return AggregateType
-     * @throws \InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public static function fromAggregateRoot($eventSourcedAggregateRoot)
     {
         if (! is_object($eventSourcedAggregateRoot)) {
-            throw new \InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 sprintf('Aggregate root must be an object but type of %s given', gettype($eventSourcedAggregateRoot))
             );
         }
@@ -52,15 +52,15 @@ class AggregateType
      *
      * @param string $aggregateRootClass
      * @return AggregateType
-     * @throws \InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public static function fromAggregateRootClass($aggregateRootClass)
     {
         if (! is_string($aggregateRootClass)) {
-            throw new \InvalidArgumentException('Aggregate root class must be a string');
+            throw new Exception\InvalidArgumentException('Aggregate root class must be a string');
         }
         if (! class_exists($aggregateRootClass)) {
-            throw new \InvalidArgumentException(sprintf('Aggregate root class %s can not be found', $aggregateRootClass));
+            throw new Exception\InvalidArgumentException(sprintf('Aggregate root class %s can not be found', $aggregateRootClass));
         }
 
         return new static($aggregateRootClass);
@@ -79,12 +79,12 @@ class AggregateType
 
     /**
      * @param $aggregateType
-     * @throws \InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     private function __construct($aggregateType)
     {
         if (! is_string($aggregateType) || empty($aggregateType)) {
-            throw new \InvalidArgumentException('AggregateType must be a non empty string');
+            throw new Exception\InvalidArgumentException('AggregateType must be a non empty string');
         }
 
         $this->aggregateType = $aggregateType;

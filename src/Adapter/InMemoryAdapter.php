@@ -41,7 +41,7 @@ class InMemoryAdapter implements Adapter
     /**
      * @param StreamName $streamName
      * @param Message[] $domainEvents
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
+     * @throws StreamNotFoundException
      * @return void
      */
     public function appendTo(StreamName $streamName, array $domainEvents)
@@ -91,7 +91,7 @@ class InMemoryAdapter implements Adapter
      * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
+     * @throws StreamNotFoundException
      * @return Message[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
@@ -99,12 +99,7 @@ class InMemoryAdapter implements Adapter
         $streamEvents = [];
 
         if (! isset($this->streams[$streamName->toString()])) {
-            throw new StreamNotFoundException(
-                sprintf(
-                    'Stream with name %s cannot be found',
-                    $streamName->toString()
-                )
-            );
+            return [];
         }
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {

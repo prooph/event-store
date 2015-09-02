@@ -8,6 +8,7 @@
  *
  * Date: 8/22/15 - 10:50 PM
  */
+
 namespace Prooph\EventStoreTest\Mock;
 
 use Prooph\Common\Messaging\Message;

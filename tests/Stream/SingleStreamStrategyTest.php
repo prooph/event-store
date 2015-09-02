@@ -12,6 +12,7 @@
 namespace Prooph\EventStoreTest\Stream;
 
 use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\Stream;
@@ -202,5 +203,22 @@ class SingleStreamStrategyTest extends TestCase
         $arType = $this->strategy->getAggregateRootType($aggregateType, $streamEvents);
 
         $this->assertEquals('Prooph\EventStoreTest\Mock\Product', $arType->toString());
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\RuntimeException
+     * @expectedExceptionMessage The aggregate type cannot be detected
+     */
+    public function it_throws_exception_when_aggregate_type_cannot_be_detected_on_get_aggregate_root_type()
+    {
+        $aggregateType = AggregateType::fromString('Object');
+
+        $streamEvent = $this->prophesize(Message::class);
+        $streamEvent->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
+
+        $streamEvents = [$streamEvent->reveal()];
+
+        $this->strategy->getAggregateRootType($aggregateType, $streamEvents);
     }
 }
