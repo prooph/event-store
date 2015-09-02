@@ -114,6 +114,24 @@ class AggregateRepositoryTest extends TestCase
         $this->assertEquals('Max Mustermann', $fetchedUser2->name());
     }
 
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTypeException
+     * @expectedExceptionMessage Invalid aggregate given. Aggregates need to be of type object but type of string given
+     */
+    public function it_throws_exception_when_added_aggregate_root_is_not_an_object()
+    {
+        $this->repository->addAggregateRoot('invalid');
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_early_on_get_aggregate_root_when_there_are_no_stream_events()
+    {
+        $this->assertNull($this->repository->getAggregateRoot('something'));
+    }
+
     protected function clearRepositoryIdentityMap()
     {
         $refClass = new \ReflectionClass($this->repository);
