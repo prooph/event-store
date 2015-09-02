@@ -11,8 +11,6 @@
 
 namespace Prooph\EventStore\Aggregate;
 
-use Prooph\EventStore\Aggregate\Exception;
-
 /**
  * Class AggregateType
  *

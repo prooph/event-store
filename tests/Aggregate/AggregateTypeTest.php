@@ -12,7 +12,6 @@
 namespace Prooph\EventStore\Aggregate;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Prooph\EventStoreTest\Aggregate\AggregateRepositoryTest;
 
 /**
  * Class AggregateTypeTest
