@@ -15,6 +15,7 @@ use Assert\Assertion;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception;
 
 /**
  * Class SingleStreamStrategy
@@ -118,7 +119,7 @@ class SingleStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param Message[] $streamEvents
-     * @throws \RuntimeException
+     * @throws Exception\RuntimeException
      * @return AggregateType
      */
     public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)
@@ -133,6 +134,6 @@ class SingleStreamStrategy implements StreamStrategy
             }
         }
 
-        throw new \RuntimeException("The aggregate type cannot be detected");
+        throw new Exception\RuntimeException("The aggregate type cannot be detected");
     }
 }

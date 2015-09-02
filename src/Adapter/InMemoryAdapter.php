@@ -41,7 +41,7 @@ class InMemoryAdapter implements Adapter
     /**
      * @param StreamName $streamName
      * @param Message[] $domainEvents
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
+     * @throws StreamNotFoundException
      * @return void
      */
     public function appendTo(StreamName $streamName, array $domainEvents)
@@ -91,7 +91,7 @@ class InMemoryAdapter implements Adapter
      * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException
+     * @throws StreamNotFoundException
      * @return Message[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)

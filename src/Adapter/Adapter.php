@@ -12,6 +12,7 @@ namespace Prooph\EventStore\Adapter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Exception\StreamNotFoundException;
 
 /**
  * Interface of an EventStore Adapter
@@ -30,7 +31,7 @@ interface Adapter
     /**
      * @param StreamName $streamName
      * @param Message[] $domainEvents
-     * @throws \Prooph\EventStore\Exception\StreamNotFoundException If stream does not exist
+     * @throws StreamNotFoundException If stream does not exist
      * @return void
      */
     public function appendTo(StreamName $streamName, array $domainEvents);
