@@ -285,4 +285,29 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         new ConfigurableAggregateTranslator(null, null, null, null, 0);
     }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_fails_on_extracting_pending_stream_events_when_event_sourced_aggregate_root_is_not_an_object()
+    {
+        $translator = new ConfigurableAggregateTranslator();
+        $translator->extractPendingStreamEvents('invalid');
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_fails_when_popped_recorded_events_are_not_an_array_or_traversable()
+    {
+        $ar = $this->prophesize(DefaultAggregateRootContract::class);
+
+        $ar->popRecordedEvents()->willReturn('invalid');
+
+        $translator = new ConfigurableAggregateTranslator();
+
+        $translator->extractPendingStreamEvents($ar->reveal());
+    }
 }
