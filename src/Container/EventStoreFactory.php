@@ -43,10 +43,12 @@ final class EventStoreFactory
         $config = $config['prooph']['event_store'];
 
         if (!isset($config['adapter']['type'])) {
-            $adapter = new InMemoryAdapter();
-        } else {
-            $adapter = $container->get($config['adapter']['type']);
+            throw ConfigurationException::configurationError(sprintf(
+                'Event store adapter is missing in configuration'
+            ));
         }
+
+        $adapter = $container->get($config['adapter']['type']);
 
         if (!isset($config['event_emitter'])) {
             $eventEmitter = new ProophActionEventEmitter();
