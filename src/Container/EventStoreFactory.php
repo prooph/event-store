@@ -13,7 +13,6 @@ namespace Prooph\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
