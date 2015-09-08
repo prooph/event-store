@@ -8,41 +8,43 @@
         {
             "name": "Alexander Miertsch",
             "email": "contact@prooph.de",
-            "homepage": "http://www.prooph.de/"
+            "homepage": "http://www.prooph.de"
+        },
+        {
+            "name": "Sascha-Oliver Prolic",
+            "email": "saschaprolic@googlemail.com"
         }
     ],
     "keywords": [
-        "php",
-        "EventSourcing",
         "EventStore",
-        "library",
+        "EventSourcing",
         "DDD",
-        "domain-driven design",
-        "prooph",
-        "zf2"
+        "prooph"
     ],
     "require": {
         "php": ">=5.5",
         "ramsey/uuid" : "~2.8",
         "beberlei/assert": "~2.3",
-        "prooph/common" : "~2.0"
+        "prooph/common" : "~3.3",
+        "container-interop/container-interop" : "~1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
+        "phpunit/phpunit": "~4.7",
         "fabpot/php-cs-fixer": "1.7.*",
-        "satooshi/php-coveralls": "dev-master"
+        "satooshi/php-coveralls": "dev-master",
+        "zendframework/zend-servicemanager": "~2.6"
     },
     "suggest" : {
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
-        "prooph/service-bus" : "Enterprise Service Bus adapter to connect EventStore with messaging systems"
+        "prooph/service-bus" : "Message bus facade to connect the event store with messaging systems"
     },
     "autoload": {
-        "psr-0": { 
+        "psr-4": {
             "Prooph\\EventStore\\": "src/"
         }
     },
     "autoload-dev": {
-        "psr-0": {
+        "psr-4": {
             "Prooph\\EventStoreTest\\": "tests/"
         }
     },

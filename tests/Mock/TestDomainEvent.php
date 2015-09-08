@@ -1,0 +1,39 @@
+<?php
+/*
+ * This file is part of the prooph/event-store.
+ * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 08/31/14 - 8:02 PM
+ */
+
+namespace Prooph\EventStoreTest\Mock;
+
+use Prooph\Common\Messaging\DomainEvent;
+use Prooph\Common\Messaging\PayloadConstructable;
+use Prooph\Common\Messaging\PayloadTrait;
+
+/**
+ * Class DomainEvent
+ *
+ * @package Prooph\EventStoreTest\Mock
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
+ */
+class TestDomainEvent extends DomainEvent implements PayloadConstructable
+{
+    use PayloadTrait;
+
+    /**
+     * @param array $payload
+     * @param int $version
+     * @return TestDomainEvent
+     */
+    public static function with(array $payload, $version)
+    {
+        $event = new static($payload);
+
+        return $event->withVersion($version);
+    }
+}

@@ -1,0 +1,62 @@
+<?php
+/*
+ * This file is part of the prooph/event-store.
+ * (c) 2014-2015 prooph software GmbH <contact@prooph.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 8/22/15 - 10:58 PM
+ */
+
+namespace Prooph\EventStoreTest\Mock;
+
+use Prooph\Common\Messaging\Message;
+
+/**
+ * Class DefaultAggregateRoot
+ *
+ * @package Prooph\EventStoreTest\Mock
+ * @author Alexander Miertsch <kontakt@codeliner.ws>
+ */
+final class DefaultAggregateRoot implements DefaultAggregateRootContract
+{
+    private $historyEvents = [];
+
+    /**
+     * @param Message[] $historyEvents
+     * @return DefaultAggregateRootContract
+     */
+    public static function reconstituteFromHistory($historyEvents)
+    {
+        $self = new self();
+
+        $self->historyEvents = $historyEvents;
+
+        return $self;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHistoryEvents()
+    {
+        return $this->historyEvents;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        // not required for this mock
+    }
+
+    /**
+     * @return Message[]
+     */
+    public function popRecordedEvents()
+    {
+        // not required for this mock
+    }
+}
