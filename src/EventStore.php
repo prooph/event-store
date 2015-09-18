@@ -343,6 +343,14 @@ class EventStore
     }
 
     /**
+     * @return bool
+     */
+    public function isInTransaction()
+    {
+        return $this->transactionLevel > 0;
+    }
+
+    /**
      * @return ActionEventEmitter
      */
     public function getActionEventEmitter()

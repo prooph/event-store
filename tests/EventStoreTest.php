@@ -729,9 +729,13 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
+        $this->assertTrue($this->eventStore->isInTransaction());
+
         $this->eventStore->create($stream);
 
         $this->eventStore->commit();
+
+        $this->assertFalse($this->eventStore->isInTransaction());
 
         $stream = $this->eventStore->load($stream->streamName());
 
