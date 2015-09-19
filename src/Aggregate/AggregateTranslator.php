@@ -39,4 +39,10 @@ interface AggregateTranslator
      * @return Message[]
      */
     public function extractPendingStreamEvents($eventSourcedAggregateRoot);
+
+    /**
+     * @param $anEventSourcedAggregateRoot
+     * @param Message[] $events
+     */
+    public function applyPendingStreamEvents($anEventSourcedAggregateRoot, array $events);
 }

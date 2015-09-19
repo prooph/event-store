@@ -122,7 +122,7 @@ class User
         $this->apply($domainEvent);
     }
 
-    private function apply(TestDomainEvent $event)
+    public function apply(TestDomainEvent $event)
     {
         if ($event instanceof UserCreated) {
             $this->whenUserCreated($event);
