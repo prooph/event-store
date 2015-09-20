@@ -59,4 +59,12 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     {
         // not required for this mock
     }
+
+    /**
+     * @param Message $event
+     */
+    public function apply(Message $event)
+    {
+        // not required for this mock
+    }
 }

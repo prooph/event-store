@@ -51,6 +51,11 @@ class AggregateRepository
     protected $aggregateType;
 
     /**
+     * @var array
+     */
+    protected $pendingStreamEvents = [];
+
+    /**
      * @param EventStore $eventStore
      * @param AggregateType $aggregateType
      * @param AggregateTranslator $aggregateTranslator
@@ -64,6 +69,7 @@ class AggregateRepository
     ) {
         $this->eventStore = $eventStore;
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', $this);
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'applyPendingStreamEvents']);
 
         $this->aggregateType = $aggregateType;
         $this->aggregateTranslator = $aggregateTranslator;
@@ -83,14 +89,34 @@ class AggregateRepository
     public function __invoke()
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {
-            $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
+            $index = get_class($eventSourcedAggregateRoot);
+            $this->pendingStreamEvents[$index] = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
 
-            if (count($pendingStreamEvents)) {
+            if (count($this->pendingStreamEvents[$index])) {
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
                     $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
-                    $pendingStreamEvents,
+                    $this->pendingStreamEvents[$index],
                     $eventSourcedAggregateRoot
+                );
+            }
+        }
+    }
+
+    /**
+     * Repository acts as listener on EventStore.commit.post events
+     * In the listener method the repository checks its identity map for pending events
+     * and applies the events to the aggregate roots.
+     */
+    public function applyPendingStreamEvents()
+    {
+        foreach ($this->identityMap as $eventSourcedAggregateRoot) {
+            $index = get_class($eventSourcedAggregateRoot);
+
+            if (isset($this->pendingStreamEvents[$index])) {
+                $this->aggregateTranslator->applyPendingStreamEvents(
+                    $eventSourcedAggregateRoot,
+                    $this->pendingStreamEvents[$index]
                 );
             }
         }
