@@ -185,7 +185,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_invokes_event_to_message_callback_for_each_event()
+    public function it_invokes_event_to_message_callback_for_each_event_when_extracting()
     {
         $message = $this->prophesize(Message::class);
 
@@ -200,6 +200,24 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $recordedEvents = $translator->extractPendingStreamEvents($ar->reveal());
 
         $this->assertSame([$message->reveal(), $message->reveal()], $recordedEvents);
+    }
+
+    /**
+     * @test
+     */
+    public function it_invokes_event_to_message_callback_for_each_event_when_applying()
+    {
+        $message = $this->prophesize(Message::class);
+
+        $ar = $this->prophesize(DefaultAggregateRootContract::class);
+
+        $ar->apply($message->reveal());
+
+        $translator = new ConfigurableAggregateTranslator(null, null, null, null, null, function (\stdClass $customEvent) use ($message) {
+            return $message->reveal();
+        });
+
+        $translator->applyPendingStreamEvents($ar->reveal(), [new \stdClass(), new \stdClass()]);
     }
 
     /**

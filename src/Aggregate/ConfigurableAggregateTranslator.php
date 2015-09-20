@@ -80,7 +80,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         }
 
         if (null !== $applyRecordedEventsMethodsName) {
-            Assertion::minLength($applyRecordedEventsMethodsName, 1, 'Pop recorded events method name needs to be a non empty string');
+            Assertion::minLength($applyRecordedEventsMethodsName, 1, 'Apply recorded events method name needs to be a non empty string');
             $this->applyRecordedEventsMethodName = $applyRecordedEventsMethodsName;
         }
 
@@ -246,6 +246,10 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         }
 
         foreach ($events as $event) {
+            if ($this->messageToEventCallback) {
+                $event = call_user_func($this->messageToEventCallback, $event);
+            }
+
             if (!$event instanceof Message) {
                 throw new AggregateTranslationFailedException(sprintf(
                     'A recorded event of the aggregate root %s has the wrong type. Expected Prooph\Common\Messaging\Message. Got %s',
@@ -253,6 +257,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
                     is_object($event)? get_class($event) : gettype($event)
                 ));
             }
+
             $eventSourcedAggregateRoot->{$this->applyRecordedEventsMethodName}($event);
         }
     }
