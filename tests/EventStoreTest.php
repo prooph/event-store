@@ -416,7 +416,12 @@ class EventStoreTest extends TestCase
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 2);
 
-        $this->assertEquals(2, count($loadedEvents));
+        $count = 0;
+        foreach ($loadedEvents as $event) {
+            $count++;
+        }
+        $loadedEvents->rewind();
+        $this->assertEquals(2, $count);
 
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
