@@ -11,10 +11,8 @@ namespace Prooph\EventStore;
 
 use AppendIterator;
 use ArrayIterator;
-use Assert\Assertion;
 use Iterator;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Exception\StreamNotFoundException;

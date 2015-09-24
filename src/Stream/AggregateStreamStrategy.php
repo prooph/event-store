@@ -13,7 +13,6 @@ namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
 use Iterator;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception;

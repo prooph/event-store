@@ -10,7 +10,6 @@
 namespace Prooph\EventStore\Adapter;
 
 use Iterator;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStore\Exception\StreamNotFoundException;
