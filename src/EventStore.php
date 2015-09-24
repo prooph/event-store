@@ -45,9 +45,9 @@ class EventStore
     protected $recordedEvents;
 
     /**
-     * @var int
+     * @var bool
      */
-    protected $transactionLevel = 0;
+    protected $inTransaction = false;
 
     /**
      * Constructor
@@ -97,7 +97,7 @@ class EventStore
             return;
         }
 
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Stream creation failed. EventStore is not in an active transaction');
         }
 
@@ -134,7 +134,7 @@ class EventStore
             return;
         }
 
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Append events to stream failed. EventStore is not in an active transaction');
         }
 
@@ -260,20 +260,16 @@ class EventStore
      */
     public function beginTransaction()
     {
-        if ($this->transactionLevel === 0 && $this->adapter instanceof CanHandleTransaction) {
+        if (!$this->inTransaction && $this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
         }
 
-        if ($this->transactionLevel > 0) {
-            trigger_error("Nesting transactions is deprecated in prooph/event-store v5. Please align your transaction handling.", E_USER_DEPRECATED);
-        }
-
-        $this->transactionLevel++;
+        $this->inTransaction = true;
 
         $event = $this->actionEventEmitter->getNewActionEvent(
             __FUNCTION__,
             $this,
-            ['isNestedTransaction' => $this->transactionLevel > 1, 'transactionLevel' => $this->transactionLevel]
+            ['inTransaction' => true]
         );
 
         $this->getActionEventEmitter()->dispatch($event);
@@ -288,14 +284,13 @@ class EventStore
      */
     public function commit()
     {
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
         }
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.pre', $this);
 
-        $event->setParam('isNestedTransaction', $this->transactionLevel > 1);
-        $event->setParam('transactionLevel', $this->transactionLevel);
+        $event->setParam('inTransaction', true);
 
         $this->getActionEventEmitter()->dispatch($event);
 
@@ -304,12 +299,7 @@ class EventStore
             return;
         }
 
-        $this->transactionLevel--;
-
-        //Nested transaction commit only decreases transaction level
-        if ($this->transactionLevel > 0) {
-            return;
-        }
+        $this->inTransaction = false;
 
         if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->commit();
@@ -329,7 +319,7 @@ class EventStore
      */
     public function rollback()
     {
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
@@ -339,7 +329,7 @@ class EventStore
 
         $this->adapter->rollback();
 
-        $this->transactionLevel = 0;
+        $this->inTransaction = false;
 
         $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__, $this);
 
@@ -353,7 +343,7 @@ class EventStore
      */
     public function isInTransaction()
     {
-        return $this->transactionLevel > 0;
+        return $this->inTransaction;
     }
 
     /**
