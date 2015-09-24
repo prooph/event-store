@@ -44,7 +44,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->create(new Stream(new StreamName('event_stream'), []));
+        $this->eventStore->create(new Stream(new StreamName('event_stream'), new \ArrayIterator()));
 
         $this->eventStore->commit();
     }

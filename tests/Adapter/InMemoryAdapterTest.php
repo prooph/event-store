@@ -40,7 +40,7 @@ final class InMemoryAdapterTest extends TestCase
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
 
-        $this->adapter->appendTo($streamName->reveal(), []);
+        $this->adapter->appendTo($streamName->reveal(), new \ArrayIterator());
     }
 
     /**
@@ -57,7 +57,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_load_events_by_metadata_from_on_non_existing_stream()
+    public function it_returns_nothing_when_trying_to_load_events_by_metadata_fro_omn_non_existing_stream()
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');

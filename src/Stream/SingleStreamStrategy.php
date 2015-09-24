@@ -11,7 +11,9 @@
 
 namespace Prooph\EventStore\Stream;
 
+use ArrayIterator;
 use Assert\Assertion;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
@@ -64,46 +66,62 @@ class SingleStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
-    public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
-    {
+    public function addEventsForNewAggregateRoot(
+        AggregateType $repositoryAggregateType,
+        $aggregateId,
+        Iterator $streamEvents,
+        $aggregateRoot
+    ) {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ($streamEvents as &$streamEvent) {
+        $streamEventsWithAddedMetadata = [];
+
+        foreach ($streamEvents as $streamEvent) {
+            Assertion::isInstanceOf($streamEvent, Message::class);
+
             $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
-            $streamEvent = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
+            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
 
-        $this->eventStore->appendTo($this->streamName, $streamEvents);
+        $this->eventStore->appendTo($this->streamName, new ArrayIterator($streamEventsWithAddedMetadata));
     }
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
-    public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
-    {
+    public function appendEvents(
+        AggregateType $repositoryAggregateType,
+        $aggregateId,
+        Iterator $streamEvents,
+        $aggregateRoot
+    ) {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        foreach ($streamEvents as &$streamEvent) {
+        $streamEventsWithAddedMetadata = [];
+
+        foreach ($streamEvents as $streamEvent) {
+            Assertion::isInstanceOf($streamEvent, Message::class);
+
             $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
-            $streamEvent = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
+            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
 
-        $this->eventStore->appendTo($this->streamName, $streamEvents);
+        $this->eventStore->appendTo($this->streamName, new ArrayIterator($streamEventsWithAddedMetadata));
     }
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null)
     {
@@ -118,14 +136,14 @@ class SingleStreamStrategy implements StreamStrategy
 
     /**
      * @param AggregateType $repositoryAggregateType
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @throws Exception\RuntimeException
      * @return AggregateType
      */
-    public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)
+    public function getAggregateRootType(AggregateType $repositoryAggregateType, Iterator $streamEvents)
     {
-        if (count($streamEvents)) {
-            $first = $streamEvents[0];
+        if ($streamEvents->valid()) {
+            $first = $streamEvents->current();
 
             $metadata = $first->metadata();
 

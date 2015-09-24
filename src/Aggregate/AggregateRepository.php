@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStore\Aggregate;
 
+use ArrayIterator;
 use Assert\Assertion;
 use Prooph\EventStore\Aggregate\Exception\AggregateTypeException;
 use Prooph\EventStore\EventStore;
@@ -96,7 +97,7 @@ class AggregateRepository
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
                     $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
-                    $this->pendingStreamEvents[$index],
+                    new ArrayIterator($this->pendingStreamEvents[$index]),
                     $eventSourcedAggregateRoot
                 );
             }
@@ -139,7 +140,9 @@ class AggregateRepository
 
         $aggregateId = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
 
-        $domainEvents = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
+        $domainEvents = new ArrayIterator(
+            $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot)
+        );
 
         $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $domainEvents, $eventSourcedAggregateRoot);
 

@@ -9,9 +9,10 @@
 
 namespace Prooph\EventStore;
 
-use Assert\Assertion;
+use AppendIterator;
+use ArrayIterator;
+use Iterator;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Exception\StreamNotFoundException;
@@ -39,9 +40,9 @@ class EventStore
     protected $actionEventEmitter;
 
     /**
-     * @var Message[]
+     * @var Iterator
      */
-    protected $recordedEvents = [];
+    protected $recordedEvents;
 
     /**
      * @var int
@@ -58,6 +59,7 @@ class EventStore
     {
         $this->adapter = $adapter;
         $this->actionEventEmitter = $actionEventEmitter;
+        $this->recordedEvents = new ArrayIterator();
     }
 
     /**
@@ -71,7 +73,7 @@ class EventStore
     }
 
     /**
-     * @return Message[]
+     * @return Iterator
      */
     public function getRecordedEvents()
     {
@@ -103,7 +105,11 @@ class EventStore
 
         $this->adapter->create($stream);
 
-        $this->recordedEvents = array_merge($this->recordedEvents, $stream->streamEvents());
+        $appendIterator = new AppendIterator();
+        $appendIterator->append($this->recordedEvents);
+        $appendIterator->append($stream->streamEvents());
+
+        $this->recordedEvents = $appendIterator;
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -112,16 +118,12 @@ class EventStore
 
     /**
      * @param StreamName $streamName
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @throws Exception\RuntimeException
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $streamEvents)
+    public function appendTo(StreamName $streamName, Iterator $streamEvents)
     {
-        foreach ($streamEvents as $streamEvent) {
-            Assertion::isInstanceOf($streamEvent, Message::class);
-        }
-
         $argv = ['streamName' => $streamName, 'streamEvents' => $streamEvents];
 
         $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
@@ -141,7 +143,11 @@ class EventStore
 
         $this->adapter->appendTo($streamName, $streamEvents);
 
-        $this->recordedEvents = array_merge($this->recordedEvents, $streamEvents);
+        $appendIterator = new AppendIterator();
+        $appendIterator->append($this->recordedEvents);
+        $appendIterator->append($streamEvents);
+
+        $this->recordedEvents = $appendIterator;
 
         $event->setName(__FUNCTION__, '.post');
 
@@ -214,7 +220,7 @@ class EventStore
      * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
@@ -311,7 +317,7 @@ class EventStore
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.post', $this, ['recordedEvents' => $this->recordedEvents]);
 
-        $this->recordedEvents = [];
+        $this->recordedEvents = new ArrayIterator();
 
         $this->getActionEventEmitter()->dispatch($event);
     }

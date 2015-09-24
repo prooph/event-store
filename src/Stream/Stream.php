@@ -11,8 +11,7 @@
 
 namespace Prooph\EventStore\Stream;
 
-use Assert\Assertion;
-use Prooph\Common\Messaging\Message;
+use Iterator;
 
 /**
  * Class Stream
@@ -28,20 +27,16 @@ class Stream
     protected $streamName;
 
     /**
-     * @var Message[]
+     * @var Iterator
      */
     protected $streamEvents;
 
     /**
      * @param StreamName $streamName
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      */
-    public function __construct(StreamName $streamName, array $streamEvents)
+    public function __construct(StreamName $streamName, Iterator $streamEvents)
     {
-        foreach ($streamEvents as $streamEvent) {
-            Assertion::isInstanceOf($streamEvent, Message::class);
-        }
-
         $this->streamName = $streamName;
 
         $this->streamEvents = $streamEvents;
@@ -56,7 +51,7 @@ class Stream
     }
 
     /**
-     * @return Message[]
+     * @return Iterator
      */
     public function streamEvents()
     {
