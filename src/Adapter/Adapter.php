@@ -9,6 +9,7 @@
 
 namespace Prooph\EventStore\Adapter;
 
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
@@ -30,11 +31,11 @@ interface Adapter
 
     /**
      * @param StreamName $streamName
-     * @param Message[] $domainEvents
+     * @param Iterator $domainEvents
      * @throws StreamNotFoundException If stream does not exist
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $domainEvents);
+    public function appendTo(StreamName $streamName, Iterator $domainEvents);
 
     /**
      * @param StreamName $streamName
@@ -47,7 +48,7 @@ interface Adapter
      * @param StreamName $streamName
      * @param array $metadata If empty array is provided, then all events should be returned
      * @param null|int $minVersion Minimum version an event should have
-     * @return Message[]
+     * @return Iterator
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null);
 }

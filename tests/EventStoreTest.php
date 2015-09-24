@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStoreTest;
 
+use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
@@ -273,7 +274,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo(new StreamName('user'), [$secondStreamEvent]);
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
         $this->eventStore->commit();
 
@@ -310,7 +311,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo(new StreamName('user'), [$secondStreamEvent]);
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
         $this->eventStore->commit();
 
@@ -357,7 +358,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
         $this->eventStore->commit();
 
@@ -397,13 +398,18 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventVersion2, $streamEventVersion3]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventVersion2, $streamEventVersion3]));
 
         $this->eventStore->commit();
 
         $loadedEventStream = $this->eventStore->load($stream->streamName(), 2);
 
-        $this->assertEquals(2, count($loadedEventStream->streamEvents()));
+        $count = 0;
+        foreach ($loadedEventStream->streamEvents() as $event) {
+            $count++;
+        }
+        $loadedEventStream->streamEvents()->rewind();
+        $this->assertEquals(2, $count);
 
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
@@ -438,7 +444,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
         $this->eventStore->commit();
 
@@ -473,7 +479,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
         $this->eventStore->commit();
 
@@ -485,15 +491,21 @@ class EventStoreTest extends TestCase
 
             $streamEventWithMetadataButOtherUuid = $streamEventWithMetadataButOtherUuid->withAddedMetadata('snapshot', true);
 
-            $event->setParam('streamEvents', [$streamEventWithMetadataButOtherUuid]);
+            $event->setParam('streamEvents', new ArrayIterator([$streamEventWithMetadataButOtherUuid]));
             $event->stopPropagation(true);
         });
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
 
-        $this->assertEquals(1, count($loadedEvents));
+        $count = 0;
+        foreach ($loadedEvents as $event) {
+            $count++;
+        }
+        $this->assertEquals(1, $count);
 
-        $this->assertNotEquals($streamEventWithMetadata->uuid()->toString(), $loadedEvents[0]->uuid()->toString());
+        $loadedEvents->rewind();
+
+        $this->assertNotEquals($streamEventWithMetadata->uuid()->toString(), $loadedEvents->current()->uuid()->toString());
     }
 
     /**
@@ -532,7 +544,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
-            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), []));
+            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), new ArrayIterator()));
             $event->stopPropagation(true);
         });
 
@@ -555,13 +567,18 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
-            $event->setParam('stream', new Stream(new StreamName('user'), []));
+            $event->setParam('stream', new Stream(new StreamName('user'), new ArrayIterator()));
             $event->stopPropagation(true);
         });
 
         $emptyStream = $this->eventStore->load($stream->streamName());
 
-        $this->assertEquals(0, count($emptyStream->streamEvents()));
+        $count = 0;
+        foreach ($emptyStream as $event) {
+            $count++;
+        }
+
+        $this->assertEquals(0, $count);
     }
 
     /**
@@ -741,7 +758,11 @@ class EventStoreTest extends TestCase
 
         $this->assertEquals('user', $stream->streamName()->toString());
 
-        $this->assertEquals(1, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $this->assertEquals(1, $count);
     }
 
     /**
@@ -754,6 +775,6 @@ class EventStoreTest extends TestCase
             1
         );
 
-        return new Stream(new StreamName('user'), [$streamEvent]);
+        return new Stream(new StreamName('user'), new ArrayIterator([$streamEvent]));
     }
 }

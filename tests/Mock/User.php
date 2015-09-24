@@ -73,7 +73,7 @@ class User
      * @param Message[] $historyEvents
      * @return User
      */
-    public static function reconstituteFromHistory(array $historyEvents)
+    public static function reconstituteFromHistory($historyEvents)
     {
         $self = new self();
 
@@ -159,7 +159,7 @@ class User
     /**
      * @param DomainEvent[] $streamEvents
      */
-    private function replay(array $streamEvents)
+    private function replay($streamEvents)
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
