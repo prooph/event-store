@@ -116,6 +116,39 @@ class AggregateRepositoryTest extends TestCase
 
     /**
      * @test
+     * Test for https://github.com/prooph/event-store/issues/99
+     */
+    public function it_does_not_interfere_with_other_aggregate_roots_in_pending_events_index()
+    {
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $user2 = User::create('Max Mustermann', 'some@mail.com');
+
+        $this->repository->addAggregateRoot($user2);
+
+        $user->changeName('Daniel Doe');
+        $user2->changeName('Jens Mustermann');
+
+        $this->eventStore->commit();
+
+        $fetchedUser1 = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $fetchedUser2 = $this->repository->getAggregateRoot(
+            $user2->getId()->toString()
+        );
+
+        $this->assertEquals('Daniel Doe', $fetchedUser1->name());
+        $this->assertEquals('Jens Mustermann', $fetchedUser2->name());
+    }
+
+    /**
+     * @test
      * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTypeException
      * @expectedExceptionMessage Invalid aggregate given. Aggregates need to be of type object but type of string given
      */
