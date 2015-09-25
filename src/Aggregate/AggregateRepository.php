@@ -91,13 +91,15 @@ class AggregateRepository
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {
             $index = get_class($eventSourcedAggregateRoot);
-            $this->pendingStreamEvents[$index] = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
+            $subIndex = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
+            $this->pendingStreamEvents[$index][$subIndex]
+                = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
 
-            if (count($this->pendingStreamEvents[$index])) {
+            if (count($this->pendingStreamEvents[$index][$subIndex])) {
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
                     $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
-                    new ArrayIterator($this->pendingStreamEvents[$index]),
+                    new ArrayIterator($this->pendingStreamEvents[$index][$subIndex]),
                     $eventSourcedAggregateRoot
                 );
             }
@@ -113,11 +115,12 @@ class AggregateRepository
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {
             $index = get_class($eventSourcedAggregateRoot);
+            $subIndex = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
 
-            if (isset($this->pendingStreamEvents[$index])) {
+            if (isset($this->pendingStreamEvents[$index][$subIndex])) {
                 $this->aggregateTranslator->applyPendingStreamEvents(
                     $eventSourcedAggregateRoot,
-                    $this->pendingStreamEvents[$index]
+                    $this->pendingStreamEvents[$index][$subIndex]
                 );
             }
         }
@@ -144,7 +147,12 @@ class AggregateRepository
             $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot)
         );
 
-        $this->streamStrategy->addEventsForNewAggregateRoot($this->aggregateType, $aggregateId, $domainEvents, $eventSourcedAggregateRoot);
+        $this->streamStrategy->addEventsForNewAggregateRoot(
+            $this->aggregateType,
+            $aggregateId,
+            $domainEvents,
+            $eventSourcedAggregateRoot
+        );
 
         $this->identityMap[$aggregateId] = $eventSourcedAggregateRoot;
     }
