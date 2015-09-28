@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Aggregate;
 use Assert\Assertion;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException;
+use Prooph\EventStore\Util\MapIterator;
 
 /**
  * Class ConfigurableAggregateTranslator
@@ -123,14 +124,14 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @throws Exception\AggregateTranslationFailedException
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, $historyEvents)
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, \Iterator $historyEvents)
     {
         if ($this->messageToEventCallback) {
-            $historyEvents = array_map($this->messageToEventCallback, $historyEvents);
+            $historyEvents = new MapIterator($historyEvents, $this->messageToEventCallback);
         }
 
         $aggregateClass = $aggregateType->toString();

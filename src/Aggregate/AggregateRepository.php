@@ -69,7 +69,7 @@ class AggregateRepository
         StreamStrategy $streamStrategy = null
     ) {
         $this->eventStore = $eventStore;
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', $this);
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'addPendingEventsToStream']);
         $this->eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'applyPendingStreamEvents']);
 
         $this->aggregateType = $aggregateType;
@@ -87,7 +87,7 @@ class AggregateRepository
      * In the listener method the repository checks its identity map for pending events
      * and appends the events to the event stream.
      */
-    public function __invoke()
+    public function addPendingEventsToStream()
     {
         foreach ($this->identityMap as $eventSourcedAggregateRoot) {
             $index = get_class($eventSourcedAggregateRoot);
@@ -117,7 +117,8 @@ class AggregateRepository
             $index = get_class($eventSourcedAggregateRoot);
             $subIndex = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
 
-            if (isset($this->pendingStreamEvents[$index][$subIndex])) {
+            if (isset($this->pendingStreamEvents[$index][$subIndex])
+                && count($this->pendingStreamEvents[$index][$subIndex])) {
                 $this->aggregateTranslator->applyPendingStreamEvents(
                     $eventSourcedAggregateRoot,
                     $this->pendingStreamEvents[$index][$subIndex]

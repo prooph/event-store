@@ -23,10 +23,10 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
 {
 
     /**
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return DefaultAggregateRootContract
      */
-    public static function reconstituteFromHistory($historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents)
     {
         //faulty method
         return;

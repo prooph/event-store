@@ -29,10 +29,10 @@ interface AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, $historyEvents);
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, \Iterator $historyEvents);
 
     /**
      * @param object $eventSourcedAggregateRoot
