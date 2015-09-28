@@ -69,7 +69,7 @@ class AggregateRepositoryTest extends TestCase
             $user->getId()->toString()
         );
 
-        $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $user);
+        $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $fetchedUser);
 
         $this->assertNotSame($user, $fetchedUser);
 
@@ -129,6 +129,10 @@ class AggregateRepositoryTest extends TestCase
         $user2 = User::create('Max Mustermann', 'some@mail.com');
 
         $this->repository->addAggregateRoot($user2);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
 
         $user->changeName('Daniel Doe');
         $user2->changeName('Jens Mustermann');

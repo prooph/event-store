@@ -22,10 +22,10 @@ use Prooph\Common\Messaging\Message;
 interface CustomAggregateRootContract
 {
     /**
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return CustomAggregateRootContract
      */
-    public static function buildFromHistoryEvents($historyEvents);
+    public static function buildFromHistoryEvents(\Iterator $historyEvents);
 
     /**
      * @return string
