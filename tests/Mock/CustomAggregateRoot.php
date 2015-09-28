@@ -24,10 +24,10 @@ final class CustomAggregateRoot implements CustomAggregateRootContract
     private $historyEvents = [];
 
     /**
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return CustomAggregateRootContract
      */
-    public static function buildFromHistoryEvents($historyEvents)
+    public static function buildFromHistoryEvents(\Iterator $historyEvents)
     {
         $self = new self();
 

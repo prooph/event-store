@@ -118,8 +118,6 @@ class User
     private function recordThat(TestDomainEvent $domainEvent)
     {
         $this->recordedEvents[] = $domainEvent;
-
-        $this->apply($domainEvent);
     }
 
     public function apply(TestDomainEvent $event)

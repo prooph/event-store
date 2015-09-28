@@ -52,11 +52,6 @@ class AggregateRepository
     protected $aggregateType;
 
     /**
-     * @var array
-     */
-    protected $pendingStreamEvents = [];
-
-    /**
      * @param EventStore $eventStore
      * @param AggregateType $aggregateType
      * @param AggregateTranslator $aggregateTranslator
@@ -89,19 +84,26 @@ class AggregateRepository
      */
     public function addPendingEventsToStream()
     {
-        foreach ($this->identityMap as $eventSourcedAggregateRoot) {
-            $index = get_class($eventSourcedAggregateRoot);
-            $subIndex = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
-            $this->pendingStreamEvents[$index][$subIndex]
-                = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
+        foreach ($this->identityMap as &$identityArr) {
 
-            if (count($this->pendingStreamEvents[$index][$subIndex])) {
+            //If a new aggregate root was added (via method addAggregateRoot) we already have pending events in the cache
+            //and don't need to extract them twice
+            if ($identityArr['pending_events']) {
+                continue;
+            }
+
+            $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($identityArr['aggregate_root']);
+
+            if (count($pendingStreamEvents)) {
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
-                    $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot),
-                    new ArrayIterator($this->pendingStreamEvents[$index][$subIndex]),
-                    $eventSourcedAggregateRoot
+                    $this->aggregateTranslator->extractAggregateId($identityArr['aggregate_root']),
+                    new ArrayIterator($pendingStreamEvents),
+                    $identityArr['aggregate_root']
                 );
+
+                //Cache pending events besides the aggregate root in the identity map
+                $identityArr['pending_events'] = $pendingStreamEvents;
             }
         }
     }
@@ -110,19 +112,19 @@ class AggregateRepository
      * Repository acts as listener on EventStore.commit.post events
      * In the listener method the repository checks its identity map for pending events
      * and applies the events to the aggregate roots.
+     * Once the events are applied they are removed from the identity map
      */
     public function applyPendingStreamEvents()
     {
-        foreach ($this->identityMap as $eventSourcedAggregateRoot) {
-            $index = get_class($eventSourcedAggregateRoot);
-            $subIndex = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
-
-            if (isset($this->pendingStreamEvents[$index][$subIndex])
-                && count($this->pendingStreamEvents[$index][$subIndex])) {
+        foreach ($this->identityMap as &$identityArr) {
+            if ($identityArr['pending_events']) {
                 $this->aggregateTranslator->applyPendingStreamEvents(
-                    $eventSourcedAggregateRoot,
-                    $this->pendingStreamEvents[$index][$subIndex]
+                    $identityArr['aggregate_root'],
+                    $identityArr['pending_events']
                 );
+
+                //Clear pending events
+                $identityArr['pending_events'] = null;
             }
         }
     }
@@ -142,20 +144,30 @@ class AggregateRepository
             );
         }
 
-        $aggregateId = $this->aggregateTranslator->extractAggregateId($eventSourcedAggregateRoot);
+        $domainEvents = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
 
-        $domainEvents = new ArrayIterator(
-            $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot)
+        //We make a copy of the aggregate root to be able to extract the aggregate id
+        //without the need to apply the pending domain events to the real aggregate instance
+        //(this is done in the method applyPendingStreamEvents after EventStore.commit)
+        $aggregateRootCopy = $this->aggregateTranslator->reconstituteAggregateFromHistory(
+            $this->aggregateType,
+            new ArrayIterator($domainEvents)
         );
+
+        $aggregateId = $this->aggregateTranslator->extractAggregateId($aggregateRootCopy);
 
         $this->streamStrategy->addEventsForNewAggregateRoot(
             $this->aggregateType,
             $aggregateId,
-            $domainEvents,
+            new ArrayIterator($domainEvents),
             $eventSourcedAggregateRoot
         );
 
-        $this->identityMap[$aggregateId] = $eventSourcedAggregateRoot;
+        //Cache the aggregate root together with its pending domain events in the identity map
+        $this->identityMap[$aggregateId] = [
+            'aggregate_root' => $eventSourcedAggregateRoot,
+            'pending_events' => $domainEvents
+        ];
     }
 
     /**
@@ -169,7 +181,7 @@ class AggregateRepository
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
         if (isset($this->identityMap[$aggregateId])) {
-            return $this->identityMap[$aggregateId];
+            return $this->identityMap[$aggregateId]['aggregate_root'];
         }
 
         $streamEvents = $this->streamStrategy->read($this->aggregateType, $aggregateId);
@@ -185,7 +197,11 @@ class AggregateRepository
             $streamEvents
         );
 
-        $this->identityMap[$aggregateId] = $eventSourcedAggregateRoot;
+        //Cache aggregate root in the identity map but without pending events
+        $this->identityMap[$aggregateId] = [
+            'aggregate_root' => $eventSourcedAggregateRoot,
+            'pending_events' => null
+        ];
 
         return $eventSourcedAggregateRoot;
     }

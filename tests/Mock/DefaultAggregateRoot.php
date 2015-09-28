@@ -24,7 +24,7 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     private $historyEvents = [];
 
     /**
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return DefaultAggregateRootContract
      */
     public static function reconstituteFromHistory(\Iterator $historyEvents)
