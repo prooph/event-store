@@ -236,13 +236,13 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $historyEvent = $this->prophesize(Message::class);
 
-        $historyEvents = [$historyEvent->reveal()];
+        $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
 
         $translator = new ConfigurableAggregateTranslator();
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(DefaultAggregateRoot::class), $historyEvents);
 
-        $this->assertSame($historyEvents, $ar->getHistoryEvents());
+        $this->assertSame(iterator_to_array($historyEvents), $ar->getHistoryEvents());
     }
 
     /**
@@ -252,7 +252,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $historyEvent = $this->prophesize(Message::class);
 
-        $historyEvents = [$historyEvent->reveal()];
+        $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
 
         $translator = new ConfigurableAggregateTranslator(null, null, null, 'buildFromHistoryEvents');
 
@@ -278,7 +278,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $translator = new ConfigurableAggregateTranslator();
 
-        $translator->reconstituteAggregateFromHistory(AggregateType::fromString('UnknownClass'), []);
+        $translator->reconstituteAggregateFromHistory(AggregateType::fromString('UnknownClass'), new \ArrayIterator([]));
     }
 
     /**
@@ -289,7 +289,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $translator = new ConfigurableAggregateTranslator(null, null, null, 'unknownMethod');
 
-        $translator->reconstituteAggregateFromHistory(AggregateType::fromString(DefaultAggregateRoot::class), []);
+        $translator->reconstituteAggregateFromHistory(AggregateType::fromString(DefaultAggregateRoot::class), new \ArrayIterator([]));
     }
 
     /**
@@ -300,7 +300,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $translator = new ConfigurableAggregateTranslator();
 
-        $translator->reconstituteAggregateFromHistory(AggregateType::fromString(FaultyAggregateRoot::class), []);
+        $translator->reconstituteAggregateFromHistory(AggregateType::fromString(FaultyAggregateRoot::class), new \ArrayIterator([]));
     }
 
     /**
@@ -310,7 +310,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $historyEvent = $this->prophesize(Message::class);
 
-        $historyEvents = [$historyEvent->reveal()];
+        $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
 
         $translator = new ConfigurableAggregateTranslator(null, null, null, null, null, function (Message $message) {
             return ['custom' => 'domainEvent'];

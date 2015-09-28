@@ -27,11 +27,11 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
      * @param Message[] $historyEvents
      * @return DefaultAggregateRootContract
      */
-    public static function reconstituteFromHistory($historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents)
     {
         $self = new self();
 
-        $self->historyEvents = $historyEvents;
+        $self->historyEvents = iterator_to_array($historyEvents);
 
         return $self;
     }
