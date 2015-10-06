@@ -285,7 +285,7 @@ class EventStore
             if (null === $message1) {
                 return true;
             }
-            return (float) $message1->createdAt()->format('U.u') > (float) $message2->createdAt()->format('U.u');
+            return $message1->createdAt()->format('U.u') >= $message2->createdAt()->format('U.u');
         });
     }
 

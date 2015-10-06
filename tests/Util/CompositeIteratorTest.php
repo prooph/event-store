@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the prooph/event-store.
+ * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 06.10.15 - 18:06
+ */
 
 namespace ProophTest\Util;
 
@@ -54,6 +63,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage No iterators given
      */
     public function it_cannot_construct_without_iterators()
     {
@@ -63,6 +73,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Expected an array of Iterator or IteratorAggregate
      */
     public function it_required_iterators()
     {

@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the prooph/event-store.
+ * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 06.10.15 - 17:33
+ */
 
 namespace Prooph\EventStore\Util;
 
@@ -28,7 +37,7 @@ final class CompositeIterator implements Iterator
     public function __construct(array $iterators, callable $callback)
     {
         if (empty($iterators)) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException('No iterators given');
         }
 
         foreach ($iterators as $iterator) {
@@ -37,7 +46,11 @@ final class CompositeIterator implements Iterator
             }
 
             if (! $iterator instanceof Iterator) {
-                throw new \InvalidArgumentException();
+                throw new \InvalidArgumentException(sprintf(
+                    'Expected an array of %s or %s',
+                    Iterator::class,
+                    IteratorAggregate::class
+                ));
             }
 
             $this->iterators[] = $iterator;
