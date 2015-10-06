@@ -734,7 +734,7 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
      * @expectedExceptionMessage No stream names given
      */
     public function it_rejects_replay_without_stream_names()
@@ -744,7 +744,7 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
      * @expectedExceptionMessage One metadata per stream name needed, given 2 stream names but 1 metadatas
      */
     public function it_expects_matching_of_stream_names_and_metadata()

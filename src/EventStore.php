@@ -261,15 +261,16 @@ class EventStore
      * @param DateTimeInterface|null $since
      * @param array $metadatas One metadata array per stream name, same index order is required
      * @return CompositeIterator
+     * @throws Exception\InvalidArgumentException
      */
     public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas)
     {
         if (empty($streamNames)) {
-            throw new \InvalidArgumentException('No stream names given');
+            throw new Exception\InvalidArgumentException('No stream names given');
         }
 
         if (count($streamNames) !== count($metadatas)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'One metadata per stream name needed, given %s stream names but %s metadatas',
                 count($streamNames),
                 count($metadatas)

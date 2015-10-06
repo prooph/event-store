@@ -62,7 +62,7 @@ final class CompositeIteratorTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
      * @expectedExceptionMessage No iterators given
      */
     public function it_cannot_construct_without_iterators()
@@ -72,7 +72,7 @@ final class CompositeIteratorTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
      * @expectedExceptionMessage Expected an array of Iterator or IteratorAggregate
      */
     public function it_required_iterators()

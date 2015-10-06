@@ -13,6 +13,7 @@ namespace Prooph\EventStore\Util;
 
 use Iterator;
 use IteratorAggregate;
+use Prooph\EventStore\Exception;
 
 /**
  * Class CompositeIterator
@@ -33,11 +34,12 @@ final class CompositeIterator implements Iterator
     /**
      * @param Iterator[]|IteratorAggregate[] $iterators
      * @param callable $callback
+     * @throws Exception\InvalidArgumentException
      */
     public function __construct(array $iterators, callable $callback)
     {
         if (empty($iterators)) {
-            throw new \InvalidArgumentException('No iterators given');
+            throw new Exception\InvalidArgumentException('No iterators given');
         }
 
         foreach ($iterators as $iterator) {
@@ -46,7 +48,7 @@ final class CompositeIterator implements Iterator
             }
 
             if (! $iterator instanceof Iterator) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new Exception\InvalidArgumentException(sprintf(
                     'Expected an array of %s or %s',
                     Iterator::class,
                     IteratorAggregate::class
