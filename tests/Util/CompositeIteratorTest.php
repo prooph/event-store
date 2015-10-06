@@ -26,7 +26,7 @@ final class CompositeIteratorTest extends TestCase
         $it2 = new ArrayIterator($a2);
         $it3 = new ArrayIterator($a3);
 
-        $compositeIterator = new CompositeIterator([$it1, $it2, $it3], function($v1, $v2) {
+        $compositeIterator = new CompositeIterator([$it1, $it2, $it3], function ($v1, $v2) {
             if (null === $v1) {
                 return true;
             }
@@ -35,7 +35,7 @@ final class CompositeIteratorTest extends TestCase
 
         $result = [];
 
-        while($compositeIterator->valid()) {
+        while ($compositeIterator->valid()) {
             $result[] = $compositeIterator->current();
             $compositeIterator->next();
         }
@@ -43,7 +43,7 @@ final class CompositeIteratorTest extends TestCase
         $compositeIterator->key();
         $compositeIterator->rewind();
 
-        while($compositeIterator->valid()) {
+        while ($compositeIterator->valid()) {
             $result[] = $compositeIterator->current();
             $compositeIterator->next();
         }

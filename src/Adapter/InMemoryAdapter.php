@@ -137,7 +137,7 @@ class InMemoryAdapter implements Adapter
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if (null === $since && $this->matchMetadataWith($streamEvent, $metadata)) {
                 $streamEvents[] = $streamEvent;
-            } elseif((float) $streamEvent->createdAt()->format('U.u') >= (float) $since->format('U.u')
+            } elseif ((float) $streamEvent->createdAt()->format('U.u') >= (float) $since->format('U.u')
                 && $this->matchMetadataWith($streamEvent, $metadata)
             ) {
                 $streamEvents[] = $streamEvent;

@@ -11,7 +11,6 @@
 
 namespace Prooph\EventStoreTest\Adapter;
 
-use Guzzle\Stream\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Stream\StreamName;

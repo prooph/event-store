@@ -281,7 +281,7 @@ class EventStore
             $iterators[] = $this->adapter->replay($streamName, $since, $metadatas[$key]);
         }
 
-        return new CompositeIterator($iterators, function(Message $message1 = null, Message $message2) {
+        return new CompositeIterator($iterators, function (Message $message1 = null, Message $message2) {
             if (null === $message1) {
                 return true;
             }
