@@ -11,6 +11,10 @@
 
 namespace Prooph\EventStore\Adapter;
 
+use AppendIterator;
+use ArrayIterator;
+use DateTimeInterface;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Stream\Stream;
@@ -25,9 +29,9 @@ use Prooph\EventStore\Stream\StreamName;
 class InMemoryAdapter implements Adapter
 {
     /**
-     * @var array
+     * @var Iterator[]
      */
-    protected $streams = [];
+    protected $streams;
 
     /**
      * @param Stream $stream
@@ -40,11 +44,11 @@ class InMemoryAdapter implements Adapter
 
     /**
      * @param StreamName $streamName
-     * @param Message[] $domainEvents
+     * @param Iterator $domainEvents
      * @throws StreamNotFoundException
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $domainEvents)
+    public function appendTo(StreamName $streamName, Iterator $domainEvents)
     {
         if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
@@ -55,7 +59,11 @@ class InMemoryAdapter implements Adapter
             );
         }
 
-        $this->streams[$streamName->toString()] = array_merge($this->streams[$streamName->toString()], $domainEvents);
+        $appendIterator = new AppendIterator();
+        $appendIterator->append($this->streams[$streamName->toString()]);
+        $appendIterator->append($domainEvents);
+
+        $this->streams[$streamName->toString()] = $appendIterator;
     }
 
     /**
@@ -69,7 +77,6 @@ class InMemoryAdapter implements Adapter
             return;
         }
 
-        /** @var $streamEvents Message[] */
         $streamEvents = $this->streams[$streamName->toString()];
 
         if (!is_null($minVersion)) {
@@ -81,7 +88,7 @@ class InMemoryAdapter implements Adapter
                 }
             }
 
-            return new Stream($streamName, $filteredEvents);
+            return new Stream($streamName, new \ArrayIterator($filteredEvents));
         }
 
         return new Stream($streamName, $streamEvents);
@@ -92,15 +99,15 @@ class InMemoryAdapter implements Adapter
      * @param array $metadata
      * @param null|int $minVersion
      * @throws StreamNotFoundException
-     * @return Message[]
+     * @return Iterator
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
-        $streamEvents = [];
-
         if (! isset($this->streams[$streamName->toString()])) {
-            return [];
+            return new ArrayIterator();
         }
+
+        $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
@@ -110,9 +117,41 @@ class InMemoryAdapter implements Adapter
             }
         }
 
-        return $streamEvents;
+        return new ArrayIterator($streamEvents);
     }
 
+    /**
+     * @param StreamName $streamName
+     * @param DateTimeInterface $since
+     * @param array $metadata
+     * @return ArrayIterator
+     */
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata)
+    {
+        if (! isset($this->streams[$streamName->toString()])) {
+            return new ArrayIterator();
+        }
+
+        $streamEvents = [];
+
+        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
+            if (null === $since && $this->matchMetadataWith($streamEvent, $metadata)) {
+                $streamEvents[] = $streamEvent;
+            } elseif((float) $streamEvent->createdAt()->format('U.u') >= (float) $since->format('U.u')
+                && $this->matchMetadataWith($streamEvent, $metadata)
+            ) {
+                $streamEvents[] = $streamEvent;
+            }
+        }
+
+        return new ArrayIterator($streamEvents);
+    }
+
+    /**
+     * @param Message $streamEvent
+     * @param array $metadata
+     * @return bool
+     */
     protected function matchMetadataWith(Message $streamEvent, array $metadata)
     {
         if (empty($metadata)) {

@@ -44,7 +44,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->create(new Stream(new StreamName('event_stream'), []));
+        $this->eventStore->create(new Stream(new StreamName('event_stream'), new \ArrayIterator()));
 
         $this->eventStore->commit();
     }
@@ -69,7 +69,7 @@ class AggregateRepositoryTest extends TestCase
             $user->getId()->toString()
         );
 
-        $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $user);
+        $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $fetchedUser);
 
         $this->assertNotSame($user, $fetchedUser);
 
@@ -112,6 +112,43 @@ class AggregateRepositoryTest extends TestCase
         $this->assertNotSame($fetchedUser, $fetchedUser2);
 
         $this->assertEquals('Max Mustermann', $fetchedUser2->name());
+    }
+
+    /**
+     * @test
+     * Test for https://github.com/prooph/event-store/issues/99
+     */
+    public function it_does_not_interfere_with_other_aggregate_roots_in_pending_events_index()
+    {
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $user2 = User::create('Max Mustermann', 'some@mail.com');
+
+        $this->repository->addAggregateRoot($user2);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+
+        $user->changeName('Daniel Doe');
+        $user2->changeName('Jens Mustermann');
+
+        $this->eventStore->commit();
+
+        $fetchedUser1 = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $fetchedUser2 = $this->repository->getAggregateRoot(
+            $user2->getId()->toString()
+        );
+
+        $this->assertEquals('Daniel Doe', $fetchedUser1->name());
+        $this->assertEquals('Jens Mustermann', $fetchedUser2->name());
     }
 
     /**

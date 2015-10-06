@@ -43,7 +43,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->create(new Stream(new StreamName('Prooph\EventStoreTest\Mock\User'), []));
+        $this->eventStore->create(new Stream(new StreamName('Prooph\EventStoreTest\Mock\User'), new \ArrayIterator()));
 
         $this->eventStore->commit();
     }
@@ -68,7 +68,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
@@ -97,7 +97,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
@@ -110,13 +110,18 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->appendEvents($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
         $stream = $this->eventStore->load(new StreamName($aggregateType->toString()));
 
-        $this->assertEquals(2, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $stream->streamEvents()->rewind();
+        $this->assertEquals(2, $count);
 
         //Create a second user
 
@@ -135,13 +140,18 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
         $stream = $this->eventStore->load(new StreamName($aggregateType->toString()));
 
-        $this->assertEquals(3, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $stream->streamEvents()->rewind();
+        $this->assertEquals(3, $count);
     }
 
     /**
@@ -164,7 +174,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId1, $streamEvents1, $user1);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId1, new \ArrayIterator($streamEvents1), $user1);
 
         $aggregateId2 = Uuid::uuid4()->toString();
 
@@ -179,13 +189,18 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId2, $streamEvents2, $user2);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId2, new \ArrayIterator($streamEvents2), $user2);
 
         $this->eventStore->commit();
 
         $streamEvents = $this->strategy->read($aggregateType, $aggregateId1);
 
-        $this->assertEquals(1, count($streamEvents));
+        $count = 0;
+        foreach ($streamEvents as $event) {
+            $count++;
+        }
+        $streamEvents->rewind();
+        $this->assertEquals(1, $count);
 
         $this->assertInstanceOf(DomainEvent::class, $streamEvents[0]);
 
@@ -215,7 +230,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
     }
 
     /**
@@ -239,7 +254,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
@@ -252,7 +267,7 @@ class AggregateTypeStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->appendEvents(AggregateType::fromString("Product"), $aggregateId, $streamEvents, $user);
+        $this->strategy->appendEvents(AggregateType::fromString("Product"), $aggregateId, new \ArrayIterator($streamEvents), $user);
     }
 
     /**

@@ -24,14 +24,14 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     private $historyEvents = [];
 
     /**
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return DefaultAggregateRootContract
      */
-    public static function reconstituteFromHistory($historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents)
     {
         $self = new self();
 
-        $self->historyEvents = $historyEvents;
+        $self->historyEvents = iterator_to_array($historyEvents);
 
         return $self;
     }
@@ -56,6 +56,14 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
      * @return Message[]
      */
     public function popRecordedEvents()
+    {
+        // not required for this mock
+    }
+
+    /**
+     * @param Message $event
+     */
+    public function apply(Message $event)
     {
         // not required for this mock
     }

@@ -12,7 +12,7 @@
 namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
-use Prooph\Common\Messaging\Message;
+use Iterator;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception;
@@ -51,13 +51,17 @@ class AggregateStreamStrategy implements StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @param object $aggregateRoot
      * @throws Exception\InvalidArgumentException
      * @return void
      */
-    public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
-    {
+    public function addEventsForNewAggregateRoot(
+        AggregateType $repositoryAggregateType,
+        $aggregateId,
+        Iterator $streamEvents,
+        $aggregateRoot
+    ) {
         $arType = AggregateType::fromAggregateRoot($aggregateRoot);
 
         if (! $repositoryAggregateType->equals($arType)) {
@@ -68,23 +72,34 @@ class AggregateStreamStrategy implements StreamStrategy
             ));
         }
 
-        $this->eventStore->create(new Stream($this->buildStreamName($repositoryAggregateType, $aggregateId), $streamEvents));
+        $this->eventStore->create(new Stream(
+            $this->buildStreamName($repositoryAggregateType, $aggregateId),
+            $streamEvents
+        ));
     }
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @param object $aggregateRoot
      * @throws Exception\InvalidArgumentException
      * @return void
      */
-    public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot)
-    {
+    public function appendEvents(
+        AggregateType $repositoryAggregateType,
+        $aggregateId,
+        Iterator $streamEvents,
+        $aggregateRoot
+    ) {
         $arType = AggregateType::fromAggregateRoot($aggregateRoot);
 
         if (! $repositoryAggregateType->equals($arType)) {
-            throw new Exception\InvalidArgumentException(sprintf('aggregate root mismatch between repository type %s and object type %s', $repositoryAggregateType->toString(), $arType->toString()));
+            throw new Exception\InvalidArgumentException(sprintf(
+                'aggregate root mismatch between repository type %s and object type %s',
+                $repositoryAggregateType->toString(),
+                $arType->toString()
+            ));
         }
 
         $this->eventStore->appendTo($this->buildStreamName($repositoryAggregateType, $aggregateId), $streamEvents);
@@ -94,7 +109,7 @@ class AggregateStreamStrategy implements StreamStrategy
      * @param AggregateType $aggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function read(AggregateType $aggregateType, $aggregateId, $minVersion = null)
     {
@@ -122,10 +137,10 @@ class AggregateStreamStrategy implements StreamStrategy
      * No aggregate type information stored as metadata. The repository aggregate type needs to be used.
      *
      * @param AggregateType $repositoryAggregateType
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @return AggregateType
      */
-    public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents)
+    public function getAggregateRootType(AggregateType $repositoryAggregateType, Iterator $streamEvents)
     {
         return $repositoryAggregateType;
     }

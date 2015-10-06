@@ -47,10 +47,5 @@
         "psr-4": {
             "Prooph\\EventStoreTest\\": "tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-          "dev-5.0-beta": "5.0-dev"
-        }
     }
 }

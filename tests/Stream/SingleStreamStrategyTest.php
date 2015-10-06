@@ -46,7 +46,7 @@ class SingleStreamStrategyTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->create(new Stream(new StreamName('event_stream'), []));
+        $this->eventStore->create(new Stream(new StreamName('event_stream'), new \ArrayIterator()));
 
         $this->eventStore->commit();
     }
@@ -71,7 +71,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
@@ -79,7 +79,12 @@ class SingleStreamStrategyTest extends TestCase
 
         $this->assertInstanceOf(Stream::class, $stream);
 
-        $this->assertEquals(1, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $stream->streamEvents()->rewind();
+        $this->assertEquals(1, $count);
 
         $events = $stream->streamEvents();
 
@@ -108,7 +113,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
@@ -121,13 +126,18 @@ class SingleStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->appendEvents($aggregateType, $aggregateId, $streamEvents, $user);
+        $this->strategy->appendEvents($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $user);
 
         $this->eventStore->commit();
 
         $stream = $this->eventStore->load(new StreamName('event_stream'));
 
-        $this->assertEquals(2, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $stream->streamEvents()->rewind();
+        $this->assertEquals(2, $count);
 
         //Create a second aggregate
 
@@ -146,13 +156,17 @@ class SingleStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, $streamEvents, $product);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId, new \ArrayIterator($streamEvents), $product);
 
         $this->eventStore->commit();
 
         $stream = $this->eventStore->load(new StreamName('event_stream'));
 
-        $this->assertEquals(3, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $this->assertEquals(3, $count);
     }
 
     /**
@@ -175,7 +189,7 @@ class SingleStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId1, $streamEvents1, $user);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId1, new \ArrayIterator($streamEvents1), $user);
 
         $product = new Product();
 
@@ -188,13 +202,18 @@ class SingleStreamStrategyTest extends TestCase
             )
         ];
 
-        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId2, $streamEvents2, $product);
+        $this->strategy->addEventsForNewAggregateRoot($aggregateType, $aggregateId2, new \ArrayIterator($streamEvents2), $product);
 
         $this->eventStore->commit();
 
         $streamEvents = $this->strategy->read($aggregateType, $aggregateId2);
 
-        $this->assertEquals(1, count($streamEvents));
+        $count = 0;
+        foreach ($streamEvents as $event) {
+            $count++;
+        }
+        $streamEvents->rewind();
+        $this->assertEquals(1, $count);
 
         $this->assertInstanceOf(DomainEvent::class, $streamEvents[0]);
 
@@ -219,6 +238,6 @@ class SingleStreamStrategyTest extends TestCase
 
         $streamEvents = [$streamEvent->reveal()];
 
-        $this->strategy->getAggregateRootType($aggregateType, $streamEvents);
+        $this->strategy->getAggregateRootType($aggregateType, new \ArrayIterator($streamEvents));
     }
 }

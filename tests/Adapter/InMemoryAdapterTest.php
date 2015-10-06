@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStoreTest\Adapter;
 
+use Guzzle\Stream\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Stream\StreamName;
@@ -40,7 +41,7 @@ final class InMemoryAdapterTest extends TestCase
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
 
-        $this->adapter->appendTo($streamName->reveal(), []);
+        $this->adapter->appendTo($streamName->reveal(), new \ArrayIterator());
     }
 
     /**
@@ -57,11 +58,22 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_load_events_by_metadata_from_on_non_existing_stream()
+    public function it_returns_nothing_when_trying_to_load_events_by_metadata_fro_omn_non_existing_stream()
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
 
         $this->assertEmpty($this->adapter->loadEventsByMetadataFrom($streamName->reveal(), []));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_nothing_when_trying_to_replay_non_existing_stream()
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test');
+
+        $this->assertCount(0, $this->adapter->replay($streamName->reveal(), null, []));
     }
 }
