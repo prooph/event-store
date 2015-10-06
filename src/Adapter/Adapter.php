@@ -9,6 +9,7 @@
 
 namespace Prooph\EventStore\Adapter;
 
+use DateTimeInterface;
 use Iterator;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
@@ -50,4 +51,12 @@ interface Adapter
      * @return Iterator
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null);
+
+    /**
+     * @param StreamName $streamName
+     * @param DateTimeInterface $since
+     * @param array $metadata
+     * @return Iterator
+     */
+    public function replay(StreamName $streamName, DateTimeInterface $since, array $metadata);
 }

@@ -64,4 +64,15 @@ final class InMemoryAdapterTest extends TestCase
 
         $this->assertEmpty($this->adapter->loadEventsByMetadataFrom($streamName->reveal(), []));
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_nothing_when_trying_to_replay_non_existing_stream()
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test');
+
+        $this->assertCount(0, $this->adapter->replay($streamName->reveal(), null, []));
+    }
 }

@@ -19,6 +19,7 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStoreTest\Mock\PostCreated;
 use Prooph\EventStoreTest\Mock\TestDomainEvent;
 use Prooph\EventStoreTest\Mock\UserCreated;
 use Prooph\EventStoreTest\Mock\UsernameChanged;
@@ -622,6 +623,133 @@ class EventStoreTest extends TestCase
             $count++;
         }
         $this->assertEquals(1, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function it_replays_in_correct_order()
+    {
+        $streamEvent1 = UserCreated::with(
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
+            1
+        );
+
+        $streamEvent2 = UsernameChanged::with(
+            ['new_name' => 'John Doe'],
+            2
+        );
+
+        $streamEvent3 = PostCreated::with(
+            ['text' => 'some text'],
+            1
+        );
+
+        $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
+        $stream2 = new Stream(new StreamName('post'), new ArrayIterator([$streamEvent3]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream1);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream2);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
+        $this->eventStore->commit();
+
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[], []]);
+
+        $count = 0;
+        foreach ($iterator as $key => $event) {
+            $count += 1;
+            if (1 === $count) {
+                $this->assertInstanceOf(UserCreated::class, $event);
+            }
+            if (2 === $count) {
+                $this->assertInstanceOf(UsernameChanged::class, $event);
+            }
+            if (3 === $count) {
+                $this->assertInstanceOf(PostCreated::class, $event);
+            }
+        }
+        $this->assertEquals(3, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function it_replays_since_specific_date()
+    {
+        $streamEvent1 = UserCreated::with(
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
+            1
+        );
+
+        $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream1);
+        $this->eventStore->commit();
+
+        sleep(2);
+        $now = new \DateTime('now');
+
+        $streamEvent2 = UsernameChanged::with(
+            ['new_name' => 'John Doe'],
+            2
+        );
+
+        $streamEvent3 = PostCreated::with(
+            ['text' => 'some text'],
+            1
+        );
+
+        $stream2 = new Stream(new StreamName('post'), new ArrayIterator([$streamEvent3]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream2);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
+        $this->eventStore->commit();
+
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], $now, [[], []]);
+
+        $count = 0;
+        foreach ($iterator as $key => $event) {
+            $count += 1;
+            if (1 === $count) {
+                $this->assertInstanceOf(UsernameChanged::class, $event);
+            }
+            if (2 === $count) {
+                $this->assertInstanceOf(PostCreated::class, $event);
+            }
+        }
+        $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
+     * @expectedExceptionMessage No stream names given
+     */
+    public function it_rejects_replay_without_stream_names()
+    {
+        $this->eventStore->replay([], null, []);
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
+     * @expectedExceptionMessage One metadata per stream name needed, given 2 stream names but 1 metadatas
+     */
+    public function it_expects_matching_of_stream_names_and_metadata()
+    {
+        $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[]]);
     }
 
     /**
