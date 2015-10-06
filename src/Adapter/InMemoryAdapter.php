@@ -13,6 +13,7 @@ namespace Prooph\EventStore\Adapter;
 
 use AppendIterator;
 use ArrayIterator;
+use DateTimeInterface;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
@@ -113,6 +114,33 @@ class InMemoryAdapter implements Adapter
                 if (is_null($minVersion) || $streamEvent->version() >= $minVersion) {
                     $streamEvents[] = $streamEvent;
                 }
+            }
+        }
+
+        return new ArrayIterator($streamEvents);
+    }
+
+    /**
+     * @param StreamName $streamName
+     * @param DateTimeInterface $since
+     * @param array $metadata
+     * @return ArrayIterator
+     */
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata)
+    {
+        if (! isset($this->streams[$streamName->toString()])) {
+            return new ArrayIterator();
+        }
+
+        $streamEvents = [];
+
+        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
+            if (null === $since && $this->matchMetadataWith($streamEvent, $metadata)) {
+                $streamEvents[] = $streamEvent;
+            } elseif((float) $streamEvent->createdAt()->format('U.u') >= (float) $since->format('U.u')
+                && $this->matchMetadataWith($streamEvent, $metadata)
+            ) {
+                $streamEvents[] = $streamEvent;
             }
         }
 

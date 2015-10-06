@@ -11,14 +11,17 @@ namespace Prooph\EventStore;
 
 use AppendIterator;
 use ArrayIterator;
+use DateTimeInterface;
 use Iterator;
 use Prooph\Common\Event\ActionEventEmitter;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Util\CompositeIterator;
 
 /**
  * EventStore
@@ -251,6 +254,39 @@ class EventStore
         }
 
         return $event->getParam('streamEvents');
+    }
+
+    /**
+     * @param StreamName[] $streamNames
+     * @param DateTimeInterface|null $since
+     * @param array $metadatas One metadata array per stream name, same index order is required
+     * @return CompositeIterator
+     */
+    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas)
+    {
+        if (empty($streamNames)) {
+            throw new \InvalidArgumentException('No stream names given');
+        }
+
+        if (count($streamNames) !== count($metadatas)) {
+            throw new \InvalidArgumentException(sprintf(
+                'One metadata per stream name needed, given %s stream names but %s metadatas',
+                count($streamNames),
+                count($metadatas)
+            ));
+        }
+
+        $iterators = [];
+        foreach ($streamNames as $key => $streamName) {
+            $iterators[] = $this->adapter->replay($streamName, $since, $metadatas[$key]);
+        }
+
+        return new CompositeIterator($iterators, function(Message $message1 = null, Message $message2) {
+            if (null === $message1) {
+                return true;
+            }
+            return (float) $message1->createdAt()->format('U.u') > (float) $message2->createdAt()->format('U.u');
+        });
     }
 
     /**
