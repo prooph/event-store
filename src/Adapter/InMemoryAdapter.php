@@ -101,7 +101,7 @@ class InMemoryAdapter implements Adapter
      * @throws StreamNotFoundException
      * @return Iterator
      */
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata = [], $minVersion = null)
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -122,11 +122,11 @@ class InMemoryAdapter implements Adapter
 
     /**
      * @param StreamName $streamName
-     * @param DateTimeInterface $since
+     * @param DateTimeInterface|null $since
      * @param array $metadata
      * @return ArrayIterator
      */
-    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata)
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = [])
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
