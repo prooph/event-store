@@ -50,13 +50,13 @@ interface Adapter
      * @param null|int $minVersion Minimum version an event should have
      * @return Iterator
      */
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null);
+    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null);
 
     /**
      * @param StreamName $streamName
-     * @param DateTimeInterface $since
+     * @param DateTimeInterface|null $since
      * @param array $metadata
      * @return Iterator
      */
-    public function replay(StreamName $streamName, DateTimeInterface $since, array $metadata);
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = []);
 }

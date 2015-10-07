@@ -241,7 +241,7 @@ class EventStore
         $metadata = $event->getParam('metadata');
         $minVersion = $event->getParam('minVersion');
 
-        $events = $this->adapter->loadEventsByMetadataFrom($streamName, $metadata, $minVersion);
+        $events = $this->adapter->loadEvents($streamName, $metadata, $minVersion);
 
         $event->setName(__FUNCTION__ . '.post');
 
