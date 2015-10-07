@@ -50,7 +50,7 @@ interface Adapter
      * @param null|int $minVersion Minimum version an event should have
      * @return Iterator
      */
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata = [], $minVersion = null);
+    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null);
 
     /**
      * @param StreamName $streamName

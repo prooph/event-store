@@ -101,7 +101,7 @@ class InMemoryAdapter implements Adapter
      * @throws StreamNotFoundException
      * @return Iterator
      */
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata = [], $minVersion = null)
+    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null)
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
