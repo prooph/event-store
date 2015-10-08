@@ -43,21 +43,9 @@ final class InMemoryIdentityMap implements IdentityMap
      */
     public function add(AggregateType $aggregateType, $aggregateId, $aggregateRoot)
     {
-        $this->dirtyMap[$aggregateType->toString()][$aggregateId]
-            = $this->persistentMap[$aggregateType->toString()][$aggregateId]
-            = $aggregateRoot;
-    }
+        $this->persistentMap[$aggregateType->toString()][$aggregateId] = $aggregateRoot;
 
-    /**
-     * Returns true if it has an aggregate root in the identity map
-     *
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
-     * @return bool
-     */
-    public function has(AggregateType $aggregateType, $aggregateId)
-    {
-        return isset($this->persistentMap[$aggregateType->toString()][$aggregateId]);
+        $this->markDirty($aggregateType, $aggregateId, $aggregateRoot);
     }
 
     /**
@@ -72,12 +60,15 @@ final class InMemoryIdentityMap implements IdentityMap
      */
     public function get(AggregateType $aggregateType, $aggregateId)
     {
-        if (! $this->has($aggregateType, $aggregateId)) {
+        if (!isset($this->persistentMap[$aggregateType->toString()][$aggregateId])) {
             return;
         }
 
-        return $this->dirtyMap[$aggregateType->toString()][$aggregateId]
-            = $this->persistentMap[$aggregateType->toString()][$aggregateId];
+        $aggregateRoot = $this->persistentMap[$aggregateType->toString()][$aggregateId];
+
+        $this->markDirty($aggregateType, $aggregateId, $aggregateRoot);
+
+        return $aggregateRoot;
     }
 
     /**
@@ -103,5 +94,18 @@ final class InMemoryIdentityMap implements IdentityMap
     public function cleanUp(AggregateType $aggregateType)
     {
         unset($this->dirtyMap[$aggregateType->toString()]);
+    }
+
+    /**
+     * Mark an aggregate root as dirty
+     *
+     * @param AggregateType $aggregateType
+     * @param string $aggregateId
+     * @param object $aggregateRoot
+     * @return void
+     */
+    public function markDirty(AggregateType $aggregateType, $aggregateId, $aggregateRoot)
+    {
+        $this->dirtyMap[$aggregateType->toString()][$aggregateId] = $aggregateRoot;
     }
 }

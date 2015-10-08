@@ -39,15 +39,6 @@ interface IdentityMap
     public function add(AggregateType $aggregateType, $aggregateId, $aggregateRoot);
 
     /**
-     * Returns true if it has an aggregate root in the identity map
-     *
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
-     * @return bool
-     */
-    public function has(AggregateType $aggregateType, $aggregateId);
-
-    /**
      * Get the aggregate root if it exists otherwise null
      * The returned aggregate root MUST be flagged as dirty internally
      * so that {@method getAllDirtyAggregateRoots} returns the AR
@@ -76,4 +67,14 @@ interface IdentityMap
      * @return void
      */
     public function cleanUp(AggregateType $aggregateType);
+
+    /**
+     * Mark an aggregate root as dirty
+     *
+     * @param AggregateType $aggregateType
+     * @param string $aggregateId
+     * @param object $aggregateRoot
+     * @return void
+     */
+    public function markDirty(AggregateType $aggregateType, $aggregateId, $aggregateRoot);
 }

@@ -28,7 +28,7 @@ final class InMemoryIdentityMapTest extends TestCase
 
         $identityMap->add($aggregateType, '1', $aggregateRoot->reveal());
 
-        $this->assertTrue($identityMap->has($aggregateType, '1'));
+        $this->assertTrue((bool) $identityMap->get($aggregateType, '1'));
 
         $this->assertSame($aggregateRoot->reveal(), $identityMap->get($aggregateType, '1'));
 
@@ -60,7 +60,7 @@ final class InMemoryIdentityMapTest extends TestCase
 
         $this->assertEquals(0, count($identityMap->getAllDirtyAggregateRoots($aggregateType)));
 
-        $this->assertTrue($identityMap->has($aggregateType, '1'));
+        $this->assertTrue((bool) $identityMap->get($aggregateType, '1'));
 
         $this->assertSame($aggregateRoot->reveal(), $identityMap->get($aggregateType, '1'));
 

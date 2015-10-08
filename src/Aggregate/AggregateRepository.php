@@ -184,8 +184,10 @@ class AggregateRepository
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        if ($this->identityMap->has($this->aggregateType, $aggregateId)) {
-            return $this->identityMap->get($this->aggregateType, $aggregateId);
+        $aggregateRoot = $this->identityMap->get($this->aggregateType, $aggregateId);
+
+        if ($aggregateRoot) {
+            return $aggregateRoot;
         }
 
         $streamEvents = $this->streamStrategy->read($this->aggregateType, $aggregateId);
