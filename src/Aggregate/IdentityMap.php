@@ -67,4 +67,14 @@ interface IdentityMap
      * @return void
      */
     public function cleanUp(AggregateType $aggregateType);
+
+    /**
+     * Mark an aggregate root as dirty
+     *
+     * @param AggregateType $aggregateType
+     * @param string $aggregateId
+     * @param object $aggregateRoot
+     * @return void
+     */
+    public function markDirty(AggregateType $aggregateType, $aggregateId, $aggregateRoot);
 }
