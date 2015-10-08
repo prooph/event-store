@@ -70,4 +70,14 @@ final class InMemoryIdentityMapTest extends TestCase
 
         $this->assertSame($aggregateRoot->reveal(), $dirtyAggregates['1']);
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_null_if_aggregate_root_is_not_registered_in_the_identity_map()
+    {
+        $identityMap = new InMemoryIdentityMap();
+
+        $this->assertNull($identityMap->get(AggregateType::fromAggregateRootClass(User::class), '1'));
+    }
 }
