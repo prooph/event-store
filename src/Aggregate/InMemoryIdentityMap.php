@@ -49,18 +49,6 @@ final class InMemoryIdentityMap implements IdentityMap
     }
 
     /**
-     * Returns true if it has an aggregate root in the identity map
-     *
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
-     * @return bool
-     */
-    public function has(AggregateType $aggregateType, $aggregateId)
-    {
-        return isset($this->persistentMap[$aggregateType->toString()][$aggregateId]);
-    }
-
-    /**
      * Get the aggregate root if it exists otherwise null
      * The returned aggregate root MUST be flagged as dirty internally
      * so that {@method getAllDirtyAggregateRoots} returns the AR
@@ -72,7 +60,7 @@ final class InMemoryIdentityMap implements IdentityMap
      */
     public function get(AggregateType $aggregateType, $aggregateId)
     {
-        if (! $this->has($aggregateType, $aggregateId)) {
+        if (! isset($this->persistentMap[$aggregateType->toString()][$aggregateId])) {
             return;
         }
 
