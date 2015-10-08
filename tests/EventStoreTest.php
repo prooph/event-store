@@ -734,6 +734,64 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
+     */
+    public function it_replays_in_correct_order_with_same_date_time()
+    {
+        $sameDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+
+        $streamEvent1 = UserCreated::withPayloadAndSpecifiedCreatedAt(
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
+            1,
+            $sameDate
+        );
+
+        $streamEvent2 = UsernameChanged::withPayloadAndSpecifiedCreatedAt(
+            ['new_name' => 'John Doe'],
+            2,
+            $sameDate
+        );
+
+        $streamEvent3 = PostCreated::withPayloadAndSpecifiedCreatedAt(
+            ['text' => 'some text'],
+            1,
+            $sameDate
+        );
+
+        $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
+        $stream2 = new Stream(new StreamName('post'), new ArrayIterator([$streamEvent3]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream1);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream2);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
+        $this->eventStore->commit();
+
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[], []]);
+
+        $count = 0;
+        foreach ($iterator as $key => $event) {
+            $count += 1;
+            if (1 === $count) {
+                $this->assertInstanceOf(UserCreated::class, $event);
+            }
+            if (2 === $count) {
+                $this->assertInstanceOf(UsernameChanged::class, $event);
+            }
+            if (3 === $count) {
+                $this->assertInstanceOf(PostCreated::class, $event);
+            }
+        }
+        $this->assertEquals(3, $count);
+    }
+
+    /**
+     * @test
      * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
      * @expectedExceptionMessage No stream names given
      */
