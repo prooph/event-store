@@ -14,6 +14,8 @@ namespace Prooph\EventStoreTest\Aggregate;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
+use Prooph\EventStore\Aggregate\IdentityMap;
+use Prooph\EventStore\Aggregate\InMemoryIdentityMap;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
@@ -134,6 +136,10 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
+        //Fetch users from repository to simulate a normal program flow
+        $user = $this->repository->getAggregateRoot($user->getId()->toString());
+        $user2 = $this->repository->getAggregateRoot($user2->getId()->toString());
+
         $user->changeName('Daniel Doe');
         $user2->changeName('Jens Mustermann');
 
@@ -154,9 +160,9 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTypeException
-     * @expectedExceptionMessage Invalid aggregate given. Aggregates need to be of type object but type of string given
+     * @expectedExceptionMessage Aggregate root must be an object but type of string given
      */
-    public function it_throws_exception_when_added_aggregate_root_is_not_an_object()
+    public function it_asserts_correct_aggregate_type()
     {
         $this->repository->addAggregateRoot('invalid');
     }
@@ -169,6 +175,24 @@ class AggregateRepositoryTest extends TestCase
         $this->assertNull($this->repository->getAggregateRoot('something'));
     }
 
+    /**
+     * @test
+     */
+    public function it_uses_injected_identity_map()
+    {
+        $identityMap = $this->prophesize(IdentityMap::class);
+
+        $repo = new AggregateRepository(
+            $this->eventStore,
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            new ConfigurableAggregateTranslator(),
+            null,
+            $identityMap->reveal()
+        );
+
+        $this->assertAttributeSame($identityMap->reveal(), 'identityMap', $repo);
+    }
+
     protected function clearRepositoryIdentityMap()
     {
         $refClass = new \ReflectionClass($this->repository);
@@ -177,6 +201,6 @@ class AggregateRepositoryTest extends TestCase
 
         $identityMap->setAccessible(true);
 
-        $identityMap->setValue($this->repository, []);
+        $identityMap->setValue($this->repository, new InMemoryIdentityMap());
     }
 }

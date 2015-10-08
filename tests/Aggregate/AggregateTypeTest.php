@@ -12,6 +12,8 @@
 namespace Prooph\EventStore\Aggregate;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStoreTest\Mock\Post;
+use Prooph\EventStoreTest\Mock\User;
 
 /**
  * Class AggregateTypeTest
@@ -70,6 +72,36 @@ class AggregateTypeTest extends TestCase
     public function it_throws_exception_when_trying_to_create_from_empty_string()
     {
         AggregateType::fromString(null);
+    }
+
+    /**
+     * @test
+     */
+    public function it_asserts_correct_aggregate_type()
+    {
+        $aggregateType = AggregateType::fromAggregateRootClass(User::class);
+
+        $aggregateRoot = $this->prophesize(AggregateTypeProvider::class);
+
+        $aggregateRoot->aggregateType()->willReturn(AggregateType::fromAggregateRootClass(User::class));
+
+        $aggregateType->assert($aggregateRoot->reveal());
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTypeException
+     * @expectedExceptionMessage Aggregate types must be equal. Prooph\EventStoreTest\Mock\User != Prooph\EventStoreTest\Mock\Post
+     */
+    public function it_throws_exception_if_type_is_not_correct()
+    {
+        $aggregateType = AggregateType::fromAggregateRootClass(User::class);
+
+        $aggregateRoot = $this->prophesize(AggregateTypeProvider::class);
+
+        $aggregateRoot->aggregateType()->willReturn(AggregateType::fromAggregateRootClass(Post::class));
+
+        $aggregateType->assert($aggregateRoot->reveal());
     }
 
     /**
