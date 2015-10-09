@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Aggregate;
 use ArrayIterator;
 use Assert\Assertion;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Snapshot\SnapshotStore;
 use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\StreamStrategy;
 
@@ -51,6 +52,11 @@ class AggregateRepository
     protected $identityMap;
 
     /**
+     * @var SnapshotStore|null
+     */
+    protected $snapshotStore;
+
+    /**
      * @var array
      */
     protected $pendingEventsMap = [];
@@ -60,14 +66,16 @@ class AggregateRepository
      * @param AggregateType $aggregateType
      * @param AggregateTranslator $aggregateTranslator
      * @param StreamStrategy|null $streamStrategy
-     * @param IdentityMap $identityMap
+     * @param IdentityMap|null $identityMap
+     * @param SnapshotStore|null $snapshotStore
      */
     public function __construct(
         EventStore $eventStore,
         AggregateType $aggregateType,
         AggregateTranslator $aggregateTranslator,
         StreamStrategy $streamStrategy = null,
-        IdentityMap $identityMap = null
+        IdentityMap $identityMap = null,
+        SnapshotStore $snapshotStore = null
     ) {
         $this->eventStore = $eventStore;
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'addPendingEventsToStream']);
@@ -75,6 +83,7 @@ class AggregateRepository
 
         $this->aggregateType = $aggregateType;
         $this->aggregateTranslator = $aggregateTranslator;
+        $this->snapshotStore = $snapshotStore;
 
         if (null === $streamStrategy) {
             $streamStrategy = new SingleStreamStrategy($this->eventStore);
@@ -190,6 +199,16 @@ class AggregateRepository
             return $aggregateRoot;
         }
 
+        if ($this->snapshotStore) {
+            $aggregateRoot = $this->loadFromSnapshotStore($aggregateId);
+
+            if ($aggregateRoot) {
+                $this->identityMap->add($this->aggregateType, $aggregateId, $aggregateRoot);
+
+                return $aggregateRoot;
+            }
+        }
+
         $streamEvents = $this->streamStrategy->read($this->aggregateType, $aggregateId);
 
         if (count($streamEvents) === 0) {
@@ -206,5 +225,32 @@ class AggregateRepository
         $this->identityMap->add($this->aggregateType, $aggregateId, $eventSourcedAggregateRoot);
 
         return $eventSourcedAggregateRoot;
+    }
+
+    /**
+     * @param string $aggregateId
+     * @return null|object
+     */
+    protected function loadFromSnapshotStore($aggregateId)
+    {
+        $snapshot = $this->snapshotStore->get($this->aggregateType, $aggregateId);
+
+        if ($snapshot) {
+            $aggregateRoot = $snapshot->getAggregateRoot();
+
+            $streamEvents = $this->streamStrategy->read(
+                $this->aggregateType,
+                $aggregateId,
+                $snapshot->getLastVersion() + 1
+            );
+
+            if (count($streamEvents) === 0) {
+                return $aggregateRoot;
+            }
+
+            $this->aggregateTranslator->applyPendingStreamEvents($aggregateRoot, $streamEvents);
+
+            return $aggregateRoot;
+        }
     }
 }
