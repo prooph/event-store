@@ -235,22 +235,24 @@ class AggregateRepository
     {
         $snapshot = $this->snapshotStore->get($this->aggregateType, $aggregateId);
 
-        if ($snapshot) {
-            $aggregateRoot = $snapshot->getAggregateRoot();
+        if (!$snapshot) {
+            return;
+        }
+        
+        $aggregateRoot = $snapshot->getAggregateRoot();
 
-            $streamEvents = $this->streamStrategy->read(
-                $this->aggregateType,
-                $aggregateId,
-                $snapshot->getLastVersion() + 1
-            );
+        $streamEvents = $this->streamStrategy->read(
+            $this->aggregateType,
+            $aggregateId,
+            $snapshot->getLastVersion() + 1
+        );
 
-            if (count($streamEvents) === 0) {
-                return $aggregateRoot;
-            }
-
-            $this->aggregateTranslator->applyPendingStreamEvents($aggregateRoot, $streamEvents);
-
+        if (count($streamEvents) === 0) {
             return $aggregateRoot;
         }
+
+        $this->aggregateTranslator->applyPendingStreamEvents($aggregateRoot, $streamEvents);
+
+        return $aggregateRoot;
     }
 }
