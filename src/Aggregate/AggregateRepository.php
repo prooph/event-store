@@ -132,7 +132,7 @@ class AggregateRepository
             if (isset($this->pendingEventsMap[$aggregateId])) {
                 $this->aggregateTranslator->applyPendingStreamEvents(
                     $aggregateRoot,
-                    $this->pendingEventsMap[$aggregateId]
+                    new ArrayIterator($this->pendingEventsMap[$aggregateId])
                 );
 
                 //Clear pending events

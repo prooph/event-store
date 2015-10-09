@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Aggregate;
 
 use Assert\Assertion;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException;
 use Prooph\EventStore\Util\MapIterator;
@@ -227,10 +228,10 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
-     * @param Message[] $events
+     * @param Iterator $events
      * @throws Exception\AggregateTranslationFailedException
      */
-    public function applyPendingStreamEvents($eventSourcedAggregateRoot, array $events)
+    public function applyPendingStreamEvents($eventSourcedAggregateRoot, Iterator $events)
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));

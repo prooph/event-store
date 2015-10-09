@@ -151,7 +151,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $translator = new ConfigurableAggregateTranslator(null, null, 'unknownMethod');
 
-        $translator->applyPendingStreamEvents($ar->reveal(), []);
+        $translator->applyPendingStreamEvents($ar->reveal(), new \ArrayIterator([]));
     }
 
     /**
@@ -179,7 +179,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $translator = new ConfigurableAggregateTranslator();
 
-        $translator->applyPendingStreamEvents($ar->reveal(), [new \stdClass()]);
+        $translator->applyPendingStreamEvents($ar->reveal(), new \ArrayIterator([new \stdClass()]));
     }
 
     /**
@@ -217,7 +217,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
             return $message->reveal();
         });
 
-        $translator->applyPendingStreamEvents($ar->reveal(), [new \stdClass(), new \stdClass()]);
+        $translator->applyPendingStreamEvents($ar->reveal(), new \ArrayIterator([new \stdClass(), new \stdClass()]));
     }
 
     /**
@@ -347,7 +347,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     public function it_fails_on_applying_pending_stream_events_when_event_sourced_aggregate_root_is_not_an_object()
     {
         $translator = new ConfigurableAggregateTranslator();
-        $translator->applyPendingStreamEvents('invalid', []);
+        $translator->applyPendingStreamEvents('invalid', new \ArrayIterator([]));
     }
 
     /**
