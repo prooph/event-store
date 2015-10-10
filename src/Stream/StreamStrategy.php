@@ -12,7 +12,6 @@
 namespace Prooph\EventStore\Stream;
 
 use Iterator;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 
 /**
