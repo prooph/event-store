@@ -46,7 +46,7 @@ final class InMemoryAdapter implements Adapter
      */
     public function add(Snapshot $snapshot)
     {
-        $this->map[$snapshot->getAggregateType()->toString()][$snapshot->getAggregateId()]
-            = $snapshot->getAggregateRoot();
+        $this->map[$snapshot->aggregateType()->toString()][$snapshot->aggregateId()]
+            = $snapshot->aggregateRoot();
     }
 }

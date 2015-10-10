@@ -239,12 +239,12 @@ class AggregateRepository
             return;
         }
 
-        $aggregateRoot = $snapshot->getAggregateRoot();
+        $aggregateRoot = $snapshot->aggregateRoot();
 
         $streamEvents = $this->streamStrategy->read(
             $this->aggregateType,
             $aggregateId,
-            $snapshot->getLastVersion() + 1
+            $snapshot->lastVersion() + 1
         );
 
         if (!$streamEvents->valid()) {

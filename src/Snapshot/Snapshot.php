@@ -64,7 +64,7 @@ final class Snapshot
     /**
      * @return AggregateType
      */
-    public function getAggregateType()
+    public function aggregateType()
     {
         return $this->aggregateType;
     }
@@ -72,7 +72,7 @@ final class Snapshot
     /**
      * @return string
      */
-    public function getAggregateId()
+    public function aggregateId()
     {
         return $this->aggregateId;
     }
@@ -80,7 +80,7 @@ final class Snapshot
     /**
      * @return object
      */
-    public function getAggregateRoot()
+    public function aggregateRoot()
     {
         return $this->aggregateRoot;
     }
@@ -88,7 +88,7 @@ final class Snapshot
     /**
      * @return int
      */
-    public function getLastVersion()
+    public function lastVersion()
     {
         return $this->lastVersion;
     }
@@ -96,7 +96,7 @@ final class Snapshot
     /**
      * @return DateTimeImmutable
      */
-    public function getCreatedAt()
+    public function createdAt()
     {
         return $this->createdAt;
     }
