@@ -55,7 +55,7 @@ interface StreamStrategy
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null);
 

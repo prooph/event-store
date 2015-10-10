@@ -211,7 +211,7 @@ class AggregateRepository
 
         $streamEvents = $this->streamStrategy->read($this->aggregateType, $aggregateId);
 
-        if (count($streamEvents) === 0) {
+        if (!$streamEvents->valid()) {
             return;
         }
 
@@ -238,7 +238,7 @@ class AggregateRepository
         if (!$snapshot) {
             return;
         }
-        
+
         $aggregateRoot = $snapshot->getAggregateRoot();
 
         $streamEvents = $this->streamStrategy->read(
@@ -247,7 +247,7 @@ class AggregateRepository
             $snapshot->getLastVersion() + 1
         );
 
-        if (count($streamEvents) === 0) {
+        if (!$streamEvents->valid()) {
             return $aggregateRoot;
         }
 
