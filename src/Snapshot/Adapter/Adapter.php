@@ -9,13 +9,14 @@
  * Date: 10/09/15 - 07:20 PM
  */
 
-namespace Prooph\EventStore\Snapshot;
+namespace Prooph\EventStore\Snapshot\Adapter;
 
 use Prooph\EventStore\Aggregate\AggregateType;
+use Prooph\EventStore\Snapshot\Snapshot;
 
 /**
  * Interface Adapter
- * @package Prooph\EventStore\Snapshot
+ * @package Prooph\EventStore\Snapshot\Adapter
  */
 interface Adapter
 {

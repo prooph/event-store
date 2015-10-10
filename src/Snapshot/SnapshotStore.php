@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Snapshot;
 
 use Prooph\EventStore\Aggregate\AggregateType;
+use Prooph\EventStore\Snapshot\Adapter\Adapter;
 
 /**
  * Class SnapshotStore

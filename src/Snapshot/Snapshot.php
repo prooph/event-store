@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStore\Snapshot;
 
+use Assert\Assertion;
 use DateTimeImmutable;
 use Prooph\EventStore\Aggregate\AggregateType;
 
@@ -52,8 +53,17 @@ final class Snapshot
      * @param int $lastVersion
      * @param DateTimeImmutable $createdAt
      */
-    public function __construct(AggregateType $aggregateType, $aggregateId, $aggregateRoot, $lastVersion, $createdAt)
-    {
+    public function __construct(
+        AggregateType $aggregateType,
+        $aggregateId,
+        $aggregateRoot,
+        $lastVersion,
+        DateTimeImmutable $createdAt
+    ) {
+        Assertion::minLength($aggregateId, 1);
+        Assertion::isObject($aggregateRoot);
+        Assertion::min($lastVersion, 1);
+
         $this->aggregateType = $aggregateType;
         $this->aggregateId = $aggregateId;
         $this->aggregateRoot = $aggregateRoot;

@@ -9,15 +9,14 @@
  * Date: 10/09/15 - 07:20 PM
  */
 
-namespace Prooph\Snapshot\Adapter;
+namespace Prooph\EventStore\Snapshot\Adapter;
 
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Snapshot\Snapshot;
-use Prooph\Snapshot\Adapter;
 
 /**
  * Class InMemoryAdapter
- * @package Prooph\Snapshot\Adapter
+ * @package Prooph\EventStore\Snapshot\Adapter
  */
 final class InMemoryAdapter implements Adapter
 {
@@ -50,7 +49,6 @@ final class InMemoryAdapter implements Adapter
      */
     public function add(Snapshot $snapshot)
     {
-        $this->map[$snapshot->aggregateType()->toString()][$snapshot->aggregateId()]
-            = $snapshot->aggregateRoot();
+        $this->map[$snapshot->aggregateType()->toString()][$snapshot->aggregateId()] = $snapshot;
     }
 }
