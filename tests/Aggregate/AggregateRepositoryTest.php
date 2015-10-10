@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStoreTest\Aggregate;
 
+use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
@@ -22,6 +23,8 @@ use Prooph\EventStore\Snapshot\SnapshotStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
+use Prooph\EventStoreTest\Mock\UserCreated;
+use Prooph\EventStoreTest\Mock\UsernameChanged;
 use Prooph\EventStoreTest\TestCase;
 
 /**
@@ -216,27 +219,38 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
 
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $snapshot = new Snapshot(
             AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
             $user->getId()->toString(),
             $user,
             1,
-            new \DateTimeImmutable('now', new \DateTimeZone('UTC'))
+            $now
         );
+
+        // short getter assertion
+        $this->assertSame($now, $snapshot->createdAt());
 
         $this->snapshotStore->add($snapshot);
 
         $this->clearRepositoryIdentityMap();
 
-        $this->eventStore->beginTransaction();
+        $loadedEvents = [];
 
-        $fetchedUser = $this->repository->getAggregateRoot(
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            'loadEventsByMetadataFrom.post',
+            function (ActionEvent $event) use (&$loadedEvents) {
+                foreach ($event->getParam('streamEvents', []) as $streamEvent) {
+                    $loadedEvents[] = $streamEvent;
+                }
+            }
+        );
+
+        $this->repository->getAggregateRoot(
             $user->getId()->toString()
         );
 
-        $fetchedUser->changeName('Max Mustermann');
-
-        $this->eventStore->commit();
+        $this->assertEmpty($loadedEvents);
     }
 
     /**
@@ -256,15 +270,23 @@ class AggregateRepositoryTest extends TestCase
 
         $this->clearRepositoryIdentityMap();
 
-        $this->eventStore->beginTransaction();
+        $loadedEvents = [];
 
-        $fetchedUser = $this->repository->getAggregateRoot(
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            'loadEventsByMetadataFrom.post',
+            function (ActionEvent $event) use (&$loadedEvents) {
+                foreach ($event->getParam('streamEvents', []) as $streamEvent) {
+                    $loadedEvents[] = $streamEvent;
+                }
+            }
+        );
+
+        $this->repository->getAggregateRoot(
             $user->getId()->toString()
         );
 
-        $fetchedUser->changeName('Max Mustermann');
-
-        $this->eventStore->commit();
+        $this->assertCount(1, $loadedEvents);
+        $this->assertInstanceOf(UserCreated::class, $loadedEvents[0]);
     }
 
     /**
@@ -306,9 +328,24 @@ class AggregateRepositoryTest extends TestCase
 
         $this->clearRepositoryIdentityMap();
 
-        $fetchedUser = $this->repository->getAggregateRoot(
+        $loadedEvents = [];
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            'loadEventsByMetadataFrom.post',
+            function (ActionEvent $event) use (&$loadedEvents) {
+                foreach ($event->getParam('streamEvents', []) as $streamEvent) {
+                    $loadedEvents[] = $streamEvent;
+                }
+                $event->getParam('streamEvents')->rewind();
+            }
+        );
+
+        $this->repository->getAggregateRoot(
             $user->getId()->toString()
         );
+
+        $this->assertCount(1, $loadedEvents);
+        $this->assertInstanceOf(UsernameChanged::class, $loadedEvents[0]);
     }
 
     protected function clearRepositoryIdentityMap()
