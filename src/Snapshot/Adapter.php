@@ -29,7 +29,7 @@ interface Adapter
     public function get(AggregateType $aggregateType, $aggregateId);
 
     /**
-     * Add aggregate root
+     * Add a snapshot
      *
      * @param Snapshot $snapshot
      * @return void

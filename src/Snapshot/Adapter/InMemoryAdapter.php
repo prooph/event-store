@@ -15,6 +15,10 @@ use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Snapshot\Snapshot;
 use Prooph\Snapshot\Adapter;
 
+/**
+ * Class InMemoryAdapter
+ * @package Prooph\Snapshot\Adapter
+ */
 final class InMemoryAdapter implements Adapter
 {
     /**
@@ -39,7 +43,7 @@ final class InMemoryAdapter implements Adapter
     }
 
     /**
-     * Add aggregate root
+     * Add a snapshot
      *
      * @param Snapshot $snapshot
      * @return void
