@@ -12,7 +12,6 @@
 namespace Prooph\EventStore\Stream;
 
 use Iterator;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 
 /**
@@ -55,7 +54,7 @@ interface StreamStrategy
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null);
 

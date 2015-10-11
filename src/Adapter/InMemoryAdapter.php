@@ -79,7 +79,7 @@ class InMemoryAdapter implements Adapter
 
         $streamEvents = $this->streams[$streamName->toString()];
 
-        if (!is_null($minVersion)) {
+        if (null !== $minVersion) {
             $filteredEvents = [];
 
             foreach ($streamEvents as $streamEvent) {
@@ -111,7 +111,7 @@ class InMemoryAdapter implements Adapter
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                if (is_null($minVersion) || $streamEvent->version() >= $minVersion) {
+                if (null === $minVersion || $streamEvent->version() >= $minVersion) {
                     $streamEvents[] = $streamEvent;
                 }
             }

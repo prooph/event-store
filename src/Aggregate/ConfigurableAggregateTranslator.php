@@ -125,11 +125,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     * @param \Iterator $historyEvents
+     * @param Iterator $historyEvents
      * @throws Exception\AggregateTranslationFailedException
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, \Iterator $historyEvents)
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents)
     {
         if ($this->messageToEventCallback) {
             $historyEvents = new MapIterator($historyEvents, $this->messageToEventCallback);

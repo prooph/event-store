@@ -8,14 +8,18 @@
  *
  * Date: 9/28/15 - 7:46 PM
  */
+
 namespace Prooph\EventStore\Util;
+
+use IteratorIterator;
+use Traversable;
 
 /**
  * Class MapIterator
  *
  * @package Prooph\EventStore\Util
  */
-final class MapIterator extends \IteratorIterator
+final class MapIterator extends IteratorIterator
 {
     /**
      * @var callable
@@ -23,10 +27,10 @@ final class MapIterator extends \IteratorIterator
     private $callback;
 
     /**
-     * @param \Traversable $iterator
+     * @param Traversable $iterator
      * @param callable $callback
      */
-    public function __construct(\Traversable $iterator, callable $callback)
+    public function __construct(Traversable $iterator, callable $callback)
     {
         parent::__construct($iterator);
         $this->callback = $callback;

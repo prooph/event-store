@@ -56,7 +56,7 @@ class SingleStreamStrategy implements StreamStrategy
     {
         $this->eventStore = $eventStore;
 
-        if (is_null($streamName)) {
+        if (null === $streamName) {
             $streamName = $this->streamName;
         }
 

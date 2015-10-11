@@ -11,14 +11,20 @@
 
 namespace Prooph\EventStoreTest\Aggregate;
 
+use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
 use Prooph\EventStore\Aggregate\IdentityMap;
 use Prooph\EventStore\Aggregate\InMemoryIdentityMap;
+use Prooph\EventStore\Snapshot\Adapter\InMemoryAdapter;
+use Prooph\EventStore\Snapshot\Snapshot;
+use Prooph\EventStore\Snapshot\SnapshotStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStoreTest\Mock\User;
+use Prooph\EventStoreTest\Mock\UserCreated;
+use Prooph\EventStoreTest\Mock\UsernameChanged;
 use Prooph\EventStoreTest\TestCase;
 
 /**
@@ -33,6 +39,11 @@ class AggregateRepositoryTest extends TestCase
      * @var AggregateRepository
      */
     private $repository;
+
+    /**
+     * @var SnapshotStore
+     */
+    private $snapshotStore;
 
     protected function setUp()
     {
@@ -193,6 +204,150 @@ class AggregateRepositoryTest extends TestCase
         $this->assertAttributeSame($identityMap->reveal(), 'identityMap', $repo);
     }
 
+    /**
+     * @test
+     */
+    public function it_uses_snapshot_store()
+    {
+        $this->prepareSnapshotStoreAggregateRepository();
+
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $this->eventStore->commit();
+
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $snapshot = new Snapshot(
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            $user->getId()->toString(),
+            $user,
+            1,
+            $now
+        );
+
+        // short getter assertion
+        $this->assertSame($now, $snapshot->createdAt());
+
+        $this->snapshotStore->add($snapshot);
+
+        $this->clearRepositoryIdentityMap();
+
+        $loadedEvents = [];
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            'loadEventsByMetadataFrom.post',
+            function (ActionEvent $event) use (&$loadedEvents) {
+                foreach ($event->getParam('streamEvents', []) as $streamEvent) {
+                    $loadedEvents[] = $streamEvent;
+                }
+            }
+        );
+
+        $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $this->assertEmpty($loadedEvents);
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_snapshot_store_while_snapshot_store_is_empty()
+    {
+        $this->prepareSnapshotStoreAggregateRepository();
+
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $this->eventStore->commit();
+
+        $this->clearRepositoryIdentityMap();
+
+        $loadedEvents = [];
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            'loadEventsByMetadataFrom.post',
+            function (ActionEvent $event) use (&$loadedEvents) {
+                foreach ($event->getParam('streamEvents', []) as $streamEvent) {
+                    $loadedEvents[] = $streamEvent;
+                }
+            }
+        );
+
+        $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $this->assertCount(1, $loadedEvents);
+        $this->assertInstanceOf(UserCreated::class, $loadedEvents[0]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_snapshot_store_and_applies_pending_events()
+    {
+        $this->prepareSnapshotStoreAggregateRepository();
+
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $this->eventStore->commit();
+
+        $snapshot = new Snapshot(
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            $user->getId()->toString(),
+            $user,
+            1,
+            new \DateTimeImmutable('now', new \DateTimeZone('UTC'))
+        );
+
+        $this->snapshotStore->add($snapshot);
+
+        $this->clearRepositoryIdentityMap();
+
+        $this->eventStore->beginTransaction();
+
+        $fetchedUser = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $fetchedUser->changeName('Max Mustermann');
+
+        $this->eventStore->commit();
+
+        $this->clearRepositoryIdentityMap();
+
+        $loadedEvents = [];
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            'loadEventsByMetadataFrom.post',
+            function (ActionEvent $event) use (&$loadedEvents) {
+                foreach ($event->getParam('streamEvents', []) as $streamEvent) {
+                    $loadedEvents[] = $streamEvent;
+                }
+                $event->getParam('streamEvents')->rewind();
+            }
+        );
+
+        $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $this->assertCount(1, $loadedEvents);
+        $this->assertInstanceOf(UsernameChanged::class, $loadedEvents[0]);
+    }
+
     protected function clearRepositoryIdentityMap()
     {
         $refClass = new \ReflectionClass($this->repository);
@@ -202,5 +357,27 @@ class AggregateRepositoryTest extends TestCase
         $identityMap->setAccessible(true);
 
         $identityMap->setValue($this->repository, new InMemoryIdentityMap());
+    }
+
+    protected function prepareSnapshotStoreAggregateRepository()
+    {
+        parent::setUp();
+
+        $this->snapshotStore = new SnapshotStore(new InMemoryAdapter());
+
+        $this->repository = new AggregateRepository(
+            $this->eventStore,
+            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            new ConfigurableAggregateTranslator(),
+            null,
+            null,
+            $this->snapshotStore
+        );
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create(new Stream(new StreamName('event_stream'), new \ArrayIterator()));
+
+        $this->eventStore->commit();
     }
 }
