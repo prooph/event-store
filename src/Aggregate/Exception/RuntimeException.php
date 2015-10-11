@@ -18,4 +18,3 @@ namespace Prooph\EventStore\Aggregate\Exception;
 final class RuntimeException extends \RuntimeException
 {
 }
- 

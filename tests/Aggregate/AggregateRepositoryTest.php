@@ -15,8 +15,6 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
-use Prooph\EventStore\Aggregate\IdentityMap;
-use Prooph\EventStore\Aggregate\InMemoryIdentityMap;
 use Prooph\EventStore\Snapshot\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Snapshot\Snapshot;
 use Prooph\EventStore\Snapshot\SnapshotStore;
@@ -194,7 +192,7 @@ class AggregateRepositoryTest extends TestCase
     public function it_does_not_allow_to_clear_identity_map_as_long_as_it_contains_pending_events()
     {
         $this->eventStore->beginTransaction();
-        
+
         $user = User::create('John Doe', 'contact@prooph.de');
 
         $this->repository->addAggregateRoot($user);
