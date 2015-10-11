@@ -135,7 +135,7 @@ public function it_adds_a_new_aggregate()
 
     $this->eventStore->commit();
 
-    $this->clearRepositoryIdentityMap();
+    $this->repository->clearIdentityMap();
 
     $fetchedUser = $this->repository->getAggregateRoot(
         $user->getId()->toString()
@@ -181,7 +181,7 @@ public function it_tracks_changes_of_aggregate()
 
     $this->eventStore->commit();
 
-    $this->clearRepositoryIdentityMap();
+    $this->repository->clearIdentityMap();
 
     $fetchedUser2 = $this->repository->getAggregateRoot(
         $user->getId()->toString()

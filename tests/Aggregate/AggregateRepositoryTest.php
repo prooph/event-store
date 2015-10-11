@@ -15,8 +15,6 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
-use Prooph\EventStore\Aggregate\IdentityMap;
-use Prooph\EventStore\Aggregate\InMemoryIdentityMap;
 use Prooph\EventStore\Snapshot\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Snapshot\Snapshot;
 use Prooph\EventStore\Snapshot\SnapshotStore;
@@ -76,7 +74,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->clearRepositoryIdentityMap();
+        $this->repository->clearIdentityMap();
 
         $fetchedUser = $this->repository->getAggregateRoot(
             $user->getId()->toString()
@@ -116,7 +114,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->clearRepositoryIdentityMap();
+        $this->repository->clearIdentityMap();
 
         $fetchedUser2 = $this->repository->getAggregateRoot(
             $user->getId()->toString()
@@ -188,20 +186,18 @@ class AggregateRepositoryTest extends TestCase
 
     /**
      * @test
+     * @expectedException Prooph\EventStore\Aggregate\Exception\RuntimeException
+     * @expectedExceptionMessage Identity map cannot be cleared. It currently contains pending events
      */
-    public function it_uses_injected_identity_map()
+    public function it_does_not_allow_to_clear_identity_map_as_long_as_it_contains_pending_events()
     {
-        $identityMap = $this->prophesize(IdentityMap::class);
+        $this->eventStore->beginTransaction();
 
-        $repo = new AggregateRepository(
-            $this->eventStore,
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
-            new ConfigurableAggregateTranslator(),
-            null,
-            $identityMap->reveal()
-        );
+        $user = User::create('John Doe', 'contact@prooph.de');
 
-        $this->assertAttributeSame($identityMap->reveal(), 'identityMap', $repo);
+        $this->repository->addAggregateRoot($user);
+
+        $this->repository->clearIdentityMap();
     }
 
     /**
@@ -233,7 +229,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->snapshotStore->add($snapshot);
 
-        $this->clearRepositoryIdentityMap();
+        $this->repository->clearIdentityMap();
 
         $loadedEvents = [];
 
@@ -268,7 +264,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->clearRepositoryIdentityMap();
+        $this->repository->clearIdentityMap();
 
         $loadedEvents = [];
 
@@ -314,7 +310,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->snapshotStore->add($snapshot);
 
-        $this->clearRepositoryIdentityMap();
+        $this->repository->clearIdentityMap();
 
         $this->eventStore->beginTransaction();
 
@@ -326,7 +322,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->clearRepositoryIdentityMap();
+        $this->repository->clearIdentityMap();
 
         $loadedEvents = [];
 
@@ -348,17 +344,6 @@ class AggregateRepositoryTest extends TestCase
         $this->assertInstanceOf(UsernameChanged::class, $loadedEvents[0]);
     }
 
-    protected function clearRepositoryIdentityMap()
-    {
-        $refClass = new \ReflectionClass($this->repository);
-
-        $identityMap = $refClass->getProperty('identityMap');
-
-        $identityMap->setAccessible(true);
-
-        $identityMap->setValue($this->repository, new InMemoryIdentityMap());
-    }
-
     protected function prepareSnapshotStoreAggregateRepository()
     {
         parent::setUp();
@@ -369,7 +354,6 @@ class AggregateRepositoryTest extends TestCase
             $this->eventStore,
             AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
             new ConfigurableAggregateTranslator(),
-            null,
             null,
             $this->snapshotStore
         );

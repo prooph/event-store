@@ -47,9 +47,9 @@ class AggregateRepository
     protected $aggregateType;
 
     /**
-     * @var IdentityMap
+     * @var array
      */
-    protected $identityMap;
+    protected $identityMap = [];
 
     /**
      * @var SnapshotStore|null
@@ -57,16 +57,10 @@ class AggregateRepository
     protected $snapshotStore;
 
     /**
-     * @var array
-     */
-    protected $pendingEventsMap = [];
-
-    /**
      * @param EventStore $eventStore
      * @param AggregateType $aggregateType
      * @param AggregateTranslator $aggregateTranslator
      * @param StreamStrategy|null $streamStrategy
-     * @param IdentityMap|null $identityMap
      * @param SnapshotStore|null $snapshotStore
      */
     public function __construct(
@@ -74,7 +68,6 @@ class AggregateRepository
         AggregateType $aggregateType,
         AggregateTranslator $aggregateTranslator,
         StreamStrategy $streamStrategy = null,
-        IdentityMap $identityMap = null,
         SnapshotStore $snapshotStore = null
     ) {
         $this->eventStore = $eventStore;
@@ -90,12 +83,6 @@ class AggregateRepository
         }
 
         $this->streamStrategy = $streamStrategy;
-
-        if (null === $identityMap) {
-            $identityMap = new InMemoryIdentityMap();
-        }
-
-        $this->identityMap = $identityMap;
     }
 
     /**
@@ -105,26 +92,26 @@ class AggregateRepository
      */
     public function addPendingEventsToStream()
     {
-        foreach ($this->identityMap->getAllDirtyAggregateRoots($this->aggregateType) as $aggregateId => $aggregateRoot) {
+        foreach ($this->identityMap as &$identityArr) {
 
             //If a new aggregate root was added (via method addAggregateRoot) we already have pending events in the cache
             //and don't need to extract them twice
-            if (isset($this->pendingEventsMap[$aggregateId])) {
+            if ($identityArr['pending_events']) {
                 continue;
             }
 
-            $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($aggregateRoot);
+            $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($identityArr['aggregate_root']);
 
             if (count($pendingStreamEvents)) {
                 $this->streamStrategy->appendEvents(
                     $this->aggregateType,
-                    $aggregateId,
+                    $this->aggregateTranslator->extractAggregateId($identityArr['aggregate_root']),
                     new ArrayIterator($pendingStreamEvents),
-                    $aggregateRoot
+                    $identityArr['aggregate_root']
                 );
 
-                //Cache pending events as long as event store transaction is not committed successfully
-                $this->pendingEventsMap[$aggregateId] = $pendingStreamEvents;
+                //Cache pending events besides the aggregate root in the identity map
+                $identityArr['pending_events'] = $pendingStreamEvents;
             }
         }
     }
@@ -137,19 +124,17 @@ class AggregateRepository
      */
     public function applyPendingStreamEvents()
     {
-        foreach ($this->identityMap->getAllDirtyAggregateRoots($this->aggregateType) as $aggregateId => $aggregateRoot) {
-            if (isset($this->pendingEventsMap[$aggregateId])) {
+        foreach ($this->identityMap as &$identityArr) {
+            if ($identityArr['pending_events']) {
                 $this->aggregateTranslator->applyPendingStreamEvents(
-                    $aggregateRoot,
-                    new ArrayIterator($this->pendingEventsMap[$aggregateId])
+                    $identityArr['aggregate_root'],
+                    new ArrayIterator($identityArr['pending_events'])
                 );
 
                 //Clear pending events
-                unset($this->pendingEventsMap[$aggregateId]);
+                $identityArr['pending_events'] = null;
             }
         }
-
-        $this->identityMap->cleanUp($this->aggregateType);
     }
 
     /**
@@ -179,8 +164,11 @@ class AggregateRepository
             $eventSourcedAggregateRoot
         );
 
-        $this->identityMap->add($this->aggregateType, $aggregateId, $eventSourcedAggregateRoot);
-        $this->pendingEventsMap[$aggregateId] = $domainEvents;
+        //Cache the aggregate root together with its pending domain events in the identity map
+        $this->identityMap[$aggregateId] = [
+            'aggregate_root' => $eventSourcedAggregateRoot,
+            'pending_events' => $domainEvents
+        ];
     }
 
     /**
@@ -193,17 +181,19 @@ class AggregateRepository
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
-        $eventSourcedAggregateRoot = $this->identityMap->get($this->aggregateType, $aggregateId);
-
-        if ($eventSourcedAggregateRoot) {
-            return $eventSourcedAggregateRoot;
+        if (isset($this->identityMap[$aggregateId])) {
+            return $this->identityMap[$aggregateId]['aggregate_root'];
         }
 
         if ($this->snapshotStore) {
             $eventSourcedAggregateRoot = $this->loadFromSnapshotStore($aggregateId);
 
             if ($eventSourcedAggregateRoot) {
-                $this->identityMap->add($this->aggregateType, $aggregateId, $eventSourcedAggregateRoot);
+                //Cache aggregate root in the identity map but without pending events
+                $this->identityMap[$aggregateId] = [
+                    'aggregate_root' => $eventSourcedAggregateRoot,
+                    'pending_events' => null
+                ];
 
                 return $eventSourcedAggregateRoot;
             }
@@ -222,9 +212,27 @@ class AggregateRepository
             $streamEvents
         );
 
-        $this->identityMap->add($this->aggregateType, $aggregateId, $eventSourcedAggregateRoot);
+        //Cache aggregate root in the identity map but without pending events
+        $this->identityMap[$aggregateId] = [
+            'aggregate_root' => $eventSourcedAggregateRoot,
+            'pending_events' => null
+        ];
 
         return $eventSourcedAggregateRoot;
+    }
+
+    /**
+     * Clears the internal identity map of the repository
+     */
+    public function clearIdentityMap()
+    {
+        foreach ($this->identityMap as &$identityArr) {
+            if (isset($identityArr['pending_events']) && count($identityArr['pending_events'])) {
+                throw new Exception\RuntimeException('Identity map cannot be cleared. It currently contains pending events');
+            }
+        }
+
+        $this->identityMap = [];
     }
 
     /**
