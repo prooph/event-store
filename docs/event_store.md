@@ -23,9 +23,9 @@ The following events are available (event target is always the event store):
 - `load.post`: event params: `streamName`, `minVersion`, `stream`
   - If a listener stops the event, a `StreamNotFoundException` is thrown
 - `loadEventsByMetadataFrom.pre`: event params: `streamName`, `minVersion`, `metadata`
-  - If a listener injects a `streamEvents` array as event param and stops the event, `streamEvents` is returned immediately (adapter is not invoked)
+  - If a listener injects a `streamEvents` iterator as event param and stops the event, `streamEvents` is returned immediately (adapter is not invoked)
 - `loadEventsByMetadataFrom.post`: event params: `streamName`, `minVersion`, `metadata`, `streamEvents`
-  - If a listener stops the event an empty array is returned from the method instead of `streamEvents`
+  - If a listener stops the event an empty iterator is returned from the method instead of `streamEvents`
 - `beginTransaction`: no event params available
 - `commit.pre`: no event params available
   - If a listener stops the event, a transaction rollback is triggered
