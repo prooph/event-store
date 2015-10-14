@@ -58,7 +58,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     /**
      * @param null|string   $identifierMethodName
      * @param null|string   $popRecordedEventsMethodName
-     * @param null|string    $applyRecordedEventsMethodsName
+     * @param null|string   $applyRecordedEventsMethodsName
      * @param null|string   $staticReconstituteFromHistoryMethodName
      * @param null|callable $eventToMessageCallback
      * @param null|callable $messageToEventCallback
