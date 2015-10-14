@@ -234,7 +234,7 @@ class EventStore
         $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            return $event->getParam('streamEvents', []);
+            return $event->getParam('streamEvents', new ArrayIterator([]));
         }
 
         $streamName = $event->getParam('streamName');
@@ -250,7 +250,7 @@ class EventStore
         $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            return [];
+            return new ArrayIterator([]);
         }
 
         return $event->getParam('streamEvents');
