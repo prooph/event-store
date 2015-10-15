@@ -259,14 +259,21 @@ class EventStore
     /**
      * @param StreamName[] $streamNames
      * @param DateTimeInterface|null $since
-     * @param array $metadatas One metadata array per stream name, same index order is required
+     * @param null|array $metadatas One metadata array per stream name, same index order is required
      * @return CompositeIterator
      * @throws Exception\InvalidArgumentException
      */
-    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas)
+    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null)
     {
         if (empty($streamNames)) {
             throw new Exception\InvalidArgumentException('No stream names given');
+        }
+
+        if (null === $metadatas) {
+            $metadatas = [];
+            foreach($streamNames as $streamName) {
+                $metadatas[] = [];
+            }
         }
 
         if (count($streamNames) !== count($metadatas)) {
