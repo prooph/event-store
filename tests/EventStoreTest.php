@@ -660,7 +660,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
         $this->eventStore->commit();
 
-        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[], []]);
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')]);
 
         $count = 0;
         foreach ($iterator as $key => $event) {
@@ -717,7 +717,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
         $this->eventStore->commit();
 
-        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], $now, [[], []]);
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], $now);
 
         $count = 0;
         foreach ($iterator as $key => $event) {
@@ -772,7 +772,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
         $this->eventStore->commit();
 
-        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[], []]);
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')]);
 
         $count = 0;
         foreach ($iterator as $key => $event) {
