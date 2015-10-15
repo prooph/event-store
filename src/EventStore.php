@@ -271,7 +271,7 @@ class EventStore
 
         if (null === $metadatas) {
             $metadatas = [];
-            foreach($streamNames as $streamName) {
+            foreach ($streamNames as $streamName) {
                 $metadatas[] = [];
             }
         }
