@@ -1,6 +1,6 @@
 # Snapshots
 
-One of the counter-arguments against Event-Sourcing you might heard about is that replaying events takes to much time to reconstitute an aggregate.
+One of the counter-arguments against Event-Sourcing you might heard about is that replaying events takes too much time to reconstitute an aggregate.
 Well, you really need to replay a huge amount of events for a noticeable performance loss compared to using an ORM.
 Keep in mind that reading the event stream of an aggregate is a very simple query using an index and NO joins so it is fast as hell.
 
