@@ -29,7 +29,7 @@ For a short overview please see the annotated [quickstart.php](examples/quicksta
 - [Prooph Event Store](docs/event_store.md)
 - [Working with Repositories](docs/repositories.md)
 - [Apply Events Late](docs/apply_events_late.md)
-
+- [Replay History](docs/replay_history.md)
 - [Upcasting](docs/upcasting.md)
 
 # Support
