@@ -20,6 +20,10 @@ You can install prooph/event-store via composer by adding `"prooph/event-store":
 - [Mongo DB](https://github.com/prooph/event-store-mongodb-adapter) - stable
 - [Doctrine DBAL](https://github.com/prooph/event-store-doctrine-adapter) - stable
 
+## Available Snapshot Adapters
+- [Mongo DB](https://github.com/prooph/snapshot-mongodb-adapter) - stable
+- [Doctrine DBAL](https://github.com/prooph/snapshot-doctrine-adapter) - stable
+
 ## Quick Start
 
 For a short overview please see the annotated [quickstart.php](examples/quickstart.php) script.
@@ -28,6 +32,7 @@ For a short overview please see the annotated [quickstart.php](examples/quicksta
 
 - [Prooph Event Store](docs/event_store.md)
 - [Working with Repositories](docs/repositories.md)
+- [Aggregate Snapshots](docs/snapshots.md)
 - [Apply Events Late](docs/apply_events_late.md)
 
 - [Upcasting](docs/upcasting.md)
