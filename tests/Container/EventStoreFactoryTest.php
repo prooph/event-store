@@ -9,13 +9,12 @@
  * Date: 21.08.15 - 17:19
  */
 
-namespace Prooph\EventStoreTest\Container;
+namespace ProophTest\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Container\EventStoreFactory;
 use Prooph\EventStore\EventStore;
@@ -23,7 +22,7 @@ use Prooph\EventStore\Plugin\Plugin;
 
 /**
  * Class EventStoreFactoryTest
- * @package Prooph\EventStoreTest\Container
+ * @package ProophTest\EventStore\Container
  */
 class EventStoreFactoryTest extends TestCase
 {

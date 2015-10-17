@@ -9,14 +9,14 @@
  * Date: 01/14/15 - 00:16 AM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 /**
  * Class Product
  *
  * Empty Mock
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class Product

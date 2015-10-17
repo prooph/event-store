@@ -113,7 +113,7 @@ The best way to see it in action is by looking at the [AggregateRepositoryTest](
 ```php
 $this->repository = new AggregateRepository(
     $this->eventStore,
-    AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+    AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
     new ConfigurableAggregateTranslator()
 );
 
@@ -148,7 +148,7 @@ public function it_adds_a_new_aggregate()
         $user->getId()->toString()
     );
 
-    $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $fetchedUser);
+    $this->assertInstanceOf('ProophTest\EventStore\Mock\User', $fetchedUser);
 
     $this->assertNotSame($user, $fetchedUser);
 

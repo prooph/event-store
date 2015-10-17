@@ -9,7 +9,7 @@
  * Date: 04/21/14 - 00:13 AM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Messaging\DomainEvent;
@@ -19,7 +19,7 @@ use Prooph\EventStore\Plugin\Plugin;
 /**
  * Class EventLoggerFeature
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class EventLoggerPlugin implements Plugin

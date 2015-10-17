@@ -9,14 +9,14 @@
  * Date: 8/22/15 - 10:58 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
 /**
  * Class DefaultAggregateRoot
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class DefaultAggregateRoot implements DefaultAggregateRootContract

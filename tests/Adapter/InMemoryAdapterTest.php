@@ -9,7 +9,7 @@
  * Date: 09/02/15 - 19:41
  */
 
-namespace Prooph\EventStoreTest\Adapter;
+namespace ProophTest\EventStore\Adapter;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
@@ -17,7 +17,7 @@ use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Class InMemoryAdapterTest
- * @package Prooph\EventStoreTest\Adapter
+ * @package ProophTest\EventStore\Adapter
  */
 final class InMemoryAdapterTest extends TestCase
 {

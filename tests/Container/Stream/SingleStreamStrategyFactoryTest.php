@@ -9,7 +9,7 @@
  * Date: 21.08.15 - 17:17
  */
 
-namespace Prooph\EventStoreTest\Container\Stream;
+namespace ProophTest\EventStore\Container\Stream;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -19,7 +19,7 @@ use Prooph\EventStore\Stream\SingleStreamStrategy;
 
 /**
  * Class AggregateTypeStreamStrategyFactory
- * @package Prooph\EventStoreTest\Container\Stream
+ * @package ProophTest\EventStore\Container\Stream
  */
 class SingleStreamStrategyFactoryTest extends TestCase
 {

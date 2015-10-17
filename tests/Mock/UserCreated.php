@@ -9,12 +9,12 @@
  * Date: 08/31/14 - 8:13 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 /**
  * Class UserCreated
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class UserCreated extends TestDomainEvent

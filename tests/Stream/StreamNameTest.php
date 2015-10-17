@@ -9,14 +9,14 @@
  * Date: 09/02/15 - 20:55
  */
 
-namespace Prooph\EventStoreTest\Stream;
+namespace ProophTest\EventStore\Stream;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Class StreamNameTest
- * @package Prooph\EventStoreTest\Stream
+ * @package ProophTest\EventStore\Stream
  */
 final class StreamNameTest extends TestCase
 {

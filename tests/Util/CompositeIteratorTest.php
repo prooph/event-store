@@ -9,16 +9,16 @@
  * Date: 06.10.15 - 18:06
  */
 
-namespace ProophTest\Util;
+namespace ProophTest\EventStore\Util;
 
 use ArrayIterator;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Util\CompositeIterator;
-use Prooph\EventStoreTest\Mock\TestIteratorAggregate;
+use ProophTest\EventStore\Mock\TestIteratorAggregate;
 
 /**
  * Class CompositeIteratorTest
- * @package ProophTest\Util
+ * @package ProophTest\EventStore\Util
  */
 final class CompositeIteratorTest extends TestCase
 {
