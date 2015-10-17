@@ -1,13 +1,13 @@
 <?php
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use ArrayIterator;
 use IteratorAggregate;
 
 /**
  * Class TestIteratorAggregate
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  */
 final class TestIteratorAggregate implements IteratorAggregate
 {

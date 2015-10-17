@@ -9,7 +9,7 @@
  * Date: 19.04.14 - 21:27
  */
 
-namespace Prooph\EventStoreTest;
+namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
@@ -19,16 +19,16 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
-use Prooph\EventStoreTest\Mock\PostCreated;
-use Prooph\EventStoreTest\Mock\TestDomainEvent;
-use Prooph\EventStoreTest\Mock\UserCreated;
-use Prooph\EventStoreTest\Mock\UsernameChanged;
+use ProophTest\EventStore\Mock\PostCreated;
+use ProophTest\EventStore\Mock\TestDomainEvent;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
 
 /**
  * Class EventStoreTest
  *
- * @package Prooph\EventStoreTest
+ * @package ProophTest\EventStore
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class EventStoreTest extends TestCase

@@ -7,13 +7,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
+use DateTimeInterface;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
+/**
+ * Class AdapterMock
+ * @package ProophTest\EventStore\Mock
+ */
 final class AdapterMock implements Adapter
 {
     private $options;
@@ -46,7 +52,7 @@ final class AdapterMock implements Adapter
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException If stream does not exist
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $domainEvents)
+    public function appendTo(StreamName $streamName, Iterator $domainEvents)
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
@@ -68,6 +74,28 @@ final class AdapterMock implements Adapter
      * @return Message[]
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
+    {
+        throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
+    }
+
+    /**
+     * @param StreamName $streamName
+     * @param array $metadata
+     * @param null $minVersion
+     * @return Iterator
+     */
+    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null)
+    {
+        throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
+    }
+
+    /**
+     * @param StreamName $streamName
+     * @param DateTimeInterface|null $since
+     * @param array $metadata
+     * @return Iterator
+     */
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = [])
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }

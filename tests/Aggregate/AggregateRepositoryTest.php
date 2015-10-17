@@ -9,7 +9,7 @@
  * Date: 31.08.14 - 22:09
  */
 
-namespace Prooph\EventStoreTest\Aggregate;
+namespace ProophTest\EventStore\Aggregate;
 
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Aggregate\AggregateRepository;
@@ -20,15 +20,15 @@ use Prooph\EventStore\Snapshot\Snapshot;
 use Prooph\EventStore\Snapshot\SnapshotStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
-use Prooph\EventStoreTest\Mock\User;
-use Prooph\EventStoreTest\Mock\UserCreated;
-use Prooph\EventStoreTest\Mock\UsernameChanged;
-use Prooph\EventStoreTest\TestCase;
+use ProophTest\EventStore\Mock\User;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\UsernameChanged;
+use ProophTest\EventStore\TestCase;
 
 /**
  * Class AggregateRepositoryTest
  *
- * @package Prooph\EventStoreTest\Aggregate
+ * @package ProophTest\EventStore\Aggregate
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class AggregateRepositoryTest extends TestCase
@@ -49,7 +49,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->repository = new AggregateRepository(
             $this->eventStore,
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             new ConfigurableAggregateTranslator()
         );
 
@@ -80,7 +80,7 @@ class AggregateRepositoryTest extends TestCase
             $user->getId()->toString()
         );
 
-        $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $fetchedUser);
+        $this->assertInstanceOf('ProophTest\EventStore\Mock\User', $fetchedUser);
 
         $this->assertNotSame($user, $fetchedUser);
 
@@ -217,7 +217,7 @@ class AggregateRepositoryTest extends TestCase
 
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $snapshot = new Snapshot(
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             $user->getId()->toString(),
             $user,
             1,
@@ -301,7 +301,7 @@ class AggregateRepositoryTest extends TestCase
         $this->eventStore->commit();
 
         $snapshot = new Snapshot(
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             $user->getId()->toString(),
             $user,
             1,
@@ -352,7 +352,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->repository = new AggregateRepository(
             $this->eventStore,
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             new ConfigurableAggregateTranslator(),
             null,
             $this->snapshotStore

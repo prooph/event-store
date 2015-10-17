@@ -9,12 +9,12 @@
  * Date: 06.10.15 - 19:43
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 /**
  * Class PostCreated
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class PostCreated extends TestDomainEvent

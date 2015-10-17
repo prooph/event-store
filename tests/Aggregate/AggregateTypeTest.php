@@ -9,16 +9,18 @@
  * Date: 09/02/15 - 20:04
  */
 
-namespace Prooph\EventStore\Aggregate;
+namespace ProophTest\EventStore\Aggregate;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Prooph\EventStoreTest\Mock\Post;
-use Prooph\EventStoreTest\Mock\User;
+use Prooph\EventStore\Aggregate\AggregateType;
+use Prooph\EventStore\Aggregate\AggregateTypeProvider;
+use ProophTest\EventStore\Mock\Post;
+use ProophTest\EventStore\Mock\User;
 
 /**
  * Class AggregateTypeTest
  *
- * @package Prooph\EventStore\Stream
+ * @package ProophTest\EventStore\Aggregate
  */
 class AggregateTypeTest extends TestCase
 {
@@ -91,7 +93,7 @@ class AggregateTypeTest extends TestCase
     /**
      * @test
      * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTypeException
-     * @expectedExceptionMessage Aggregate types must be equal. Prooph\EventStoreTest\Mock\User != Prooph\EventStoreTest\Mock\Post
+     * @expectedExceptionMessage Aggregate types must be equal. ProophTest\EventStore\Mock\User != ProophTest\EventStore\Mock\Post
      */
     public function it_throws_exception_if_type_is_not_correct()
     {

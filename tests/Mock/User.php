@@ -9,7 +9,7 @@
  * Date: 08/31/14 - 8:00 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
@@ -18,7 +18,7 @@ use Rhumsaa\Uuid\Uuid;
 /**
  * Class User
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class User

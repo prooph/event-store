@@ -9,22 +9,22 @@
  * Date: 8/22/15 - 9:42 PM
  */
 
-namespace Prooph\EventStoreTest\Aggregate;
+namespace ProophTest\EventStore\Aggregate;
 
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
-use Prooph\EventStoreTest\Mock\CustomAggregateRoot;
-use Prooph\EventStoreTest\Mock\CustomAggregateRootContract;
-use Prooph\EventStoreTest\Mock\DefaultAggregateRoot;
-use Prooph\EventStoreTest\Mock\DefaultAggregateRootContract;
-use Prooph\EventStoreTest\Mock\FaultyAggregateRoot;
-use Prooph\EventStoreTest\TestCase;
+use ProophTest\EventStore\Mock\CustomAggregateRoot;
+use ProophTest\EventStore\Mock\CustomAggregateRootContract;
+use ProophTest\EventStore\Mock\DefaultAggregateRoot;
+use ProophTest\EventStore\Mock\DefaultAggregateRootContract;
+use ProophTest\EventStore\Mock\FaultyAggregateRoot;
+use ProophTest\EventStore\TestCase;
 
 /**
  * Class ConfigurableAggregateTranslatorTest
  *
- * @package Prooph\EventStoreTest\Aggregate
+ * @package ProophTest\EventStore\Aggregate
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class ConfigurableAggregateTranslatorTest extends TestCase

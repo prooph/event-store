@@ -9,7 +9,7 @@
  * Date: 09/01/14 - 00:07 AM
  */
 
-namespace Prooph\EventStoreTest\Stream;
+namespace ProophTest\EventStore\Stream;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
@@ -17,18 +17,18 @@ use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
-use Prooph\EventStoreTest\Mock\Product;
-use Prooph\EventStoreTest\Mock\TestDomainEvent;
-use Prooph\EventStoreTest\Mock\User;
-use Prooph\EventStoreTest\Mock\UserCreated;
-use Prooph\EventStoreTest\Mock\UsernameChanged;
-use Prooph\EventStoreTest\TestCase;
+use ProophTest\EventStore\Mock\Product;
+use ProophTest\EventStore\Mock\TestDomainEvent;
+use ProophTest\EventStore\Mock\User;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\UsernameChanged;
+use ProophTest\EventStore\TestCase;
 use Rhumsaa\Uuid\Uuid;
 
 /**
  * Class SingleStreamStrategyTest
  *
- * @package Prooph\EventStoreTest\Stream
+ * @package ProophTest\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class SingleStreamStrategyTest extends TestCase
@@ -90,7 +90,7 @@ class SingleStreamStrategyTest extends TestCase
 
         $arType = $this->strategy->getAggregateRootType($aggregateType, $events);
 
-        $this->assertEquals('Prooph\EventStoreTest\Mock\User', $arType->toString());
+        $this->assertEquals('ProophTest\EventStore\Mock\User', $arType->toString());
     }
 
     /**
@@ -221,7 +221,7 @@ class SingleStreamStrategyTest extends TestCase
 
         $arType = $this->strategy->getAggregateRootType($aggregateType, $streamEvents);
 
-        $this->assertEquals('Prooph\EventStoreTest\Mock\Product', $arType->toString());
+        $this->assertEquals('ProophTest\EventStore\Mock\Product', $arType->toString());
     }
 
     /**

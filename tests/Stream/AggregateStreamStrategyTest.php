@@ -9,22 +9,22 @@
  * Date: 08/31/14 - 11:37 PM
  */
 
-namespace Prooph\EventStoreTest\Stream;
+namespace ProophTest\EventStore\Stream;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Stream\AggregateStreamStrategy;
 use Prooph\EventStore\Stream\StreamName;
-use Prooph\EventStoreTest\Mock\User;
-use Prooph\EventStoreTest\Mock\UserCreated;
-use Prooph\EventStoreTest\Mock\UsernameChanged;
-use Prooph\EventStoreTest\TestCase;
+use ProophTest\EventStore\Mock\User;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\UsernameChanged;
+use ProophTest\EventStore\TestCase;
 use Rhumsaa\Uuid\Uuid;
 
 /**
  * Class AggregateStreamStrategyTest
  *
- * @package Prooph\EventStoreTest\Stream
+ * @package ProophTest\EventStore\Stream
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class AggregateStreamStrategyTest extends TestCase

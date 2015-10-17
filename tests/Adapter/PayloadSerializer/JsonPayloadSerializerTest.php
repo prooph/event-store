@@ -9,11 +9,15 @@
  * Date: 8/14/15 - 8:21 PM
  */
 
-namespace Prooph\EventStoreTest\Adapter\PayloadSerializer;
+namespace ProophTest\EventStore\Adapter\PayloadSerializer;
 
 use Prooph\EventStore\Adapter\PayloadSerializer\JsonPayloadSerializer;
-use Prooph\EventStoreTest\TestCase;
+use ProophTest\EventStore\TestCase;
 
+/**
+ * Class JsonPayloadSerializerTest
+ * @package ProophTest\EventStore\Adapter\PayloadSerializer
+ */
 final class JsonPayloadSerializerTest extends TestCase
 {
     /**
