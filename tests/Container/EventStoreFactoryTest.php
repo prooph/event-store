@@ -47,22 +47,6 @@ class EventStoreFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Event store adapter is missing in configuration
-     */
-    public function it_throws_exception_when_adapter_config_is_missing()
-    {
-        $config['prooph']['event_store'] = [];
-
-        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-
-        $factory = new EventStoreFactory();
-        $factory($containerMock);
-    }
-
-    /**
-     * @test
      */
     public function it_injects_custom_event_emitter()
     {
