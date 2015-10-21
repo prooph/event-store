@@ -206,3 +206,8 @@ a repository method. Only `$this->eventStore->commit();` is called. But as you c
 is changed and the appropriate domain event was added to the `event_stream`. This happens becasue the repository manages an identity map
 internally. Each aggregate root loaded via `AggregateRepository::getAggregateRoot` is added to the identity map and
 new events recorded by such an agggregate root are added automatically to the event stream on `EventStore::commit`.
+
+## Factory-Driven Creation
+
+See [Interop Factories](interop_factories.md)
+

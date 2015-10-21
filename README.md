@@ -36,6 +36,7 @@ For a short overview please see the annotated [quickstart.php](examples/quicksta
 - [Apply Events Late](docs/apply_events_late.md)
 - [Replay History](docs/replay_history.md)
 - [Upcasting](docs/upcasting.md)
+- [Framework Integration](docs/interop_factories.md)
 
 # Support
 
