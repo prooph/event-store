@@ -11,6 +11,10 @@
 
 namespace Prooph\EventStore\Container;
 
+use Interop\Config\ConfigurationTrait;
+use Interop\Config\ProvidesDefaultOptions;
+use Interop\Config\RequiresConfig;
+use Interop\Config\RequiresMandatoryOptions;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Exception\ConfigurationException;
@@ -21,8 +25,10 @@ use Prooph\EventStore\Plugin\Plugin;
  * Class EventStoreFactory
  * @package Prooph\EventStore\Container\Stream
  */
-final class EventStoreFactory
+final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOptions, ProvidesDefaultOptions
 {
+    use ConfigurationTrait;
+
     /**
      * @param ContainerInterface $container
      * @return EventStore
@@ -30,22 +36,7 @@ final class EventStoreFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->get('config');
-
-        if (! isset($config['prooph'])) {
-            throw ConfigurationException::configurationError('Missing prooph config key in application config');
-        }
-
-        if (! isset($config['prooph']['event_store'])) {
-            throw ConfigurationException::configurationError('Missing key event_store in prooph configuration');
-        }
-
-        $config = $config['prooph']['event_store'];
-
-        if (!isset($config['adapter']['type'])) {
-            throw ConfigurationException::configurationError(sprintf(
-                'Event store adapter is missing in configuration'
-            ));
-        }
+        $config = $this->options($config);
 
         $adapter = $container->get($config['adapter']['type']);
 
@@ -57,9 +48,7 @@ final class EventStoreFactory
 
         $eventStore = new EventStore($adapter, $eventEmitter);
 
-        $plugins = isset($config['plugins']) ? $config['plugins'] : [];
-
-        foreach ($plugins as $pluginAlias) {
+        foreach ($config['plugins'] as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
 
             if (!$plugin instanceof Plugin) {
@@ -73,5 +62,44 @@ final class EventStoreFactory
         }
 
         return $eventStore;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function vendorName()
+    {
+        return 'prooph';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function packageName()
+    {
+        return 'event_store';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function mandatoryOptions()
+    {
+        return [
+            'adapter' => [
+                'type'
+            ],
+            'plugins'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function defaultOptions()
+    {
+        return [
+            'plugins' => []
+        ];
     }
 }
