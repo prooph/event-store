@@ -125,36 +125,4 @@ class EventStoreFactoryTest extends TestCase
         $factory = new EventStoreFactory();
         $factory($containerMock);
     }
-
-    /**
-     * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Missing prooph config key in application config
-     */
-    public function it_throws_exception_when_no_prooph_config_key_set()
-    {
-        $config = [];
-
-        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-
-        $factory = new EventStoreFactory();
-        $factory($containerMock);
-    }
-
-    /**
-     * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Missing key event_store in prooph configuration
-     */
-    public function it_throws_exception_when_no_event_store_config_key_set()
-    {
-        $config['prooph'] = [];
-
-        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-
-        $factory = new EventStoreFactory();
-        $factory($containerMock);
-    }
 }
