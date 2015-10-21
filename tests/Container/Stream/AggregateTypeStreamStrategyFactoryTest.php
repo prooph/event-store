@@ -32,7 +32,7 @@ class AggregateTypeStreamStrategyFactoryTest extends TestCase
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->once())->method('has')->with('config')->willReturn(false);
-        $containerMock->expects($this->once())->method('get')->with('prooph.event_store')->willReturn($eventStoreMock);
+        $containerMock->expects($this->once())->method('get')->with(EventStore::class)->willReturn($eventStoreMock);
 
         $factory = new AggregateTypeStreamStrategyFactory();
         $streamStrategy = $factory($containerMock);
@@ -52,7 +52,7 @@ class AggregateTypeStreamStrategyFactoryTest extends TestCase
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('has')->with('config')->willReturn(true);
         $containerMock->expects($this->at(1))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(2))->method('get')->with('prooph.event_store')->willReturn($eventStoreMock);
+        $containerMock->expects($this->at(2))->method('get')->with(EventStore::class)->willReturn($eventStoreMock);
 
         $factory = new AggregateTypeStreamStrategyFactory();
         $streamStrategy = $factory($containerMock);

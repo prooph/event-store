@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Container\Stream;
 
 use Interop\Container\ContainerInterface;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\AggregateStreamStrategy;
 
 /**
@@ -36,6 +37,6 @@ final class AggregateStreamStrategyFactory
             }
         }
 
-        return new AggregateStreamStrategy($container->get('prooph.event_store'), $aggregateTypeStreamMap);
+        return new AggregateStreamStrategy($container->get(EventStore::class), $aggregateTypeStreamMap);
     }
 }
