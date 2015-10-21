@@ -101,7 +101,7 @@ If the requirements are met you just need to add a new section in your applicati
 ]
 ```
 
-... and register the factory in your IoC container. We recommend using the service id `prooph.event_store` for the event store
+... and register the factory in your IoC container. We recommend using the service id `Prooph\EventStore\EventStore (EventStore::class)` for the event store
 because other factories like the [stream factories](../src/Container/Stream) try to locate the event store
 by using this service id.
 

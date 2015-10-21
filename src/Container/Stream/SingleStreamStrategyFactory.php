@@ -12,6 +12,7 @@
 namespace Prooph\EventStore\Container\Stream;
 
 use Interop\Container\ContainerInterface;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\SingleStreamStrategy;
 
 /**
@@ -36,6 +37,6 @@ final class SingleStreamStrategyFactory
             }
         }
 
-        return new SingleStreamStrategy($container->get('prooph.event_store'), $singleStreamName);
+        return new SingleStreamStrategy($container->get(EventStore::class), $singleStreamName);
     }
 }
