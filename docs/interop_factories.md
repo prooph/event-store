@@ -50,6 +50,29 @@ by using this service id.
 
 *Note: The available event store adapters also ship with factories. Please refer to the adapter packages for details.*
 
+### Snapshot Store Factory
+
+Same for the snapshot store ...
+
+```php
+[
+    'prooph' => [
+        'snapshot_store' => [
+            'adapter' => [
+                'type' => 'adapter_service_id', //The factory will use this id to get the adapter from the container
+                //The options key is reserved for adapter factories
+                'options' => []
+            ],
+        ]
+    ],
+    //... other application config here
+]
+```
+
+... and register the [SnapshotStoreFactory](../src/Container/Snapshot/SnapshotStoreFactory.php) in your IoC container. We recommend using the service id `Prooph\EventStore\Snapshot\SnapshotStore (SnapshotStore::class)` for the snapshot store.
+
+*Note: The available snapshot store adapters also ship with factories. Please refer to the adapter packages for details.*
+
 ### AbstractAggregateRepositoryFactory
 
 To ease set up of repositories for your aggregate roots prooph/event-store also ships with a [AbstractAggregateRepositoryFactory](../src/Aggregate/AbstractAggregateRepositoryFactory.php).
