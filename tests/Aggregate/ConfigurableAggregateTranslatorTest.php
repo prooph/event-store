@@ -52,7 +52,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $ar->version()->willReturn('123');
 
-        $translator = new ConfigurableAggregateTranslator('version');
+        $translator = new ConfigurableAggregateTranslator(null, 'version');
 
         $this->assertEquals('123', $translator->extractAggregateVersion($ar->reveal()));
     }
@@ -62,7 +62,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_version_method_name_to_be_a_string()
     {
-        new ConfigurableAggregateTranslator(null, 0);
+        new ConfigurableAggregateTranslator(0);
     }
 
     /**
@@ -73,7 +73,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
-        $translator = new ConfigurableAggregateTranslator(null, 'unknownMethodName');
+        $translator = new ConfigurableAggregateTranslator('unknownMethodName');
 
         $translator->extractAggregateVersion($ar->reveal());
     }
@@ -102,7 +102,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $ar->identifier()->willReturn('123');
 
-        $translator = new ConfigurableAggregateTranslator(null, 'identifier');
+        $translator = new ConfigurableAggregateTranslator('identifier');
 
         $this->assertEquals('123', $translator->extractAggregateId($ar->reveal()));
     }
@@ -113,7 +113,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_forces_identifier_method_name_to_be_a_string()
     {
-        new ConfigurableAggregateTranslator(null, 0);
+        new ConfigurableAggregateTranslator(0);
     }
 
     /**
@@ -124,7 +124,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
-        $translator = new ConfigurableAggregateTranslator(null, 'unknownMethodName');
+        $translator = new ConfigurableAggregateTranslator('unknownMethodName');
 
         $translator->extractAggregateId($ar->reveal());
     }
