@@ -44,13 +44,13 @@ class SnapshotStore
     }
 
     /**
-     * Add aggregate root
+     * Save aggregate root
      *
      * @param Snapshot $snapshot
      * @return void
      */
-    public function add(Snapshot $snapshot)
+    public function save(Snapshot $snapshot)
     {
-        $this->adapter->add($snapshot);
+        $this->adapter->save($snapshot);
     }
 }
