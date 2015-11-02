@@ -3,7 +3,7 @@
     "description": "PHP EventStore Implementation",
     "type": "library",
     "license": "BSD-3-Clause",
-    "homepage": "https://github.com/prooph/event-store/",
+    "homepage": "http://getprooph.org",
     "authors": [
         {
             "name": "Alexander Miertsch",
