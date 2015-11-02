@@ -28,6 +28,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     /**
      * @var string
      */
+    private $versionMethodName = 'getVersion';
+
+    /**
+     * @var string
+     */
     private $identifierMethodName = 'getId';
 
     /**
@@ -56,7 +61,27 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     private $messageToEventCallback = null;
 
     /**
+     * @param object $eventSourcedAggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($eventSourcedAggregateRoot)
+    {
+        if (! method_exists($eventSourcedAggregateRoot, $this->versionMethodName)) {
+            throw new AggregateTranslationFailedException(
+                sprintf(
+                    'Required method %s does not exist for aggregate %s',
+                    $this->versionMethodName,
+                    get_class($eventSourcedAggregateRoot)
+                )
+            );
+        }
+
+        return (int) $eventSourcedAggregateRoot->{$this->versionMethodName}();
+    }
+
+    /**
      * @param null|string   $identifierMethodName
+     * @param null|string   $versionMethodName
      * @param null|string   $popRecordedEventsMethodName
      * @param null|string   $applyRecordedEventsMethodsName
      * @param null|string   $staticReconstituteFromHistoryMethodName
@@ -65,6 +90,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      */
     public function __construct(
         $identifierMethodName = null,
+        $versionMethodName = null,
         $popRecordedEventsMethodName = null,
         $applyRecordedEventsMethodsName = null,
         $staticReconstituteFromHistoryMethodName = null,
@@ -74,6 +100,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         if (null !== $identifierMethodName) {
             Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
             $this->identifierMethodName = $identifierMethodName;
+        }
+
+        if (null !== $versionMethodName) {
+            Assertion::minLength($versionMethodName, 1, 'Version method name needs to be a non empty string');
+            $this->versionMethodName = $versionMethodName;
         }
 
         if (null !== $popRecordedEventsMethodName) {
@@ -101,7 +132,6 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             $this->messageToEventCallback = $messageToEventCallback;
         }
     }
-
 
     /**
      * @param object $eventSourcedAggregateRoot

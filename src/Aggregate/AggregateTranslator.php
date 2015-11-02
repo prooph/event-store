@@ -24,6 +24,12 @@ interface AggregateTranslator
 {
     /**
      * @param object $eventSourcedAggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($eventSourcedAggregateRoot);
+
+    /**
+     * @param object $eventSourcedAggregateRoot
      * @return string
      */
     public function extractAggregateId($eventSourcedAggregateRoot);

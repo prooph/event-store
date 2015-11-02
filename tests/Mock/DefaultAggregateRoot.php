@@ -24,6 +24,16 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     private $historyEvents = [];
 
     /**
+     * @var int
+     */
+    private $version = 0;
+
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
      * @param \Iterator $historyEvents
      * @return DefaultAggregateRootContract
      */
