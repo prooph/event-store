@@ -28,6 +28,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     /**
      * @var string
      */
+    private $versionMethodName = 'getVersion';
+
+    /**
+     * @var string
+     */
     private $identifierMethodName = 'getId';
 
     /**
@@ -56,6 +61,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     private $messageToEventCallback = null;
 
     /**
+     * @param null|string   $versionMethodName
      * @param null|string   $identifierMethodName
      * @param null|string   $popRecordedEventsMethodName
      * @param null|string   $applyRecordedEventsMethodsName
@@ -64,6 +70,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @param null|callable $messageToEventCallback
      */
     public function __construct(
+        $versionMethodName = null,
         $identifierMethodName = null,
         $popRecordedEventsMethodName = null,
         $applyRecordedEventsMethodsName = null,
@@ -71,6 +78,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         $eventToMessageCallback = null,
         $messageToEventCallback = null)
     {
+        if (null !== $versionMethodName) {
+            Assertion::minLength($versionMethodName, 1, 'Version method name needs to e a non empty string');
+            $this->versionMethodName = $versionMethodName;
+        }
+
         if (null !== $identifierMethodName) {
             Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
             $this->identifierMethodName = $identifierMethodName;
@@ -102,6 +114,25 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         }
     }
 
+    /**
+     * @param object $eventSourcedAggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($eventSourcedAggregateRoot)
+    {
+        if (! method_exists($eventSourcedAggregateRoot, $this->versionMethodName)) {
+            throw new AggregateTranslationFailedException(
+                sprintf(
+                    'Required method %s does not exist for aggregate %s',
+                    $this->versionMethodName,
+                    get_class($eventSourcedAggregateRoot)
+                )
+            );
+        }
+
+        return (int) $eventSourcedAggregateRoot->{$this->versionMethodName}();
+
+    }
 
     /**
      * @param object $eventSourcedAggregateRoot

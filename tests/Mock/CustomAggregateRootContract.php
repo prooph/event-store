@@ -22,6 +22,11 @@ use Prooph\Common\Messaging\Message;
 interface CustomAggregateRootContract
 {
     /**
+     * @return int
+     */
+    public function version();
+
+    /**
      * @param \Iterator $historyEvents
      * @return CustomAggregateRootContract
      */

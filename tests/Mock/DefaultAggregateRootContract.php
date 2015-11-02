@@ -28,6 +28,11 @@ interface DefaultAggregateRootContract
     public static function reconstituteFromHistory(\Iterator $historyEvents);
 
     /**
+     * @return int
+     */
+    public function getVersion();
+
+    /**
      * @return string
      */
     public function getId();

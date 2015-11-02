@@ -21,6 +21,11 @@ use Prooph\Common\Messaging\Message;
  */
 final class FaultyAggregateRoot implements DefaultAggregateRootContract
 {
+    public function getVersion()
+    {
+        //faulty return
+        return;
+    }
 
     /**
      * @param \Iterator $historyEvents

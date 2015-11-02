@@ -23,6 +23,16 @@ final class CustomAggregateRoot implements CustomAggregateRootContract
 {
     private $historyEvents = [];
 
+    private $version = 0;
+
+    /**
+     * @return int
+     */
+    public function version()
+    {
+        return $this->version;
+    }
+
     /**
      * @param \Iterator $historyEvents
      * @return CustomAggregateRootContract
