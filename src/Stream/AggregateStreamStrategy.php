@@ -11,8 +11,10 @@
 
 namespace Prooph\EventStore\Stream;
 
+use ArrayIterator;
 use Assert\Assertion;
 use Iterator;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception;
@@ -72,9 +74,18 @@ class AggregateStreamStrategy implements StreamStrategy
             ));
         }
 
+        $streamEventsWithAddedMetadata = [];
+
+        foreach ($streamEvents as $streamEvent) {
+            Assertion::isInstanceOf($streamEvent, Message::class);
+
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
+        }
+
         $this->eventStore->create(new Stream(
             $this->buildStreamName($repositoryAggregateType, $aggregateId),
-            $streamEvents
+            new ArrayIterator($streamEventsWithAddedMetadata)
         ));
     }
 
@@ -102,7 +113,19 @@ class AggregateStreamStrategy implements StreamStrategy
             ));
         }
 
-        $this->eventStore->appendTo($this->buildStreamName($repositoryAggregateType, $aggregateId), $streamEvents);
+        $streamEventsWithAddedMetadata = [];
+
+        foreach ($streamEvents as $streamEvent) {
+            Assertion::isInstanceOf($streamEvent, Message::class);
+
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
+        }
+
+        $this->eventStore->appendTo(
+            $this->buildStreamName($repositoryAggregateType, $aggregateId),
+            new ArrayIterator($streamEventsWithAddedMetadata)
+        );
     }
 
     /**
