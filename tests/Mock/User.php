@@ -87,6 +87,14 @@ class User
     }
 
     /**
+     * @return int
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
      * @return Uuid
      */
     public function getId()
@@ -117,6 +125,7 @@ class User
 
     private function recordThat(TestDomainEvent $domainEvent)
     {
+        $this->version += 1;
         $this->recordedEvents[] = $domainEvent;
     }
 
@@ -167,6 +176,6 @@ class User
 
     private function nextVersion()
     {
-        return ++$this->version;
+        return $this->version + 1;
     }
 }

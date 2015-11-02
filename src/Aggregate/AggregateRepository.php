@@ -236,6 +236,15 @@ class AggregateRepository
     }
 
     /**
+     * @param object $aggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($aggregateRoot)
+    {
+        return $this->aggregateTranslator->extractAggregateVersion($aggregateRoot);
+    }
+
+    /**
      * @param string $aggregateId
      * @return null|object
      */

@@ -342,6 +342,7 @@ class AggregateRepositoryTest extends TestCase
 
         $this->assertCount(1, $loadedEvents);
         $this->assertInstanceOf(UsernameChanged::class, $loadedEvents[0]);
+        $this->assertEquals(2, $this->repository->extractAggregateVersion($fetchedUser));
     }
 
     protected function prepareSnapshotStoreAggregateRepository()
