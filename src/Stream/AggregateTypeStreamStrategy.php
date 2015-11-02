@@ -83,7 +83,8 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         foreach ($streamEvents as $streamEvent) {
             Assertion::isInstanceOf($streamEvent, Message::class);
 
-            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
 
         $this->eventStore->appendTo($streamName, new ArrayIterator($streamEventsWithAddedMetadata));
@@ -118,7 +119,8 @@ class AggregateTypeStreamStrategy implements StreamStrategy
         foreach ($streamEvents as $streamEvent) {
             Assertion::isInstanceOf($streamEvent, Message::class);
 
-            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEvent = $streamEvent->withAddedMetadata('aggregate_id', $aggregateId);
+            $streamEventsWithAddedMetadata[] = $streamEvent->withAddedMetadata('aggregate_type', get_class($aggregateRoot));
         }
 
         $this->eventStore->appendTo($streamName, new ArrayIterator($streamEventsWithAddedMetadata));
