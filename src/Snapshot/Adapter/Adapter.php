@@ -30,10 +30,10 @@ interface Adapter
     public function get(AggregateType $aggregateType, $aggregateId);
 
     /**
-     * Add a snapshot
+     * Save a snapshot
      *
      * @param Snapshot $snapshot
      * @return void
      */
-    public function add(Snapshot $snapshot);
+    public function save(Snapshot $snapshot);
 }

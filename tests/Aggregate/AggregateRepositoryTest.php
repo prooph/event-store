@@ -227,7 +227,7 @@ class AggregateRepositoryTest extends TestCase
         // short getter assertion
         $this->assertSame($now, $snapshot->createdAt());
 
-        $this->snapshotStore->add($snapshot);
+        $this->snapshotStore->save($snapshot);
 
         $this->repository->clearIdentityMap();
 
@@ -308,7 +308,7 @@ class AggregateRepositoryTest extends TestCase
             new \DateTimeImmutable('now', new \DateTimeZone('UTC'))
         );
 
-        $this->snapshotStore->add($snapshot);
+        $this->snapshotStore->save($snapshot);
 
         $this->repository->clearIdentityMap();
 

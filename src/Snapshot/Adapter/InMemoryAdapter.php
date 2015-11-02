@@ -42,12 +42,12 @@ final class InMemoryAdapter implements Adapter
     }
 
     /**
-     * Add a snapshot
+     * Save a snapshot
      *
      * @param Snapshot $snapshot
      * @return void
      */
-    public function add(Snapshot $snapshot)
+    public function save(Snapshot $snapshot)
     {
         $this->map[$snapshot->aggregateType()->toString()][$snapshot->aggregateId()] = $snapshot;
     }
