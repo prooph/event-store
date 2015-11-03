@@ -47,7 +47,7 @@ final class RepositoryMock extends AggregateRepository
      */
     public function accessStreamStrategy()
     {
-        return $this->streamStrategy;
+        return $this->streamName;
     }
 
     /**

@@ -13,10 +13,11 @@ namespace Prooph\EventStore\Aggregate;
 
 use ArrayIterator;
 use Assert\Assertion;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Snapshot\SnapshotStore;
-use Prooph\EventStore\Stream\SingleStreamStrategy;
-use Prooph\EventStore\Stream\StreamStrategy;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Class AggregateRepository
@@ -30,11 +31,6 @@ class AggregateRepository
      * @var EventStore
      */
     protected $eventStore;
-
-    /**
-     * @var StreamStrategy
-     */
-    protected $streamStrategy;
 
     /**
      * @var AggregateTranslator
@@ -57,18 +53,30 @@ class AggregateRepository
     protected $snapshotStore;
 
     /**
+     * @var StreamName
+     */
+    protected $streamName;
+
+    /**
+     * @var bool
+     */
+    protected $oneStreamPerAggregate;
+
+    /**
      * @param EventStore $eventStore
      * @param AggregateType $aggregateType
      * @param AggregateTranslator $aggregateTranslator
-     * @param StreamStrategy|null $streamStrategy
      * @param SnapshotStore|null $snapshotStore
+     * @param StreamName|null $streamName
+     * @param bool $oneStreamPerAggregate
      */
     public function __construct(
         EventStore $eventStore,
         AggregateType $aggregateType,
         AggregateTranslator $aggregateTranslator,
-        StreamStrategy $streamStrategy = null,
-        SnapshotStore $snapshotStore = null
+        SnapshotStore $snapshotStore = null,
+        StreamName $streamName = null,
+        $oneStreamPerAggregate = false
     ) {
         $this->eventStore = $eventStore;
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'addPendingEventsToStream']);
@@ -77,12 +85,8 @@ class AggregateRepository
         $this->aggregateType = $aggregateType;
         $this->aggregateTranslator = $aggregateTranslator;
         $this->snapshotStore = $snapshotStore;
-
-        if (null === $streamStrategy) {
-            $streamStrategy = new SingleStreamStrategy($this->eventStore);
-        }
-
-        $this->streamStrategy = $streamStrategy;
+        $this->streamName = $streamName;
+        $this->oneStreamPerAggregate = $oneStreamPerAggregate;
     }
 
     /**
@@ -92,7 +96,7 @@ class AggregateRepository
      */
     public function addPendingEventsToStream()
     {
-        foreach ($this->identityMap as &$identityArr) {
+        foreach ($this->identityMap as $aggregateId => &$identityArr) {
 
             //If a new aggregate root was added (via method addAggregateRoot) we already have pending events in the cache
             //and don't need to extract them twice
@@ -103,15 +107,18 @@ class AggregateRepository
             $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($identityArr['aggregate_root']);
 
             if (count($pendingStreamEvents)) {
-                $this->streamStrategy->appendEvents(
-                    $this->aggregateType,
-                    $this->aggregateTranslator->extractAggregateId($identityArr['aggregate_root']),
-                    new ArrayIterator($pendingStreamEvents),
-                    $identityArr['aggregate_root']
-                );
+                $enrichedEvents = [];
+
+                foreach($pendingStreamEvents as $event) {
+                    $enrichedEvents[] = $this->enrichEventMetadata($event, $aggregateId);
+                }
+
+                $streamName = $this->determineStreamName($aggregateId);
+
+                $this->eventStore->appendTo($streamName, new ArrayIterator($enrichedEvents));
 
                 //Cache pending events besides the aggregate root in the identity map
-                $identityArr['pending_events'] = $pendingStreamEvents;
+                $identityArr['pending_events'] = $enrichedEvents;
             }
         }
     }
@@ -157,17 +164,26 @@ class AggregateRepository
 
         $aggregateId = $this->aggregateTranslator->extractAggregateId($aggregateRootCopy);
 
-        $this->streamStrategy->addEventsForNewAggregateRoot(
-            $this->aggregateType,
-            $aggregateId,
-            new ArrayIterator($domainEvents),
-            $eventSourcedAggregateRoot
-        );
+        $streamName = $this->determineStreamName($aggregateId);
+
+        $enrichedEvents = [];
+
+        foreach($domainEvents as $event) {
+            $enrichedEvents[] = $this->enrichEventMetadata($event, $aggregateId);
+        }
+
+        if ($this->oneStreamPerAggregate) {
+            $stream = new Stream($streamName, new ArrayIterator($enrichedEvents));
+
+            $this->eventStore->create($stream);
+        } else {
+            $this->eventStore->appendTo($streamName, new ArrayIterator($enrichedEvents));
+        }
 
         //Cache the aggregate root together with its pending domain events in the identity map
         $this->identityMap[$aggregateId] = [
             'aggregate_root' => $eventSourcedAggregateRoot,
-            'pending_events' => $domainEvents
+            'pending_events' => $enrichedEvents
         ];
     }
 
@@ -199,16 +215,25 @@ class AggregateRepository
             }
         }
 
-        $streamEvents = $this->streamStrategy->read($this->aggregateType, $aggregateId);
+        $streamName = $this->determineStreamName($aggregateId);
 
-        if (!$streamEvents->valid()) {
-            return;
+        $streamEvents = null;
+
+        if ($this->oneStreamPerAggregate) {
+            $streamEvents = $this->eventStore->load($streamName)->streamEvents();
+        } else {
+            $streamEvents = $this->eventStore->loadEventsByMetadataFrom($streamName, [
+                'aggregate_type' => $this->aggregateType->toString(),
+                'aggregate_id' => $aggregateId
+            ]);
         }
 
-        $aggregateType = $this->streamStrategy->getAggregateRootType($this->aggregateType, $streamEvents);
+        if (null === $streamEvents || !$streamEvents->valid()) {
+            return null;
+        }
 
         $eventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory(
-            $aggregateType,
+            $this->aggregateType,
             $streamEvents
         );
 
@@ -258,7 +283,7 @@ class AggregateRepository
 
         $aggregateRoot = $snapshot->aggregateRoot();
 
-        $streamEvents = $this->streamStrategy->read(
+        $streamEvents = $this->streamName->read(
             $this->aggregateType,
             $aggregateId,
             $snapshot->lastVersion() + 1
@@ -271,5 +296,39 @@ class AggregateRepository
         $this->aggregateTranslator->applyPendingStreamEvents($aggregateRoot, $streamEvents);
 
         return $aggregateRoot;
+    }
+
+    /**
+     * Default stream name generation.
+     * Override this method in an extending repository to provide a custom name
+     *
+     * @param string|null $aggregateId
+     * @return StreamName
+     */
+    protected function determineStreamName($aggregateId)
+    {
+        if ($this->oneStreamPerAggregate) {
+            return new StreamName($this->aggregateType->toString() . '-' . $aggregateId);
+        }
+
+        if (null === $this->streamName) {
+            return new StreamName('event_stream');
+        }
+
+        return $this->streamName;
+    }
+
+    /**
+     * Add aggregate_id and aggregate_type as metadata to $domainEvent
+     * Override this method in an extending repository to add more or different metadata.
+     *
+     * @param Message $domainEvent
+     * @param string $aggregateId
+     * @return Message
+     */
+    protected function enrichEventMetadata(Message $domainEvent, $aggregateId)
+    {
+        $domainEvent = $domainEvent->withAddedMetadata('aggregate_id', $aggregateId);
+        return $domainEvent->withAddedMetadata('aggregate_type', $this->aggregateType->toString());
     }
 }
