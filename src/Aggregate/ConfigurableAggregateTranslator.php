@@ -43,7 +43,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     /**
      * @var string
      */
-    private $applyRecordedEventsMethodName = 'apply';
+    private $applyEventsMethodName = 'apply';
 
     /**
      * @var string
@@ -83,7 +83,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @param null|string   $identifierMethodName
      * @param null|string   $versionMethodName
      * @param null|string   $popRecordedEventsMethodName
-     * @param null|string   $applyRecordedEventsMethodsName
+     * @param null|string   $applyEventsMethodsName
      * @param null|string   $staticReconstituteFromHistoryMethodName
      * @param null|callable $eventToMessageCallback
      * @param null|callable $messageToEventCallback
@@ -92,7 +92,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         $identifierMethodName = null,
         $versionMethodName = null,
         $popRecordedEventsMethodName = null,
-        $applyRecordedEventsMethodsName = null,
+        $applyEventsMethodsName = null,
         $staticReconstituteFromHistoryMethodName = null,
         $eventToMessageCallback = null,
         $messageToEventCallback = null)
@@ -112,9 +112,9 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             $this->popRecordedEventsMethodName = $popRecordedEventsMethodName;
         }
 
-        if (null !== $applyRecordedEventsMethodsName) {
-            Assertion::minLength($applyRecordedEventsMethodsName, 1, 'Apply recorded events method name needs to be a non empty string');
-            $this->applyRecordedEventsMethodName = $applyRecordedEventsMethodsName;
+        if (null !== $applyEventsMethodsName) {
+            Assertion::minLength($applyEventsMethodsName, 1, 'Apply events method name needs to be a non empty string');
+            $this->applyEventsMethodName = $applyEventsMethodsName;
         }
 
         if (null !== $staticReconstituteFromHistoryMethodName) {
@@ -261,36 +261,30 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @param Iterator $events
      * @throws Exception\AggregateTranslationFailedException
      */
-    public function applyPendingStreamEvents($eventSourcedAggregateRoot, Iterator $events)
+    public function applyStreamEvents($eventSourcedAggregateRoot, Iterator $events)
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
         }
 
-        if (! method_exists($eventSourcedAggregateRoot, $this->applyRecordedEventsMethodName)) {
+        if (! method_exists($eventSourcedAggregateRoot, $this->applyEventsMethodName)) {
             throw new AggregateTranslationFailedException(
                 sprintf(
-                    'Can not apply recorded events to aggregate root %s. The AR is missing a method with name %s!',
+                    'Can not apply events to aggregate root %s. The AR is missing a method with name %s!',
                     get_class($eventSourcedAggregateRoot),
-                    $this->applyRecordedEventsMethodName
+                    $this->applyEventsMethodName
                 )
             );
         }
 
+        $callback = $this->messageToEventCallback;
+
         foreach ($events as $event) {
-            if ($this->messageToEventCallback) {
-                $event = call_user_func($this->messageToEventCallback, $event);
+            if ($callback) {
+                $event = $callback($event);
             }
 
-            if (!$event instanceof Message) {
-                throw new AggregateTranslationFailedException(sprintf(
-                    'A recorded event of the aggregate root %s has the wrong type. Expected Prooph\Common\Messaging\Message. Got %s',
-                    get_class($eventSourcedAggregateRoot),
-                    is_object($event)? get_class($event) : gettype($event)
-                ));
-            }
-
-            $eventSourcedAggregateRoot->{$this->applyRecordedEventsMethodName}($event);
+            $eventSourcedAggregateRoot->{$this->applyEventsMethodName}($event);
         }
     }
 }
