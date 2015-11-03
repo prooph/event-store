@@ -73,6 +73,7 @@ class AggregateRepository
         $this->eventStore = $eventStore;
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'addPendingEventsToStream']);
         $this->eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'applyPendingStreamEvents']);
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'clearIdentityMap'], -10000);
 
         $this->aggregateType = $aggregateType;
         $this->aggregateTranslator = $aggregateTranslator;
