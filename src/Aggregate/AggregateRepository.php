@@ -108,10 +108,11 @@ class AggregateRepository
                 $streamName = $this->determineStreamName($aggregateId);
 
                 $this->eventStore->appendTo($streamName, new ArrayIterator($enrichedEvents));
-
-                unset($this->identityMap[$aggregateId]);
             }
         }
+
+        //Clear identity map
+        $this->identityMap = [];
     }
 
     /**
