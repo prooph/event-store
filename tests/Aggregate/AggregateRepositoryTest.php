@@ -108,7 +108,13 @@ class AggregateRepositoryTest extends TestCase
             $user->getId()->toString()
         );
 
-        $this->assertSame($user, $fetchedUser);
+        $this->assertNotSame($user, $fetchedUser);
+
+        $fetchedUser2 = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $this->assertSame($fetchedUser, $fetchedUser2);
 
         $fetchedUser->changeName('Max Mustermann');
 
