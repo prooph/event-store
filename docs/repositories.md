@@ -26,11 +26,12 @@ It is our internal event sourcing package and ships with support for prooph/even
 To achieve 100% decoupling between layers and/or contexts you can make use of translation adapters.
 For prooph/event-store such a translation adapter is called an [AggregateTranslator](../src/Aggregate/AggregateTranslator.php).
 
-The interface requires you to implement three methods:
+The interface requires you to implement 4 methods:
 
 - extractAggregateId
 - extractPendingStreamEvents
 - reconstituteAggregateFromHistory
+- applyPendingStreamEvents
 
 That is all a repository needs to handle your event sourced aggregates. But to make it even more simple to get started
 prooph/event-store ships with a [ConfigurableAggregateTranslator](../src/Aggregate/ConfigurableAggregateTranslator.php) which implements the interface.
@@ -41,6 +42,7 @@ Let's have a look at the constructor
 /**
  * @param null|string   $identifierMethodName
  * @param null|string   $popRecordedEventsMethodName
+ * @param null|string   $applyRecordedEventsMethodsName
  * @param null|string   $staticReconstituteFromHistoryMethodName
  * @param null|callable $eventToMessageCallback
  * @param null|callable $messageToEventCallback
@@ -48,6 +50,7 @@ Let's have a look at the constructor
 public function __construct(
     $identifierMethodName = null,
     $popRecordedEventsMethodName = null,
+    $applyRecordedEventsMethodsName = null,
     $staticReconstituteFromHistoryMethodName = null,
     $eventToMessageCallback = null,
     $messageToEventCallback = null)
@@ -56,7 +59,7 @@ public function __construct(
 }
 ```
 
-We can identify 5 dependencies but all are optional.
+We can identify 6 dependencies but all are optional.
 
 - `$identifierMethodName`
   - defaults to `getId`
@@ -66,6 +69,10 @@ We can identify 5 dependencies but all are optional.
   - defaults to `popRecordedEvents`
   - with this method the `ConfigurableAggregateTranslator` requests the latest recorded events from your aggregate
   - the aggregate should also clear the event cache before returning the events
+- `applyPendingStreamEvents`
+  - defaults to `apply`
+  - successfully persisted domain events are passed back to the aggregate root using this method
+  - recording and applying events are two different operations in the repository, [read more ...](apply_events_late.md)
 - `$staticReconstituteFromHistoryMethodName`
   - defaults to `reconstituteFromHistory`
   - like indicated in the parameter name the referenced method must be static (a named constructor) which must return an instance of the aggregate with all events replayed
@@ -106,7 +113,7 @@ The best way to see it in action is by looking at the [AggregateRepositoryTest](
 ```php
 $this->repository = new AggregateRepository(
     $this->eventStore,
-    AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+    AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
     new ConfigurableAggregateTranslator()
 );
 
@@ -135,13 +142,13 @@ public function it_adds_a_new_aggregate()
 
     $this->eventStore->commit();
 
-    $this->clearRepositoryIdentityMap();
+    $this->repository->clearIdentityMap();
 
     $fetchedUser = $this->repository->getAggregateRoot(
         $user->getId()->toString()
     );
 
-    $this->assertInstanceOf('Prooph\EventStoreTest\Mock\User', $user);
+    $this->assertInstanceOf('ProophTest\EventStore\Mock\User', $fetchedUser);
 
     $this->assertNotSame($user, $fetchedUser);
 
@@ -181,7 +188,7 @@ public function it_tracks_changes_of_aggregate()
 
     $this->eventStore->commit();
 
-    $this->clearRepositoryIdentityMap();
+    $this->repository->clearIdentityMap();
 
     $fetchedUser2 = $this->repository->getAggregateRoot(
         $user->getId()->toString()
@@ -199,3 +206,8 @@ a repository method. Only `$this->eventStore->commit();` is called. But as you c
 is changed and the appropriate domain event was added to the `event_stream`. This happens becasue the repository manages an identity map
 internally. Each aggregate root loaded via `AggregateRepository::getAggregateRoot` is added to the identity map and
 new events recorded by such an agggregate root are added automatically to the event stream on `EventStore::commit`.
+
+## Factory-Driven Creation
+
+See [Interop Factories](interop_factories.md)
+

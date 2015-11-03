@@ -9,23 +9,28 @@
  * Date: 8/22/15 - 10:08 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
 /**
  * Interface CustomAggregateRootContract
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 interface CustomAggregateRootContract
 {
     /**
-     * @param Message[] $historyEvents
+     * @return int
+     */
+    public function version();
+
+    /**
+     * @param \Iterator $historyEvents
      * @return CustomAggregateRootContract
      */
-    public static function buildFromHistoryEvents($historyEvents);
+    public static function buildFromHistoryEvents(\Iterator $historyEvents);
 
     /**
      * @return string

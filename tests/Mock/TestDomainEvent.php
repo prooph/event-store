@@ -9,7 +9,7 @@
  * Date: 08/31/14 - 8:02 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\PayloadConstructable;
@@ -18,7 +18,7 @@ use Prooph\Common\Messaging\PayloadTrait;
 /**
  * Class DomainEvent
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class TestDomainEvent extends DomainEvent implements PayloadConstructable
@@ -33,6 +33,20 @@ class TestDomainEvent extends DomainEvent implements PayloadConstructable
     public static function with(array $payload, $version)
     {
         $event = new static($payload);
+
+        return $event->withVersion($version);
+    }
+
+    /**
+     * @param array $payload
+     * @param int $version
+     * @param \DateTimeImmutable $createdAt
+     * @return TestDomainEvent
+     */
+    public static function withPayloadAndSpecifiedCreatedAt(array $payload, $version, \DateTimeImmutable $createdAt)
+    {
+        $event = new static($payload);
+        $event->createdAt = $createdAt;
 
         return $event->withVersion($version);
     }

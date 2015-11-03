@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Prooph\EventStoreTest;
+namespace ProophTest\EventStore;
 
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
@@ -17,7 +17,7 @@ use Prooph\EventStore\EventStore;
  * TestCase for Prooph EventStore tests
  *
  * @author Alexander Miertsch <contact@prooph.de>
- * @package Prooph\EventStoreTest
+ * @package ProophTest\EventStore
  */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {

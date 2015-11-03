@@ -11,7 +11,7 @@
 
 namespace Prooph\EventStore\Stream;
 
-use Prooph\Common\Messaging\Message;
+use Iterator;
 use Prooph\EventStore\Aggregate\AggregateType;
 
 /**
@@ -25,26 +25,36 @@ interface StreamStrategy
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @param object $aggregateRoot
      * @return void
      */
-    public function addEventsForNewAggregateRoot(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoot);
+    public function addEventsForNewAggregateRoot(
+        AggregateType $repositoryAggregateType,
+        $aggregateId,
+        Iterator $streamEvents,
+        $aggregateRoot
+    );
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @param object $aggregateRoots
      * @return void
      */
-    public function appendEvents(AggregateType $repositoryAggregateType, $aggregateId, array $streamEvents, $aggregateRoots);
+    public function appendEvents(
+        AggregateType $repositoryAggregateType,
+        $aggregateId,
+        Iterator $streamEvents,
+        $aggregateRoots
+    );
 
     /**
      * @param AggregateType $repositoryAggregateType
      * @param string $aggregateId
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function read(AggregateType $repositoryAggregateType, $aggregateId, $minVersion = null);
 
@@ -54,8 +64,8 @@ interface StreamStrategy
      * within the same stream as the super aggregate root.
      *
      * @param AggregateType $repositoryAggregateType
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @return AggregateType
      */
-    public function getAggregateRootType(AggregateType $repositoryAggregateType, array &$streamEvents);
+    public function getAggregateRootType(AggregateType $repositoryAggregateType, Iterator $streamEvents);
 }

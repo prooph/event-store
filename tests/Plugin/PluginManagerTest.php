@@ -9,7 +9,7 @@
  * Date: 04/21/14 - 00:16 AM
  */
 
-namespace Prooph\EventStoreTest\Plugin;
+namespace ProophTest\EventStore\Plugin;
 
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
@@ -17,17 +17,16 @@ use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\AggregateStreamStrategy;
-use Prooph\EventStoreTest\Mock\EventLoggerPlugin;
-use Prooph\EventStoreTest\Mock\User;
-use Prooph\EventStoreTest\TestCase;
+use ProophTest\EventStore\Mock\EventLoggerPlugin;
+use ProophTest\EventStore\Mock\User;
+use ProophTest\EventStore\TestCase;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
 /**
  * Class FeatureManagerTest
  *
- * @package Prooph\EventStoreTest\Plugin
+ * @package ProophTest\EventStore\Plugin
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class PluginManagerTest extends TestCase
@@ -50,9 +49,11 @@ class PluginManagerTest extends TestCase
 
         $repository = new AggregateRepository(
             $eventStore,
-            AggregateType::fromAggregateRootClass('Prooph\EventStoreTest\Mock\User'),
+            AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             new ConfigurableAggregateTranslator(),
-            new AggregateStreamStrategy($eventStore)
+            null,
+            null,
+            true
         );
 
         $eventStore->beginTransaction();
