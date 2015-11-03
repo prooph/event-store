@@ -15,7 +15,6 @@ use Prooph\EventStore\Aggregate\AggregateTranslator;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Snapshot\SnapshotStore;
-use Prooph\EventStore\Stream\SingleStreamStrategy;
 use Prooph\EventStore\Stream\StreamStrategy;
 use ProophTest\EventStore\Mock\FaultyRepositoryMock;
 use ProophTest\EventStore\Mock\RepositoryMock;
@@ -28,7 +27,7 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_repository_with_default_stream_strategy_and_no_snapshot_adapter()
+    public function it_creates_repository_with_default_stream_name_and_no_snapshot_adapter()
     {
         $factory = new RepositoryMockFactory();
 
@@ -62,8 +61,9 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
         $this->assertInstanceOf(AggregateType::class, $repo->accessAggregateType());
         $this->assertEquals(User::class, $repo->accessAggregateType()->toString());
         $this->assertSame($userTranslator->reveal(), $repo->accessAggregateTranslator());
-        $this->assertInstanceOf(SingleStreamStrategy::class, $repo->accessStreamStrategy());
+        $this->assertEquals('event_stream', $repo->accessDeterminedStreamName()->toString());
         $this->assertNull($repo->accessSnapshotStore());
+        $this->assertFalse($repo->accessOneStreamPerAggregateFlag());
     }
 
     /**
@@ -123,7 +123,7 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_repository_with_configured_stream_strategy_and_snapshot_store_if_given()
+    public function it_creates_repository_with_configured_stream_name_and_snapshot_store_if_given()
     {
         $factory = new RepositoryMockFactory();
 
@@ -137,8 +137,8 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
                         'repository_class' => RepositoryMock::class,
                         'aggregate_type' => User::class,
                         'aggregate_translator' => 'user_translator',
-                        'stream_strategy' => 'custom_stream_strategy',
-                        'snapshot_store' => 'ultra_fast_snapshot_store'
+                        'stream_name' => 'custom_stream_name',
+                        'snapshot_store' => 'ultra_fast_snapshot_store',
                     ]
                 ]
             ]
@@ -151,8 +151,6 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
         $container->get('user_translator')->willReturn($userTranslator->reveal());
 
         $streamStrategy = $this->prophesize(StreamStrategy::class);
-        $container->has('custom_stream_strategy')->willReturn(true);
-        $container->get('custom_stream_strategy')->willReturn($streamStrategy->reveal());
 
         $snapshotStore = $this->prophesize(SnapshotStore::class);
         $container->has('ultra_fast_snapshot_store')->willReturn(true);
@@ -167,7 +165,51 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
         $this->assertInstanceOf(AggregateType::class, $repo->accessAggregateType());
         $this->assertEquals(User::class, $repo->accessAggregateType()->toString());
         $this->assertSame($userTranslator->reveal(), $repo->accessAggregateTranslator());
-        $this->assertSame($streamStrategy->reveal(), $repo->accessStreamStrategy());
+        $this->assertSame('custom_stream_name', $repo->accessDeterminedStreamName()->toString());
         $this->assertSame($snapshotStore->reveal(), $repo->accessSnapshotStore());
+        $this->assertFalse($repo->accessOneStreamPerAggregateFlag());
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_repository_with_one_stream_per_aggregate_mode_enabled()
+    {
+        $factory = new RepositoryMockFactory();
+
+        $container = $this->prophesize(ContainerInterface::class);
+
+        $container->has('config')->willReturn(true);
+        $container->get('config')->willReturn([
+            'prooph' => [
+                'event_store' => [
+                    'repository_mock' => [
+                        'repository_class' => RepositoryMock::class,
+                        'aggregate_type' => User::class,
+                        'aggregate_translator' => 'user_translator',
+                        'one_stream_per_aggregate' => true,
+                    ]
+                ]
+            ]
+        ]);
+
+        $container->get(EventStore::class)->willReturn($this->eventStore);
+
+        $userTranslator = $this->prophesize(AggregateTranslator::class);
+
+        $container->get('user_translator')->willReturn($userTranslator->reveal());
+
+        /** @var $repo RepositoryMock */
+        $repo = $factory($container->reveal());
+
+        $this->assertInstanceOf(RepositoryMock::class, $repo);
+
+        $this->assertSame($this->eventStore, $repo->accessEventStore());
+        $this->assertInstanceOf(AggregateType::class, $repo->accessAggregateType());
+        $this->assertEquals(User::class, $repo->accessAggregateType()->toString());
+        $this->assertSame($userTranslator->reveal(), $repo->accessAggregateTranslator());
+        $this->assertEquals(User::class . '-' . '123', $repo->accessDeterminedStreamName('123')->toString());
+        $this->assertNull($repo->accessSnapshotStore());
+        $this->assertTrue($repo->accessOneStreamPerAggregateFlag());
     }
 }

@@ -74,8 +74,6 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
 
-        $this->repository->clearIdentityMap();
-
         $fetchedUser = $this->repository->getAggregateRoot(
             $user->getId()->toString()
         );
@@ -92,7 +90,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_tracks_changes_of_aggregate()
+    public function it_tracks_changes_of_aggregate_but_always_returns_a_fresh_instance_on_load()
     {
         $this->eventStore->beginTransaction();
 
@@ -108,13 +106,11 @@ class AggregateRepositoryTest extends TestCase
             $user->getId()->toString()
         );
 
-        $this->assertSame($user, $fetchedUser);
+        $this->assertNotSame($user, $fetchedUser);
 
         $fetchedUser->changeName('Max Mustermann');
 
         $this->eventStore->commit();
-
-        $this->repository->clearIdentityMap();
 
         $fetchedUser2 = $this->repository->getAggregateRoot(
             $user->getId()->toString()
@@ -186,22 +182,6 @@ class AggregateRepositoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\RuntimeException
-     * @expectedExceptionMessage Identity map cannot be cleared. It currently contains pending events
-     */
-    public function it_does_not_allow_to_clear_identity_map_as_long_as_it_contains_pending_events()
-    {
-        $this->eventStore->beginTransaction();
-
-        $user = User::create('John Doe', 'contact@prooph.de');
-
-        $this->repository->addAggregateRoot($user);
-
-        $this->repository->clearIdentityMap();
-    }
-
-    /**
-     * @test
      */
     public function it_uses_snapshot_store()
     {
@@ -228,8 +208,6 @@ class AggregateRepositoryTest extends TestCase
         $this->assertSame($now, $snapshot->createdAt());
 
         $this->snapshotStore->save($snapshot);
-
-        $this->repository->clearIdentityMap();
 
         $loadedEvents = [];
 
@@ -263,8 +241,6 @@ class AggregateRepositoryTest extends TestCase
         $this->repository->addAggregateRoot($user);
 
         $this->eventStore->commit();
-
-        $this->repository->clearIdentityMap();
 
         $loadedEvents = [];
 
@@ -310,8 +286,6 @@ class AggregateRepositoryTest extends TestCase
 
         $this->snapshotStore->save($snapshot);
 
-        $this->repository->clearIdentityMap();
-
         $this->eventStore->beginTransaction();
 
         $fetchedUser = $this->repository->getAggregateRoot(
@@ -321,8 +295,6 @@ class AggregateRepositoryTest extends TestCase
         $fetchedUser->changeName('Max Mustermann');
 
         $this->eventStore->commit();
-
-        $this->repository->clearIdentityMap();
 
         $loadedEvents = [];
 
@@ -355,7 +327,6 @@ class AggregateRepositoryTest extends TestCase
             $this->eventStore,
             AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             new ConfigurableAggregateTranslator(),
-            null,
             $this->snapshotStore
         );
 

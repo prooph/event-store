@@ -255,19 +255,21 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_invokes_event_to_message_callback_for_each_event_when_applying()
+    public function it_invokes_message_to_event_callback_for_each_event_applying()
     {
         $message = $this->prophesize(Message::class);
 
         $ar = $this->prophesize(DefaultAggregateRootContract::class);
 
-        $ar->apply($message->reveal());
+        $dummyEvent = new \stdClass();
 
-        $translator = new ConfigurableAggregateTranslator(null, null, null, null, null, null, function (\stdClass $customEvent) use ($message) {
-            return $message->reveal();
+        $ar->apply($dummyEvent)->shouldBeCalled(2);
+
+        $translator = new ConfigurableAggregateTranslator(null, null, null, null, null, null, function (Message $message) use ($dummyEvent) {
+            return $dummyEvent;
         });
 
-        $translator->applyStreamEvents($ar->reveal(), new \ArrayIterator([new \stdClass(), new \stdClass()]));
+        $translator->applyStreamEvents($ar->reveal(), new \ArrayIterator([$message->reveal(), $message->reveal()]));
     }
 
     /**

@@ -17,7 +17,6 @@ use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\AggregateStreamStrategy;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\User;
 use ProophTest\EventStore\TestCase;
@@ -52,7 +51,9 @@ class PluginManagerTest extends TestCase
             $eventStore,
             AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
             new ConfigurableAggregateTranslator(),
-            new AggregateStreamStrategy($eventStore)
+            null,
+            null,
+            true
         );
 
         $eventStore->beginTransaction();

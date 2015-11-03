@@ -56,9 +56,9 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
     }
 
     /**
-     * @param Message $event
+     * @param $event
      */
-    public function apply(Message $event)
+    public function apply($event)
     {
         // faulty method
         return;

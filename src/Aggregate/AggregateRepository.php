@@ -101,7 +101,7 @@ class AggregateRepository
             if (count($pendingStreamEvents)) {
                 $enrichedEvents = [];
 
-                foreach($pendingStreamEvents as $event) {
+                foreach ($pendingStreamEvents as $event) {
                     $enrichedEvents[] = $this->enrichEventMetadata($event, $aggregateId);
                 }
 
@@ -130,7 +130,7 @@ class AggregateRepository
 
         $enrichedEvents = [];
 
-        foreach($domainEvents as $event) {
+        foreach ($domainEvents as $event) {
             $enrichedEvents[] = $this->enrichEventMetadata($event, $aggregateId);
         }
 
@@ -178,7 +178,7 @@ class AggregateRepository
         }
 
         if (!$streamEvents->valid()) {
-            return null;
+            return;
         }
 
         $eventSourcedAggregateRoot = $this->aggregateTranslator->reconstituteAggregateFromHistory(
@@ -215,9 +215,14 @@ class AggregateRepository
 
         $aggregateRoot = $snapshot->aggregateRoot();
 
-        $streamEvents = $this->streamName->read(
-            $this->aggregateType,
-            $aggregateId,
+        $streamName = $this->determineStreamName($aggregateId);
+
+        $streamEvents = $this->eventStore->loadEventsByMetadataFrom(
+            $streamName,
+            [
+                'aggregate_type' => $this->aggregateType->toString(),
+                'aggregate_id' => $aggregateId
+            ],
             $snapshot->lastVersion() + 1
         );
 

@@ -280,6 +280,13 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         $callback = $this->messageToEventCallback;
 
         foreach ($events as $event) {
+            if (! $event instanceof Message) {
+                throw new AggregateTranslationFailedException(sprintf(
+                    'Cannot apply event %s. Expected instance of Prooph\Common\Messaging\Message.',
+                    is_object($event)? get_class($event) : gettype($event)
+                ));
+            }
+
             if ($callback) {
                 $event = $callback($event);
             }
