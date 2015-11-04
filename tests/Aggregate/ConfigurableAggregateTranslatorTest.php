@@ -201,7 +201,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $translator = new ConfigurableAggregateTranslator(null, null, null, 'unknownMethod');
 
-        $translator->applyStreamEvents($ar->reveal(), new \ArrayIterator([]));
+        $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([]));
     }
 
     /**
@@ -229,7 +229,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $translator = new ConfigurableAggregateTranslator();
 
-        $translator->applyStreamEvents($ar->reveal(), new \ArrayIterator([new \stdClass()]));
+        $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([new \stdClass()]));
     }
 
     /**
@@ -255,7 +255,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_invokes_message_to_event_callback_for_each_event_applying()
+    public function it_invokes_message_to_event_callback_for_each_event_replaying()
     {
         $message = $this->prophesize(Message::class);
 
@@ -263,13 +263,13 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $dummyEvent = new \stdClass();
 
-        $ar->apply($dummyEvent)->shouldBeCalled(2);
+        $ar->replay($dummyEvent)->shouldBeCalled(2);
 
         $translator = new ConfigurableAggregateTranslator(null, null, null, null, null, null, function (Message $message) use ($dummyEvent) {
             return $dummyEvent;
         });
 
-        $translator->applyStreamEvents($ar->reveal(), new \ArrayIterator([$message->reveal(), $message->reveal()]));
+        $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([$message->reveal(), $message->reveal()]));
     }
 
     /**
@@ -399,7 +399,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     public function it_fails_on_applying_pending_stream_events_when_event_sourced_aggregate_root_is_not_an_object()
     {
         $translator = new ConfigurableAggregateTranslator();
-        $translator->applyStreamEvents('invalid', new \ArrayIterator([]));
+        $translator->replayStreamEvents('invalid', new \ArrayIterator([]));
     }
 
     /**

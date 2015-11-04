@@ -231,7 +231,7 @@ class AggregateRepository
             return $aggregateRoot;
         }
 
-        $this->aggregateTranslator->applyStreamEvents($aggregateRoot, $streamEvents);
+        $this->aggregateTranslator->replayStreamEvents($aggregateRoot, $streamEvents);
 
         return $aggregateRoot;
     }

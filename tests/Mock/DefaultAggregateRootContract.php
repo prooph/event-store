@@ -45,5 +45,5 @@ interface DefaultAggregateRootContract
     /**
      * @param $event
      */
-    public function apply($event);
+    public function replay($event);
 }

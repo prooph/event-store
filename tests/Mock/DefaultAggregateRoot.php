@@ -73,7 +73,7 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     /**
      * @param $event
      */
-    public function apply($event)
+    public function replay($event)
     {
         // not required for this mock
     }

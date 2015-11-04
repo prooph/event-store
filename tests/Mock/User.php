@@ -167,7 +167,7 @@ class User
     /**
      * @param DomainEvent[] $streamEvents
      */
-    private function replay($streamEvents)
+    public function replay($streamEvents)
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
