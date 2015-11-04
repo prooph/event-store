@@ -15,7 +15,7 @@ use Prooph\EventStore\Aggregate\AggregateTranslator;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Snapshot\SnapshotStore;
-use Prooph\EventStore\Stream\StreamStrategy;
+use Prooph\EventStore\Stream\StreamName;
 
 final class RepositoryMock extends AggregateRepository
 {
@@ -43,11 +43,20 @@ final class RepositoryMock extends AggregateRepository
     }
 
     /**
-     * @return StreamStrategy
+     * @param string|null $aggregateId
+     * @return StreamName
      */
-    public function accessStreamStrategy()
+    public function accessDeterminedStreamName($aggregateId = null)
     {
-        return $this->streamStrategy;
+        return $this->determineStreamName($aggregateId);
+    }
+
+    /**
+     * @return bool
+     */
+    public function accessOneStreamPerAggregateFlag()
+    {
+        return $this->oneStreamPerAggregate;
     }
 
     /**

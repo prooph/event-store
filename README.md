@@ -23,6 +23,7 @@ You can install prooph/event-store via composer by adding `"prooph/event-store":
 ## Available Snapshot Adapters
 - [Mongo DB](https://github.com/prooph/snapshot-mongodb-adapter) - stable
 - [Doctrine DBAL](https://github.com/prooph/snapshot-doctrine-adapter) - stable
+- [Memcached](https://github.com/prooph/snapshot-memcached-adapter) - stable
 
 ## Quick Start
 

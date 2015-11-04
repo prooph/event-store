@@ -18,6 +18,7 @@ use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\ConfigurationException;
+use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Class AbstractAggregateRepositoryFactory
@@ -52,11 +53,13 @@ abstract class AbstractAggregateRepositoryFactory implements RequiresContainerId
         $aggregateType = AggregateType::fromAggregateRootClass($config['aggregate_type']);
         $aggregateTranslator = $container->get($config['aggregate_translator']);
 
-        $streamStrategy = isset($config['stream_strategy'])? $container->get($config['stream_strategy']) : null;
-
         $snapshotStore = isset($config['snapshot_store'])? $container->get($config['snapshot_store']) : null;
 
-        return new $repositoryClass($eventStore, $aggregateType, $aggregateTranslator, $streamStrategy, $snapshotStore);
+        $streamName = isset($config['stream_name'])? new StreamName($config['stream_name']) : null;
+
+        $oneStreamPerAggregate = isset($config['one_stream_per_aggregate'])? (bool)$config['one_stream_per_aggregate'] : false;
+
+        return new $repositoryClass($eventStore, $aggregateType, $aggregateTranslator, $snapshotStore, $streamName, $oneStreamPerAggregate);
     }
 
     /**

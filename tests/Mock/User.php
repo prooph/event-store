@@ -127,6 +127,7 @@ class User
     {
         $this->version += 1;
         $this->recordedEvents[] = $domainEvent;
+        $this->apply($domainEvent);
     }
 
     public function apply(TestDomainEvent $event)

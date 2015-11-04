@@ -43,7 +43,7 @@ interface DefaultAggregateRootContract
     public function popRecordedEvents();
 
     /**
-     * @param Message $event
+     * @param $event
      */
-    public function apply(Message $event);
+    public function apply($event);
 }

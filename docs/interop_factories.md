@@ -99,8 +99,8 @@ configuration to our application configuration:
 ]
 ```
 
-If you also want to configure a custom stream strategy or want to make use of a snapshot adapter then you need to make
-them available as services in the container and use the configuration to let the factory inject them in the repository.
+If you want to speed up loading of aggregates with a snapshot store then you need to make
+it available as service in the container and use the configuration to let the factory inject the snapshot store in the repository.
 
 ```php
 [
@@ -110,11 +110,46 @@ them available as services in the container and use the configuration to let the
                 'repository_class' => MyUserRepository::class,
                 'aggregate_type' => MyUser::class,
                 'aggregate_translator' => 'user_translator',
-                'stream_strategy' => 'user_stream' // <-- Custom stream strategy service id
                 'snapshot_store' => 'awesome_snapshot_store' // <-- SnapshotStore service id
             ]
         ]
     ]
 ]
 ```
+
+You can also configure a custom stream name (default is `event_stream`):
+
+```php
+[
+    'prooph' => [
+        'event_store' => [
+            'user_repository' => [
+                'repository_class' => MyUserRepository::class,
+                'aggregate_type' => MyUser::class,
+                'aggregate_translator' => 'user_translator',
+                'snapshot_store' => 'awesome_snapshot_store', // <-- SnapshotStore service id
+                'stream_name' => 'user_stream' // <-- Custom stream name
+            ]
+        ]
+    ]
+]
+```
+
+Last but not least you can enable the so called "One-Stream-Per-Aggregate-Mode":
+```php
+[
+    'prooph' => [
+        'event_store' => [
+            'user_repository' => [
+                'repository_class' => MyUserRepository::class,
+                'aggregate_type' => MyUser::class,
+                'aggregate_translator' => 'user_translator',
+                'snapshot_store' => 'awesome_snapshot_store', // <-- SnapshotStore service id
+                'one_stream_per_aggregate' => true // <-- Enable One-Stream-Per-Aggregate-Mode
+            ]
+        ]
+    ]
+]
+```
+
 
