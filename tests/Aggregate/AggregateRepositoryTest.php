@@ -191,7 +191,7 @@ class AggregateRepositoryTest extends TestCase
     {
         $adapter = $this->prophesize(Adapter::class);
 
-        $adapter->load(Argument::that(function(StreamName $streamName) {
+        $adapter->load(Argument::that(function (StreamName $streamName) {
             return $streamName->toString() === User::class . '-123';
         }), null)->willReturn(new Stream(new StreamName(User::class . '-123'), new \ArrayIterator([])));
 
