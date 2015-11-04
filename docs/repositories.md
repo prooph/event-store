@@ -56,7 +56,7 @@ Let's have a look at the constructor
  * @param null|string   $identifierMethodName
  * @param null|string   $versionMethodName
  * @param null|string   $popRecordedEventsMethodName
- * @param null|string   $applyEventsMethodsName
+ * @param null|string   $replayEventsMethodsName
  * @param null|string   $staticReconstituteFromHistoryMethodName
  * @param null|callable $eventToMessageCallback
  * @param null|callable $messageToEventCallback
@@ -65,7 +65,7 @@ public function __construct(
     $identifierMethodName = null,
     $versionMethodName = null,
     $popRecordedEventsMethodName = null,
-    $applyEventsMethodsName = null,
+    $replayEventsMethodsName = null,
     $staticReconstituteFromHistoryMethodName = null,
     $eventToMessageCallback = null,
     $messageToEventCallback = null)
@@ -87,9 +87,9 @@ We can identify 7 dependencies but all are optional.
   - defaults to `popRecordedEvents`
   - with this method the `ConfigurableAggregateTranslator` requests the latest recorded events from your aggregate
   - the aggregate should also clear its internal event cache before returning the events as no additional method is invoked to do so
-- `applyStreamEvents`
-  - defaults to `apply`
-  - used in case the repository loaded a snapshot and needs to apply newer events
+- `replayStreamEvents`
+  - defaults to `replay`
+  - used in case the repository loaded a snapshot and needs to replay newer events
 - `$staticReconstituteFromHistoryMethodName`
   - defaults to `reconstituteFromHistory`
   - like indicated in the parameter name the referenced method must be static (a named constructor) which must return an instance of the aggregate with all events replayed

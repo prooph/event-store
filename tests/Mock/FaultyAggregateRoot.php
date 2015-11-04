@@ -58,7 +58,7 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
     /**
      * @param $event
      */
-    public function apply($event)
+    public function replay($event)
     {
         // faulty method
         return;

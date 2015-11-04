@@ -51,5 +51,5 @@ interface AggregateTranslator
      * @param $anEventSourcedAggregateRoot
      * @param Iterator $events
      */
-    public function applyStreamEvents($anEventSourcedAggregateRoot, Iterator $events);
+    public function replayStreamEvents($anEventSourcedAggregateRoot, Iterator $events);
 }
