@@ -12,9 +12,12 @@
 namespace ProophTest\EventStore\Aggregate;
 
 use Prooph\Common\Event\ActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Aggregate\AggregateRepository;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Snapshot\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Snapshot\Snapshot;
 use Prooph\EventStore\Snapshot\SnapshotStore;
@@ -24,6 +27,7 @@ use ProophTest\EventStore\Mock\User;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use ProophTest\EventStore\TestCase;
+use Prophecy\Argument;
 
 /**
  * Class AggregateRepositoryTest
@@ -178,6 +182,29 @@ class AggregateRepositoryTest extends TestCase
     public function it_returns_early_on_get_aggregate_root_when_there_are_no_stream_events()
     {
         $this->assertNull($this->repository->getAggregateRoot('something'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_loads_the_entire_stream_if_one_stream_per_aggregate_is_enabled()
+    {
+        $adapter = $this->prophesize(Adapter::class);
+
+        $adapter->load(Argument::that(function(StreamName $streamName) {
+            return $streamName->toString() === User::class . '-123';
+        }), null)->willReturn(new Stream(new StreamName(User::class . '-123'), new \ArrayIterator([])));
+
+        $repository = new AggregateRepository(
+            new EventStore($adapter->reveal(), new ProophActionEventEmitter()),
+            AggregateType::fromAggregateRootClass(User::class),
+            new ConfigurableAggregateTranslator(),
+            null,
+            null,
+            true
+        );
+
+        $repository->getAggregateRoot('123');
     }
 
     /**

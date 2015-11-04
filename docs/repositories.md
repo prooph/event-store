@@ -13,7 +13,7 @@ Afterwards you should be able to integrate `prooph/event-store` into your infras
 
 We assume that you want to work with event sourced aggregates. If you are not sure what we are talking about
 please refer to the great educational project [Buttercup.Protects](http://buttercup-php.github.io/protects/) by Mathias Verraes.
-prooph/event-store does not include base classes or traits to add event sourced capabilities to your entities.
+prooph/event-store does not include base classes or traits to add event sourced capabilities to your aggregates.
 
 Sounds bad? It isn't!
 
@@ -21,36 +21,51 @@ It is your job to write something like `Buttercup.Protects` for your model. Don'
 If you just want to play with the idea you can have a look at [prooph/event-sourcing](https://github.com/prooph/event-sourcing).
 It is our internal event sourcing package and ships with support for prooph/event-store.
 
+The event store doesn't know anything about aggregates. It is just interested in `Prooph\Common\Messaging\Message events`.
+These events are organized in `Prooph\EventStore\Stream\Stream`s.
+A repository is responsible for extracting pending events from aggregates and putting them in the correct stream.
+And the repository must also be able to load persisted events from a stream and reconstitute an aggregate.
+To provide this functionality the repository makes use of various helper classes explained below.
+
+## AggregateType
+Each repository is responsible for one [AggregateType](../src/Aggregate/AggregateType.php). Super types are not supported.
+Imagine we have a domain with `Admin extends User` and `Employee extends User`. You'd need to have a `AdminRepository` and
+a `EmployeeRepository` in this case. If this is not what you want you can create a custom aggregate translator (see below)
+which is capable of reconstituting the correct types based on information derived from persisted domain events.
+Then you can have a `UserRepository` set up with your custom aggregate translator and it should work.
+
 ## AggregateTranslator
 
 To achieve 100% decoupling between layers and/or contexts you can make use of translation adapters.
 For prooph/event-store such a translation adapter is called an [AggregateTranslator](../src/Aggregate/AggregateTranslator.php).
 
-The interface requires you to implement 4 methods:
+The interface requires you to implement 5 methods:
 
 - extractAggregateId
+- extractAggregateVersion
 - extractPendingStreamEvents
 - reconstituteAggregateFromHistory
-- applyPendingStreamEvents
+- applyStreamEvents
 
-That is all a repository needs to handle your event sourced aggregates. But to make it even more simple to get started
-prooph/event-store ships with a [ConfigurableAggregateTranslator](../src/Aggregate/ConfigurableAggregateTranslator.php) which implements the interface.
+To make your life easier prooph/event-store ships with a [ConfigurableAggregateTranslator](../src/Aggregate/ConfigurableAggregateTranslator.php) which implements the interface.
 
 Let's have a look at the constructor
 
 ```php
 /**
  * @param null|string   $identifierMethodName
+ * @param null|string   $versionMethodName
  * @param null|string   $popRecordedEventsMethodName
- * @param null|string   $applyRecordedEventsMethodsName
+ * @param null|string   $applyEventsMethodsName
  * @param null|string   $staticReconstituteFromHistoryMethodName
  * @param null|callable $eventToMessageCallback
  * @param null|callable $messageToEventCallback
  */
 public function __construct(
     $identifierMethodName = null,
+    $versionMethodName = null,
     $popRecordedEventsMethodName = null,
-    $applyRecordedEventsMethodsName = null,
+    $applyEventsMethodsName = null,
     $staticReconstituteFromHistoryMethodName = null,
     $eventToMessageCallback = null,
     $messageToEventCallback = null)
@@ -59,20 +74,22 @@ public function __construct(
 }
 ```
 
-We can identify 6 dependencies but all are optional.
+We can identify 7 dependencies but all are optional.
 
 - `$identifierMethodName`
   - defaults to `getId`
-  - it is used to `AggregateTranslator::extractAggregateId` and must return a string
+  - used to `extractAggregateId` and must return a string
   - you can have a translator per aggregate type, so if you prefer to have methods reflecting domain language you likely want to use methods like `getTrackingId`, `getProductNumber`, etc.. As you can see, this is no problem for the event store. Feel free to model your aggregates exactly the way you need it!
+- `$versionMethodName`
+  - defaults to `getVersion`
+  - used to `extractVersion` of the aggregate root
 - `$popRecordedEventsMethodName`
   - defaults to `popRecordedEvents`
   - with this method the `ConfigurableAggregateTranslator` requests the latest recorded events from your aggregate
-  - the aggregate should also clear the event cache before returning the events
-- `applyPendingStreamEvents`
+  - the aggregate should also clear its internal event cache before returning the events as no additional method is invoked to do so
+- `applyStreamEvents`
   - defaults to `apply`
-  - successfully persisted domain events are passed back to the aggregate root using this method
-  - recording and applying events are two different operations in the repository, [read more ...](apply_events_late.md)
+  - used in case the repository loaded a snapshot and needs to apply newer events
 - `$staticReconstituteFromHistoryMethodName`
   - defaults to `reconstituteFromHistory`
   - like indicated in the parameter name the referenced method must be static (a named constructor) which must return an instance of the aggregate with all events replayed
@@ -85,28 +102,37 @@ We can identify 6 dependencies but all are optional.
 - `$messageToEventCallback`
   - completely optional
   - it is the opposite of `$eventToMessageCallback`
-  - when you pass a callable it is invoked for each message (loaded from the event store) before `$staticReconstituteFromHistoryMethodName` is called
+  - when you pass a callable it is invoked for each message (loaded from the event store) before `$staticReconstituteFromHistoryMethodName` or `$applyEventsMethodsName`is called
 
 
 *Note: When using the translation callbacks shown above you should consider translating domain events into `Prooph\Common\Messaging\DomainEvent` objects. It is a default implementation of the `Message` interface and all event store adapters can handle it out-of-the-box.
 If you decide to provide your own implementation of `Prooph\Common\Messaging\Message` you should have a look at `Prooph\Common\Messaging\MessageFactory` and `Prooph\Common\Messaging\MessageConverter` because the event store adapters work with these to translate events into PHP arrays and back.*
 
-## Stream Strategies
+## Snapshot Store
 
-Besides the `AggregateTranslator` prooph/event-store offers a second customization option. With stream strategies you can control
-how the event store should organize the event streams. The default behaviour of the event store is to store all events in a single stream.
-But depending on the amount of events and the adapter used you may want to have a stream per aggregate instance or a stream per aggregate type.
-See the list below:
+A repository can be set up with a snapshot store to speed up loading of aggregates.
+Checkout the [snapshot docs](snapshots.md) for more information.
 
-- [SingleStreamStrategy](../src/Stream/SingleStreamStrategy.php): Stores the events of all aggregates in one single stream
-- [AggregateStreamStrategy](../src/Stream/AggregateStreamStrategy.php): Creates a stream for each aggregate instance
-- [AggregateTypeStreamStrategy](../src/Stream/AggregateTypeStreamStrategy.php): Stores the events of all aggregates of the same type (f.e. all Users) in one stream
+## Event Streams
+
+An event stream can be compared with a table in a relational database (and in case of the doctrine adapter it is a table).
+By default the repository puts all events of all aggregates (no matter the type) in a single stream called **event_stream**.
+If you wish to use another name, you can pass a custom [StreamName](../src/Stream/StreamName.php) to the repository.
+This is especially useful when you want to have an event stream per aggregate type, for example store all user related events
+in a `user_stream`.
+
+The repository can also be configured to create a new stream for each new aggregate instance. You need to turn the last
+constructor parameter `oneStreamPerAggregate` to true to enable the mode.
+This can be useful when working for example with mongoDb and you want to persist all events of an aggregate in single document (take care of the document size limit).
+If the mode is enabled the repository builds a unique stream name for each aggregate by using the `AggregateType` and append
+the `aggregateId` of the aggregate. The stream name for a new `Acme\User` with id `123` would look like this: `Acme\User-123`.
+
+Depending on the event store adapter used the stream name is maybe modified by the adapter to replace or removed non supported characters.
+Check your adapter of choice for details. You can also override `AggregateRepository::determineStreamName` to apply a custom logic
+for building the stream name.
 
 ## Wiring It Together
-
-Now that you know the customization options you may ask: **How to put all that together?**
-The answer is: **With a repository!**
-The best way to see it in action is by looking at the [AggregateRepositoryTest](../tests/Aggregate/AggregateRepositoryTest.php).
+Best way to see a repository in action is by looking at the [AggregateRepositoryTest](../tests/Aggregate/AggregateRepositoryTest.php).
 
 ### Set Up
 
@@ -124,8 +150,8 @@ $this->eventStore->create(new Stream(new StreamName('event_stream'), []));
 $this->eventStore->commit();
 ```
 
-Notice the injected dependencies! A stream strategy is not injected. This would be the fourth parameter of the repository constructor.
-It is optional and defaults to `SingleStreamStrategy` using `event_stream` as the stream name.
+Notice the injected dependencies! Snapshot store, stream name and stream mode are optional and not injected for all tests.
+Therefor stream name defaults to **event_stream** and the repository appends all events to this stream.
 For the test cases we also create the stream on every run. In a real application you need to do this only once.
 
 ```php
@@ -142,8 +168,6 @@ public function it_adds_a_new_aggregate()
 
     $this->eventStore->commit();
 
-    $this->repository->clearIdentityMap();
-
     $fetchedUser = $this->repository->getAggregateRoot(
         $user->getId()->toString()
     );
@@ -159,8 +183,6 @@ public function it_adds_a_new_aggregate()
 ```
 
 In the first tes case you can see how an aggregate (the user entity in this case) can be added to the repository.
-Under the hood the `ConfigurableAggregateTranslator` and the `SingleStreamStrategy` do their jobs so that the
-recorded domain events of the `user aggregate root` are stored in the `event_stream`.
 
 ```php
 /**
@@ -182,13 +204,11 @@ public function it_tracks_changes_of_aggregate()
         $user->getId()->toString()
     );
 
-    $this->assertSame($user, $fetchedUser);
+    $this->assertNotSame($user, $fetchedUser);
 
     $fetchedUser->changeName('Max Mustermann');
 
     $this->eventStore->commit();
-
-    $this->repository->clearIdentityMap();
 
     $fetchedUser2 = $this->repository->getAggregateRoot(
         $user->getId()->toString()
@@ -206,6 +226,13 @@ a repository method. Only `$this->eventStore->commit();` is called. But as you c
 is changed and the appropriate domain event was added to the `event_stream`. This happens becasue the repository manages an identity map
 internally. Each aggregate root loaded via `AggregateRepository::getAggregateRoot` is added to the identity map and
 new events recorded by such an agggregate root are added automatically to the event stream on `EventStore::commit`.
+
+**But** the identity map is cleared after each transaction commit. You may noticed the `assertNotSame` checks in the test.
+The repository keeps an aggregate only in memory as long as the transaction is active. Otherwise multiple long-running
+processes dealing with the same aggregate would run into concurrency issues very fast.
+
+The test case has some more tests including snapshot usage and working with different stream names / strategies.
+Just browse through the test methods for details.
 
 ## Factory-Driven Creation
 
