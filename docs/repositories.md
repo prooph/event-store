@@ -123,7 +123,7 @@ in a `user_stream`.
 
 The repository can also be configured to create a new stream for each new aggregate instance. You need to turn the last
 constructor parameter `oneStreamPerAggregate` to true to enable the mode.
-This can be useful when working for example with mongoDb and you want to persist all events of an aggregate in single document (take care of the document size limit).
+This can be useful when working for example with mongoDB and you want to persist all events of an aggregate in single document (take care of the document size limit).
 If the mode is enabled the repository builds a unique stream name for each aggregate by using the `AggregateType` and append
 the `aggregateId` of the aggregate. The stream name for a new `Acme\User` with id `123` would look like this: `Acme\User-123`.
 
