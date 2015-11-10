@@ -6,3 +6,4 @@
 .idea
 nbproject
 composer.lock
+docs/html
