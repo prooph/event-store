@@ -1,0 +1,14 @@
+{
+  "title": "PHP EventStore Implementation",
+  "content": [
+    {"intro": "../README.md"},
+    {"event_store": "event_store.md"},
+    {"repositories": "repositories.md"},
+    {"snapshots": "snapshots.md"},
+    {"replay_history": "replay_history.md"},
+    {"upcasting": "upcasting.md"},
+    {"interop_factories": "interop_factories.md"}
+  ],
+  "target": "./html",
+  "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/cerulean/main.php"
+}
