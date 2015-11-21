@@ -46,9 +46,9 @@ $eventStore->getActionEventEmitter()->attachListener(
 );
 ```
 
-More complex plugins are typically provided as classes with own dependencies. A plugin can implement the [Plugin](src/Plugin/Plugin.php) interface
+More complex plugins are typically provided as classes with own dependencies. A plugin can implement the `Prooph\EventStore\Plugin\Plugin` interface
 and can then attach itself to the event store in the `Plugin::setUp($eventStore)` method.
-Implementing the interface is especially useful when you use the event store factory described in the [Container-Driven Creation](#container-driven-creation) section.
+Implementing the interface is especially useful when you use the event store factory.
 
 ## Plugin Use Cases
 
@@ -60,7 +60,3 @@ The event-driven system opens the door for customizations. Here are some ideas w
 - Convert events into custom event objects before they are passed back to a repository
 - Implement your own Unit of Work and synchronizes it with the `transaction`, `commit.pre/post` and `rollback` events
 - ...
-
-## Factory-Driven Creation
-
-See [Interop Factories](interop_factories.md)

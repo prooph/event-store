@@ -13,9 +13,11 @@ is capable of providing aggregate snapshots.
 The snapshot feature is provided by the [prooph/snapshotter](https://github.com/prooph/snapshotter) package.
 Please refer to the docs of the package to learn more about it.
 
-Also choose one of the [available snapshot adapters](../README.md#available-snapshot-adapters) for the
-[Snapshot Store](../src/Snapshot/SnapshotStore.php) to take snapshots.
+Also choose one of the `Prooph\EventStore\Snapshot\Adapter\Adapter` for the
+`Prooph\EventStore\Snapshot\SnapshotStore` to take snapshots.
 Inject the snapshot store into an aggregate repository and the repository will use the snapshot store to speed up
 aggregate loading.
 
-*Note: * Snapshot store and all snapshot adapters ship with [interop factories](interop_factories.md) to ease set up.
+Our example application [proophessor-do](https://github.com/prooph/proophessor-do) contains a snapshotting tutorial.
+
+*Note: Snapshot store and all snapshot adapters ship with interop factories to ease set up.*

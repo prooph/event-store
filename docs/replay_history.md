@@ -46,7 +46,7 @@ the `streamNames` array. Metadata can be used to filter a stream by aggregate ty
 
 ## Order By Created-At And Aggregate Version
 
-As you can see in the replay method the event store makes use of a special [CompositeIterator](../src/Util/CompositeIterator.php)
+As you can see in the replay method the event store makes use of a special `Prooph\EventStore\Util\CompositeIterator`
 with a callback comparing two events by their `createdAt` property. The iterator is initialized with all stream iterators
 provided by the event store adapter. Each stream iterator is already ordered by `event.created_at` ascending and `event.version` ascending.
 When you loop over the composite iterator in a `foreach` you then get all events of all iterators

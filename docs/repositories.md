@@ -28,7 +28,7 @@ And the repository must also be able to load persisted events from a stream and 
 To provide this functionality the repository makes use of various helper classes explained below.
 
 ## AggregateType
-Each repository is responsible for one [AggregateType](../src/Aggregate/AggregateType.php). Super types are not supported.
+Each repository is responsible for one `Prooph\EventStore\Aggregate\AggregateType`. Super types are not supported.
 Imagine we have a domain with `Admin extends User` and `Employee extends User`. You'd need to have a `AdminRepository` and
 a `EmployeeRepository` in this case. If this is not what you want you can create a custom aggregate translator (see below)
 which is capable of reconstituting the correct types based on information derived from persisted domain events.
@@ -37,7 +37,7 @@ Then you can have a `UserRepository` set up with your custom aggregate translato
 ## AggregateTranslator
 
 To achieve 100% decoupling between layers and/or contexts you can make use of translation adapters.
-For prooph/event-store such a translation adapter is called an [AggregateTranslator](../src/Aggregate/AggregateTranslator.php).
+For prooph/event-store such a translation adapter is called an `Prooph\EventStore\Aggregate\AggregateTranslator`.
 
 The interface requires you to implement 5 methods:
 
@@ -47,7 +47,7 @@ The interface requires you to implement 5 methods:
 - reconstituteAggregateFromHistory
 - applyStreamEvents
 
-To make your life easier prooph/event-store ships with a [ConfigurableAggregateTranslator](../src/Aggregate/ConfigurableAggregateTranslator.php) which implements the interface.
+To make your life easier prooph/event-store ships with a `Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator` which implements the interface.
 
 Let's have a look at the constructor
 
@@ -86,7 +86,7 @@ We can identify 7 dependencies but all are optional.
 - `$popRecordedEventsMethodName`
   - defaults to `popRecordedEvents`
   - with this method the `ConfigurableAggregateTranslator` requests the latest recorded events from your aggregate
-  - the aggregate should also clear its internal event cache before returning the events as no additional method is invoked to do so
+  - the aggregate should also clear its internal event cache before returning the events as no additional method is invoked
 - `replayStreamEvents`
   - defaults to `replay`
   - used in case the repository loaded a snapshot and needs to replay newer events
@@ -111,13 +111,13 @@ If you decide to provide your own implementation of `Prooph\Common\Messaging\Mes
 ## Snapshot Store
 
 A repository can be set up with a snapshot store to speed up loading of aggregates.
-Checkout the [snapshot docs](snapshots.md) for more information.
+Checkout the snapshot docs for more information.
 
 ## Event Streams
 
 An event stream can be compared with a table in a relational database (and in case of the doctrine adapter it is a table).
 By default the repository puts all events of all aggregates (no matter the type) in a single stream called **event_stream**.
-If you wish to use another name, you can pass a custom [StreamName](../src/Stream/StreamName.php) to the repository.
+If you wish to use another name, you can pass a custom `Prooph\EventStore\Stream\StreamName` to the repository.
 This is especially useful when you want to have an event stream per aggregate type, for example store all user related events
 in a `user_stream`.
 
@@ -132,7 +132,7 @@ Check your adapter of choice for details. You can also override `AggregateReposi
 for building the stream name.
 
 ## Wiring It Together
-Best way to see a repository in action is by looking at the [AggregateRepositoryTest](../tests/Aggregate/AggregateRepositoryTest.php).
+Best way to see a repository in action is by looking at the `ProophTest\EventStore\Aggregate\AggregateRepositoryTest`.
 
 ### Set Up
 
@@ -182,7 +182,7 @@ public function it_adds_a_new_aggregate()
 }
 ```
 
-In the first tes case you can see how an aggregate (the user entity in this case) can be added to the repository.
+In the first test case you can see how an aggregate (the user entity in this case) can be added to the repository.
 
 ```php
 /**
@@ -234,7 +234,4 @@ processes dealing with the same aggregate would run into concurrency issues very
 The test case has some more tests including snapshot usage and working with different stream names / strategies.
 Just browse through the test methods for details.
 
-## Factory-Driven Creation
-
-See [Interop Factories](interop_factories.md)
 
