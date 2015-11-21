@@ -39,7 +39,9 @@ class InMemoryAdapter implements Adapter
      */
     public function create(Stream $stream)
     {
-        $this->streams[$stream->streamName()->toString()] = $stream->streamEvents();
+        $streamEvents = $stream->streamEvents();
+        $streamEvents->rewind();
+        $this->streams[$stream->streamName()->toString()] = $streamEvents;
     }
 
     /**
@@ -91,6 +93,9 @@ class InMemoryAdapter implements Adapter
             return new Stream($streamName, new \ArrayIterator($filteredEvents));
         }
 
+        //Rewind before returning cached iterator as event store uses Iterator::valid()
+        //to test if stream contains events
+        $streamEvents->rewind();
         return new Stream($streamName, $streamEvents);
     }
 
