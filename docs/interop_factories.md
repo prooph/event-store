@@ -4,7 +4,7 @@ Instead of providing a module, a bundle, a bridge or similar framework integrati
 
 ## Factory-Driven Creation
 
-The concept behind these [factories](../src/Container) is simple but powerful. It allows us to provide you with bootstrapping logic for the event store and related components
+The concept behind these factories (see `src/Container` folder) is simple but powerful. It allows us to provide you with bootstrapping logic for the event store and related components
 without the need to rely on a specific framework. However, the factories have three requirements.
 
 ### Requirements
@@ -44,8 +44,8 @@ If the requirements are met you just need to add a new section in your applicati
 ]
 ```
 
-... and register the [EventStoreFactory](../src/Container/EventStoreFactory.php) in your IoC container. We recommend using the service id `Prooph\EventStore\EventStore (EventStore::class)` for the event store
-because other factories like the [stream factories](../src/Container/Stream) try to locate the event store
+... and register `Prooph\EventStore\Container\EventStoreFactory` in your IoC container. We recommend using the service id `Prooph\EventStore\EventStore (EventStore::class)` for the event store
+because other factories like the stream strategy factories try to locate the event store
 by using this service id.
 
 *Note: The available event store adapters also ship with factories. Please refer to the adapter packages for details.*
@@ -69,18 +69,18 @@ Same for the snapshot store ...
 ]
 ```
 
-... and register the [SnapshotStoreFactory](../src/Container/Snapshot/SnapshotStoreFactory.php) in your IoC container. We recommend using the service id `Prooph\EventStore\Snapshot\SnapshotStore (SnapshotStore::class)` for the snapshot store.
+... and register the `Prooph\EventStore\Container\Snapshot\SnapshotStoreFactory` in your IoC container. We recommend using the service id `Prooph\EventStore\Snapshot\SnapshotStore (SnapshotStore::class)` for the snapshot store.
 
 *Note: The available snapshot store adapters also ship with factories. Please refer to the adapter packages for details.*
 
 ### AbstractAggregateRepositoryFactory
 
-To ease set up of repositories for your aggregate roots prooph/event-store also ships with a [AbstractAggregateRepositoryFactory](../src/Aggregate/AbstractAggregateRepositoryFactory.php).
+To ease set up of repositories for your aggregate roots prooph/event-store also ships with a `Prooph\EventStore\Container\Aggregate\AbstractAggregateRepositoryFactory`.
 It is an abstract class implementing the `container-interop RequiresContainerId` interface. The `containerId` method
 itself is not implemented in the abstract class. You have to extend it and provide the container id because each
 aggregate repository needs a slightly different configuration and therefor needs its own config key.
 
-*Note: You can have a look at the [RepositoryMock](../tests/Mock/RepositoryMock.php). It sounds more complex than it is.*
+*Note: You can have a look at the `ProophTest\EventStore\Mock\RepositoryMockFactory`. It sounds more complex than it is.*
 
 Let's say we have a repository factory for a User aggregate root. We use `user_repository` as container id and add this
 configuration to our application configuration:
