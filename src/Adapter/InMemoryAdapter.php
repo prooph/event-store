@@ -93,6 +93,9 @@ class InMemoryAdapter implements Adapter
             return new Stream($streamName, new \ArrayIterator($filteredEvents));
         }
 
+        //Rewind before returning cached iterator as event store uses Iterator::valid()
+        //to test if stream contains events
+        $streamEvents->rewind();
         return new Stream($streamName, $streamEvents);
     }
 
