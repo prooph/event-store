@@ -31,17 +31,10 @@ For a short overview please see the annotated [quickstart.php](examples/quicksta
 
 ## Documentation
 
-Documentation is [in the doc tree](docs/), and can be compiled using [bookdown](http://bookdown.io) and [Docker](https://www.docker.com/)
+Documentation is [in the doc tree](docs/), and can be compiled using [bookdown](http://bookdown.io).
 
 ```console
-$ docker run -it --rm -v $(pwd):/app sandrokeil/bookdown docs/bookdown.json
-$ docker run -it --rm -p 8080:8080 -v $(pwd):/app php:5.6-cli php -S 0.0.0.0:8080 -t /app/docs/html
-```
-
-or make sure bookdown is installed globally via composer and `$HOME/.composer/vendor/bin` is on your `$PATH`.
-
-```console
-$ bookdown docs/bookdown.json
+$ php ./vendor/bin/bookdown docs/bookdown.json
 $ php -S 0.0.0.0:8080 -t docs/html/
 ```
 
