@@ -39,7 +39,9 @@ class InMemoryAdapter implements Adapter
      */
     public function create(Stream $stream)
     {
-        $this->streams[$stream->streamName()->toString()] = $stream->streamEvents();
+        $streamEvents = $stream->streamEvents();
+        $streamEvents->rewind();
+        $this->streams[$stream->streamName()->toString()] = $streamEvents;
     }
 
     /**
