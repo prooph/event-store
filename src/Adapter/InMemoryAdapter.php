@@ -11,6 +11,10 @@
 
 namespace Prooph\EventStore\Adapter;
 
+use AppendIterator;
+use ArrayIterator;
+use DateTimeInterface;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Stream\Stream;
@@ -25,9 +29,9 @@ use Prooph\EventStore\Stream\StreamName;
 class InMemoryAdapter implements Adapter
 {
     /**
-     * @var array
+     * @var Iterator[]
      */
-    protected $streams = [];
+    protected $streams;
 
     /**
      * @param Stream $stream
@@ -35,16 +39,18 @@ class InMemoryAdapter implements Adapter
      */
     public function create(Stream $stream)
     {
-        $this->streams[$stream->streamName()->toString()] = $stream->streamEvents();
+        $streamEvents = $stream->streamEvents();
+        $streamEvents->rewind();
+        $this->streams[$stream->streamName()->toString()] = $streamEvents;
     }
 
     /**
      * @param StreamName $streamName
-     * @param Message[] $domainEvents
+     * @param Iterator $domainEvents
      * @throws StreamNotFoundException
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $domainEvents)
+    public function appendTo(StreamName $streamName, Iterator $domainEvents)
     {
         if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
@@ -55,7 +61,11 @@ class InMemoryAdapter implements Adapter
             );
         }
 
-        $this->streams[$streamName->toString()] = array_merge($this->streams[$streamName->toString()], $domainEvents);
+        $appendIterator = new AppendIterator();
+        $appendIterator->append($this->streams[$streamName->toString()]);
+        $appendIterator->append($domainEvents);
+
+        $this->streams[$streamName->toString()] = $appendIterator;
     }
 
     /**
@@ -69,10 +79,9 @@ class InMemoryAdapter implements Adapter
             return;
         }
 
-        /** @var $streamEvents Message[] */
         $streamEvents = $this->streams[$streamName->toString()];
 
-        if (!is_null($minVersion)) {
+        if (null !== $minVersion) {
             $filteredEvents = [];
 
             foreach ($streamEvents as $streamEvent) {
@@ -81,9 +90,12 @@ class InMemoryAdapter implements Adapter
                 }
             }
 
-            return new Stream($streamName, $filteredEvents);
+            return new Stream($streamName, new \ArrayIterator($filteredEvents));
         }
 
+        //Rewind before returning cached iterator as event store uses Iterator::valid()
+        //to test if stream contains events
+        $streamEvents->rewind();
         return new Stream($streamName, $streamEvents);
     }
 
@@ -92,27 +104,59 @@ class InMemoryAdapter implements Adapter
      * @param array $metadata
      * @param null|int $minVersion
      * @throws StreamNotFoundException
-     * @return Message[]
+     * @return Iterator
      */
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
+    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null)
     {
-        $streamEvents = [];
-
         if (! isset($this->streams[$streamName->toString()])) {
-            return [];
+            return new ArrayIterator();
         }
+
+        $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                if (is_null($minVersion) || $streamEvent->version() >= $minVersion) {
+                if (null === $minVersion || $streamEvent->version() >= $minVersion) {
                     $streamEvents[] = $streamEvent;
                 }
             }
         }
 
-        return $streamEvents;
+        return new ArrayIterator($streamEvents);
     }
 
+    /**
+     * @param StreamName $streamName
+     * @param DateTimeInterface|null $since
+     * @param array $metadata
+     * @return ArrayIterator
+     */
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = [])
+    {
+        if (! isset($this->streams[$streamName->toString()])) {
+            return new ArrayIterator();
+        }
+
+        $streamEvents = [];
+
+        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
+            if (null === $since && $this->matchMetadataWith($streamEvent, $metadata)) {
+                $streamEvents[] = $streamEvent;
+            } elseif ($streamEvent->createdAt()->format('U.u') >= $since->format('U.u')
+                && $this->matchMetadataWith($streamEvent, $metadata)
+            ) {
+                $streamEvents[] = $streamEvent;
+            }
+        }
+
+        return new ArrayIterator($streamEvents);
+    }
+
+    /**
+     * @param Message $streamEvent
+     * @param array $metadata
+     * @return bool
+     */
     protected function matchMetadataWith(Message $streamEvent, array $metadata)
     {
         if (empty($metadata)) {

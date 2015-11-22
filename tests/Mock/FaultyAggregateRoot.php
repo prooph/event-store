@@ -9,24 +9,29 @@
  * Date: 8/22/15 - 11:06 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
 /**
  * Class FaultyAggregateRoot
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 final class FaultyAggregateRoot implements DefaultAggregateRootContract
 {
+    public function getVersion()
+    {
+        //faulty return
+        return;
+    }
 
     /**
-     * @param Message[] $historyEvents
+     * @param \Iterator $historyEvents
      * @return DefaultAggregateRootContract
      */
-    public static function reconstituteFromHistory($historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents)
     {
         //faulty method
         return;
@@ -47,6 +52,15 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
     public function popRecordedEvents()
     {
         //faulty method
+        return;
+    }
+
+    /**
+     * @param $event
+     */
+    public function replay($event)
+    {
+        // faulty method
         return;
     }
 }

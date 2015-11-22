@@ -9,7 +9,10 @@
 
 namespace Prooph\EventStore;
 
-use Assert\Assertion;
+use AppendIterator;
+use ArrayIterator;
+use DateTimeInterface;
+use Iterator;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
@@ -18,6 +21,7 @@ use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Util\CompositeIterator;
 
 /**
  * EventStore
@@ -39,14 +43,14 @@ class EventStore
     protected $actionEventEmitter;
 
     /**
-     * @var Message[]
+     * @var Iterator
      */
-    protected $recordedEvents = [];
+    protected $recordedEvents;
 
     /**
-     * @var int
+     * @var bool
      */
-    protected $transactionLevel = 0;
+    protected $inTransaction = false;
 
     /**
      * Constructor
@@ -58,6 +62,7 @@ class EventStore
     {
         $this->adapter = $adapter;
         $this->actionEventEmitter = $actionEventEmitter;
+        $this->recordedEvents = new ArrayIterator();
     }
 
     /**
@@ -71,7 +76,7 @@ class EventStore
     }
 
     /**
-     * @return Message[]
+     * @return Iterator
      */
     public function getRecordedEvents()
     {
@@ -95,7 +100,7 @@ class EventStore
             return;
         }
 
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Stream creation failed. EventStore is not in an active transaction');
         }
 
@@ -103,7 +108,11 @@ class EventStore
 
         $this->adapter->create($stream);
 
-        $this->recordedEvents = array_merge($this->recordedEvents, $stream->streamEvents());
+        $appendIterator = new AppendIterator();
+        $appendIterator->append($this->recordedEvents);
+        $appendIterator->append($stream->streamEvents());
+
+        $this->recordedEvents = $appendIterator;
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -112,16 +121,12 @@ class EventStore
 
     /**
      * @param StreamName $streamName
-     * @param Message[] $streamEvents
+     * @param Iterator $streamEvents
      * @throws Exception\RuntimeException
      * @return void
      */
-    public function appendTo(StreamName $streamName, array $streamEvents)
+    public function appendTo(StreamName $streamName, Iterator $streamEvents)
     {
-        foreach ($streamEvents as $streamEvent) {
-            Assertion::isInstanceOf($streamEvent, Message::class);
-        }
-
         $argv = ['streamName' => $streamName, 'streamEvents' => $streamEvents];
 
         $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
@@ -132,7 +137,7 @@ class EventStore
             return;
         }
 
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Append events to stream failed. EventStore is not in an active transaction');
         }
 
@@ -141,7 +146,11 @@ class EventStore
 
         $this->adapter->appendTo($streamName, $streamEvents);
 
-        $this->recordedEvents = array_merge($this->recordedEvents, $streamEvents);
+        $appendIterator = new AppendIterator();
+        $appendIterator->append($this->recordedEvents);
+        $appendIterator->append($streamEvents);
+
+        $this->recordedEvents = $appendIterator;
 
         $event->setName(__FUNCTION__, '.post');
 
@@ -214,7 +223,7 @@ class EventStore
      * @param StreamName $streamName
      * @param array $metadata
      * @param null|int $minVersion
-     * @return Message[]
+     * @return Iterator
      */
     public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
     {
@@ -225,14 +234,14 @@ class EventStore
         $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            return $event->getParam('streamEvents', []);
+            return $event->getParam('streamEvents', new ArrayIterator([]));
         }
 
         $streamName = $event->getParam('streamName');
         $metadata = $event->getParam('metadata');
         $minVersion = $event->getParam('minVersion');
 
-        $events = $this->adapter->loadEventsByMetadataFrom($streamName, $metadata, $minVersion);
+        $events = $this->adapter->loadEvents($streamName, $metadata, $minVersion);
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -241,10 +250,51 @@ class EventStore
         $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            return [];
+            return new ArrayIterator([]);
         }
 
         return $event->getParam('streamEvents');
+    }
+
+    /**
+     * @param StreamName[] $streamNames
+     * @param DateTimeInterface|null $since
+     * @param null|array $metadatas One metadata array per stream name, same index order is required
+     * @return CompositeIterator
+     * @throws Exception\InvalidArgumentException
+     */
+    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null)
+    {
+        if (empty($streamNames)) {
+            throw new Exception\InvalidArgumentException('No stream names given');
+        }
+
+        if (null === $metadatas) {
+            $metadatas = [];
+            foreach ($streamNames as $streamName) {
+                $metadatas[] = [];
+            }
+        }
+
+        if (count($streamNames) !== count($metadatas)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'One metadata per stream name needed, given %s stream names but %s metadatas',
+                count($streamNames),
+                count($metadatas)
+            ));
+        }
+
+        $iterators = [];
+        foreach ($streamNames as $key => $streamName) {
+            $iterators[] = $this->adapter->replay($streamName, $since, $metadatas[$key]);
+        }
+
+        return new CompositeIterator($iterators, function (Message $message1 = null, Message $message2) {
+            if (null === $message1) {
+                return true;
+            }
+            return $message1->createdAt()->format('U.u') > $message2->createdAt()->format('U.u');
+        });
     }
 
     /**
@@ -254,20 +304,16 @@ class EventStore
      */
     public function beginTransaction()
     {
-        if ($this->transactionLevel === 0 && $this->adapter instanceof CanHandleTransaction) {
+        if (!$this->inTransaction && $this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
         }
 
-        if ($this->transactionLevel > 0) {
-            trigger_error("Nesting transactions is deprecated in prooph/event-store v5. Please align your transaction handling.", E_USER_DEPRECATED);
-        }
-
-        $this->transactionLevel++;
+        $this->inTransaction = true;
 
         $event = $this->actionEventEmitter->getNewActionEvent(
             __FUNCTION__,
             $this,
-            ['isNestedTransaction' => $this->transactionLevel > 1, 'transactionLevel' => $this->transactionLevel]
+            ['inTransaction' => true]
         );
 
         $this->getActionEventEmitter()->dispatch($event);
@@ -282,14 +328,13 @@ class EventStore
      */
     public function commit()
     {
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
         }
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.pre', $this);
 
-        $event->setParam('isNestedTransaction', $this->transactionLevel > 1);
-        $event->setParam('transactionLevel', $this->transactionLevel);
+        $event->setParam('inTransaction', true);
 
         $this->getActionEventEmitter()->dispatch($event);
 
@@ -298,12 +343,7 @@ class EventStore
             return;
         }
 
-        $this->transactionLevel--;
-
-        //Nested transaction commit only decreases transaction level
-        if ($this->transactionLevel > 0) {
-            return;
-        }
+        $this->inTransaction = false;
 
         if ($this->adapter instanceof CanHandleTransaction) {
             $this->adapter->commit();
@@ -311,7 +351,7 @@ class EventStore
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.post', $this, ['recordedEvents' => $this->recordedEvents]);
 
-        $this->recordedEvents = [];
+        $this->recordedEvents = new ArrayIterator();
 
         $this->getActionEventEmitter()->dispatch($event);
     }
@@ -323,7 +363,7 @@ class EventStore
      */
     public function rollback()
     {
-        if ($this->transactionLevel === 0) {
+        if (!$this->inTransaction) {
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
@@ -333,7 +373,7 @@ class EventStore
 
         $this->adapter->rollback();
 
-        $this->transactionLevel = 0;
+        $this->inTransaction = false;
 
         $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__, $this);
 
@@ -347,7 +387,7 @@ class EventStore
      */
     public function isInTransaction()
     {
-        return $this->transactionLevel > 0;
+        return $this->inTransaction;
     }
 
     /**

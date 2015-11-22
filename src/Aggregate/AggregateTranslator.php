@@ -11,6 +11,7 @@
 
 namespace Prooph\EventStore\Aggregate;
 
+use Iterator;
 use Prooph\Common\Messaging\Message;
 
 /**
@@ -23,20 +24,32 @@ interface AggregateTranslator
 {
     /**
      * @param object $eventSourcedAggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($eventSourcedAggregateRoot);
+
+    /**
+     * @param object $eventSourcedAggregateRoot
      * @return string
      */
     public function extractAggregateId($eventSourcedAggregateRoot);
 
     /**
      * @param AggregateType $aggregateType
-     * @param Message[] $historyEvents
+     * @param Iterator $historyEvents
      * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, $historyEvents);
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents);
 
     /**
      * @param object $eventSourcedAggregateRoot
      * @return Message[]
      */
     public function extractPendingStreamEvents($eventSourcedAggregateRoot);
+
+    /**
+     * @param $anEventSourcedAggregateRoot
+     * @param Iterator $events
+     */
+    public function replayStreamEvents($anEventSourcedAggregateRoot, Iterator $events);
 }

@@ -9,7 +9,7 @@
  * Date: 08/31/14 - 8:00 PM
  */
 
-namespace Prooph\EventStoreTest\Mock;
+namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
@@ -18,7 +18,7 @@ use Rhumsaa\Uuid\Uuid;
 /**
  * Class User
  *
- * @package Prooph\EventStoreTest\Mock
+ * @package ProophTest\EventStore\Mock
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class User
@@ -73,7 +73,7 @@ class User
      * @param Message[] $historyEvents
      * @return User
      */
-    public static function reconstituteFromHistory(array $historyEvents)
+    public static function reconstituteFromHistory($historyEvents)
     {
         $self = new self();
 
@@ -84,6 +84,14 @@ class User
 
     private function __construct()
     {
+    }
+
+    /**
+     * @return int
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 
     /**
@@ -117,12 +125,12 @@ class User
 
     private function recordThat(TestDomainEvent $domainEvent)
     {
+        $this->version += 1;
         $this->recordedEvents[] = $domainEvent;
-
         $this->apply($domainEvent);
     }
 
-    private function apply(TestDomainEvent $event)
+    public function apply(TestDomainEvent $event)
     {
         if ($event instanceof UserCreated) {
             $this->whenUserCreated($event);
@@ -159,7 +167,7 @@ class User
     /**
      * @param DomainEvent[] $streamEvents
      */
-    private function replay(array $streamEvents)
+    public function replay($streamEvents)
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
@@ -169,6 +177,6 @@ class User
 
     private function nextVersion()
     {
-        return ++$this->version;
+        return $this->version + 1;
     }
 }

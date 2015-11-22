@@ -9,8 +9,9 @@
  * Date: 19.04.14 - 21:27
  */
 
-namespace Prooph\EventStoreTest;
+namespace ProophTest\EventStore;
 
+use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
@@ -18,15 +19,16 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
-use Prooph\EventStoreTest\Mock\TestDomainEvent;
-use Prooph\EventStoreTest\Mock\UserCreated;
-use Prooph\EventStoreTest\Mock\UsernameChanged;
+use ProophTest\EventStore\Mock\PostCreated;
+use ProophTest\EventStore\Mock\TestDomainEvent;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
 
 /**
  * Class EventStoreTest
  *
- * @package Prooph\EventStoreTest
+ * @package ProophTest\EventStore
  * @author Alexander Miertsch <kontakt@codeliner.ws>
  */
 class EventStoreTest extends TestCase
@@ -61,152 +63,6 @@ class EventStoreTest extends TestCase
         $this->assertEquals(1, count($stream->streamEvents()));
 
         $this->assertEquals(1, count($recordedEvents));
-    }
-
-    /**
-     * @test
-     */
-    public function it_allows_nested_transactions_but_triggers_commit_post_event_only_once()
-    {
-        $postCommitEventCount = 0;
-
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$postCommitEventCount) {
-            $postCommitEventCount++;
-        });
-
-        $this->eventStore->beginTransaction();
-
-        $this->eventStore->beginTransaction();
-
-        $stream = $this->getTestStream();
-
-        $this->eventStore->create($stream);
-
-        $this->eventStore->commit();
-
-        $this->eventStore->commit();
-
-        $this->assertEquals(1, $postCommitEventCount);
-    }
-
-    /**
-     * @test
-     */
-    public function it_triggers_commit_pre_event_for_nested_transaction_too()
-    {
-        $preCommitEventCount = 0;
-
-        $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', function (ActionEvent $event) use (&$preCommitEventCount) {
-            $preCommitEventCount++;
-        });
-
-        $this->eventStore->beginTransaction();
-
-        $this->eventStore->beginTransaction();
-
-        $stream = $this->getTestStream();
-
-        $this->eventStore->create($stream);
-
-        $this->eventStore->commit();
-
-        $this->eventStore->commit();
-
-        $this->assertEquals(2, $preCommitEventCount);
-    }
-
-    /**
-     * @test
-     */
-    public function it_adds_information_about_transaction_level_to_commit_pre_event()
-    {
-        $transactionLevelOfNestedTransaction = null;
-        $transactionFlagOfNestedTransaction = null;
-        $transactionLevelOfMainTransaction = null;
-        $transactionFlagOfMainTransaction = null;
-        $triggerCount = 0;
-
-        $this->eventStore->getActionEventEmitter()->attachListener(
-            'commit.pre',
-            function (ActionEvent $event) use (
-                &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
-                &$transactionLevelOfMainTransaction, &$transactionFlagOfMainTransaction
-            ) {
-                $triggerCount++;
-
-                if ($triggerCount === 2) {
-                    $transactionLevelOfMainTransaction = $event->getParam('transactionLevel');
-                    $transactionFlagOfMainTransaction  = $event->getParam('isNestedTransaction');
-                } else {
-                    $transactionLevelOfNestedTransaction = $event->getParam('transactionLevel');
-                    $transactionFlagOfNestedTransaction  = $event->getParam('isNestedTransaction');
-                }
-            }
-        );
-
-        $this->eventStore->beginTransaction();
-
-        $this->eventStore->beginTransaction();
-
-        $stream = $this->getTestStream();
-
-        $this->eventStore->create($stream);
-
-        $this->eventStore->commit();
-
-        $this->eventStore->commit();
-
-        $this->assertEquals(1, $transactionLevelOfMainTransaction);
-        $this->assertFalse($transactionFlagOfMainTransaction);
-        $this->assertEquals(2, $transactionLevelOfNestedTransaction);
-        $this->assertTrue($transactionFlagOfNestedTransaction);
-    }
-
-    /**
-     * @test
-     */
-    public function it_adds_information_about_transaction_level_to_begin_transaction_event_and_triggers_the_event_on_every_call()
-    {
-        $transactionLevelOfNestedTransaction = null;
-        $transactionFlagOfNestedTransaction = null;
-        $transactionLevelOfMainTransaction = null;
-        $transactionFlagOfMainTransaction = null;
-        $triggerCount = 0;
-
-        $this->eventStore->getActionEventEmitter()->attachListener(
-            'beginTransaction',
-            function (ActionEvent $event) use (
-                &$transactionLevelOfNestedTransaction, &$transactionFlagOfNestedTransaction, &$triggerCount,
-                &$transactionLevelOfMainTransaction, &$transactionFlagOfMainTransaction
-            ) {
-                $triggerCount++;
-
-                if ($triggerCount === 1) {
-                    $transactionLevelOfMainTransaction = $event->getParam('transactionLevel');
-                    $transactionFlagOfMainTransaction  = $event->getParam('isNestedTransaction');
-                } else {
-                    $transactionLevelOfNestedTransaction = $event->getParam('transactionLevel');
-                    $transactionFlagOfNestedTransaction  = $event->getParam('isNestedTransaction');
-                }
-            }
-        );
-
-        $this->eventStore->beginTransaction();
-
-        $this->eventStore->beginTransaction();
-
-        $stream = $this->getTestStream();
-
-        $this->eventStore->create($stream);
-
-        $this->eventStore->commit();
-
-        $this->eventStore->commit();
-
-        $this->assertEquals(1, $transactionLevelOfMainTransaction);
-        $this->assertFalse($transactionFlagOfMainTransaction);
-        $this->assertEquals(2, $transactionLevelOfNestedTransaction);
-        $this->assertTrue($transactionFlagOfNestedTransaction);
     }
 
     /**
@@ -273,7 +129,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo(new StreamName('user'), [$secondStreamEvent]);
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
         $this->eventStore->commit();
 
@@ -310,7 +166,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo(new StreamName('user'), [$secondStreamEvent]);
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
         $this->eventStore->commit();
 
@@ -357,7 +213,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
         $this->eventStore->commit();
 
@@ -397,20 +253,30 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventVersion2, $streamEventVersion3]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventVersion2, $streamEventVersion3]));
 
         $this->eventStore->commit();
 
         $loadedEventStream = $this->eventStore->load($stream->streamName(), 2);
 
-        $this->assertEquals(2, count($loadedEventStream->streamEvents()));
+        $count = 0;
+        foreach ($loadedEventStream->streamEvents() as $event) {
+            $count++;
+        }
+        $loadedEventStream->streamEvents()->rewind();
+        $this->assertEquals(2, $count);
 
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 2);
 
-        $this->assertEquals(2, count($loadedEvents));
+        $count = 0;
+        foreach ($loadedEvents as $event) {
+            $count++;
+        }
+        $loadedEvents->rewind();
+        $this->assertEquals(2, $count);
 
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
@@ -438,7 +304,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
         $this->eventStore->commit();
 
@@ -473,7 +339,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->eventStore->appendTo($stream->streamName(), [$streamEventWithMetadata]);
+        $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
         $this->eventStore->commit();
 
@@ -485,15 +351,21 @@ class EventStoreTest extends TestCase
 
             $streamEventWithMetadataButOtherUuid = $streamEventWithMetadataButOtherUuid->withAddedMetadata('snapshot', true);
 
-            $event->setParam('streamEvents', [$streamEventWithMetadataButOtherUuid]);
+            $event->setParam('streamEvents', new ArrayIterator([$streamEventWithMetadataButOtherUuid]));
             $event->stopPropagation(true);
         });
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
 
-        $this->assertEquals(1, count($loadedEvents));
+        $count = 0;
+        foreach ($loadedEvents as $event) {
+            $count++;
+        }
+        $this->assertEquals(1, $count);
 
-        $this->assertNotEquals($streamEventWithMetadata->uuid()->toString(), $loadedEvents[0]->uuid()->toString());
+        $loadedEvents->rewind();
+
+        $this->assertNotEquals($streamEventWithMetadata->uuid()->toString(), $loadedEvents->current()->uuid()->toString());
     }
 
     /**
@@ -532,7 +404,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
-            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), []));
+            $event->setParam('stream', new Stream(new StreamName('EmptyStream'), new ArrayIterator()));
             $event->stopPropagation(true);
         });
 
@@ -555,13 +427,18 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $this->eventStore->getActionEventEmitter()->attachListener('load.pre', function (ActionEvent $event) {
-            $event->setParam('stream', new Stream(new StreamName('user'), []));
+            $event->setParam('stream', new Stream(new StreamName('user'), new ArrayIterator()));
             $event->stopPropagation(true);
         });
 
         $emptyStream = $this->eventStore->load($stream->streamName());
 
-        $this->assertEquals(0, count($emptyStream->streamEvents()));
+        $count = 0;
+        foreach ($emptyStream as $event) {
+            $count++;
+        }
+
+        $this->assertEquals(0, $count);
     }
 
     /**
@@ -741,7 +618,196 @@ class EventStoreTest extends TestCase
 
         $this->assertEquals('user', $stream->streamName()->toString());
 
-        $this->assertEquals(1, count($stream->streamEvents()));
+        $count = 0;
+        foreach ($stream->streamEvents() as $event) {
+            $count++;
+        }
+        $this->assertEquals(1, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function it_replays_in_correct_order()
+    {
+        $streamEvent1 = UserCreated::with(
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
+            1
+        );
+
+        $streamEvent2 = UsernameChanged::with(
+            ['new_name' => 'John Doe'],
+            2
+        );
+
+        $streamEvent3 = PostCreated::with(
+            ['text' => 'some text'],
+            1
+        );
+
+        $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
+        $stream2 = new Stream(new StreamName('post'), new ArrayIterator([$streamEvent3]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream1);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream2);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
+        $this->eventStore->commit();
+
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')]);
+
+        $count = 0;
+        foreach ($iterator as $key => $event) {
+            $count += 1;
+            if (1 === $count) {
+                $this->assertInstanceOf(UserCreated::class, $event);
+            }
+            if (2 === $count) {
+                $this->assertInstanceOf(UsernameChanged::class, $event);
+            }
+            if (3 === $count) {
+                $this->assertInstanceOf(PostCreated::class, $event);
+            }
+        }
+        $this->assertEquals(3, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function it_replays_since_specific_date()
+    {
+        $streamEvent1 = UserCreated::with(
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
+            1
+        );
+
+        $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream1);
+        $this->eventStore->commit();
+
+        sleep(2);
+        $now = new \DateTime('now');
+
+        $streamEvent2 = UsernameChanged::with(
+            ['new_name' => 'John Doe'],
+            2
+        );
+
+        $streamEvent3 = PostCreated::with(
+            ['text' => 'some text'],
+            1
+        );
+
+        $stream2 = new Stream(new StreamName('post'), new ArrayIterator([$streamEvent3]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream2);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
+        $this->eventStore->commit();
+
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')], $now);
+
+        $count = 0;
+        foreach ($iterator as $key => $event) {
+            $count += 1;
+            if (1 === $count) {
+                $this->assertInstanceOf(UsernameChanged::class, $event);
+            }
+            if (2 === $count) {
+                $this->assertInstanceOf(PostCreated::class, $event);
+            }
+        }
+        $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function it_replays_in_correct_order_with_same_date_time()
+    {
+        $sameDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+
+        $streamEvent1 = UserCreated::withPayloadAndSpecifiedCreatedAt(
+            ['name' => 'Alex', 'email' => 'contact@prooph.de'],
+            1,
+            $sameDate
+        );
+
+        $streamEvent2 = UsernameChanged::withPayloadAndSpecifiedCreatedAt(
+            ['new_name' => 'John Doe'],
+            2,
+            $sameDate
+        );
+
+        $streamEvent3 = PostCreated::withPayloadAndSpecifiedCreatedAt(
+            ['text' => 'some text'],
+            1,
+            $sameDate
+        );
+
+        $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
+        $stream2 = new Stream(new StreamName('post'), new ArrayIterator([$streamEvent3]));
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream1);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->create($stream2);
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$streamEvent2]));
+        $this->eventStore->commit();
+
+        $iterator = $this->eventStore->replay([new StreamName('user'), new StreamName('post')]);
+
+        $count = 0;
+        foreach ($iterator as $key => $event) {
+            $count += 1;
+            if (1 === $count) {
+                $this->assertInstanceOf(UserCreated::class, $event);
+            }
+            if (2 === $count) {
+                $this->assertInstanceOf(UsernameChanged::class, $event);
+            }
+            if (3 === $count) {
+                $this->assertInstanceOf(PostCreated::class, $event);
+            }
+        }
+        $this->assertEquals(3, $count);
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
+     * @expectedExceptionMessage No stream names given
+     */
+    public function it_rejects_replay_without_stream_names()
+    {
+        $this->eventStore->replay([], null, []);
+    }
+
+    /**
+     * @test
+     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
+     * @expectedExceptionMessage One metadata per stream name needed, given 2 stream names but 1 metadatas
+     */
+    public function it_expects_matching_of_stream_names_and_metadata()
+    {
+        $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[]]);
     }
 
     /**
@@ -754,6 +820,6 @@ class EventStoreTest extends TestCase
             1
         );
 
-        return new Stream(new StreamName('user'), [$streamEvent]);
+        return new Stream(new StreamName('user'), new ArrayIterator([$streamEvent]));
     }
 }

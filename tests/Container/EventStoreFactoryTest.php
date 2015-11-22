@@ -9,13 +9,12 @@
  * Date: 21.08.15 - 17:19
  */
 
-namespace Prooph\EventStoreTest\Container;
+namespace ProophTest\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Container\EventStoreFactory;
 use Prooph\EventStore\EventStore;
@@ -23,7 +22,7 @@ use Prooph\EventStore\Plugin\Plugin;
 
 /**
  * Class EventStoreFactoryTest
- * @package Prooph\EventStoreTest\Container
+ * @package ProophTest\EventStore\Container
  */
 class EventStoreFactoryTest extends TestCase
 {
@@ -44,22 +43,6 @@ class EventStoreFactoryTest extends TestCase
         $this->assertInstanceOf(EventStore::class, $eventStore);
         $this->assertInstanceOf(InMemoryAdapter::class, $eventStore->getAdapter());
         $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
-    }
-
-    /**
-     * @test
-     * @expectedException Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Event store adapter is missing in configuration
-     */
-    public function it_throws_exception_when_adapter_config_is_missing()
-    {
-        $config['prooph']['event_store'] = [];
-
-        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-
-        $factory = new EventStoreFactory();
-        $factory($containerMock);
     }
 
     /**
@@ -122,38 +105,6 @@ class EventStoreFactoryTest extends TestCase
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
         $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
         $containerMock->expects($this->at(2))->method('get')->with('plugin')->willReturn($featureMock);
-
-        $factory = new EventStoreFactory();
-        $factory($containerMock);
-    }
-
-    /**
-     * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Missing prooph config key in application config
-     */
-    public function it_throws_exception_when_no_prooph_config_key_set()
-    {
-        $config = [];
-
-        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-
-        $factory = new EventStoreFactory();
-        $factory($containerMock);
-    }
-
-    /**
-     * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Missing key event_store in prooph configuration
-     */
-    public function it_throws_exception_when_no_event_store_config_key_set()
-    {
-        $config['prooph'] = [];
-
-        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
         $factory = new EventStoreFactory();
         $factory($containerMock);
