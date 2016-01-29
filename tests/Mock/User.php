@@ -13,7 +13,7 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class User
