@@ -121,7 +121,7 @@ class AggregateRepository
      */
     public function addAggregateRoot($eventSourcedAggregateRoot)
     {
-        $this->aggregateType->assert($eventSourcedAggregateRoot);
+        $this->assertAggregateType($eventSourcedAggregateRoot);
 
         $domainEvents = $this->aggregateTranslator->extractPendingStreamEvents($eventSourcedAggregateRoot);
 
@@ -268,5 +268,13 @@ class AggregateRepository
     {
         $domainEvent = $domainEvent->withAddedMetadata('aggregate_id', $aggregateId);
         return $domainEvent->withAddedMetadata('aggregate_type', $this->aggregateType->toString());
+    }
+
+    /**
+     * @param object $eventSourcedAggregateRoot
+     */
+    protected function assertAggregateType($eventSourcedAggregateRoot)
+    {
+        $this->aggregateType->assert($eventSourcedAggregateRoot);
     }
 }
