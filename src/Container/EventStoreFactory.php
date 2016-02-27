@@ -17,8 +17,11 @@ use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresMandatoryOptions;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\ConfigurationException;
+use Prooph\EventStore\Metadata\MetadataEnricher;
+use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
+use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
 
 /**
@@ -61,6 +64,29 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
             $plugin->setUp($eventStore);
         }
 
+        if (count($config['metadata_enrichers']) > 0) {
+            $metadataEnrichers = [];
+
+            foreach ($config['metadata_enrichers'] as $metadataEnricherAlias) {
+                $metadataEnricher = $container->get($metadataEnricherAlias);
+
+                if (!$metadataEnricher instanceof MetadataEnricher) {
+                    throw ConfigurationException::configurationError(sprintf(
+                        'Metadata enricher %s does not implement the MetadataEnricher interface',
+                        $metadataEnricherAlias
+                    ));
+                }
+
+                $metadataEnrichers[] = $metadataEnricher;
+            }
+
+            $plugin = new MetadataEnricherPlugin(
+                new MetadataEnricherAggregate($metadataEnrichers)
+            );
+
+            $plugin->setUp($eventStore);
+        }
+
         return $eventStore;
     }
 
@@ -89,6 +115,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
             'adapter' => [
                 'type'
             ],
+            'metadata_enrichers',
             'plugins'
         ];
     }
@@ -99,6 +126,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     public function defaultOptions()
     {
         return [
+            'metadata_enrichers' => [],
             'plugins' => []
         ];
     }
