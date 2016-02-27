@@ -29,7 +29,7 @@ use Prophecy\Argument;
  * Class EventStoreTest
  *
  * @package ProophTest\EventStore
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class EventStoreTest extends TestCase
 {

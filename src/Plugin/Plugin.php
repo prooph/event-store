@@ -17,7 +17,7 @@ use Prooph\EventStore\EventStore;
  * Class FeatureInterface
  *
  * @package Prooph\EventStore\Plugin
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 interface Plugin
 {

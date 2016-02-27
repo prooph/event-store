@@ -25,7 +25,7 @@ use ProophTest\EventStore\TestCase;
  * Class ConfigurableAggregateTranslatorTest
  *
  * @package ProophTest\EventStore\Aggregate
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 final class ConfigurableAggregateTranslatorTest extends TestCase
 {
