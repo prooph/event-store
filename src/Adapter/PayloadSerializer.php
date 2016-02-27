@@ -15,7 +15,7 @@ namespace Prooph\EventStore\Adapter;
  * Interface PayloadSerializer
  *
  * @package Prooph\EventStore\Adapter
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 interface PayloadSerializer
 {

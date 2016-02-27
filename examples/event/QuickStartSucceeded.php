@@ -17,7 +17,7 @@ use Prooph\Common\Messaging\DomainEvent;
 /**
  * Class QuickStartSucceeded
  *
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 final class QuickStartSucceeded extends DomainEvent
 {

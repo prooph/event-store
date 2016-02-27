@@ -19,7 +19,7 @@ use Rhumsaa\Uuid\Uuid;
  * Class User
  *
  * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class User
 {

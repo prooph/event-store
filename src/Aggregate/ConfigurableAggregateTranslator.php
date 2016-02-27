@@ -21,7 +21,7 @@ use Prooph\EventStore\Util\MapIterator;
  * Class ConfigurableAggregateTranslator
  *
  * @package Prooph\EventStore\Aggregate
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class ConfigurableAggregateTranslator implements AggregateTranslator
 {

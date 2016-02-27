@@ -19,7 +19,7 @@ use Prooph\Common\Messaging\PayloadTrait;
  * Class DomainEvent
  *
  * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class TestDomainEvent extends DomainEvent implements PayloadConstructable
 {
