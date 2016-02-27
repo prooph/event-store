@@ -23,7 +23,7 @@ use Prooph\EventStore\Stream\StreamName;
  * Class AggregateRepository
  *
  * @package Prooph\EventStore\Aggregate
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class AggregateRepository
 {

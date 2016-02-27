@@ -15,7 +15,7 @@ namespace Prooph\EventStore\Exception;
  * Class RuntimeException
  *
  * @package Prooph\EventStore\Exception
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class RuntimeException extends \RuntimeException implements EventStoreException
 {

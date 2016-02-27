@@ -17,7 +17,7 @@ use Prooph\Common\Messaging\Message;
  * Interface DefaultAggregateRootContract
  *
  * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 interface DefaultAggregateRootContract
 {

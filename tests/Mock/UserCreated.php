@@ -15,7 +15,7 @@ namespace ProophTest\EventStore\Mock;
  * Class UserCreated
  *
  * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class UserCreated extends TestDomainEvent
 {

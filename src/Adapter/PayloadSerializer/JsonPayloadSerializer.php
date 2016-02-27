@@ -17,7 +17,7 @@ use Prooph\EventStore\Adapter\PayloadSerializer;
  * Class JsonPayloadSerializer
  *
  * @package Prooph\EventStore\Adapter\PayloadSerializer
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 final class JsonPayloadSerializer implements PayloadSerializer
 {

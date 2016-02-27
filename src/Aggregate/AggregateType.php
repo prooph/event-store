@@ -15,7 +15,7 @@ namespace Prooph\EventStore\Aggregate;
  * Class AggregateType
  *
  * @package Prooph\EventStore\Stream
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class AggregateType
 {
