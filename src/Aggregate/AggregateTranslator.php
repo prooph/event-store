@@ -18,7 +18,7 @@ use Prooph\Common\Messaging\Message;
  * Interface AggregateTranslator
  *
  * @package Prooph\EventStore\Aggregate
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 interface AggregateTranslator
 {

@@ -24,7 +24,7 @@ use Prooph\EventStore\Stream\StreamName;
  * Class InMemoryAdapter
  *
  * @package Prooph\EventStore\Adapter
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class InMemoryAdapter implements Adapter
 {

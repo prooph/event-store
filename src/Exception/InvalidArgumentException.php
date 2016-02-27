@@ -15,7 +15,7 @@ namespace Prooph\EventStore\Exception;
  * Class InvalidArgumentException
  *
  * @package Prooph\EventStore\Exception
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 class InvalidArgumentException extends \InvalidArgumentException implements EventStoreException
 {
