@@ -60,3 +60,39 @@ The event-driven system opens the door for customizations. Here are some ideas w
 - Convert events into custom event objects before they are passed back to a repository
 - Implement your own Unit of Work and synchronizes it with the `transaction`, `commit.pre/post` and `rollback` events
 - ...
+
+## Metadata enricher
+
+By default the component is shipped with a plugin to automatically add metadata for each events.
+For instance you may want to add information about the command which caused the event or even
+the user who triggered that command.
+
+Here is an example of usage:
+
+```php
+<?php
+
+class IssuerMetadataEnricher implements MetadataEnricher
+{
+    // ...
+
+    public function enrich(Message $event)
+    {
+        if ($this->currentUser) {
+            $event = $event
+                ->withAddedMetadata('issuer_type', 'user')
+                ->withAddedMetadata('issuer_id', $this->currentUser->id());
+        }
+
+        return $event;
+    }
+}
+
+$plugin = new MetadataEnricherPlugin(new MetadataEnricherAggregate([
+  $issuerMetadataEnricher,
+  $causationMetadataEnricher,
+  $otherMetadataEnricher,
+]));
+
+$eventStore->setUp($plugin);
+```
