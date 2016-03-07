@@ -15,7 +15,6 @@ use Prooph\EventStore\Aggregate\AggregateTranslator;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Snapshot\SnapshotStore;
-use Prooph\EventStore\Stream\StreamStrategy;
 use ProophTest\EventStore\Mock\FaultyRepositoryMock;
 use ProophTest\EventStore\Mock\RepositoryMock;
 use ProophTest\EventStore\Mock\RepositoryMockFactory;
@@ -149,8 +148,6 @@ class AbstractAggregateRepositoryFactoryTest extends TestCase
         $userTranslator = $this->prophesize(AggregateTranslator::class);
 
         $container->get('user_translator')->willReturn($userTranslator->reveal());
-
-        $streamStrategy = $this->prophesize(StreamStrategy::class);
 
         $snapshotStore = $this->prophesize(SnapshotStore::class);
         $container->has('ultra_fast_snapshot_store')->willReturn(true);
