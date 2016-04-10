@@ -32,7 +32,7 @@
         "sandrokeil/interop-config": "^0.3.1",
         "phpunit/phpunit": "~4.8",
         "fabpot/php-cs-fixer": "1.7.*",
-        "satooshi/php-coveralls": "dev-master",
+        "satooshi/php-coveralls": "^1.0",
         "zendframework/zend-servicemanager": "~2.6",
         "tobiju/bookdown-bootswatch-templates": "^0.2.0"
     },
@@ -40,7 +40,13 @@
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
         "prooph/service-bus" : "Message bus facade to connect the event store with messaging systems",
         "container-interop/container-interop": "For usage of provided factories",
-        "sandrokeil/interop-config": "For usage of provided factories"
+        "sandrokeil/interop-config": "For usage of provided factories",
+        "prooph/event-store-doctrine-adapter": "For usage with doctrine dbal as event store adapter",
+        "prooph/event-store-flywheel-adapter": "For usage with flywheel as event store adapter",
+        "prooph/event-store-mongodb-adapter": "For usage with mongodb as event store adapter",
+        "prooph/snapshot-doctrine-adapter": "For usage with doctrine dbal as snapshot adapter",
+        "prooph/snapshot-memcached-adapter": "For usage with memcached as snapshot adapter",
+        "prooph/snapshot-mongodb-adapter": "For usage with mongodb as snapshot adapter"
     },
     "autoload": {
         "psr-4": {

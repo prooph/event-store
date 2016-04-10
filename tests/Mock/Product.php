@@ -17,7 +17,7 @@ namespace ProophTest\EventStore\Mock;
  * Empty Mock
  *
  * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <kontakt@codeliner.ws>
+ * @author Alexander Miertsch <contact@prooph.de>
  */
 final class Product
 {

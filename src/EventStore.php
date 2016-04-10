@@ -379,7 +379,7 @@ class EventStore
 
         $this->actionEventEmitter->dispatch($event);
 
-        $this->recordedEvents = [];
+        $this->recordedEvents = new ArrayIterator();
     }
 
     /**
