@@ -25,13 +25,13 @@
     "prefer-stable": true,
     "require": {
         "php": "~5.5|~7.0",
-        "ramsey/uuid" : "~2.8",
         "beberlei/assert": "~2.3",
         "prooph/common" : "~3.3"
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
         "sandrokeil/interop-config": "^1.0",
+        "ramsey/uuid" : "~2.8",
         "phpunit/phpunit": "~4.8",
         "fabpot/php-cs-fixer": "1.7.*",
         "satooshi/php-coveralls": "^1.0",
