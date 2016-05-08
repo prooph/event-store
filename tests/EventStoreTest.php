@@ -683,9 +683,10 @@ class EventStoreTest extends TestCase
      */
     public function it_replays_since_specific_date()
     {
-        $streamEvent1 = UserCreated::with(
+        $streamEvent1 = UserCreated::withPayloadAndSpecifiedCreatedAt(
             ['name' => 'Alex', 'email' => 'contact@prooph.de'],
-            1
+            1,
+            new \DateTimeImmutable('2 seconds ago')
         );
 
         $stream1 = new Stream(new StreamName('user'), new ArrayIterator([$streamEvent1]));
@@ -694,7 +695,6 @@ class EventStoreTest extends TestCase
         $this->eventStore->create($stream1);
         $this->eventStore->commit();
 
-        sleep(2);
         $now = new \DateTime('now');
 
         $streamEvent2 = UsernameChanged::with(

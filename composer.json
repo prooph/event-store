@@ -21,6 +21,8 @@
         "DDD",
         "prooph"
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": "~5.5|~7.0",
         "beberlei/assert": "~2.3",
@@ -28,13 +30,13 @@
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
-        "sandrokeil/interop-config": "^0.3.1",
+        "sandrokeil/interop-config": "^1.0",
         "ramsey/uuid" : "~2.8",
         "phpunit/phpunit": "~4.8",
         "fabpot/php-cs-fixer": "1.7.*",
         "satooshi/php-coveralls": "^1.0",
         "zendframework/zend-servicemanager": "~2.6",
-        "tobiju/bookdown-bootswatch-templates": "^0.2.0"
+        "tobiju/bookdown-bootswatch-templates": "^1.0"
     },
     "suggest" : {
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
@@ -48,6 +50,9 @@
         "prooph/snapshot-memcached-adapter": "For usage with memcached as snapshot adapter",
         "prooph/snapshot-mongodb-adapter": "For usage with mongodb as snapshot adapter"
     },
+    "conflict": {
+        "sandrokeil/interop-config": "<1.0"
+    },
     "autoload": {
         "psr-4": {
             "Prooph\\EventStore\\": "src/"
@@ -57,5 +62,14 @@
         "psr-4": {
             "ProophTest\\EventStore\\": "tests/"
         }
+    },
+    "scripts": {
+        "check": [
+            "@cs",
+            "@test"
+        ],
+        "cs": "php-cs-fixer fix -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix -v --diff",
+        "test": "phpunit"
     }
 }

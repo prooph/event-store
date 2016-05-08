@@ -30,6 +30,14 @@ If the requirements are met you just need to add a new section in your applicati
                 'options' => []
             ],
             'event_emitter' => 'emitter_service_id' //The factory will use this id to get the event emitter from the container
+            'metadata_enrichers' => [
+                // The factory will get the metadata enrichers and inject them in the MetadataEnricherPlugin.
+                // Note: you can obtain the same result by instanciating the plugin yourself
+                // and pass it to the 'plugin' section bellow.
+                'metadata_enricher_1',
+                'metadata_enricher_2',
+                // ...
+            ],
             'plugins' => [
                 //And again the factory will use each service id to get the plugin from the container
                 //Plugin::setUp($eventStore) is then invoked by the factory so your plugins get attached automatically
