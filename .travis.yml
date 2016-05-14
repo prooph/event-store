@@ -5,9 +5,14 @@ php:
   - 5.6
   - 7
 
+env:
+  matrix:
+    - DEPENDENCIES=""
+    - DEPENDENCIES="--prefer-lowest --prefer-stable"
+
 before_script:
   - composer self-update
-  - composer update
+  - composer update --prefer-dist $DEPENDENCIES
 
 script:
   - php ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml

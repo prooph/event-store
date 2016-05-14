@@ -26,7 +26,7 @@
     "require": {
         "php": "~5.5|~7.0",
         "beberlei/assert": "~2.3",
-        "prooph/common" : "~3.3"
+        "prooph/common" : "~3.7"
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
