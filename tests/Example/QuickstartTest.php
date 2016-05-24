@@ -16,7 +16,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 /**
  * Class QuickstartTest
  *
- * @package ProophTest\EventStore\Aggregate
+ * @package ProophTest\EventStore\Example
  * @author Alexander Miertsch <contact@prooph.de>
  */
 class QuickstartTest extends TestCase
