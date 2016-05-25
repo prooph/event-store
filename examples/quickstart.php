@@ -59,7 +59,7 @@ $eventStore->beginTransaction();
  */
 $streamName = new \Prooph\EventStore\Stream\StreamName('event_stream');
 
-$singleStream = new \Prooph\EventStore\Stream\Stream($streamName, []);
+$singleStream = new \Prooph\EventStore\Stream\Stream($streamName, new ArrayIterator([]));
 
 /**
  * As we are using the InMemoryAdapter we have to create the event stream
@@ -74,7 +74,7 @@ $eventStore->create($singleStream);
 /**
  * Now we can easily add events to the stream ...
  */
-$eventStore->appendTo($streamName, [$quickStartSucceeded /*, ...*/]);
+$eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, ...*/]));
 
 /**
  * Next step would be to commit the transaction.
