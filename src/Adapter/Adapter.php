@@ -11,6 +11,7 @@ namespace Prooph\EventStore\Adapter;
 
 use DateTimeInterface;
 use Iterator;
+use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStore\Exception\StreamNotFoundException;
@@ -33,6 +34,7 @@ interface Adapter
      * @param StreamName $streamName
      * @param Iterator $domainEvents
      * @throws StreamNotFoundException If stream does not exist
+     * @throws ConcurrencyException If two processes are trying to append to the same stream at the same time
      * @return void
      */
     public function appendTo(StreamName $streamName, Iterator $domainEvents);
