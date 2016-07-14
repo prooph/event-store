@@ -270,10 +270,7 @@ class EventStore
         }
 
         if (null === $metadatas) {
-            $metadatas = [];
-            foreach ($streamNames as $streamName) {
-                $metadatas[] = [];
-            }
+            $metadatas = array_fill(0, count($streamNames), []);
         }
 
         if (count($streamNames) !== count($metadatas)) {
