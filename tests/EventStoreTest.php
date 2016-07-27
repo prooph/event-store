@@ -41,7 +41,7 @@ class EventStoreTest extends TestCase
         $recordedEvents = [];
 
         $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
-            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
+            foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -73,7 +73,7 @@ class EventStoreTest extends TestCase
         $recordedEvents = [];
 
         $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
-            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
+            foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -111,7 +111,7 @@ class EventStoreTest extends TestCase
         $recordedEvents = [];
 
         $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
-            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
+            foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });
@@ -144,7 +144,7 @@ class EventStoreTest extends TestCase
         $recordedEvents = [];
 
         $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
-            foreach ($event->getParam('recordedEvents', []) as $recordedEvent) {
+            foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
                 $recordedEvents[] = $recordedEvent;
             }
         });

@@ -43,7 +43,7 @@ class EventLoggerPlugin implements Plugin
      */
     public function onPostCommit(ActionEvent $e)
     {
-        $this->loggedStreamEvents = $e->getParam('recordedEvents', []);
+        $this->loggedStreamEvents = $e->getParam('recordedEvents', new \ArrayIterator());
     }
 
     /**
