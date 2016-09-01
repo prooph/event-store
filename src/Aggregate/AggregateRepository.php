@@ -154,6 +154,10 @@ class AggregateRepository
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
+        if (isset($this->identityMap[$aggregateId])) {
+            return $this->identityMap[$aggregateId];
+        }
+
         if ($this->snapshotStore) {
             $eventSourcedAggregateRoot = $this->loadFromSnapshotStore($aggregateId);
 
