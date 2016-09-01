@@ -363,4 +363,37 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
     }
+
+    /**
+     * @test
+     * Test for https://github.com/prooph/event-store/issues/179
+     */
+    public function it_tracks_changes_of_aggregate_but_returns_a_same_instance_within_transaction()
+    {
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $this->eventStore->commit();
+
+        $this->eventStore->beginTransaction();
+
+        $fetchedUser1 = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $fetchedUser2 = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $this->assertSame($fetchedUser1, $fetchedUser2);
+
+        $fetchedUser1->changeName('Max Mustermann');
+
+        $this->assertSame($fetchedUser1, $fetchedUser2);
+
+        $this->eventStore->commit();
+    }
 }
