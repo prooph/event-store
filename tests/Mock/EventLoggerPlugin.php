@@ -11,7 +11,6 @@
 namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Event\ActionEvent;
-use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
 
