@@ -25,9 +25,17 @@ use Prooph\EventStore\Plugin\Plugin;
 class EventLoggerPlugin implements Plugin
 {
     /**
-     * @var DomainEvent[]
+     * @var \Iterator
      */
-    protected $loggedStreamEvents = [];
+    protected $loggedStreamEvents;
+
+    /**
+     * EventLoggerPlugin constructor.
+     */
+    public function __construct()
+    {
+        $this->loggedStreamEvents = new \ArrayIterator();
+    }
 
     /**
      * @param EventStore $eventStore
@@ -47,7 +55,7 @@ class EventLoggerPlugin implements Plugin
     }
 
     /**
-     * @return DomainEvent[]
+     * @return \Iterator
      */
     public function getLoggedStreamEvents()
     {
