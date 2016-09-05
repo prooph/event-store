@@ -1,18 +1,16 @@
 <?php
-/*
- * This file is part of the prooph/event-store.
- * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+/**
+ * This file is part of the prooph/service-bus.
+ * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * Date: 04/21/14 - 00:13 AM
  */
 
 namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Event\ActionEvent;
-use Prooph\Common\Messaging\DomainEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
 
@@ -25,9 +23,17 @@ use Prooph\EventStore\Plugin\Plugin;
 class EventLoggerPlugin implements Plugin
 {
     /**
-     * @var DomainEvent[]
+     * @var \Iterator
      */
-    protected $loggedStreamEvents = [];
+    protected $loggedStreamEvents;
+
+    /**
+     * EventLoggerPlugin constructor.
+     */
+    public function __construct()
+    {
+        $this->loggedStreamEvents = new \ArrayIterator();
+    }
 
     /**
      * @param EventStore $eventStore
@@ -47,7 +53,7 @@ class EventLoggerPlugin implements Plugin
     }
 
     /**
-     * @return DomainEvent[]
+     * @return \Iterator
      */
     public function getLoggedStreamEvents()
     {
