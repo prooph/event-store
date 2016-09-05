@@ -36,7 +36,8 @@
         "fabpot/php-cs-fixer": "1.7.*",
         "satooshi/php-coveralls": "^1.0",
         "zendframework/zend-servicemanager": "~2.6",
-        "tobiju/bookdown-bootswatch-templates": "^1.0"
+        "tobiju/bookdown-bootswatch-templates": "^1.0",
+        "malukenho/docheader": "^0.1.3"
     },
     "suggest" : {
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
