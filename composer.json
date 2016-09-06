@@ -1,0 +1,49 @@
+{
+  "name": "treehouselabs/event-store",
+  "type": "library",
+  "keywords": ["Event store", "Event", "Event sourcing"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mark van Duijker",
+      "email": "mark@treehouse.nl",
+      "role": "Developer"
+    },
+    {
+      "name": "Jeroen Fiege",
+      "email": "jeroen@treehouse.nl",
+      "role": "Developer"
+    },
+    {
+      "name": "Marco Janssen",
+      "email": "marco@treehouse.nl",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "treehouselabs/serialization": "1.0.x-dev"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "doctrine/dbal": "~2.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "TreeHouse\\EventStore\\": "src/TreeHouse/EventStore/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TreeHouse\\EventStore\\Tests\\": "tests/TreeHouse/EventStore/Tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  }
+}
