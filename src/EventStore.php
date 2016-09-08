@@ -296,6 +296,22 @@ class EventStore
     }
 
     /**
+     * @param callable $callable
+     *
+     * @return mixed
+     */
+    public function transaction(callable $callable)
+    {
+        $this->beginTransaction();
+
+        $result = $callable($this);
+
+        $this->commit();
+
+        return $result;
+    }
+
+    /**
      * Begin transaction
      *
      * @triggers beginTransaction

@@ -589,6 +589,46 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
+    public function it_wrap_up_code_in_transaction_properly()
+    {
+        $recordedEvents = [];
+
+        $this->eventStore->getActionEventEmitter()->attachListener('commit.post', function (ActionEvent $event) use (&$recordedEvents) {
+            foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
+                $recordedEvents[] = $recordedEvent;
+            }
+        });
+
+        $transactionResult = $this->eventStore->transaction(function (EventStore $eventStore) {
+            $this->eventStore->create($this->getTestStream());
+
+            $this->assertSame($this->eventStore, $eventStore);
+
+            return 'Result';
+        });
+
+        $this->assertSame('Result', $transactionResult);
+
+        $secondStreamEvent = UsernameChanged::with(
+            ['new_name' => 'John Doe'],
+            2
+        );
+
+        $transactionResult = $this->eventStore->transaction(function (EventStore $eventStore) use ($secondStreamEvent) {
+            $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
+
+            $this->assertSame($this->eventStore, $eventStore);
+
+            return 'Second Result';
+        });
+
+        $this->assertSame('Second Result', $transactionResult);
+        $this->assertEquals(2, count($recordedEvents));
+    }
+
+    /**
+     * @test
+     */
     public function it_commits_transaction_if_adapter_implements_can_handle_transaction()
     {
         $stream = $this->getTestStream();
