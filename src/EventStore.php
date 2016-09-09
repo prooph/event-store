@@ -300,7 +300,7 @@ class EventStore
      *
      * @return mixed
      */
-    public function transaction(callable $callable)
+    public function transactional(callable $callable)
     {
         $this->beginTransaction();
 
