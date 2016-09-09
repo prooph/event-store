@@ -599,7 +599,7 @@ class EventStoreTest extends TestCase
             }
         });
 
-        $transactionResult = $this->eventStore->transaction(function (EventStore $eventStore) {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
             $this->eventStore->create($this->getTestStream());
 
             $this->assertSame($this->eventStore, $eventStore);
@@ -614,7 +614,7 @@ class EventStoreTest extends TestCase
             2
         );
 
-        $transactionResult = $this->eventStore->transaction(function (EventStore $eventStore) use ($secondStreamEvent) {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent) {
             $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
             $this->assertSame($this->eventStore, $eventStore);
