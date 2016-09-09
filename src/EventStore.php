@@ -298,17 +298,24 @@ class EventStore
     /**
      * @param callable $callable
      *
+     * @throws \Exception
+     *
      * @return mixed
      */
     public function transactional(callable $callable)
     {
         $this->beginTransaction();
 
-        $result = $callable($this);
+        try {
+            $result = $callable($this);
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
 
-        $this->commit();
+            throw $e;
+        }
 
-        return $result;
+        return $result ?: true;
     }
 
     /**
