@@ -15,6 +15,7 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
+use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
@@ -589,7 +590,52 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_wrap_up_code_in_transaction_properly()
+    public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail()
+    {
+
+        $adapter = new class () extends InMemoryAdapter implements CanHandleTransaction {
+            public function beginTransaction()
+            {
+            }
+
+            public function commit()
+            {
+            }
+
+            public function rollback()
+            {
+            }
+        };
+
+        $eventStore = new EventStore($adapter, new ProophActionEventEmitter());
+
+        $this->setExpectedException(\Exception::class, 'Transaction failed');
+
+        $eventStore->transactional(function (EventStore $es) use ($eventStore) {
+            self::assertSame($es, $eventStore);
+
+            throw new \Exception('Transaction failed');
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_true_by_default_if_transaction_is_used()
+    {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
+            $this->eventStore->create($this->getTestStream());
+
+            self::assertSame($this->eventStore, $eventStore);
+        });
+
+        self::assertTrue($transactionResult);
+    }
+
+    /**
+     * @test
+     */
+    public function it_wraps_up_code_in_transaction_properly()
     {
         $recordedEvents = [];
 
@@ -602,12 +648,12 @@ class EventStoreTest extends TestCase
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
             $this->eventStore->create($this->getTestStream());
 
-            $this->assertSame($this->eventStore, $eventStore);
+            self::assertSame($this->eventStore, $eventStore);
 
             return 'Result';
         });
 
-        $this->assertSame('Result', $transactionResult);
+        self::assertSame('Result', $transactionResult);
 
         $secondStreamEvent = UsernameChanged::with(
             ['new_name' => 'John Doe'],
@@ -617,13 +663,13 @@ class EventStoreTest extends TestCase
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent) {
             $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
-            $this->assertSame($this->eventStore, $eventStore);
+            self::assertSame($this->eventStore, $eventStore);
 
             return 'Second Result';
         });
 
-        $this->assertSame('Second Result', $transactionResult);
-        $this->assertEquals(2, count($recordedEvents));
+        self::assertSame('Second Result', $transactionResult);
+        self::assertCount(2, $recordedEvents);
     }
 
     /**
