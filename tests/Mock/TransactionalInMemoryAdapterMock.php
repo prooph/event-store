@@ -14,12 +14,12 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 
 /**
- * Class AdapterCanHandlerMock
+ * Class TransactionalInMemoryAdapterMock
  *
  * @package ProophTest\EventStore
  * @author Jefersson Nathan <malukenho@phpse.net>
  */
-final class AdapterCanHandlerMock extends InMemoryAdapter implements CanHandleTransaction
+final class TransactionalInMemoryAdapterMock extends InMemoryAdapter implements CanHandleTransaction
 {
     /**
      * {@inheritDoc}

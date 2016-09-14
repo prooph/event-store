@@ -18,7 +18,7 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
-use ProophTest\EventStore\Mock\AdapterCanHandlerMock;
+use ProophTest\EventStore\Mock\TransactionalInMemoryAdapterMock;
 use ProophTest\EventStore\Mock\PostCreated;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\Mock\UserCreated;
@@ -592,7 +592,7 @@ class EventStoreTest extends TestCase
      */
     public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail()
     {
-        $eventStore = new EventStore(new AdapterCanHandlerMock(), new ProophActionEventEmitter());
+        $eventStore = new EventStore(new TransactionalInMemoryAdapterMock(), new ProophActionEventEmitter());
 
         $this->setExpectedException(\Exception::class, 'Transaction failed');
 
