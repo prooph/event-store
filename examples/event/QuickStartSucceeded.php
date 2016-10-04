@@ -27,41 +27,29 @@ final class QuickStartSucceeded extends DomainEvent
      */
     private $text;
 
-    public static function withSuccessMessage($text)
+    public static function withSuccessMessage(string $text) : QuickStartSucceeded
     {
         return new self($text);
     }
 
-    /**
-     * @param string $text
-     */
-    private function __construct($text)
+    private function __construct(string $text)
     {
         Assertion::minLength($text, 1, 'Success message must be at least 1 char long');
         $this->text = $text;
         $this->init();
     }
 
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText() : string
     {
         return $this->text;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function payload()
+    public function payload() : array
     {
         return ['text' => $this->text];
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function setPayload(array $payload)
+    protected function setPayload(array $payload) : void
     {
         $this->text = $payload['text'];
     }

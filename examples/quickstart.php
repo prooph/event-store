@@ -60,7 +60,7 @@ $eventStore->beginTransaction();
  */
 $streamName = new \Prooph\EventStore\Stream\StreamName('event_stream');
 
-$singleStream = new \Prooph\EventStore\Stream\Stream($streamName, new ArrayIterator([]));
+$singleStream = new \Prooph\EventStore\Stream\Stream($streamName, new ArrayIterator());
 
 /**
  * As we are using the InMemoryAdapter we have to create the event stream
