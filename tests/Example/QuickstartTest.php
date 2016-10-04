@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ProophTest\EventStore\Example;
 
 use PHPUnit_Framework_TestCase as TestCase;

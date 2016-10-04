@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Prooph\EventStore\Snapshot\Adapter;
 
 use Prooph\EventStore\Aggregate\AggregateType;
