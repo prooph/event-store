@@ -109,9 +109,10 @@ class AggregateRepository
     }
 
     /**
+     * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTypeException
      */
-    public function addAggregateRoot(object $eventSourcedAggregateRoot) : void
+    public function addAggregateRoot($eventSourcedAggregateRoot) : void
     {
         $this->assertAggregateType($eventSourcedAggregateRoot);
 
@@ -138,8 +139,11 @@ class AggregateRepository
 
     /**
      * Returns null if no stream events can be found for aggregate root otherwise the reconstituted aggregate root
+     *
+     * @param string $aggregateId
+     * @return null|object
      */
-    public function getAggregateRoot(string $aggregateId) : ?object
+    public function getAggregateRoot(string $aggregateId)
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
@@ -186,17 +190,25 @@ class AggregateRepository
         return $eventSourcedAggregateRoot;
     }
 
-    public function extractAggregateVersion(object $aggregateRoot) : int
+    /**
+     * @param object $aggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($aggregateRoot)
     {
         return $this->aggregateTranslator->extractAggregateVersion($aggregateRoot);
     }
 
-    protected function loadFromSnapshotStore(string $aggregateId) : ?object
+    /**
+     * @param string $aggregateId
+     * @return null|object
+     */
+    protected function loadFromSnapshotStore(string $aggregateId)
     {
         $snapshot = $this->snapshotStore->get($this->aggregateType, $aggregateId);
 
         if (!$snapshot) {
-            return;
+            return null;
         }
 
         $aggregateRoot = $snapshot->aggregateRoot();
@@ -248,7 +260,10 @@ class AggregateRepository
         return $domainEvent->withAddedMetadata('aggregate_type', $this->aggregateType->toString());
     }
 
-    protected function assertAggregateType(object$eventSourcedAggregateRoot) : void
+    /**
+     * @param object $eventSourcedAggregateRoot
+     */
+    protected function assertAggregateType($eventSourcedAggregateRoot)
     {
         $this->aggregateType->assert($eventSourcedAggregateRoot);
     }

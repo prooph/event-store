@@ -27,10 +27,6 @@ final class MapIterator extends IteratorIterator
      */
     private $callback;
 
-    /**
-     * @param Traversable $iterator
-     * @param callable $callback
-     */
     public function __construct(Traversable $iterator, callable $callback)
     {
         parent::__construct($iterator);

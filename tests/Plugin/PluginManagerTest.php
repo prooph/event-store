@@ -35,7 +35,7 @@ class PluginManagerTest extends TestCase
     /**
      * @test
      */
-    public function an_invokable_plugin_is_loaded_by_plugin_manager_and_attached_to_event_store_by_configuration()
+    public function an_invokable_plugin_is_loaded_by_plugin_manager_and_attached_to_event_store_by_configuration() : void
     {
         $pluginManager = new ServiceManager(new Config([
             "invokables" => [

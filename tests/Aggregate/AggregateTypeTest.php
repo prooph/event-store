@@ -15,6 +15,8 @@ namespace ProophTest\EventStore\Aggregate;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Aggregate\AggregateType;
 use Prooph\EventStore\Aggregate\AggregateTypeProvider;
+use Prooph\EventStore\Aggregate\Exception\AggregateTypeException;
+use Prooph\EventStore\Aggregate\Exception\InvalidArgumentException;
 use ProophTest\EventStore\Mock\Post;
 use ProophTest\EventStore\Mock\User;
 
@@ -27,60 +29,40 @@ class AggregateTypeTest extends TestCase
 {
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
      */
-    public function it_throws_exception_when_trying_to_create_from_string_as_aggregate_root()
+    public function it_throws_exception_when_trying_to_create_from_string_as_aggregate_root() : void
     {
+        $this->expectException(InvalidArgumentException::class);
+
         AggregateType::fromAggregateRoot('invalid');
     }
 
     /**
      * @test
      */
-    public function it_delegates_on_creating_from_aggregate_root_when_it_implements_aggregate_type_provider()
+    public function it_delegates_on_creating_from_aggregate_root_when_it_implements_aggregate_type_provider() : void
     {
-        $expected = new \stdClass();
-
         $aggregateRoot = $this->prophesize(AggregateTypeProvider::class);
-        $aggregateRoot->aggregateType()->willReturn($expected)->shouldBeCalled();
+        $aggregateRoot->aggregateType()->willReturn(AggregateType::fromString('stdClass'))->shouldBeCalled();
 
-        $this->assertSame($expected, AggregateType::fromAggregateRoot($aggregateRoot->reveal()));
+        $this->assertEquals('stdClass', AggregateType::fromAggregateRoot($aggregateRoot->reveal())->toString());
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Aggregate root class must be a string
      */
-    public function it_throws_exception_on_creating_from_aggregate_root_class_when_no_string_given()
+    public function it_throws_exception_on_creating_from_aggregate_root_class_when_unknown_class_given() : void
     {
-        AggregateType::fromAggregateRootClass(666);
-    }
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Aggregate root class unknown_class can not be found');
 
-    /**
-     * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Aggregate root class unknown_class can not be found
-     */
-    public function it_throws_exception_on_creating_from_aggregate_root_class_when_unknown_class_given()
-    {
         AggregateType::fromAggregateRootClass('unknown_class');
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\InvalidArgumentException
-     * @expectedExceptionMessage AggregateType must be a non empty string
      */
-    public function it_throws_exception_when_trying_to_create_from_empty_string()
-    {
-        AggregateType::fromString(null);
-    }
-
-    /**
-     * @test
-     */
-    public function it_asserts_correct_aggregate_type()
+    public function it_asserts_correct_aggregate_type() : void
     {
         $aggregateType = AggregateType::fromAggregateRootClass(User::class);
 
@@ -93,11 +75,12 @@ class AggregateTypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTypeException
-     * @expectedExceptionMessage Aggregate types must be equal. ProophTest\EventStore\Mock\User != ProophTest\EventStore\Mock\Post
      */
-    public function it_throws_exception_if_type_is_not_correct()
+    public function it_throws_exception_if_type_is_not_correct() : void
     {
+        $this->expectException(AggregateTypeException::class);
+        $this->expectExceptionMessage('Aggregate types must be equal. ProophTest\EventStore\Mock\User != ProophTest\EventStore\Mock\Post');
+
         $aggregateType = AggregateType::fromAggregateRootClass(User::class);
 
         $aggregateRoot = $this->prophesize(AggregateTypeProvider::class);
@@ -110,7 +93,7 @@ class AggregateTypeTest extends TestCase
     /**
      * @test
      */
-    public function it_delegates_to_string()
+    public function it_delegates_to_string() : void
     {
         $type = AggregateType::fromAggregateRootClass('stdClass');
         $this->assertEquals('stdClass', (string) $type);

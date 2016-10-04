@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStore\Exception\ConfigurationException;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prooph\Common\Event\ActionEventEmitter;
@@ -37,7 +38,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_event_store_with_default_event_emitter()
+    public function it_creates_event_store_with_default_event_emitter() : void
     {
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
 
@@ -56,7 +57,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_custom_event_emitter()
+    public function it_injects_custom_event_emitter() : void
     {
         $config['prooph']['event_store']['event_emitter'] = 'event_emitter';
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
@@ -78,7 +79,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_plugins()
+    public function it_injects_plugins() : void
     {
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['plugins'][] = 'plugin';
@@ -99,11 +100,12 @@ class EventStoreFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Plugin plugin does not implement the Plugin interface
      */
-    public function it_throws_exception_when_invalid_plugin_configured()
+    public function it_throws_exception_when_invalid_plugin_configured() : void
     {
+        $this->expectException(ConfigurationException::class);
+        $this->expectExceptionMessage('Plugin plugin does not implement the Plugin interface');
+
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['plugins'][] = 'plugin';
 
@@ -121,7 +123,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_metadata_enrichers()
+    public function it_injects_metadata_enrichers() : void
     {
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['metadata_enrichers'][] = 'metadata_enricher1';
@@ -168,11 +170,12 @@ class EventStoreFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage Metadata enricher foobar does not implement the MetadataEnricher interface
      */
-    public function it_throws_exception_when_invalid_metadata_enricher_configured()
+    public function it_throws_exception_when_invalid_metadata_enricher_configured() : void
     {
+        $this->expectException(ConfigurationException::class);
+        $this->expectExceptionMessage('Metadata enricher foobar does not implement the MetadataEnricher interface');
+
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['metadata_enrichers'][] = 'foobar';
 

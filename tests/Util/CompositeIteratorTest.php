@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Util;
 
 use ArrayIterator;
 use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Util\CompositeIterator;
 use ProophTest\EventStore\Mock\TestIteratorAggregate;
 
@@ -26,7 +27,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      */
-    public function it_iterator_in_correct_order()
+    public function it_iterator_in_correct_order() : void
     {
         $a1 = [1, 2, 3];
         $a2 = [4, 7, 10];
@@ -63,28 +64,30 @@ final class CompositeIteratorTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
-     * @expectedExceptionMessage No iterators given
      */
-    public function it_cannot_construct_without_iterators()
+    public function it_cannot_construct_without_iterators() : void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No iterators given');
+
         new CompositeIterator([], 'substr');
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Expected an array of Iterator or IteratorAggregate
      */
-    public function it_required_iterators()
+    public function it_required_iterators() : void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected an array of Iterator or IteratorAggregate');
+
         new CompositeIterator(['foo'], 'substr');
     }
 
     /**
      * @test
      */
-    public function it_accepts_iterator_aggregate()
+    public function it_accepts_iterator_aggregate() : void
     {
         new CompositeIterator([new TestIteratorAggregate()], 'substr');
     }

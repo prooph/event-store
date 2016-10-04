@@ -23,7 +23,7 @@ final class SnapshotStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_snapshot_store()
+    public function it_creates_a_snapshot_store() : void
     {
         $snapshotAdapter = $this->prophesize(Adapter::class);
 

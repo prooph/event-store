@@ -32,10 +32,6 @@ class Stream
      */
     protected $streamEvents;
 
-    /**
-     * @param StreamName $streamName
-     * @param Iterator $streamEvents
-     */
     public function __construct(StreamName $streamName, Iterator $streamEvents)
     {
         $this->streamName = $streamName;
@@ -43,18 +39,12 @@ class Stream
         $this->streamEvents = $streamEvents;
     }
 
-    /**
-     * @return StreamName
-     */
-    public function streamName()
+    public function streamName() : StreamName
     {
         return $this->streamName;
     }
 
-    /**
-     * @return Iterator
-     */
-    public function streamEvents()
+    public function streamEvents() : Iterator
     {
         return $this->streamEvents;
     }

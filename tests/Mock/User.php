@@ -14,7 +14,7 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class User
@@ -49,12 +49,7 @@ class User
      */
     private $version = 0;
 
-    /**
-     * @param string $name
-     * @param string $email
-     * @return User
-     */
-    public static function create($name, $email)
+    public static function create(string $name, string $email) : User
     {
         $self = new self();
 
@@ -70,11 +65,7 @@ class User
         return $self;
     }
 
-    /**
-     * @param Message[] $historyEvents
-     * @return User
-     */
-    public static function reconstituteFromHistory($historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents) : User
     {
         $self = new self();
 
@@ -87,33 +78,27 @@ class User
     {
     }
 
-    /**
-     * @return int
-     */
-    public function getVersion()
+    public function getVersion() : int
     {
         return $this->version;
     }
 
-    /**
-     * @return Uuid
-     */
-    public function getId()
+    public function getId() : Uuid
     {
         return $this->userId;
     }
 
-    public function name()
+    public function name() : string
     {
         return $this->name;
     }
 
-    public function email()
+    public function email() : string
     {
         return $this->email;
     }
 
-    public function changeName($newName)
+    public function changeName(string $newName)
     {
         $this->recordThat(UsernameChanged::with(
             [
@@ -124,14 +109,14 @@ class User
         ));
     }
 
-    private function recordThat(TestDomainEvent $domainEvent)
+    private function recordThat(TestDomainEvent $domainEvent) : void
     {
         $this->version += 1;
         $this->recordedEvents[] = $domainEvent;
         $this->apply($domainEvent);
     }
 
-    public function apply(TestDomainEvent $event)
+    public function apply(TestDomainEvent $event) : void
     {
         if ($event instanceof UserCreated) {
             $this->whenUserCreated($event);
@@ -142,7 +127,7 @@ class User
         }
     }
 
-    private function whenUserCreated(UserCreated $userCreated)
+    private function whenUserCreated(UserCreated $userCreated) : void
     {
         $payload = $userCreated->payload();
 
@@ -151,12 +136,12 @@ class User
         $this->email  = $payload['email'];
     }
 
-    private function whenUsernameChanged(UsernameChanged $usernameChanged)
+    private function whenUsernameChanged(UsernameChanged $usernameChanged) : void
     {
         $this->name = $usernameChanged->payload()['new_name'];
     }
 
-    public function popRecordedEvents()
+    public function popRecordedEvents() : \Iterator
     {
         $recordedEvents = $this->recordedEvents;
 
@@ -168,7 +153,7 @@ class User
     /**
      * @param DomainEvent[] $streamEvents
      */
-    public function replay($streamEvents)
+    public function replay(\Iterator $streamEvents) : void
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
@@ -176,7 +161,7 @@ class User
         }
     }
 
-    private function nextVersion()
+    private function nextVersion() : int
     {
         return $this->version + 1;
     }

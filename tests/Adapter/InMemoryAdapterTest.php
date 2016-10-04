@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Adapter;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
+use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
@@ -27,17 +28,18 @@ final class InMemoryAdapterTest extends TestCase
      */
     private $adapter;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->adapter = new InMemoryAdapter();
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
      */
-    public function it_throws_exception_when_trying_to_append_on_non_existing_stream()
+    public function it_throws_exception_when_trying_to_append_on_non_existing_stream() : void
     {
+        $this->expectException(StreamNotFoundException::class);
+
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
 
@@ -47,7 +49,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_load_non_existing_stream()
+    public function it_returns_nothing_when_trying_to_load_non_existing_stream() : void
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
@@ -58,7 +60,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_load_events_by_metadata_fro_omn_non_existing_stream()
+    public function it_returns_nothing_when_trying_to_load_events_by_metadata_fro_omn_non_existing_stream() : void
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
@@ -69,7 +71,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_replay_non_existing_stream()
+    public function it_returns_nothing_when_trying_to_replay_non_existing_stream() : void
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');

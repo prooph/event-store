@@ -26,25 +26,14 @@ class TestDomainEvent extends DomainEvent implements PayloadConstructable
 {
     use PayloadTrait;
 
-    /**
-     * @param array $payload
-     * @param int $version
-     * @return TestDomainEvent
-     */
-    public static function with(array $payload, $version)
+    public static function with(array $payload, int $version) : TestDomainEvent
     {
         $event = new static($payload);
 
         return $event->withVersion($version);
     }
 
-    /**
-     * @param array $payload
-     * @param int $version
-     * @param \DateTimeImmutable $createdAt
-     * @return TestDomainEvent
-     */
-    public static function withPayloadAndSpecifiedCreatedAt(array $payload, $version, \DateTimeImmutable $createdAt)
+    public static function withPayloadAndSpecifiedCreatedAt(array $payload, int $version, \DateTimeImmutable $createdAt) : TestDomainEvent
     {
         $event = new static($payload);
         $event->createdAt = $createdAt;

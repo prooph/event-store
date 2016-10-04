@@ -23,17 +23,34 @@ use Prooph\Common\Messaging\Message;
  */
 interface AggregateTranslator
 {
-    public function extractAggregateVersion(object $eventSourcedAggregateRoot) : int;
+    /**
+     * @param object $eventSourcedAggregateRoot
+     * @return int
+     */
+    public function extractAggregateVersion($eventSourcedAggregateRoot) : int;
 
-    public function extractAggregateId(object $eventSourcedAggregateRoot) : string;
+    /**
+     * @param object $eventSourcedAggregateRoot
+     * @return string
+     */
+    public function extractAggregateId($eventSourcedAggregateRoot) : string;
 
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents) : object;
+    /**
+     * @param AggregateType $aggregateType
+     * @param Iterator $historyEvents
+     * @return object reconstructed EventSourcedAggregateRoot
+     */
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents);
 
     /**
      * @param object $eventSourcedAggregateRoot
      * @return Message[]
      */
-    public function extractPendingStreamEvents(object $eventSourcedAggregateRoot) : array;
+    public function extractPendingStreamEvents($eventSourcedAggregateRoot) : array;
 
-    public function replayStreamEvents(object $eventSourcedAggregateRoot, Iterator $events) : void;
+    /**
+     * @param object $eventSourcedAggregateRoot
+     * @param Iterator $events
+     */
+    public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events) : void;
 }

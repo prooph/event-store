@@ -14,7 +14,7 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class Post
@@ -49,12 +49,7 @@ class Post
      */
     private $version = 0;
 
-    /**
-     * @param string $text
-     * @param string $email
-     * @return Post
-     */
-    public static function create($text, $email)
+    public static function create(string $text, string $email) : Post
     {
         $self = new self();
 
@@ -74,7 +69,7 @@ class Post
      * @param Message[] $historyEvents
      * @return Post
      */
-    public static function reconstituteFromHistory($historyEvents)
+    public static function reconstituteFromHistory(array $historyEvents) : Post
     {
         $self = new self();
 
@@ -90,30 +85,30 @@ class Post
     /**
      * @return Uuid
      */
-    public function getId()
+    public function getId() : Uuid
     {
         return $this->postId;
     }
 
-    public function text()
+    public function text() : string
     {
         return $this->text;
     }
 
-    private function recordThat(TestDomainEvent $domainEvent)
+    private function recordThat(TestDomainEvent $domainEvent) : void
     {
         $this->recordedEvents[] = $domainEvent;
         $this->apply($domainEvent);
     }
 
-    public function apply(TestDomainEvent $event)
+    public function apply(TestDomainEvent $event) : void
     {
         if ($event instanceof PostCreated) {
             $this->whenPostCreated($event);
         }
     }
 
-    private function whenPostCreated(PostCreated $postCreated)
+    private function whenPostCreated(PostCreated $postCreated) : void
     {
         $payload = $postCreated->payload();
 
@@ -122,12 +117,7 @@ class Post
         $this->email  = $payload['email'];
     }
 
-    private function whenPostnameChanged(PostnameChanged $postnameChanged)
-    {
-        $this->name = $postnameChanged->payload()['new_name'];
-    }
-
-    public function popRecordedEvents()
+    public function popRecordedEvents() : \Iterator
     {
         $recordedEvents = $this->recordedEvents;
 
@@ -139,7 +129,7 @@ class Post
     /**
      * @param DomainEvent[] $streamEvents
      */
-    private function replay($streamEvents)
+    private function replay($streamEvents) : void
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
@@ -147,7 +137,7 @@ class Post
         }
     }
 
-    private function nextVersion()
+    private function nextVersion() : int
     {
         return ++$this->version;
     }

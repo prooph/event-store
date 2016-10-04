@@ -21,50 +21,32 @@ use Prooph\EventStore\Stream\StreamName;
 
 final class RepositoryMock extends AggregateRepository
 {
-    /**
-     * @return EventStore
-     */
-    public function accessEventStore()
+    public function accessEventStore() : EventStore
     {
         return $this->eventStore;
     }
-    /**
-     * @return AggregateType
-     */
-    public function accessAggregateType()
+
+    public function accessAggregateType() : AggregateType
     {
         return $this->aggregateType;
     }
 
-    /**
-     * @return AggregateTranslator
-     */
-    public function accessAggregateTranslator()
+    public function accessAggregateTranslator() : AggregateTranslator
     {
         return $this->aggregateTranslator;
     }
 
-    /**
-     * @param string|null $aggregateId
-     * @return StreamName
-     */
-    public function accessDeterminedStreamName($aggregateId = null)
+    public function accessDeterminedStreamName(?string $aggregateId = null) : StreamName
     {
         return $this->determineStreamName($aggregateId);
     }
 
-    /**
-     * @return bool
-     */
-    public function accessOneStreamPerAggregateFlag()
+    public function accessOneStreamPerAggregateFlag() : bool
     {
         return $this->oneStreamPerAggregate;
     }
 
-    /**
-     * @return SnapshotStore
-     */
-    public function accessSnapshotStore()
+    public function accessSnapshotStore() : SnapshotStore
     {
         return $this->snapshotStore;
     }

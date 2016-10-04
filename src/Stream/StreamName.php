@@ -30,27 +30,20 @@ class StreamName
     /**
      * @param $name
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
-        Assertion::string($name, 'StreamName must be a string');
         Assertion::notEmpty($name, 'StreamName must not be empty');
         Assertion::maxLength($name, 200, 'StreamName should not be longer than 200 chars');
 
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function toString()
+    public function toString() : string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->toString();
     }

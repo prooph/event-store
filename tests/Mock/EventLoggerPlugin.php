@@ -29,9 +29,6 @@ class EventLoggerPlugin implements Plugin
      */
     protected $loggedStreamEvents;
 
-    /**
-     * EventLoggerPlugin constructor.
-     */
     public function __construct()
     {
         $this->loggedStreamEvents = new \ArrayIterator();
@@ -41,7 +38,7 @@ class EventLoggerPlugin implements Plugin
      * @param EventStore $eventStore
      * @return void
      */
-    public function setUp(EventStore $eventStore)
+    public function setUp(EventStore $eventStore) : void
     {
         $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, "onPostCommit"]);
     }
@@ -49,15 +46,12 @@ class EventLoggerPlugin implements Plugin
     /**
      * @param ActionEvent $e
      */
-    public function onPostCommit(ActionEvent $e)
+    public function onPostCommit(ActionEvent $e) : void
     {
         $this->loggedStreamEvents = $e->getParam('recordedEvents', new \ArrayIterator());
     }
 
-    /**
-     * @return \Iterator
-     */
-    public function getLoggedStreamEvents()
+    public function getLoggedStreamEvents() : \Iterator
     {
         return $this->loggedStreamEvents;
     }

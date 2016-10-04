@@ -29,16 +29,12 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
      */
     private $version = 0;
 
-    public function getVersion()
+    public function getVersion() : int
     {
         return $this->version;
     }
 
-    /**
-     * @param \Iterator $historyEvents
-     * @return DefaultAggregateRootContract
-     */
-    public static function reconstituteFromHistory(\Iterator $historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents) : DefaultAggregateRootContract
     {
         $self = new self();
 
@@ -47,18 +43,12 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
         return $self;
     }
 
-    /**
-     * @return array
-     */
-    public function getHistoryEvents()
+    public function getHistoryEvents() : array
     {
         return $this->historyEvents;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId() : string
     {
         // not required for this mock
     }
@@ -66,7 +56,7 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     /**
      * @return Message[]
      */
-    public function popRecordedEvents()
+    public function popRecordedEvents() : \Iterator
     {
         // not required for this mock
     }
@@ -74,7 +64,7 @@ final class DefaultAggregateRoot implements DefaultAggregateRootContract
     /**
      * @param $event
      */
-    public function replay($event)
+    public function replay($event) : void
     {
         // not required for this mock
     }

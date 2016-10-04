@@ -68,7 +68,7 @@ class InMemoryAdapter implements Adapter
     public function load(StreamName $streamName, ?int $minVersion = null) : ?Stream
     {
         if (! isset($this->streams[$streamName->toString()])) {
-            return;
+            return null;
         }
 
         $streamEvents = $this->streams[$streamName->toString()];

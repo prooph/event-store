@@ -24,7 +24,7 @@ final class StreamNameTest extends TestCase
     /**
      * @test
      */
-    public function it_delegates_to_string()
+    public function it_delegates_to_string() : void
     {
         $streamName = new StreamName('foo');
         $this->assertEquals('foo', (string) $streamName);

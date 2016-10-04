@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use Prooph\Common\Event\DefaultListenerHandler;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
@@ -28,7 +29,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_attaches_itself_to_event_store_events()
+    public function it_attaches_itself_to_event_store_events() : void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $eventStore = $this->prophesize(EventStore::class);
@@ -39,13 +40,15 @@ final class MetadataEnricherPluginTest extends TestCase
 
         $eventStore->getActionEventEmitter()->willReturn($eventEmitter);
         $eventEmitter->attachListener('create.pre', Argument::any(), -1000)->will(
-            function ($args) use (&$createStreamListener) {
+            $function = function ($args) use (&$createStreamListener, &$function) {
                 $createStreamListener = $args[1];
+                return new DefaultListenerHandler($function);
             }
         );
         $eventEmitter->attachListener('appendTo.pre', Argument::any(), -1000)->will(
-            function ($args) use (&$appendToStreamListener) {
+            $function = function ($args) use (&$appendToStreamListener, &$function) {
                 $appendToStreamListener = $args[1];
+                return new DefaultListenerHandler($function);
             }
         );
 
@@ -60,7 +63,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_enrich_metadata_on_stream_create()
+    public function it_enrich_metadata_on_stream_create() : void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
@@ -88,7 +91,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_enrich_metadata_on_create_if_stream_is_not_set()
+    public function it_does_not_enrich_metadata_on_create_if_stream_is_not_set() : void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();
@@ -102,7 +105,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_enrich_metadata_on_stream_appendTo()
+    public function it_enrich_metadata_on_stream_appendTo() : void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
@@ -130,7 +133,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_enrich_metadata_on_appendTo_if_stream_is_not_set()
+    public function it_does_not_enrich_metadata_on_appendTo_if_stream_is_not_set() : void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();

@@ -22,24 +22,14 @@ use Prooph\Common\Messaging\Message;
  */
 interface CustomAggregateRootContract
 {
-    /**
-     * @return int
-     */
-    public function version();
+    public function version() : int;
 
-    /**
-     * @param \Iterator $historyEvents
-     * @return CustomAggregateRootContract
-     */
-    public static function buildFromHistoryEvents(\Iterator $historyEvents);
+    public static function buildFromHistoryEvents(\Iterator $historyEvents) : CustomAggregateRootContract;
 
-    /**
-     * @return string
-     */
-    public function identifier();
+    public function identifier() : string;
 
     /**
      * @return Message[]
      */
-    public function getPendingEvents();
+    public function getPendingEvents() : array;
 }

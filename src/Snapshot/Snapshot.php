@@ -56,9 +56,9 @@ final class Snapshot
      */
     public function __construct(
         AggregateType $aggregateType,
-        $aggregateId,
+        string $aggregateId,
         $aggregateRoot,
-        $lastVersion,
+        int $lastVersion,
         DateTimeImmutable $createdAt
     ) {
         Assertion::minLength($aggregateId, 1);
@@ -72,18 +72,12 @@ final class Snapshot
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return AggregateType
-     */
-    public function aggregateType()
+    public function aggregateType() : AggregateType
     {
         return $this->aggregateType;
     }
 
-    /**
-     * @return string
-     */
-    public function aggregateId()
+    public function aggregateId() : string
     {
         return $this->aggregateId;
     }
@@ -96,18 +90,12 @@ final class Snapshot
         return $this->aggregateRoot;
     }
 
-    /**
-     * @return int
-     */
-    public function lastVersion()
+    public function lastVersion() : int
     {
         return $this->lastVersion;
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
-    public function createdAt()
+    public function createdAt() : DateTimeImmutable
     {
         return $this->createdAt;
     }

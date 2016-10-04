@@ -25,7 +25,7 @@ final class JsonPayloadSerializerTest extends TestCase
      * @test
      * @dataProvider providePayload
      */
-    public function it_serializes_and_unserializes_a_payload_array(array $payload)
+    public function it_serializes_and_unserializes_a_payload_array(array $payload) : void
     {
         $serializer = new JsonPayloadSerializer();
 
@@ -36,7 +36,7 @@ final class JsonPayloadSerializerTest extends TestCase
         $this->assertEquals($payload, $payloadCopy);
     }
 
-    public function providePayload()
+    public function providePayload() : array
     {
         return [
             [

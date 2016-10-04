@@ -22,9 +22,5 @@ use Prooph\EventStore\EventStore;
  */
 interface Plugin
 {
-    /**
-     * @param EventStore $eventStore
-     * @return void
-     */
-    public function setUp(EventStore $eventStore);
+    public function setUp(EventStore $eventStore) : void;
 }

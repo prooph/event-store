@@ -35,7 +35,7 @@ final class AdapterMock implements Adapter
     /**
      * @return array
      */
-    public function getInjectedOptions()
+    public function getInjectedOptions() : array
     {
         return $this->options;
     }
@@ -44,7 +44,7 @@ final class AdapterMock implements Adapter
      * @param Stream $stream
      * @return void
      */
-    public function create(Stream $stream)
+    public function create(Stream $stream) : void
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
@@ -55,7 +55,7 @@ final class AdapterMock implements Adapter
      * @throws \Prooph\EventStore\Exception\StreamNotFoundException If stream does not exist
      * @return void
      */
-    public function appendTo(StreamName $streamName, Iterator $domainEvents)
+    public function appendTo(StreamName $streamName, Iterator $domainEvents) : void
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
@@ -65,7 +65,7 @@ final class AdapterMock implements Adapter
      * @param null|int $minVersion Minimum version an event should have
      * @return Stream|null
      */
-    public function load(StreamName $streamName, $minVersion = null)
+    public function load(StreamName $streamName, ?int $minVersion = null) : ?Stream
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
@@ -76,7 +76,7 @@ final class AdapterMock implements Adapter
      * @param null|int $minVersion Minimum version an event should have
      * @return Message[]
      */
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, $minVersion = null)
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, ?int $minVersion = null) : array
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
@@ -87,7 +87,7 @@ final class AdapterMock implements Adapter
      * @param null $minVersion
      * @return Iterator
      */
-    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null)
+    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null) : Iterator
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }
@@ -98,7 +98,7 @@ final class AdapterMock implements Adapter
      * @param array $metadata
      * @return Iterator
      */
-    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = [])
+    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []) : Iterator
     {
         throw new \BadMethodCallException(__CLASS__ . '::' . __METHOD__);
     }

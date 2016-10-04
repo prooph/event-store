@@ -26,29 +26,16 @@ final class InMemoryAdapter implements Adapter
      */
     private $map = [];
 
-    /**
-     * Get the aggregate root if it exists otherwise null
-     *
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
-     * @return null|object
-     */
-    public function get(AggregateType $aggregateType, $aggregateId)
+    public function get(AggregateType $aggregateType, string $aggregateId) : ?Snapshot
     {
         if (! isset($this->map[$aggregateType->toString()][$aggregateId])) {
-            return;
+            return null;
         }
 
         return $this->map[$aggregateType->toString()][$aggregateId];
     }
 
-    /**
-     * Save a snapshot
-     *
-     * @param Snapshot $snapshot
-     * @return void
-     */
-    public function save(Snapshot $snapshot)
+    public function save(Snapshot $snapshot) : void
     {
         $this->map[$snapshot->aggregateType()->toString()][$snapshot->aggregateId()] = $snapshot;
     }

@@ -22,46 +22,44 @@ use Prooph\Common\Messaging\Message;
  */
 final class FaultyAggregateRoot implements DefaultAggregateRootContract
 {
-    public function getVersion()
+    public function getVersion() : int
     {
         //faulty return
-        return;
+        return 1;
     }
 
     /**
      * @param \Iterator $historyEvents
      * @return DefaultAggregateRootContract
      */
-    public static function reconstituteFromHistory(\Iterator $historyEvents)
+    public static function reconstituteFromHistory(\Iterator $historyEvents) : DefaultAggregateRootContract
     {
         //faulty method
-        return;
+        return new self();
     }
 
     /**
      * @return string
      */
-    public function getId()
+    public function getId() : string
     {
         //faulty method
-        return;
+        return '0';
     }
 
     /**
      * @return Message[]
      */
-    public function popRecordedEvents()
+    public function popRecordedEvents() : \Iterator
     {
         //faulty method
-        return;
+        return new \ArrayIterator();
     }
 
     /**
      * @param $event
      */
-    public function replay($event)
+    public function replay($event) : void
     {
-        // faulty method
-        return;
     }
 }

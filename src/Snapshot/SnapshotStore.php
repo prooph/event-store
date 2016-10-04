@@ -26,31 +26,17 @@ class SnapshotStore
      */
     protected $adapter;
 
-    /**
-     * @param Adapter $adapter
-     */
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
-     * @return Snapshot|null
-     */
-    public function get(AggregateType $aggregateType, $aggregateId)
+    public function get(AggregateType $aggregateType, $aggregateId) : ?Snapshot
     {
         return $this->adapter->get($aggregateType, $aggregateId);
     }
 
-    /**
-     * Save aggregate root
-     *
-     * @param Snapshot $snapshot
-     * @return void
-     */
-    public function save(Snapshot $snapshot)
+    public function save(Snapshot $snapshot) : void
     {
         $this->adapter->save($snapshot);
     }

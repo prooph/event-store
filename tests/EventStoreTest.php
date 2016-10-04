@@ -18,6 +18,9 @@ use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use ProophTest\EventStore\Mock\TransactionalInMemoryAdapterMock;
@@ -38,7 +41,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_new_stream_and_records_the_stream_events()
+    public function it_creates_a_new_stream_and_records_the_stream_events() : void
     {
         $recordedEvents = [];
 
@@ -70,7 +73,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_stops_stream_creation_when_listener_stops_propagation()
+    public function it_stops_stream_creation_when_listener_stops_propagation() : void
     {
         $recordedEvents = [];
 
@@ -98,7 +101,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_breaks_stream_creation_when_it_is_not_in_transaction()
+    public function it_breaks_stream_creation_when_it_is_not_in_transaction() : void
     {
         $this->setExpectedException('RuntimeException');
 
@@ -108,7 +111,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_appends_events_to_stream_and_records_them()
+    public function it_appends_events_to_stream_and_records_them() : void
     {
         $recordedEvents = [];
 
@@ -141,7 +144,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_append_events_when_listener_stops_propagation()
+    public function it_does_not_append_events_when_listener_stops_propagation() : void
     {
         $recordedEvents = [];
 
@@ -178,7 +181,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_breaks_appending_events_when_it_is_not_in_active_transaction()
+    public function it_breaks_appending_events_when_it_is_not_in_active_transaction() : void
     {
         $stream = $this->getTestStream();
 
@@ -196,7 +199,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_loads_events_by_matching_metadata()
+    public function it_loads_events_by_matching_metadata() : void
     {
         $stream = $this->getTestStream();
 
@@ -229,7 +232,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_loads_events_by_min_version()
+    public function it_loads_events_by_min_version() : void
     {
         $stream = $this->getTestStream();
 
@@ -287,7 +290,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_empty_array_when_listener_stops_loading_events_and_does_not_provide_loaded_events()
+    public function it_returns_empty_array_when_listener_stops_loading_events_and_does_not_provide_loaded_events() : void
     {
         $stream = $this->getTestStream();
 
@@ -322,7 +325,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_listener_events_when_listener_stops_loading_events_and_provide_loaded_events()
+    public function it_returns_listener_events_when_listener_stops_loading_events_and_provide_loaded_events() : void
     {
         $stream = $this->getTestStream();
 
@@ -373,7 +376,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_breaks_loading_a_stream_when_listener_stops_propagation_but_does_not_provide_a_stream()
+    public function it_breaks_loading_a_stream_when_listener_stops_propagation_but_does_not_provide_a_stream() : void
     {
         $stream = $this->getTestStream();
 
@@ -395,7 +398,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_breaks_loading_a_stream_when_listener_stops_propagation_and_provides_stream_with_wrong_name()
+    public function it_breaks_loading_a_stream_when_listener_stops_propagation_and_provides_stream_with_wrong_name() : void
     {
         $stream = $this->getTestStream();
 
@@ -418,7 +421,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_stream_provided_by_listener_when_listener_stops_propagation()
+    public function it_uses_stream_provided_by_listener_when_listener_stops_propagation() : void
     {
         $stream = $this->getTestStream();
 
@@ -445,10 +448,11 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
      */
-    public function it_throws_stream_not_found_exception_if_adapter_loads_nothing()
+    public function it_throws_stream_not_found_exception_if_adapter_loads_nothing() : void
     {
+        $this->expectException(StreamNotFoundException::class);
+
         $stream = $this->getTestStream();
 
         $adapter = $this->prophesize(Adapter::class);
@@ -466,10 +470,11 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
      */
-    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_post()
+    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_post() : void
     {
+        $this->expectException(StreamNotFoundException::class);
+
         $stream = $this->getTestStream();
 
         $this->eventStore->beginTransaction();
@@ -488,7 +493,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_event_by_metadata_from_post()
+    public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_event_by_metadata_from_post() : void
     {
         $stream = $this->getTestStream();
 
@@ -507,29 +512,32 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\RuntimeException
      */
-    public function it_throws_exception_when_trying_to_commit_transaction_without_open_transation()
+    public function it_throws_exception_when_trying_to_commit_transaction_without_open_transation() : void
     {
+        $this->expectException(RuntimeException::class);
+
         $this->eventStore->commit();
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\RuntimeException
      */
-    public function it_throws_exception_when_trying_to_rollback_transaction_without_open_transation()
+    public function it_throws_exception_when_trying_to_rollback_transaction_without_open_transation() : void
     {
+        $this->expectException(RuntimeException::class);
+
         $this->eventStore->rollback();
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\RuntimeException
-     * @expectedExceptionMessage Adapter cannot handle transaction and therefore cannot rollback
      */
-    public function it_cannot_rollback_transaction_if_adapter_cannot_handle_transaction()
+    public function it_cannot_rollback_transaction_if_adapter_cannot_handle_transaction() : void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Adapter cannot handle transaction and therefore cannot rollback');
+
         $stream = $this->getTestStream();
 
         $this->eventStore->beginTransaction();
@@ -543,10 +551,11 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
      */
-    public function it_can_rollback_transaction()
+    public function it_can_rollback_transaction() : void
     {
+        $this->expectException(StreamNotFoundException::class);
+
         $stream = $this->getTestStream();
 
         $adapter = $this->prophesize(Adapter::class);
@@ -565,10 +574,11 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\StreamNotFoundException
      */
-    public function it_makes_rollback_when_event_is_stopped_during_commit()
+    public function it_makes_rollback_when_event_is_stopped_during_commit() : void
     {
+        $this->expectException(StreamNotFoundException::class);
+
         $stream = $this->getTestStream();
 
         $adapter = $this->prophesize(Adapter::class);
@@ -592,7 +602,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail()
+    public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail() : void
     {
         $eventStore = new EventStore(new TransactionalInMemoryAdapterMock(), new ProophActionEventEmitter());
 
@@ -608,7 +618,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_should_return_true_by_default_if_transaction_is_used()
+    public function it_should_return_true_by_default_if_transaction_is_used() : void
     {
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
             $this->eventStore->create($this->getTestStream());
@@ -622,7 +632,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_wraps_up_code_in_transaction_properly()
+    public function it_wraps_up_code_in_transaction_properly() : void
     {
         $recordedEvents = [];
 
@@ -662,7 +672,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_commits_transaction_if_adapter_implements_can_handle_transaction()
+    public function it_commits_transaction_if_adapter_implements_can_handle_transaction() : void
     {
         $stream = $this->getTestStream();
 
@@ -700,7 +710,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_replays_in_correct_order()
+    public function it_replays_in_correct_order() : void
     {
         $streamEvent1 = UserCreated::with(
             ['name' => 'Alex', 'email' => 'contact@prooph.de'],
@@ -753,7 +763,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_replays_since_specific_date()
+    public function it_replays_since_specific_date() : void
     {
         $streamEvent1 = UserCreated::withPayloadAndSpecifiedCreatedAt(
             ['name' => 'Alex', 'email' => 'contact@prooph.de'],
@@ -807,7 +817,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_replays_in_correct_order_with_same_date_time()
+    public function it_replays_in_correct_order_with_same_date_time() : void
     {
         $sameDate = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
@@ -864,28 +874,27 @@ class EventStoreTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
-     * @expectedExceptionMessage No stream names given
      */
-    public function it_rejects_replay_without_stream_names()
+    public function it_rejects_replay_without_stream_names() : void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No stream names given');
+
         $this->eventStore->replay([], null, []);
     }
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Exception\InvalidArgumentException
-     * @expectedExceptionMessage One metadata per stream name needed, given 2 stream names but 1 metadatas
      */
-    public function it_expects_matching_of_stream_names_and_metadata()
+    public function it_expects_matching_of_stream_names_and_metadata() : void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('One metadata per stream name needed, given 2 stream names but 1 metadatas');
+
         $this->eventStore->replay([new StreamName('user'), new StreamName('post')], null, [[]]);
     }
 
-    /**
-     * @return Stream
-     */
-    private function getTestStream()
+    private function getTestStream() : Stream
     {
         $streamEvent = UserCreated::with(
             ['name' => 'Alex', 'email' => 'contact@prooph.de'],
