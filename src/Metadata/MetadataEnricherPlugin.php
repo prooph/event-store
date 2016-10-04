@@ -32,10 +32,7 @@ final class MetadataEnricherPlugin implements Plugin
         $this->metadataEnricher = $metadataEnricher;
     }
 
-    /**
-     * @param EventStore $eventStore
-     */
-    public function setUp(EventStore $eventStore)
+    public function setUp(EventStore $eventStore) : void
     {
         $eventEmitter = $eventStore->getActionEventEmitter();
 
@@ -45,10 +42,8 @@ final class MetadataEnricherPlugin implements Plugin
 
     /**
      * Add event metadata on event store createStream.
-     *
-     * @param ActionEvent $createEvent
      */
-    public function onEventStoreCreateStream(ActionEvent $createEvent)
+    public function onEventStoreCreateStream(ActionEvent $createEvent) : void
     {
         $stream = $createEvent->getParam('stream');
 
@@ -67,7 +62,7 @@ final class MetadataEnricherPlugin implements Plugin
      *
      * @param ActionEvent $appendToStreamEvent
      */
-    public function onEventStoreAppendToStream(ActionEvent $appendToStreamEvent)
+    public function onEventStoreAppendToStream(ActionEvent $appendToStreamEvent) : void
     {
         $streamEvents = $appendToStreamEvent->getParam('streamEvents');
 
@@ -83,12 +78,8 @@ final class MetadataEnricherPlugin implements Plugin
     /**
      * This method takes domain events as argument which are going to be added
      * to the event stream and add the metadata via the MetadataEnricher.
-     *
-     * @param Iterator $events
-     *
-     * @return Iterator
      */
-    private function handleRecordedEvents(\Iterator $events)
+    private function handleRecordedEvents(\Iterator $events) : \Iterator
     {
         $enrichedEvents = [];
 

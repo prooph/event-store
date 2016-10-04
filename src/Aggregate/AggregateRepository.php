@@ -63,21 +63,13 @@ class AggregateRepository
      */
     protected $oneStreamPerAggregate;
 
-    /**
-     * @param EventStore $eventStore
-     * @param AggregateType $aggregateType
-     * @param AggregateTranslator $aggregateTranslator
-     * @param SnapshotStore|null $snapshotStore
-     * @param StreamName|null $streamName
-     * @param bool $oneStreamPerAggregate
-     */
     public function __construct(
         EventStore $eventStore,
         AggregateType $aggregateType,
         AggregateTranslator $aggregateTranslator,
         SnapshotStore $snapshotStore = null,
-        StreamName $streamName = null,
-        $oneStreamPerAggregate = false
+        ?StreamName $streamName = null,
+        bool $oneStreamPerAggregate = false
     ) {
         $this->eventStore = $eventStore;
         $this->eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'addPendingEventsToStream']);
@@ -94,7 +86,7 @@ class AggregateRepository
      * In the listener method the repository checks its identity map for pending events
      * and appends the events to the event stream.
      */
-    public function addPendingEventsToStream()
+    public function addPendingEventsToStream() : void
     {
         foreach ($this->identityMap as $aggregateId => $aggregateRoot) {
             $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($aggregateRoot);
@@ -117,10 +109,9 @@ class AggregateRepository
     }
 
     /**
-     * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTypeException
      */
-    public function addAggregateRoot($eventSourcedAggregateRoot)
+    public function addAggregateRoot(object $eventSourcedAggregateRoot) : void
     {
         $this->assertAggregateType($eventSourcedAggregateRoot);
 
@@ -147,11 +138,8 @@ class AggregateRepository
 
     /**
      * Returns null if no stream events can be found for aggregate root otherwise the reconstituted aggregate root
-     *
-     * @param string $aggregateId
-     * @return null|object
      */
-    public function getAggregateRoot($aggregateId)
+    public function getAggregateRoot(string $aggregateId) : ?object
     {
         Assertion::string($aggregateId, 'AggregateId needs to be string');
 
@@ -198,20 +186,12 @@ class AggregateRepository
         return $eventSourcedAggregateRoot;
     }
 
-    /**
-     * @param object $aggregateRoot
-     * @return int
-     */
-    public function extractAggregateVersion($aggregateRoot)
+    public function extractAggregateVersion(object $aggregateRoot) : int
     {
         return $this->aggregateTranslator->extractAggregateVersion($aggregateRoot);
     }
 
-    /**
-     * @param string $aggregateId
-     * @return null|object
-     */
-    protected function loadFromSnapshotStore($aggregateId)
+    protected function loadFromSnapshotStore(string $aggregateId) : ?object
     {
         $snapshot = $this->snapshotStore->get($this->aggregateType, $aggregateId);
 
@@ -244,11 +224,8 @@ class AggregateRepository
     /**
      * Default stream name generation.
      * Override this method in an extending repository to provide a custom name
-     *
-     * @param string|null $aggregateId
-     * @return StreamName
      */
-    protected function determineStreamName($aggregateId)
+    protected function determineStreamName(string $aggregateId) : StreamName
     {
         if ($this->oneStreamPerAggregate) {
             return new StreamName($this->aggregateType->toString() . '-' . $aggregateId);
@@ -264,21 +241,14 @@ class AggregateRepository
     /**
      * Add aggregate_id and aggregate_type as metadata to $domainEvent
      * Override this method in an extending repository to add more or different metadata.
-     *
-     * @param Message $domainEvent
-     * @param string $aggregateId
-     * @return Message
      */
-    protected function enrichEventMetadata(Message $domainEvent, $aggregateId)
+    protected function enrichEventMetadata(Message $domainEvent, string $aggregateId) : Message
     {
         $domainEvent = $domainEvent->withAddedMetadata('aggregate_id', $aggregateId);
         return $domainEvent->withAddedMetadata('aggregate_type', $this->aggregateType->toString());
     }
 
-    /**
-     * @param object $eventSourcedAggregateRoot
-     */
-    protected function assertAggregateType($eventSourcedAggregateRoot)
+    protected function assertAggregateType(object$eventSourcedAggregateRoot) : void
     {
         $this->aggregateType->assert($eventSourcedAggregateRoot);
     }

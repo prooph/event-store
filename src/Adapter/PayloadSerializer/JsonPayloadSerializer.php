@@ -22,20 +22,12 @@ use Prooph\EventStore\Adapter\PayloadSerializer;
  */
 final class JsonPayloadSerializer implements PayloadSerializer
 {
-    /**
-     * @param array $payload
-     * @return string
-     */
-    public function serializePayload(array $payload)
+    public function serializePayload(array $payload) : string
     {
         return json_encode($payload);
     }
 
-    /**
-     * @param string $payloadStr
-     * @return array
-     */
-    public function unserializePayload($payloadStr)
+    public function unserializePayload(string $payloadStr) : array
     {
         return json_decode($payloadStr, true);
     }

@@ -27,41 +27,17 @@ use Prooph\EventStore\Exception\StreamNotFoundException;
  */
 interface Adapter
 {
-    /**
-     * @param Stream $stream
-     * @return void
-     */
-    public function create(Stream $stream);
+    public function create(Stream $stream) : void;
 
     /**
-     * @param StreamName $streamName
-     * @param Iterator $domainEvents
      * @throws StreamNotFoundException If stream does not exist
      * @throws ConcurrencyException If two processes are trying to append to the same stream at the same time
-     * @return void
      */
-    public function appendTo(StreamName $streamName, Iterator $domainEvents);
+    public function appendTo(StreamName $streamName, Iterator $domainEvents) : void;
 
-    /**
-     * @param StreamName $streamName
-     * @param null|int $minVersion Minimum version an event should have
-     * @return Stream|null
-     */
-    public function load(StreamName $streamName, $minVersion = null);
+    public function load(StreamName $streamName, ?int $minVersion = null) : ?Stream;
 
-    /**
-     * @param StreamName $streamName
-     * @param array $metadata If empty array is provided, then all events should be returned
-     * @param null|int $minVersion Minimum version an event should have
-     * @return Iterator
-     */
-    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null);
+    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null) : Iterator;
 
-    /**
-     * @param StreamName $streamName
-     * @param DateTimeInterface|null $since
-     * @param array $metadata
-     * @return Iterator
-     */
-    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = []);
+    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []) : Iterator;
 }

@@ -21,9 +21,9 @@ namespace Prooph\EventStore\Adapter\Feature;
  */
 interface CanHandleTransaction
 {
-    public function beginTransaction();
+    public function beginTransaction() : void;
 
-    public function commit();
+    public function commit() : void;
 
-    public function rollback();
+    public function rollback() : void;
 }

@@ -33,11 +33,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
 {
     use ConfigurationTrait;
 
-    /**
-     * @param ContainerInterface $container
-     * @return EventStore
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : EventStore
     {
         $config = $container->get('config');
         $config = $this->options($config);
@@ -94,7 +90,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     /**
      * @inheritdoc
      */
-    public function dimensions()
+    public function dimensions() : array
     {
         return ['prooph', 'event_store'];
     }
@@ -102,7 +98,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     /**
      * @inheritdoc
      */
-    public function mandatoryOptions()
+    public function mandatoryOptions() : array
     {
         return [
             'adapter' => [
@@ -116,7 +112,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     /**
      * @inheritdoc
      */
-    public function defaultOptions()
+    public function defaultOptions() : array
     {
         return [
             'metadata_enrichers' => [],

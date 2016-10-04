@@ -34,11 +34,7 @@ class InMemoryAdapter implements Adapter
      */
     protected $streams;
 
-    /**
-     * @param Stream $stream
-     * @return void
-     */
-    public function create(Stream $stream)
+    public function create(Stream $stream) : void
     {
         $streamEvents = $stream->streamEvents();
         $streamEvents->rewind();
@@ -51,7 +47,7 @@ class InMemoryAdapter implements Adapter
      * @throws StreamNotFoundException
      * @return void
      */
-    public function appendTo(StreamName $streamName, Iterator $domainEvents)
+    public function appendTo(StreamName $streamName, Iterator $domainEvents) : void
     {
         if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
@@ -69,12 +65,7 @@ class InMemoryAdapter implements Adapter
         $this->streams[$streamName->toString()] = $appendIterator;
     }
 
-    /**
-     * @param StreamName $streamName
-     * @param null|int $minVersion
-     * @return Stream|null
-     */
-    public function load(StreamName $streamName, $minVersion = null)
+    public function load(StreamName $streamName, ?int $minVersion = null) : ?Stream
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return;
@@ -100,14 +91,7 @@ class InMemoryAdapter implements Adapter
         return new Stream($streamName, $streamEvents);
     }
 
-    /**
-     * @param StreamName $streamName
-     * @param array $metadata
-     * @param null|int $minVersion
-     * @throws StreamNotFoundException
-     * @return Iterator
-     */
-    public function loadEvents(StreamName $streamName, array $metadata = [], $minVersion = null)
+    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null) : Iterator
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -126,13 +110,7 @@ class InMemoryAdapter implements Adapter
         return new ArrayIterator($streamEvents);
     }
 
-    /**
-     * @param StreamName $streamName
-     * @param DateTimeInterface|null $since
-     * @param array $metadata
-     * @return ArrayIterator
-     */
-    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = [])
+    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []) : Iterator
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -153,12 +131,7 @@ class InMemoryAdapter implements Adapter
         return new ArrayIterator($streamEvents);
     }
 
-    /**
-     * @param Message $streamEvent
-     * @param array $metadata
-     * @return bool
-     */
-    protected function matchMetadataWith(Message $streamEvent, array $metadata)
+    protected function matchMetadataWith(Message $streamEvent, array $metadata) : bool
     {
         if (empty($metadata)) {
             return true;

@@ -24,10 +24,8 @@ use Prooph\EventStore\Stream\StreamName;
 
 /**
  * Creates aggregate repository classes
- *
- * Don't extend from this class! in next major version this class will be final.
  */
-class AggregateRepositoryFactory implements RequiresConfigId, RequiresMandatoryOptions
+final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMandatoryOptions
 {
     use ConfigurationTrait;
 
@@ -49,12 +47,9 @@ class AggregateRepositoryFactory implements RequiresConfigId, RequiresMandatoryO
      * ];
      * </code>
      *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
      * @throws InvalidArgumentException
      */
-    public static function __callStatic($name, array $arguments)
+    public static function __callStatic(string $name, array $arguments) : AggregateRepository
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -67,17 +62,15 @@ class AggregateRepositoryFactory implements RequiresConfigId, RequiresMandatoryO
     /**
      * @param string $configId
      */
-    public function __construct($configId)
+    public function __construct(string $configId)
     {
         $this->configId = $configId;
     }
 
     /**
-     * @param ContainerInterface $container
      * @throws ConfigurationException
-     * @return AggregateRepository
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : AggregateRepository
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
@@ -108,7 +101,7 @@ class AggregateRepositoryFactory implements RequiresConfigId, RequiresMandatoryO
     /**
      * @inheritdoc
      */
-    public function dimensions()
+    public function dimensions() : array
     {
         return ['prooph', 'event_store'];
     }
@@ -116,7 +109,7 @@ class AggregateRepositoryFactory implements RequiresConfigId, RequiresMandatoryO
     /**
      * @inheritdoc
      */
-    public function mandatoryOptions()
+    public function mandatoryOptions() : array
     {
         return [
             'repository_class',

@@ -61,23 +61,14 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      */
     private $messageToEventCallback = null;
 
-    /**
-     * @param null|string   $identifierMethodName
-     * @param null|string   $versionMethodName
-     * @param null|string   $popRecordedEventsMethodName
-     * @param null|string   $replayEventsMethodsName
-     * @param null|string   $staticReconstituteFromHistoryMethodName
-     * @param null|callable $eventToMessageCallback
-     * @param null|callable $messageToEventCallback
-     */
     public function __construct(
-        $identifierMethodName = null,
-        $versionMethodName = null,
-        $popRecordedEventsMethodName = null,
-        $replayEventsMethodsName = null,
-        $staticReconstituteFromHistoryMethodName = null,
-        $eventToMessageCallback = null,
-        $messageToEventCallback = null)
+        ?string $identifierMethodName = null,
+        ?string $versionMethodName = null,
+        ?string $popRecordedEventsMethodName = null,
+        ?string $replayEventsMethodsName = null,
+        ?string $staticReconstituteFromHistoryMethodName = null,
+        ?callable $eventToMessageCallback = null,
+        ?callable $messageToEventCallback = null)
     {
         if (null !== $identifierMethodName) {
             Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
@@ -105,22 +96,18 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         }
 
         if (null !== $eventToMessageCallback) {
-            Assertion::true(is_callable($eventToMessageCallback), 'EventToMessage callback needs to be a callable');
             $this->eventToMessageCallback = $eventToMessageCallback;
         }
 
         if (null !== $messageToEventCallback) {
-            Assertion::true(is_callable($messageToEventCallback), 'MessageToEvent callback needs to be a callable');
             $this->messageToEventCallback = $messageToEventCallback;
         }
     }
 
     /**
-     * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTranslationFailedException
-     * @return string
      */
-    public function extractAggregateId($eventSourcedAggregateRoot)
+    public function extractAggregateId(object $eventSourcedAggregateRoot) : string
     {
         if (! method_exists($eventSourcedAggregateRoot, $this->identifierMethodName)) {
             throw new AggregateTranslationFailedException(
@@ -135,11 +122,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         return (string)$eventSourcedAggregateRoot->{$this->identifierMethodName}();
     }
 
-    /**
-     * @param object $eventSourcedAggregateRoot
-     * @return int
-     */
-    public function extractAggregateVersion($eventSourcedAggregateRoot)
+    public function extractAggregateVersion(object $eventSourcedAggregateRoot) : int
     {
         if (! method_exists($eventSourcedAggregateRoot, $this->versionMethodName)) {
             throw new AggregateTranslationFailedException(
@@ -155,12 +138,9 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     }
 
     /**
-     * @param AggregateType $aggregateType
-     * @param Iterator $historyEvents
      * @throws Exception\AggregateTranslationFailedException
-     * @return object reconstructed EventSourcedAggregateRoot
      */
-    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents)
+    public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents) : object
     {
         if ($this->messageToEventCallback) {
             $historyEvents = new MapIterator($historyEvents, $this->messageToEventCallback);
@@ -205,11 +185,10 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     }
 
     /**
-     * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTranslationFailedException
      * @return Message[]
      */
-    public function extractPendingStreamEvents($eventSourcedAggregateRoot)
+    public function extractPendingStreamEvents(object $eventSourcedAggregateRoot) : array
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
@@ -258,11 +237,9 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     }
 
     /**
-     * @param object $eventSourcedAggregateRoot
-     * @param Iterator $events
      * @throws Exception\AggregateTranslationFailedException
      */
-    public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events)
+    public function replayStreamEvents(object $eventSourcedAggregateRoot, Iterator $events) : void
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));

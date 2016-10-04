@@ -18,10 +18,6 @@ interface MetadataEnricher
 {
     /**
      * Return the given message with added metadata.
-     *
-     * @param Message $message
-     *
-     * @return Message
      */
-    public function enrich(Message $message);
+    public function enrich(Message $message) : Message;
 }

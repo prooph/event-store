@@ -27,11 +27,7 @@ final class SnapshotStoreFactory implements RequiresConfig, RequiresMandatoryOpt
 {
     use ConfigurationTrait;
 
-    /**
-     * @param ContainerInterface $container
-     * @return SnapshotStore
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : SnapshotStore
     {
         $config = $container->get('config');
         $config = $this->options($config);
@@ -44,7 +40,7 @@ final class SnapshotStoreFactory implements RequiresConfig, RequiresMandatoryOpt
     /**
      * @inheritdoc
      */
-    public function dimensions()
+    public function dimensions() : array
     {
         return ['prooph', 'snapshot_store'];
     }
@@ -52,7 +48,7 @@ final class SnapshotStoreFactory implements RequiresConfig, RequiresMandatoryOpt
     /**
      * @inheritdoc
      */
-    public function mandatoryOptions()
+    public function mandatoryOptions() : array
     {
         return [
             'adapter' => [

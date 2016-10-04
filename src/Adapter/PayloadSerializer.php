@@ -20,15 +20,7 @@ namespace Prooph\EventStore\Adapter;
  */
 interface PayloadSerializer
 {
-    /**
-     * @param array $payload
-     * @return string
-     */
-    public function serializePayload(array $payload);
+    public function serializePayload(array $payload) : string;
 
-    /**
-     * @param string $payloadStr
-     * @return array
-     */
-    public function unserializePayload($payloadStr);
+    public function unserializePayload(string $payloadStr) : array;
 }

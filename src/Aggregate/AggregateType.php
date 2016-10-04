@@ -28,11 +28,9 @@ class AggregateType
     /**
      * Use this factory when aggregate type should be detected based on given aggregate root
      *
-     * @param mixed $eventSourcedAggregateRoot
-     * @return AggregateType
      * @throws Exception\InvalidArgumentException
      */
-    public static function fromAggregateRoot($eventSourcedAggregateRoot)
+    public static function fromAggregateRoot(object $eventSourcedAggregateRoot) : AggregateType
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new Exception\AggregateTypeException(
@@ -51,11 +49,9 @@ class AggregateType
      * Use this factory when aggregate type equals to aggregate root class
      * The factory makes sure that the aggregate root class exists.
      *
-     * @param string $aggregateRootClass
-     * @return AggregateType
      * @throws Exception\InvalidArgumentException
      */
-    public static function fromAggregateRootClass($aggregateRootClass)
+    public static function fromAggregateRootClass(string $aggregateRootClass) : AggregateType
     {
         if (! is_string($aggregateRootClass)) {
             throw new Exception\InvalidArgumentException('Aggregate root class must be a string');
@@ -69,49 +65,38 @@ class AggregateType
 
     /**
      * Use this factory when the aggregate type is not equal to the aggregate root class
-     *
-     * @param $aggregateTypeString
-     * @return AggregateType
      */
-    public static function fromString($aggregateTypeString)
+    public static function fromString(string $aggregateTypeString) : AggregateType
     {
         return new static($aggregateTypeString);
     }
 
     /**
-     * @param $aggregateType
      * @throws Exception\InvalidArgumentException
      */
-    private function __construct($aggregateType)
+    private function __construct(string $aggregateType)
     {
-        if (! is_string($aggregateType) || empty($aggregateType)) {
+        if (empty($aggregateType)) {
             throw new Exception\InvalidArgumentException('AggregateType must be a non empty string');
         }
 
         $this->aggregateType = $aggregateType;
     }
 
-    /**
-     * @return string
-     */
-    public function toString()
+    public function toString() : string
     {
         return $this->aggregateType;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->toString();
     }
 
     /**
-     * @param $aggregateRoot
      * @throws Exception\AggregateTypeException
      */
-    public function assert($aggregateRoot)
+    public function assert(object $aggregateRoot)
     {
         $otherAggregateType = self::fromAggregateRoot($aggregateRoot);
 
@@ -122,11 +107,7 @@ class AggregateType
         }
     }
 
-    /**
-     * @param AggregateType $other
-     * @return bool
-     */
-    public function equals(AggregateType $other)
+    public function equals(AggregateType $other) : bool
     {
         return $this->toString() === $other->toString();
     }

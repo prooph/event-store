@@ -25,5 +25,5 @@ abstract class AbstractAggregateRepositoryFactory extends AggregateRepositoryFac
     /**
      * @inheritdoc
      */
-    abstract public function containerId();
+    abstract public function containerId() : string;
 }

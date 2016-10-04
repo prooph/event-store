@@ -19,11 +19,7 @@ namespace Prooph\EventStore\Exception;
  */
 class ConfigurationException extends RuntimeException implements EventStoreException
 {
-    /**
-     * @param string $msg
-     * @return ConfigurationException
-     */
-    public static function configurationError($msg)
+    public static function configurationError(string $msg) : ConfigurationException
     {
         return new self('[Configuration Error] ' . $msg . "\n");
     }
