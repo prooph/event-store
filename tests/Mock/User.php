@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Mock;
 
+use Iterator;
 use Prooph\Common\Messaging\DomainEvent;
-use Prooph\Common\Messaging\Message;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -141,7 +141,7 @@ class User
         $this->name = $usernameChanged->payload()['new_name'];
     }
 
-    public function popRecordedEvents() : \Iterator
+    public function popRecordedEvents() : Iterator
     {
         $recordedEvents = $this->recordedEvents;
 
@@ -153,7 +153,7 @@ class User
     /**
      * @param DomainEvent[] $streamEvents
      */
-    public function replay(\Iterator $streamEvents) : void
+    public function replay(Iterator $streamEvents) : void
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
