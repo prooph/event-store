@@ -1,6 +1,6 @@
 # ProophEventStore
 
-PHP 5.5+ EventStore Implementation.
+PHP 7.1 EventStore Implementation.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 [![Coverage Status](https://coveralls.io/repos/prooph/event-store/badge.svg?branch=master&service=github)](https://coveralls.io/github/prooph/event-store?branch=master)
@@ -14,7 +14,7 @@ which make the Event Store highly customizable.
 
 ## Installation
 
-You can install prooph/event-store via composer by adding `"prooph/event-store": "^6.0"` as requirement to your composer.json.
+You can install prooph/event-store via composer by adding `"prooph/event-store": "^7.0"` as requirement to your composer.json.
 
 ## Available Persistence Adapters
 - [Mongo DB](https://github.com/prooph/event-store-mongodb-adapter) - stable
