@@ -99,9 +99,10 @@ class AggregateType
 
     /**
      * @param object $aggregateRoot
+     *
      * @throws Exception\AggregateTypeException
      */
-    public function assert($aggregateRoot)
+    public function assert($aggregateRoot): void
     {
         $otherAggregateType = self::fromAggregateRoot($aggregateRoot);
 

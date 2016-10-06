@@ -34,7 +34,6 @@ final class CompositeIterator implements Iterator
 
     /**
      * @param Iterator[]|IteratorAggregate[] $iterators
-     *
      * @param callable $callback
      *
      * @throws Exception\InvalidArgumentException
@@ -81,6 +80,7 @@ final class CompositeIterator implements Iterator
 
     /**
      * Return the current element
+     *
      * @return mixed
      */
     public function current()
@@ -96,6 +96,7 @@ final class CompositeIterator implements Iterator
     /**
      * Return the key of the current element
      * Note: You should not rely on the key, unless the key tracks information from which iterator it comes
+     *
      * @return mixed scalar on success, or null on failure.
      */
     public function key()

@@ -91,7 +91,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function dimensions(): array
     {
@@ -99,7 +99,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function mandatoryOptions(): array
     {
@@ -113,7 +113,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function defaultOptions(): array
     {

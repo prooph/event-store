@@ -96,7 +96,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function dimensions(): array
     {
@@ -104,7 +104,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function mandatoryOptions(): array
     {

@@ -49,13 +49,9 @@ final class Snapshot
 
     /**
      * @param AggregateType $aggregateType
-     *
      * @param string $aggregateId
-     *
      * @param object $aggregateRoot
-     *
      * @param int $lastVersion
-     *
      * @param DateTimeImmutable $createdAt
      */
     public function __construct(

@@ -233,9 +233,7 @@ class EventStore
 
     /**
      * @param StreamName[] $streamNames
-     *
      * @param DateTimeInterface|null $since
-     *
      * @param null|array $metadatas One metadata array per stream name, same index order is required
      *
      * @return Iterator
@@ -276,9 +274,9 @@ class EventStore
     /**
      * @param callable $callable
      *
-     * @throws \Throwable
-     *
      * @return mixed
+     *
+     * @throws \Throwable
      */
     public function transactional(callable $callable)
     {

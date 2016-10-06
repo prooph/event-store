@@ -31,7 +31,6 @@ interface Adapter
 
     /**
      * @throws StreamNotFoundException If stream does not exist
-     *
      * @throws ConcurrencyException If two processes are trying to append to the same stream at the same time
      */
     public function appendTo(StreamName $streamName, Iterator $domainEvents): void;

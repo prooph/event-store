@@ -39,7 +39,6 @@ interface AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
-     *
      * @param Iterator $historyEvents
      *
      * @return object reconstructed EventSourcedAggregateRoot
@@ -55,7 +54,6 @@ interface AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
-     *
      * @param Iterator $events
      *
      * @return void

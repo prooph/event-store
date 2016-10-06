@@ -38,7 +38,7 @@ final class SnapshotStoreFactory implements RequiresConfig, RequiresMandatoryOpt
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function dimensions(): array
     {
@@ -46,7 +46,7 @@ final class SnapshotStoreFactory implements RequiresConfig, RequiresMandatoryOpt
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function mandatoryOptions(): array
     {
