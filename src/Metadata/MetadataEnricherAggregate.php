@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the prooph/service-bus.
+ * This file is part of the prooph/event-store.
  * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
  * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
