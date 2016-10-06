@@ -93,7 +93,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
 
         $streamName = isset($config['stream_name']) ? new StreamName($config['stream_name']) : null;
 
-        $oneStreamPerAggregate = (bool) $config['one_stream_per_aggregate'] ?? false;
+        $oneStreamPerAggregate = (bool) ($config['one_stream_per_aggregate'] ?? false);
 
         return new $repositoryClass($eventStore, $aggregateType, $aggregateTranslator, $snapshotStore, $streamName, $oneStreamPerAggregate);
     }
