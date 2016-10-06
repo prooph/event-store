@@ -147,8 +147,6 @@ class AggregateRepository
      */
     public function getAggregateRoot(string $aggregateId)
     {
-        Assertion::string($aggregateId, 'AggregateId needs to be string');
-
         if (isset($this->identityMap[$aggregateId])) {
             return $this->identityMap[$aggregateId];
         }

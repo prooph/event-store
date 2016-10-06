@@ -84,7 +84,7 @@ $eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, .
  */
 $eventStore->getActionEventEmitter()->attachListener(
     'commit.post', //Most of the event store methods provide pre and post hooks
-    $function = function (\Prooph\Common\Event\ActionEvent $actionEvent) use (&$function) {
+    $function = function (\Prooph\Common\Event\ActionEvent $actionEvent) use (&$function): \Prooph\Common\Event\DefaultListenerHandler {
         /**
          * In the *commit.post* action event a plugin has access to
          * all recorded events which were added in the current committed transaction.
