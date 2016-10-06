@@ -35,9 +35,9 @@ interface Adapter
      */
     public function appendTo(StreamName $streamName, Iterator $domainEvents): void;
 
-    public function load(StreamName $streamName, ?int $minVersion = null): ?Stream;
+    public function load(StreamName $streamName, int $minVersion = null): ?Stream;
 
-    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null): Iterator;
+    public function loadEvents(StreamName $streamName, array $metadata = [], int $minVersion = null): Iterator;
 
-    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []): Iterator;
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = []): Iterator;
 }

@@ -144,7 +144,7 @@ class EventStore
     /**
      * @throws Exception\StreamNotFoundException
      */
-    public function load(StreamName $streamName, ?int $minVersion = null): Stream
+    public function load(StreamName $streamName, int $minVersion = null): Stream
     {
         $argv = ['streamName' => $streamName, 'minVersion' => $minVersion];
 
@@ -200,7 +200,7 @@ class EventStore
         return $event->getParam('stream');
     }
 
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, ?int $minVersion = null): Iterator
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, int $minVersion = null): Iterator
     {
         $argv = ['streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion];
 

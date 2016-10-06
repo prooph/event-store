@@ -31,7 +31,7 @@ class SnapshotStore
         $this->adapter = $adapter;
     }
 
-    public function get(AggregateType $aggregateType, $aggregateId): ?Snapshot
+    public function get(AggregateType $aggregateType, string $aggregateId): ?Snapshot
     {
         return $this->adapter->get($aggregateType, $aggregateId);
     }

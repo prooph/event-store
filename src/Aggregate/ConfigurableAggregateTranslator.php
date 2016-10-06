@@ -62,14 +62,14 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     private $messageToEventCallback = null;
 
     public function __construct(
-        ?string $identifierMethodName = null,
-        ?string $versionMethodName = null,
-        ?string $popRecordedEventsMethodName = null,
-        ?string $replayEventsMethodsName = null,
-        ?string $staticReconstituteFromHistoryMethodName = null,
-        ?callable $eventToMessageCallback = null,
-        ?callable $messageToEventCallback = null)
-    {
+        string $identifierMethodName = null,
+        string $versionMethodName = null,
+        string $popRecordedEventsMethodName = null,
+        string $replayEventsMethodsName = null,
+        string $staticReconstituteFromHistoryMethodName = null,
+        callable $eventToMessageCallback = null,
+        callable $messageToEventCallback = null
+    ) {
         if (null !== $identifierMethodName) {
             Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
             $this->identifierMethodName = $identifierMethodName;
@@ -238,7 +238,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
                 throw new AggregateTranslationFailedException(sprintf(
                     'A recorded event of the aggregate root %s has the wrong type. Expected Prooph\Common\Messaging\Message. Got %s',
                     get_class($eventSourcedAggregateRoot),
-                    is_object($recordedEvent)? get_class($recordedEvent): gettype($recordedEvent)
+                    is_object($recordedEvent) ? get_class($recordedEvent) : gettype($recordedEvent)
                 ));
             }
         }
@@ -273,7 +273,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             if (! $event instanceof Message) {
                 throw new AggregateTranslationFailedException(sprintf(
                     'Cannot replay event %s. Expected instance of Prooph\Common\Messaging\Message.',
-                    is_object($event)? get_class($event): gettype($event)
+                    is_object($event) ? get_class($event) : gettype($event)
                 ));
             }
 

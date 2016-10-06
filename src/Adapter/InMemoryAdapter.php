@@ -65,7 +65,7 @@ class InMemoryAdapter implements Adapter
         $this->streams[$streamName->toString()] = $appendIterator;
     }
 
-    public function load(StreamName $streamName, ?int $minVersion = null): ?Stream
+    public function load(StreamName $streamName, int $minVersion = null): ?Stream
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return null;
@@ -91,7 +91,7 @@ class InMemoryAdapter implements Adapter
         return new Stream($streamName, $streamEvents);
     }
 
-    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null): Iterator
+    public function loadEvents(StreamName $streamName, array $metadata = [], int $minVersion = null): Iterator
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -110,7 +110,7 @@ class InMemoryAdapter implements Adapter
         return new ArrayIterator($streamEvents);
     }
 
-    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []): Iterator
+    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = []): Iterator
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
