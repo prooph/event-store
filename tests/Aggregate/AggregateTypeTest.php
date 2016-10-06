@@ -37,12 +37,10 @@ class AggregateTypeTest extends TestCase
      */
     public function it_delegates_on_creating_from_aggregate_root_when_it_implements_aggregate_type_provider()
     {
-        $expected = new \stdClass();
-
         $aggregateRoot = $this->prophesize(AggregateTypeProvider::class);
-        $aggregateRoot->aggregateType()->willReturn($expected)->shouldBeCalled();
+        $aggregateRoot->aggregateType()->willReturn(AggregateType::fromString('stdClass'))->shouldBeCalled();
 
-        $this->assertSame($expected, AggregateType::fromAggregateRoot($aggregateRoot->reveal()));
+        $this->assertEquals('stdClass', AggregateType::fromAggregateRoot($aggregateRoot->reveal())->toString());
     }
 
     /**
