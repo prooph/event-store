@@ -20,5 +20,5 @@ namespace Prooph\EventStore\Aggregate;
  */
 interface AggregateTypeProvider
 {
-    public function aggregateType() : AggregateType;
+    public function aggregateType(): AggregateType;
 }

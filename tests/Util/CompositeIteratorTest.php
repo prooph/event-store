@@ -27,7 +27,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      */
-    public function it_iterator_in_correct_order() : void
+    public function it_iterator_in_correct_order(): void
     {
         $a1 = [1, 2, 3];
         $a2 = [4, 7, 10];
@@ -65,7 +65,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      */
-    public function it_cannot_construct_without_iterators() : void
+    public function it_cannot_construct_without_iterators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No iterators given');
@@ -76,7 +76,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      */
-    public function it_required_iterators() : void
+    public function it_required_iterators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected an array of Iterator or IteratorAggregate');
@@ -87,7 +87,7 @@ final class CompositeIteratorTest extends TestCase
     /**
      * @test
      */
-    public function it_accepts_iterator_aggregate() : void
+    public function it_accepts_iterator_aggregate(): void
     {
         new CompositeIterator([new TestIteratorAggregate()], 'substr');
     }

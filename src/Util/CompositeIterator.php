@@ -62,7 +62,7 @@ final class CompositeIterator implements Iterator
         $this->callback = $callback;
     }
 
-    private function nextIterator() : Iterator
+    private function nextIterator(): Iterator
     {
         $current = null;
         $nextIterator = $this->iterators[0];
@@ -86,7 +86,7 @@ final class CompositeIterator implements Iterator
         return $this->nextIterator()->current();
     }
 
-    public function next() : void
+    public function next(): void
     {
         $this->nextIterator()->next();
     }
@@ -101,12 +101,12 @@ final class CompositeIterator implements Iterator
         return $this->nextIterator()->key();
     }
 
-    public function valid() : bool
+    public function valid(): bool
     {
         return $this->nextIterator()->valid();
     }
 
-    public function rewind() : void
+    public function rewind(): void
     {
         foreach ($this->iterators as $iterator) {
             $iterator->rewind();

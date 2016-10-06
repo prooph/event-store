@@ -38,7 +38,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_event_store_with_default_event_emitter() : void
+    public function it_creates_event_store_with_default_event_emitter(): void
     {
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
 
@@ -57,7 +57,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_custom_event_emitter() : void
+    public function it_injects_custom_event_emitter(): void
     {
         $config['prooph']['event_store']['event_emitter'] = 'event_emitter';
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
@@ -79,7 +79,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_plugins() : void
+    public function it_injects_plugins(): void
     {
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['plugins'][] = 'plugin';
@@ -101,7 +101,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_plugin_configured() : void
+    public function it_throws_exception_when_invalid_plugin_configured(): void
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Plugin plugin does not implement the Plugin interface');
@@ -123,7 +123,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_injects_metadata_enrichers() : void
+    public function it_injects_metadata_enrichers(): void
     {
         $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['metadata_enrichers'][] = 'metadata_enricher1';
@@ -171,7 +171,7 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_metadata_enricher_configured() : void
+    public function it_throws_exception_when_invalid_metadata_enricher_configured(): void
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Metadata enricher foobar does not implement the MetadataEnricher interface');

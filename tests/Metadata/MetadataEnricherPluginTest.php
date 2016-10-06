@@ -29,7 +29,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_attaches_itself_to_event_store_events() : void
+    public function it_attaches_itself_to_event_store_events(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $eventStore = $this->prophesize(EventStore::class);
@@ -63,7 +63,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_enrich_metadata_on_stream_create() : void
+    public function it_enrich_metadata_on_stream_create(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
@@ -91,7 +91,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_enrich_metadata_on_create_if_stream_is_not_set() : void
+    public function it_does_not_enrich_metadata_on_create_if_stream_is_not_set(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();
@@ -105,7 +105,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_enrich_metadata_on_stream_appendTo() : void
+    public function it_enrich_metadata_on_stream_appendTo(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
@@ -133,7 +133,7 @@ final class MetadataEnricherPluginTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_enrich_metadata_on_appendTo_if_stream_is_not_set() : void
+    public function it_does_not_enrich_metadata_on_appendTo_if_stream_is_not_set(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();

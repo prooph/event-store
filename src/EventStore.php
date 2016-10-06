@@ -62,12 +62,12 @@ class EventStore
         $this->recordedEvents = new ArrayIterator();
     }
 
-    public function getAdapter() : Adapter
+    public function getAdapter(): Adapter
     {
         return $this->adapter;
     }
 
-    public function getRecordedEvents() : Iterator
+    public function getRecordedEvents(): Iterator
     {
         return $this->recordedEvents;
     }
@@ -75,7 +75,7 @@ class EventStore
     /**
      * @throws Exception\RuntimeException
      */
-    public function create(Stream $stream) : void
+    public function create(Stream $stream): void
     {
         $argv = ['stream' => $stream];
 
@@ -109,7 +109,7 @@ class EventStore
     /**
      * @throws Exception\RuntimeException
      */
-    public function appendTo(StreamName $streamName, Iterator $streamEvents) : void
+    public function appendTo(StreamName $streamName, Iterator $streamEvents): void
     {
         $argv = ['streamName' => $streamName, 'streamEvents' => $streamEvents];
 
@@ -144,7 +144,7 @@ class EventStore
     /**
      * @throws Exception\StreamNotFoundException
      */
-    public function load(StreamName $streamName, ?int $minVersion = null) : Stream
+    public function load(StreamName $streamName, ?int $minVersion = null): Stream
     {
         $argv = ['streamName' => $streamName, 'minVersion' => $minVersion];
 
@@ -200,7 +200,7 @@ class EventStore
         return $event->getParam('stream');
     }
 
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, ?int $minVersion = null) : Iterator
+    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, ?int $minVersion = null): Iterator
     {
         $argv = ['streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion];
 
@@ -238,7 +238,7 @@ class EventStore
      * @return CompositeIterator
      * @throws Exception\InvalidArgumentException
      */
-    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null) : CompositeIterator
+    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null): CompositeIterator
     {
         if (empty($streamNames)) {
             throw new Exception\InvalidArgumentException('No stream names given');
@@ -295,7 +295,7 @@ class EventStore
      *
      * @triggers beginTransaction
      */
-    public function beginTransaction() : void
+    public function beginTransaction(): void
     {
         if (!$this->inTransaction && $this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
@@ -319,7 +319,7 @@ class EventStore
      * @triggers commit.post Once after all started transactions are committed. Event includes all "recordedEvents".
      *                       Perfect to attach a domain event dispatcher
      */
-    public function commit() : void
+    public function commit(): void
     {
         if (!$this->inTransaction) {
             throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
@@ -354,7 +354,7 @@ class EventStore
      *
      * @triggers rollback
      */
-    public function rollback() : void
+    public function rollback(): void
     {
         if (!$this->inTransaction) {
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
@@ -375,12 +375,12 @@ class EventStore
         $this->recordedEvents = new ArrayIterator();
     }
 
-    public function isInTransaction() : bool
+    public function isInTransaction(): bool
     {
         return $this->inTransaction;
     }
 
-    public function getActionEventEmitter() : ActionEventEmitter
+    public function getActionEventEmitter(): ActionEventEmitter
     {
         return $this->actionEventEmitter;
     }

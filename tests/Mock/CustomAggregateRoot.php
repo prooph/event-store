@@ -26,12 +26,12 @@ final class CustomAggregateRoot implements CustomAggregateRootContract
 
     private $version = 0;
 
-    public function version() : int
+    public function version(): int
     {
         return $this->version;
     }
 
-    public static function buildFromHistoryEvents(\Iterator $historyEvents) : CustomAggregateRootContract
+    public static function buildFromHistoryEvents(\Iterator $historyEvents): CustomAggregateRootContract
     {
         $self = new self();
 
@@ -40,12 +40,12 @@ final class CustomAggregateRoot implements CustomAggregateRootContract
         return $self;
     }
 
-    public function getHistoryEvents() : \Iterator
+    public function getHistoryEvents(): \Iterator
     {
         return $this->historyEvents;
     }
 
-    public function identifier() : string
+    public function identifier(): string
     {
         // not required for this mock
     }
@@ -53,7 +53,7 @@ final class CustomAggregateRoot implements CustomAggregateRootContract
     /**
      * @return Message[]
      */
-    public function getPendingEvents() : array
+    public function getPendingEvents(): array
     {
         // not required for this mock
     }

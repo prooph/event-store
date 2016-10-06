@@ -28,7 +28,7 @@ class AggregateRepositoryFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_an_aggregate_from_static_call() : void
+    public function it_creates_an_aggregate_from_static_call(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has('config')->willReturn(true);
@@ -56,7 +56,7 @@ class AggregateRepositoryFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_invalid_argument_exception_without_container_on_static_call() : void
+    public function it_throws_invalid_argument_exception_without_container_on_static_call(): void
     {
         $this->setExpectedException(
             InvalidArgumentException::class,

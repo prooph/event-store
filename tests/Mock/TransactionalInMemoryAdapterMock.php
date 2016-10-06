@@ -26,21 +26,21 @@ final class TransactionalInMemoryAdapterMock extends InMemoryAdapter implements 
     /**
      * {@inheritDoc}
      */
-    public function beginTransaction() : void
+    public function beginTransaction(): void
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function commit() : void
+    public function commit(): void
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function rollback() : void
+    public function rollback(): void
     {
     }
 }

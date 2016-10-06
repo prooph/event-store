@@ -27,7 +27,7 @@ final class QuickStartSucceeded extends DomainEvent
      */
     private $text;
 
-    public static function withSuccessMessage(string $text) : QuickStartSucceeded
+    public static function withSuccessMessage(string $text): QuickStartSucceeded
     {
         return new self($text);
     }
@@ -39,17 +39,17 @@ final class QuickStartSucceeded extends DomainEvent
         $this->init();
     }
 
-    public function getText() : string
+    public function getText(): string
     {
         return $this->text;
     }
 
-    public function payload() : array
+    public function payload(): array
     {
         return ['text' => $this->text];
     }
 
-    protected function setPayload(array $payload) : void
+    protected function setPayload(array $payload): void
     {
         $this->text = $payload['text'];
     }

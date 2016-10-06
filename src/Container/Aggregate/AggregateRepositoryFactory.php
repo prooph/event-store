@@ -49,7 +49,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments) : AggregateRepository
+    public static function __callStatic(string $name, array $arguments): AggregateRepository
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -70,7 +70,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
     /**
      * @throws ConfigurationException
      */
-    public function __invoke(ContainerInterface $container) : AggregateRepository
+    public function __invoke(ContainerInterface $container): AggregateRepository
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
@@ -89,11 +89,11 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
         $aggregateType = AggregateType::fromAggregateRootClass($config['aggregate_type']);
         $aggregateTranslator = $container->get($config['aggregate_translator']);
 
-        $snapshotStore = isset($config['snapshot_store'])? $container->get($config['snapshot_store']) : null;
+        $snapshotStore = isset($config['snapshot_store']) ? $container->get($config['snapshot_store']) : null;
 
-        $streamName = isset($config['stream_name'])? new StreamName($config['stream_name']) : null;
+        $streamName = isset($config['stream_name']) ? new StreamName($config['stream_name']) : null;
 
-        $oneStreamPerAggregate = isset($config['one_stream_per_aggregate'])? (bool)$config['one_stream_per_aggregate'] : false;
+        $oneStreamPerAggregate = isset($config['one_stream_per_aggregate']) ? (bool)$config['one_stream_per_aggregate'] : false;
 
         return new $repositoryClass($eventStore, $aggregateType, $aggregateTranslator, $snapshotStore, $streamName, $oneStreamPerAggregate);
     }
@@ -101,7 +101,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
     /**
      * @inheritdoc
      */
-    public function dimensions() : array
+    public function dimensions(): array
     {
         return ['prooph', 'event_store'];
     }
@@ -109,7 +109,7 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
     /**
      * @inheritdoc
      */
-    public function mandatoryOptions() : array
+    public function mandatoryOptions(): array
     {
         return [
             'repository_class',

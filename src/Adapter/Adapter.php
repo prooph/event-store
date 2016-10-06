@@ -27,17 +27,17 @@ use Prooph\EventStore\Exception\StreamNotFoundException;
  */
 interface Adapter
 {
-    public function create(Stream $stream) : void;
+    public function create(Stream $stream): void;
 
     /**
      * @throws StreamNotFoundException If stream does not exist
      * @throws ConcurrencyException If two processes are trying to append to the same stream at the same time
      */
-    public function appendTo(StreamName $streamName, Iterator $domainEvents) : void;
+    public function appendTo(StreamName $streamName, Iterator $domainEvents): void;
 
-    public function load(StreamName $streamName, ?int $minVersion = null) : ?Stream;
+    public function load(StreamName $streamName, ?int $minVersion = null): ?Stream;
 
-    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null) : Iterator;
+    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null): Iterator;
 
-    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []) : Iterator;
+    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []): Iterator;
 }

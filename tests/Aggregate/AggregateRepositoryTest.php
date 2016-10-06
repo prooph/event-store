@@ -49,7 +49,7 @@ class AggregateRepositoryTest extends TestCase
      */
     private $snapshotStore;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -70,7 +70,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_adds_a_new_aggregate() : void
+    public function it_adds_a_new_aggregate(): void
     {
         $this->eventStore->beginTransaction();
 
@@ -96,7 +96,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_tracks_changes_of_aggregate_but_always_returns_a_fresh_instance_on_load() : void
+    public function it_tracks_changes_of_aggregate_but_always_returns_a_fresh_instance_on_load(): void
     {
         $this->eventStore->beginTransaction();
 
@@ -131,7 +131,7 @@ class AggregateRepositoryTest extends TestCase
      * @test
      * Test for https://github.com/prooph/event-store/issues/99
      */
-    public function it_does_not_interfere_with_other_aggregate_roots_in_pending_events_index() : void
+    public function it_does_not_interfere_with_other_aggregate_roots_in_pending_events_index(): void
     {
         $this->eventStore->beginTransaction();
 
@@ -171,7 +171,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_asserts_correct_aggregate_type() : void
+    public function it_asserts_correct_aggregate_type(): void
     {
         $this->expectException(AggregateTypeException::class);
         $this->expectExceptionMessage('Aggregate root must be an object but type of string given');
@@ -182,7 +182,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_early_on_get_aggregate_root_when_there_are_no_stream_events() : void
+    public function it_returns_early_on_get_aggregate_root_when_there_are_no_stream_events(): void
     {
         $this->assertNull($this->repository->getAggregateRoot('something'));
     }
@@ -190,7 +190,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_loads_the_entire_stream_if_one_stream_per_aggregate_is_enabled() : void
+    public function it_loads_the_entire_stream_if_one_stream_per_aggregate_is_enabled(): void
     {
         $adapter = $this->prophesize(Adapter::class);
 
@@ -213,7 +213,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_snapshot_store() : void
+    public function it_uses_snapshot_store(): void
     {
         $this->prepareSnapshotStoreAggregateRepository();
 
@@ -260,7 +260,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_snapshot_store_while_snapshot_store_is_empty() : void
+    public function it_uses_snapshot_store_while_snapshot_store_is_empty(): void
     {
         $this->prepareSnapshotStoreAggregateRepository();
 
@@ -294,7 +294,7 @@ class AggregateRepositoryTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_snapshot_store_and_applies_pending_events() : void
+    public function it_uses_snapshot_store_and_applies_pending_events(): void
     {
         $this->prepareSnapshotStoreAggregateRepository();
 
@@ -371,7 +371,7 @@ class AggregateRepositoryTest extends TestCase
      * @test
      * Test for https://github.com/prooph/event-store/issues/179
      */
-    public function it_tracks_changes_of_aggregate_but_returns_a_same_instance_within_transaction() : void
+    public function it_tracks_changes_of_aggregate_but_returns_a_same_instance_within_transaction(): void
     {
         $this->eventStore->beginTransaction();
 

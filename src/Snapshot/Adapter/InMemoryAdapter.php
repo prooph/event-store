@@ -26,7 +26,7 @@ final class InMemoryAdapter implements Adapter
      */
     private $map = [];
 
-    public function get(AggregateType $aggregateType, string $aggregateId) : ?Snapshot
+    public function get(AggregateType $aggregateType, string $aggregateId): ?Snapshot
     {
         if (! isset($this->map[$aggregateType->toString()][$aggregateId])) {
             return null;
@@ -35,7 +35,7 @@ final class InMemoryAdapter implements Adapter
         return $this->map[$aggregateType->toString()][$aggregateId];
     }
 
-    public function save(Snapshot $snapshot) : void
+    public function save(Snapshot $snapshot): void
     {
         $this->map[$snapshot->aggregateType()->toString()][$snapshot->aggregateId()] = $snapshot;
     }

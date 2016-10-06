@@ -32,7 +32,7 @@ class AggregateType
      * @return AggregateType
      * @throws Exception\InvalidArgumentException
      */
-    public static function fromAggregateRoot($eventSourcedAggregateRoot) : AggregateType
+    public static function fromAggregateRoot($eventSourcedAggregateRoot): AggregateType
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new Exception\AggregateTypeException(
@@ -53,7 +53,7 @@ class AggregateType
      *
      * @throws Exception\InvalidArgumentException
      */
-    public static function fromAggregateRootClass(string $aggregateRootClass) : AggregateType
+    public static function fromAggregateRootClass(string $aggregateRootClass): AggregateType
     {
         if (! is_string($aggregateRootClass)) {
             throw new Exception\InvalidArgumentException('Aggregate root class must be a string');
@@ -68,7 +68,7 @@ class AggregateType
     /**
      * Use this factory when the aggregate type is not equal to the aggregate root class
      */
-    public static function fromString(string $aggregateTypeString) : AggregateType
+    public static function fromString(string $aggregateTypeString): AggregateType
     {
         return new static($aggregateTypeString);
     }
@@ -85,12 +85,12 @@ class AggregateType
         $this->aggregateType = $aggregateType;
     }
 
-    public function toString() : string
+    public function toString(): string
     {
         return $this->aggregateType;
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->toString();
     }
@@ -110,7 +110,7 @@ class AggregateType
         }
     }
 
-    public function equals(AggregateType $other) : bool
+    public function equals(AggregateType $other): bool
     {
         return $this->toString() === $other->toString();
     }

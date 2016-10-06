@@ -21,7 +21,7 @@ use Prooph\EventStore\Snapshot\Snapshot;
  */
 interface Adapter
 {
-    public function get(AggregateType $aggregateType, string $aggregateId) : ?Snapshot;
+    public function get(AggregateType $aggregateType, string $aggregateId): ?Snapshot;
 
-    public function save(Snapshot $snapshot) : void;
+    public function save(Snapshot $snapshot): void;
 }

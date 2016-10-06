@@ -72,12 +72,12 @@ final class Snapshot
         $this->createdAt = $createdAt;
     }
 
-    public function aggregateType() : AggregateType
+    public function aggregateType(): AggregateType
     {
         return $this->aggregateType;
     }
 
-    public function aggregateId() : string
+    public function aggregateId(): string
     {
         return $this->aggregateId;
     }
@@ -90,12 +90,12 @@ final class Snapshot
         return $this->aggregateRoot;
     }
 
-    public function lastVersion() : int
+    public function lastVersion(): int
     {
         return $this->lastVersion;
     }
 
-    public function createdAt() : DateTimeImmutable
+    public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

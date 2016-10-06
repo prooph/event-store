@@ -29,7 +29,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected $eventStore;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $inMemoryAdapter = new InMemoryAdapter();
         $eventEmitter    = new ProophActionEventEmitter();

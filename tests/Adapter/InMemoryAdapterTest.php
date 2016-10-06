@@ -28,7 +28,7 @@ final class InMemoryAdapterTest extends TestCase
      */
     private $adapter;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->adapter = new InMemoryAdapter();
     }
@@ -36,7 +36,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_trying_to_append_on_non_existing_stream() : void
+    public function it_throws_exception_when_trying_to_append_on_non_existing_stream(): void
     {
         $this->expectException(StreamNotFoundException::class);
 
@@ -49,7 +49,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_load_non_existing_stream() : void
+    public function it_returns_nothing_when_trying_to_load_non_existing_stream(): void
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
@@ -60,7 +60,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_load_events_by_metadata_fro_omn_non_existing_stream() : void
+    public function it_returns_nothing_when_trying_to_load_events_by_metadata_fro_omn_non_existing_stream(): void
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');
@@ -71,7 +71,7 @@ final class InMemoryAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_nothing_when_trying_to_replay_non_existing_stream() : void
+    public function it_returns_nothing_when_trying_to_replay_non_existing_stream(): void
     {
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');

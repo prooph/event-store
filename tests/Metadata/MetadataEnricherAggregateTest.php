@@ -24,7 +24,7 @@ final class MetadataEnricherAggregateTest extends TestCase
     /**
      * @test
      */
-    public function it_aggregates_metadata_enrichers() : void
+    public function it_aggregates_metadata_enrichers(): void
     {
         // Mocks
         $metadataEnricher1 = $this->prophesize(MetadataEnricher::class);
@@ -67,7 +67,7 @@ final class MetadataEnricherAggregateTest extends TestCase
     /**
      * @test
      */
-    public function it_only_accept_correct_instances() : void
+    public function it_only_accept_correct_instances(): void
     {
         $this->expectException(\Assert\InvalidArgumentException::class);
 

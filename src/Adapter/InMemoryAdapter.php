@@ -34,7 +34,7 @@ class InMemoryAdapter implements Adapter
      */
     protected $streams;
 
-    public function create(Stream $stream) : void
+    public function create(Stream $stream): void
     {
         $streamEvents = $stream->streamEvents();
         $streamEvents->rewind();
@@ -47,7 +47,7 @@ class InMemoryAdapter implements Adapter
      * @throws StreamNotFoundException
      * @return void
      */
-    public function appendTo(StreamName $streamName, Iterator $domainEvents) : void
+    public function appendTo(StreamName $streamName, Iterator $domainEvents): void
     {
         if (! isset($this->streams[$streamName->toString()])) {
             throw new StreamNotFoundException(
@@ -65,7 +65,7 @@ class InMemoryAdapter implements Adapter
         $this->streams[$streamName->toString()] = $appendIterator;
     }
 
-    public function load(StreamName $streamName, ?int $minVersion = null) : ?Stream
+    public function load(StreamName $streamName, ?int $minVersion = null): ?Stream
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return null;
@@ -91,7 +91,7 @@ class InMemoryAdapter implements Adapter
         return new Stream($streamName, $streamEvents);
     }
 
-    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null) : Iterator
+    public function loadEvents(StreamName $streamName, array $metadata = [], ?int $minVersion = null): Iterator
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -110,7 +110,7 @@ class InMemoryAdapter implements Adapter
         return new ArrayIterator($streamEvents);
     }
 
-    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []) : Iterator
+    public function replay(StreamName $streamName, ?DateTimeInterface $since = null, array $metadata = []): Iterator
     {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -131,7 +131,7 @@ class InMemoryAdapter implements Adapter
         return new ArrayIterator($streamEvents);
     }
 
-    protected function matchMetadataWith(Message $streamEvent, array $metadata) : bool
+    protected function matchMetadataWith(Message $streamEvent, array $metadata): bool
     {
         if (empty($metadata)) {
             return true;

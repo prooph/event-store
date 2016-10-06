@@ -25,7 +25,7 @@ class QuickstartTest extends TestCase
     /**
      * @test
      */
-    public function it_provides_the_correct_example_output() : void
+    public function it_provides_the_correct_example_output(): void
     {
         $pattern = sprintf(
             '~^Event with name Example\\\\Event\\\\QuickStartSucceeded was recorded\. It occurred on %s ///\n\nIt works$~',
@@ -35,7 +35,7 @@ class QuickstartTest extends TestCase
         $this->assertRegExp($pattern, $this->getQuickstartOutput());
     }
 
-    private function getQuickstartOutput() : string
+    private function getQuickstartOutput(): string
     {
         ob_start();
         include __DIR__ . '/../../examples/quickstart.php';

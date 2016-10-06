@@ -22,25 +22,19 @@ use Prooph\Common\Messaging\Message;
  */
 interface DefaultAggregateRootContract
 {
-    public static function reconstituteFromHistory(\Iterator $historyEvents) : DefaultAggregateRootContract;
+    public static function reconstituteFromHistory(\Iterator $historyEvents): DefaultAggregateRootContract;
 
-    /**
-     * @return int
-     */
-    public function getVersion() : int;
+    public function getVersion(): int;
 
-    /**
-     * @return string
-     */
-    public function getId() : string;
+    public function getId(): string;
 
     /**
      * @return Message[]
      */
-    public function popRecordedEvents() : \Iterator;
+    public function popRecordedEvents(): array;
 
     /**
      * @param $event
      */
-    public function replay($event) : void;
+    public function replay($event): void;
 }

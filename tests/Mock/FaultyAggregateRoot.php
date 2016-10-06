@@ -22,7 +22,7 @@ use Prooph\Common\Messaging\Message;
  */
 final class FaultyAggregateRoot implements DefaultAggregateRootContract
 {
-    public function getVersion() : int
+    public function getVersion(): int
     {
         //faulty return
         return 1;
@@ -30,18 +30,48 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
 
     /**
      * @param \Iterator $historyEvents
-     * @return DefaultAggregateRootContract
+     * @return \stdClass
      */
-    public static function reconstituteFromHistory(\Iterator $historyEvents) : DefaultAggregateRootContract
+    public static function reconstituteFromHistory(\Iterator $historyEvents): DefaultAggregateRootContract
     {
         //faulty method
-        return new self();
+        return new class implements DefaultAggregateRootContract {
+            public static function reconstituteFromHistory(\Iterator $historyEvents): DefaultAggregateRootContract
+            {
+                return new self();
+            }
+
+            public function getVersion(): int
+            {
+                return 1;
+            }
+
+            public function getId(): string
+            {
+                return 'id';
+            }
+
+            /**
+             * @return Message[]
+             */
+            public function popRecordedEvents(): array
+            {
+                return [];
+            }
+
+            /**
+             * @param $event
+             */
+            public function replay($event): void
+            {
+            }
+        };
     }
 
     /**
      * @return string
      */
-    public function getId() : string
+    public function getId(): string
     {
         //faulty method
         return '0';
@@ -50,16 +80,16 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
     /**
      * @return Message[]
      */
-    public function popRecordedEvents() : \Iterator
+    public function popRecordedEvents(): array
     {
         //faulty method
-        return new \ArrayIterator();
+        return [];
     }
 
     /**
      * @param $event
      */
-    public function replay($event) : void
+    public function replay($event): void
     {
     }
 }

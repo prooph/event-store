@@ -86,7 +86,7 @@ class AggregateRepository
      * In the listener method the repository checks its identity map for pending events
      * and appends the events to the event stream.
      */
-    public function addPendingEventsToStream() : void
+    public function addPendingEventsToStream(): void
     {
         foreach ($this->identityMap as $aggregateId => $aggregateRoot) {
             $pendingStreamEvents = $this->aggregateTranslator->extractPendingStreamEvents($aggregateRoot);
@@ -112,7 +112,7 @@ class AggregateRepository
      * @param object $eventSourcedAggregateRoot
      * @throws Exception\AggregateTypeException
      */
-    public function addAggregateRoot($eventSourcedAggregateRoot) : void
+    public function addAggregateRoot($eventSourcedAggregateRoot): void
     {
         $this->assertAggregateType($eventSourcedAggregateRoot);
 
@@ -237,7 +237,7 @@ class AggregateRepository
      * Default stream name generation.
      * Override this method in an extending repository to provide a custom name
      */
-    protected function determineStreamName(string $aggregateId) : StreamName
+    protected function determineStreamName(string $aggregateId): StreamName
     {
         if ($this->oneStreamPerAggregate) {
             return new StreamName($this->aggregateType->toString() . '-' . $aggregateId);
@@ -254,7 +254,7 @@ class AggregateRepository
      * Add aggregate_id and aggregate_type as metadata to $domainEvent
      * Override this method in an extending repository to add more or different metadata.
      */
-    protected function enrichEventMetadata(Message $domainEvent, string $aggregateId) : Message
+    protected function enrichEventMetadata(Message $domainEvent, string $aggregateId): Message
     {
         $domainEvent = $domainEvent->withAddedMetadata('aggregate_id', $aggregateId);
         return $domainEvent->withAddedMetadata('aggregate_type', $this->aggregateType->toString());

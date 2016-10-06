@@ -109,7 +109,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @throws Exception\AggregateTranslationFailedException
      * @return string
      */
-    public function extractAggregateId($eventSourcedAggregateRoot) : string
+    public function extractAggregateId($eventSourcedAggregateRoot): string
     {
         if (! method_exists($eventSourcedAggregateRoot, $this->identifierMethodName)) {
             throw new AggregateTranslationFailedException(
@@ -128,7 +128,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @param object $eventSourcedAggregateRoot
      * @return int
      */
-    public function extractAggregateVersion($eventSourcedAggregateRoot) : int
+    public function extractAggregateVersion($eventSourcedAggregateRoot): int
     {
         if (! method_exists($eventSourcedAggregateRoot, $this->versionMethodName)) {
             throw new AggregateTranslationFailedException(
@@ -198,7 +198,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @throws Exception\AggregateTranslationFailedException
      * @return Message[]
      */
-    public function extractPendingStreamEvents($eventSourcedAggregateRoot) : array
+    public function extractPendingStreamEvents($eventSourcedAggregateRoot): array
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
@@ -238,7 +238,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
                 throw new AggregateTranslationFailedException(sprintf(
                     'A recorded event of the aggregate root %s has the wrong type. Expected Prooph\Common\Messaging\Message. Got %s',
                     get_class($eventSourcedAggregateRoot),
-                    is_object($recordedEvent)? get_class($recordedEvent) : gettype($recordedEvent)
+                    is_object($recordedEvent)? get_class($recordedEvent): gettype($recordedEvent)
                 ));
             }
         }
@@ -251,7 +251,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      * @param Iterator $events
      * @throws Exception\AggregateTranslationFailedException
      */
-    public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events) : void
+    public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events): void
     {
         if (! is_object($eventSourcedAggregateRoot)) {
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
@@ -273,7 +273,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             if (! $event instanceof Message) {
                 throw new AggregateTranslationFailedException(sprintf(
                     'Cannot replay event %s. Expected instance of Prooph\Common\Messaging\Message.',
-                    is_object($event)? get_class($event) : gettype($event)
+                    is_object($event)? get_class($event): gettype($event)
                 ));
             }
 

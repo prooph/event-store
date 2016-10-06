@@ -27,13 +27,13 @@ interface AggregateTranslator
      * @param object $eventSourcedAggregateRoot
      * @return int
      */
-    public function extractAggregateVersion($eventSourcedAggregateRoot) : int;
+    public function extractAggregateVersion($eventSourcedAggregateRoot): int;
 
     /**
      * @param object $eventSourcedAggregateRoot
      * @return string
      */
-    public function extractAggregateId($eventSourcedAggregateRoot) : string;
+    public function extractAggregateId($eventSourcedAggregateRoot): string;
 
     /**
      * @param AggregateType $aggregateType
@@ -46,11 +46,11 @@ interface AggregateTranslator
      * @param object $eventSourcedAggregateRoot
      * @return Message[]
      */
-    public function extractPendingStreamEvents($eventSourcedAggregateRoot) : array;
+    public function extractPendingStreamEvents($eventSourcedAggregateRoot): array;
 
     /**
      * @param object $eventSourcedAggregateRoot
      * @param Iterator $events
      */
-    public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events) : void;
+    public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events): void;
 }

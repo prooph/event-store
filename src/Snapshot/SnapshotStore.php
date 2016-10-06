@@ -31,12 +31,12 @@ class SnapshotStore
         $this->adapter = $adapter;
     }
 
-    public function get(AggregateType $aggregateType, $aggregateId) : ?Snapshot
+    public function get(AggregateType $aggregateType, $aggregateId): ?Snapshot
     {
         return $this->adapter->get($aggregateType, $aggregateId);
     }
 
-    public function save(Snapshot $snapshot) : void
+    public function save(Snapshot $snapshot): void
     {
         $this->adapter->save($snapshot);
     }

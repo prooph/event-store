@@ -38,7 +38,7 @@ class EventLoggerPlugin implements Plugin
      * @param EventStore $eventStore
      * @return void
      */
-    public function setUp(EventStore $eventStore) : void
+    public function setUp(EventStore $eventStore): void
     {
         $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, "onPostCommit"]);
     }
@@ -46,12 +46,12 @@ class EventLoggerPlugin implements Plugin
     /**
      * @param ActionEvent $e
      */
-    public function onPostCommit(ActionEvent $e) : void
+    public function onPostCommit(ActionEvent $e): void
     {
         $this->loggedStreamEvents = $e->getParam('recordedEvents', new \ArrayIterator());
     }
 
-    public function getLoggedStreamEvents() : \Iterator
+    public function getLoggedStreamEvents(): \Iterator
     {
         return $this->loggedStreamEvents;
     }

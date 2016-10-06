@@ -21,7 +21,7 @@ use IteratorAggregate;
  */
 final class TestIteratorAggregate implements IteratorAggregate
 {
-    public function getIterator() : ArrayIterator
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator();
     }

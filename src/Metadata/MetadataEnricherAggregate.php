@@ -32,7 +32,7 @@ final class MetadataEnricherAggregate implements MetadataEnricher
         $this->metadataEnrichers = $metadataEnrichers;
     }
 
-    public function enrich(Message $message) : Message
+    public function enrich(Message $message): Message
     {
         foreach ($this->metadataEnrichers as $metadataEnricher) {
             $message = $metadataEnricher->enrich($message);

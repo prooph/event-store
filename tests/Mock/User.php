@@ -49,7 +49,7 @@ class User
      */
     private $version = 0;
 
-    public static function create(string $name, string $email) : User
+    public static function create(string $name, string $email): User
     {
         $self = new self();
 
@@ -65,7 +65,7 @@ class User
         return $self;
     }
 
-    public static function reconstituteFromHistory(\Iterator $historyEvents) : User
+    public static function reconstituteFromHistory(\Iterator $historyEvents): User
     {
         $self = new self();
 
@@ -78,22 +78,22 @@ class User
     {
     }
 
-    public function getVersion() : int
+    public function getVersion(): int
     {
         return $this->version;
     }
 
-    public function getId() : Uuid
+    public function getId(): Uuid
     {
         return $this->userId;
     }
 
-    public function name() : string
+    public function name(): string
     {
         return $this->name;
     }
 
-    public function email() : string
+    public function email(): string
     {
         return $this->email;
     }
@@ -109,14 +109,14 @@ class User
         ));
     }
 
-    private function recordThat(TestDomainEvent $domainEvent) : void
+    private function recordThat(TestDomainEvent $domainEvent): void
     {
         $this->version += 1;
         $this->recordedEvents[] = $domainEvent;
         $this->apply($domainEvent);
     }
 
-    public function apply(TestDomainEvent $event) : void
+    public function apply(TestDomainEvent $event): void
     {
         if ($event instanceof UserCreated) {
             $this->whenUserCreated($event);
@@ -127,7 +127,7 @@ class User
         }
     }
 
-    private function whenUserCreated(UserCreated $userCreated) : void
+    private function whenUserCreated(UserCreated $userCreated): void
     {
         $payload = $userCreated->payload();
 
@@ -136,12 +136,12 @@ class User
         $this->email  = $payload['email'];
     }
 
-    private function whenUsernameChanged(UsernameChanged $usernameChanged) : void
+    private function whenUsernameChanged(UsernameChanged $usernameChanged): void
     {
         $this->name = $usernameChanged->payload()['new_name'];
     }
 
-    public function popRecordedEvents() : Iterator
+    public function popRecordedEvents(): array
     {
         $recordedEvents = $this->recordedEvents;
 
@@ -153,7 +153,7 @@ class User
     /**
      * @param DomainEvent[] $streamEvents
      */
-    public function replay(Iterator $streamEvents) : void
+    public function replay(Iterator $streamEvents): void
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);
@@ -161,7 +161,7 @@ class User
         }
     }
 
-    private function nextVersion() : int
+    private function nextVersion(): int
     {
         return $this->version + 1;
     }

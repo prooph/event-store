@@ -39,12 +39,12 @@ class Stream
         $this->streamEvents = $streamEvents;
     }
 
-    public function streamName() : StreamName
+    public function streamName(): StreamName
     {
         return $this->streamName;
     }
 
-    public function streamEvents() : Iterator
+    public function streamEvents(): Iterator
     {
         return $this->streamEvents;
     }
