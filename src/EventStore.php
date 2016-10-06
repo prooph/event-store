@@ -276,7 +276,7 @@ class EventStore
     /**
      * @param callable $callable
      *
-     * @throws \Exception
+     * @throws \Throwable
      *
      * @return mixed
      */
