@@ -34,7 +34,9 @@ final class CompositeIterator implements Iterator
 
     /**
      * @param Iterator[]|IteratorAggregate[] $iterators
+     *
      * @param callable $callback
+     *
      * @throws Exception\InvalidArgumentException
      */
     public function __construct(array $iterators, callable $callback)

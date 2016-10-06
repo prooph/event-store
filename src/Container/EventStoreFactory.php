@@ -33,6 +33,9 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
 {
     use ConfigurationTrait;
 
+    /**
+     * @throws ConfigurationException
+     */
     public function __invoke(ContainerInterface $container): EventStore
     {
         $config = $container->get('config');

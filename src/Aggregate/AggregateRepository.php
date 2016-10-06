@@ -68,7 +68,7 @@ class AggregateRepository
         AggregateType $aggregateType,
         AggregateTranslator $aggregateTranslator,
         SnapshotStore $snapshotStore = null,
-        ?StreamName $streamName = null,
+        StreamName $streamName = null,
         bool $oneStreamPerAggregate = false
     ) {
         $this->eventStore = $eventStore;
@@ -110,6 +110,7 @@ class AggregateRepository
 
     /**
      * @param object $eventSourcedAggregateRoot
+     *
      * @throws Exception\AggregateTypeException
      */
     public function addAggregateRoot($eventSourcedAggregateRoot): void
@@ -141,6 +142,7 @@ class AggregateRepository
      * Returns null if no stream events can be found for aggregate root otherwise the reconstituted aggregate root
      *
      * @param string $aggregateId
+     *
      * @return null|object
      */
     public function getAggregateRoot(string $aggregateId)
@@ -192,15 +194,17 @@ class AggregateRepository
 
     /**
      * @param object $aggregateRoot
+     *
      * @return int
      */
-    public function extractAggregateVersion($aggregateRoot)
+    public function extractAggregateVersion($aggregateRoot) : int
     {
         return $this->aggregateTranslator->extractAggregateVersion($aggregateRoot);
     }
 
     /**
      * @param string $aggregateId
+     *
      * @return null|object
      */
     protected function loadFromSnapshotStore(string $aggregateId)

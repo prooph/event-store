@@ -29,7 +29,9 @@ class AggregateType
      * Use this factory when aggregate type should be detected based on given aggregate root
      *
      * @param object $eventSourcedAggregateRoot
+     *
      * @return AggregateType
+     *
      * @throws Exception\InvalidArgumentException
      */
     public static function fromAggregateRoot($eventSourcedAggregateRoot): AggregateType

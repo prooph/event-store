@@ -59,9 +59,6 @@ final class AggregateRepositoryFactory implements RequiresConfigId, RequiresMand
         return (new static($name))->__invoke($arguments[0]);
     }
 
-    /**
-     * @param string $configId
-     */
     public function __construct(string $configId)
     {
         $this->configId = $configId;

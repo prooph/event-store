@@ -24,9 +24,6 @@ final class MetadataEnricherPlugin implements Plugin
      */
     private $metadataEnricher;
 
-    /**
-     * @param MetadataEnricher $metadataEnricher
-     */
     public function __construct(MetadataEnricher $metadataEnricher)
     {
         $this->metadataEnricher = $metadataEnricher;
@@ -59,8 +56,6 @@ final class MetadataEnricherPlugin implements Plugin
 
     /**
      * Add event metadata on event store appendToStream.
-     *
-     * @param ActionEvent $appendToStreamEvent
      */
     public function onEventStoreAppendToStream(ActionEvent $appendToStreamEvent): void
     {

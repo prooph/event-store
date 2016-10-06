@@ -27,9 +27,6 @@ class StreamName
      */
     protected $name;
 
-    /**
-     * @param $name
-     */
     public function __construct(string $name)
     {
         Assertion::notEmpty($name, 'StreamName must not be empty');

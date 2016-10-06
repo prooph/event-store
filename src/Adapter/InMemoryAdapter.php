@@ -42,10 +42,7 @@ class InMemoryAdapter implements Adapter
     }
 
     /**
-     * @param StreamName $streamName
-     * @param Iterator $domainEvents
      * @throws StreamNotFoundException
-     * @return void
      */
     public function appendTo(StreamName $streamName, Iterator $domainEvents): void
     {

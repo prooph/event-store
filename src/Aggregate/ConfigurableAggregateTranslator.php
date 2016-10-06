@@ -106,7 +106,9 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
+     *
      * @throws Exception\AggregateTranslationFailedException
+     *
      * @return string
      */
     public function extractAggregateId($eventSourcedAggregateRoot): string
@@ -126,6 +128,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
+     *
      * @return int
      */
     public function extractAggregateVersion($eventSourcedAggregateRoot): int
@@ -145,8 +148,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param AggregateType $aggregateType
+     *
      * @param Iterator $historyEvents
+     *
      * @throws Exception\AggregateTranslationFailedException
+     *
      * @return object reconstructed EventSourcedAggregateRoot
      */
     public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents)
@@ -195,7 +201,9 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
+     *
      * @throws Exception\AggregateTranslationFailedException
+     *
      * @return Message[]
      */
     public function extractPendingStreamEvents($eventSourcedAggregateRoot): array
@@ -248,7 +256,11 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
+     *
      * @param Iterator $events
+     *
+     * @return void
+     *
      * @throws Exception\AggregateTranslationFailedException
      */
     public function replayStreamEvents($eventSourcedAggregateRoot, Iterator $events): void

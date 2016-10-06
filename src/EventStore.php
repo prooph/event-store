@@ -233,12 +233,16 @@ class EventStore
 
     /**
      * @param StreamName[] $streamNames
+     *
      * @param DateTimeInterface|null $since
+     *
      * @param null|array $metadatas One metadata array per stream name, same index order is required
-     * @return CompositeIterator
+     *
+     * @return Iterator
+     *
      * @throws Exception\InvalidArgumentException
      */
-    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null): CompositeIterator
+    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null): Iterator
     {
         if (empty($streamNames)) {
             throw new Exception\InvalidArgumentException('No stream names given');
@@ -271,7 +275,9 @@ class EventStore
 
     /**
      * @param callable $callable
+     *
      * @throws \Exception
+     *
      * @return mixed
      */
     public function transactional(callable $callable)
@@ -281,7 +287,7 @@ class EventStore
         try {
             $result = $callable($this);
             $this->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->rollback();
 
             throw $e;
