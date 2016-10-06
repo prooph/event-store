@@ -87,7 +87,7 @@ class EventStore
             return;
         }
 
-        if (!$this->inTransaction) {
+        if (! $this->inTransaction) {
             throw new RuntimeException('Stream creation failed. EventStore is not in an active transaction');
         }
 
@@ -121,7 +121,7 @@ class EventStore
             return;
         }
 
-        if (!$this->inTransaction) {
+        if (! $this->inTransaction) {
             throw new RuntimeException('Append events to stream failed. EventStore is not in an active transaction');
         }
 
@@ -297,7 +297,7 @@ class EventStore
      */
     public function beginTransaction(): void
     {
-        if (!$this->inTransaction && $this->adapter instanceof CanHandleTransaction) {
+        if (! $this->inTransaction && $this->adapter instanceof CanHandleTransaction) {
             $this->adapter->beginTransaction();
         }
 
@@ -321,7 +321,7 @@ class EventStore
      */
     public function commit(): void
     {
-        if (!$this->inTransaction) {
+        if (! $this->inTransaction) {
             throw new RuntimeException('Cannot commit transaction. EventStore has no active transaction');
         }
 
@@ -356,11 +356,11 @@ class EventStore
      */
     public function rollback(): void
     {
-        if (!$this->inTransaction) {
+        if (! $this->inTransaction) {
             throw new RuntimeException('Cannot rollback transaction. EventStore has no active transaction');
         }
 
-        if (!$this->adapter instanceof CanHandleTransaction) {
+        if (! $this->adapter instanceof CanHandleTransaction) {
             throw new RuntimeException('Adapter cannot handle transaction and therefore cannot rollback');
         }
 

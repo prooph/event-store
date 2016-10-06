@@ -47,7 +47,7 @@ final class MetadataEnricherPlugin implements Plugin
     {
         $stream = $createEvent->getParam('stream');
 
-        if (!$stream instanceof Stream) {
+        if (! $stream instanceof Stream) {
             return;
         }
 
@@ -66,7 +66,7 @@ final class MetadataEnricherPlugin implements Plugin
     {
         $streamEvents = $appendToStreamEvent->getParam('streamEvents');
 
-        if (!$streamEvents instanceof \Iterator) {
+        if (! $streamEvents instanceof \Iterator) {
             return;
         }
 

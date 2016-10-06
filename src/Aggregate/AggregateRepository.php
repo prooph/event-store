@@ -175,7 +175,7 @@ class AggregateRepository
             ]);
         }
 
-        if (!$streamEvents->valid()) {
+        if (! $streamEvents->valid()) {
             return;
         }
 
@@ -207,8 +207,8 @@ class AggregateRepository
     {
         $snapshot = $this->snapshotStore->get($this->aggregateType, $aggregateId);
 
-        if (!$snapshot) {
-            return null;
+        if (! $snapshot) {
+            return;
         }
 
         $aggregateRoot = $snapshot->aggregateRoot();
@@ -224,7 +224,7 @@ class AggregateRepository
             $snapshot->lastVersion() + 1
         );
 
-        if (!$streamEvents->valid()) {
+        if (! $streamEvents->valid()) {
             return $aggregateRoot;
         }
 

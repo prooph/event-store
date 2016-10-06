@@ -40,7 +40,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
 
         $adapter = $container->get($config['adapter']['type']);
 
-        if (!isset($config['event_emitter'])) {
+        if (! isset($config['event_emitter'])) {
             $eventEmitter = new ProophActionEventEmitter();
         } else {
             $eventEmitter = $container->get($config['event_emitter']);
@@ -51,7 +51,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
         foreach ($config['plugins'] as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
 
-            if (!$plugin instanceof Plugin) {
+            if (! $plugin instanceof Plugin) {
                 throw ConfigurationException::configurationError(sprintf(
                     'Plugin %s does not implement the Plugin interface',
                     $pluginAlias
@@ -67,7 +67,7 @@ final class EventStoreFactory implements RequiresConfig, RequiresMandatoryOption
             foreach ($config['metadata_enrichers'] as $metadataEnricherAlias) {
                 $metadataEnricher = $container->get($metadataEnricherAlias);
 
-                if (!$metadataEnricher instanceof MetadataEnricher) {
+                if (! $metadataEnricher instanceof MetadataEnricher) {
                     throw ConfigurationException::configurationError(sprintf(
                         'Metadata enricher %s does not implement the MetadataEnricher interface',
                         $metadataEnricherAlias
