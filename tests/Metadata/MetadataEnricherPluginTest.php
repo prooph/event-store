@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
-use Prooph\Common\Event\DefaultListenerHandler;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
