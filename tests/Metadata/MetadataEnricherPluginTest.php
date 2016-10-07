@@ -40,15 +40,13 @@ final class MetadataEnricherPluginTest extends TestCase
 
         $eventStore->getActionEventEmitter()->willReturn($eventEmitter);
         $eventEmitter->attachListener('create.pre', Argument::any(), -1000)->will(
-            $function = function ($args) use (&$createStreamListener, &$function): DefaultListenerHandler {
+            function ($args) use (&$createStreamListener): void {
                 $createStreamListener = $args[1];
-                return new DefaultListenerHandler($function);
             }
         );
         $eventEmitter->attachListener('appendTo.pre', Argument::any(), -1000)->will(
-            $function = function ($args) use (&$appendToStreamListener, &$function): DefaultListenerHandler {
+            function ($args) use (&$appendToStreamListener): void {
                 $appendToStreamListener = $args[1];
-                return new DefaultListenerHandler($function);
             }
         );
 
