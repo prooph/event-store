@@ -25,7 +25,6 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.1",
-        "beberlei/assert": "^2.6.4",
         "prooph/common" : "dev-php_7_1 as 4.0"
     },
     "require-dev": {

@@ -16,7 +16,7 @@ before_script:
   - composer update --prefer-dist $DEPENDENCIES
 
 script:
-  - php ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
+  - ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
   - ./vendor/bin/php-cs-fixer fix -v --diff --dry-run
   - ./vendor/bin/docheader check examples/ src/ tests/
 
