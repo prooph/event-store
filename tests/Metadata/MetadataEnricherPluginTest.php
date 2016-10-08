@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use Prooph\Common\Event\DefaultListenerHandler;
+use Prooph\Common\Event\ListenerHandler;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
@@ -39,13 +41,15 @@ final class MetadataEnricherPluginTest extends TestCase
 
         $eventStore->getActionEventEmitter()->willReturn($eventEmitter);
         $eventEmitter->attachListener('create.pre', Argument::any(), -1000)->will(
-            function ($args) use (&$createStreamListener): void {
+            $function = function ($args) use (&$createStreamListener, &$function): ListenerHandler {
                 $createStreamListener = $args[1];
+                return new DefaultListenerHandler($function);
             }
         );
         $eventEmitter->attachListener('appendTo.pre', Argument::any(), -1000)->will(
-            function ($args) use (&$appendToStreamListener): void {
+            $function = function ($args) use (&$appendToStreamListener, &$function): ListenerHandler {
                 $appendToStreamListener = $args[1];
+                return new DefaultListenerHandler($function);
             }
         );
 

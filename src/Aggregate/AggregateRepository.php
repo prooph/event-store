@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Aggregate;
 
 use ArrayIterator;
-use Assert\Assertion;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Snapshot\SnapshotStore;

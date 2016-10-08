@@ -40,7 +40,7 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_creates_event_store_with_default_event_emitter(): void
     {
-        $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
@@ -59,8 +59,8 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_injects_custom_event_emitter(): void
     {
-        $config['prooph']['event_store']['event_emitter'] = 'event_emitter';
-        $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default']['event_emitter'] = 'event_emitter';
+        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
 
         $eventEmitterMock = $this->getMockForAbstractClass(ActionEventEmitter::class);
 
@@ -81,8 +81,8 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_injects_plugins(): void
     {
-        $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
-        $config['prooph']['event_store']['plugins'][] = 'plugin';
+        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
         $featureMock = $this->getMockForAbstractClass(Plugin::class);
         $featureMock->expects($this->once())->method('setUp');
@@ -106,8 +106,8 @@ class EventStoreFactoryTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Plugin plugin does not implement the Plugin interface');
 
-        $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
-        $config['prooph']['event_store']['plugins'][] = 'plugin';
+        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
         $featureMock = 'foo';
 
@@ -125,9 +125,9 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_injects_metadata_enrichers(): void
     {
-        $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
-        $config['prooph']['event_store']['metadata_enrichers'][] = 'metadata_enricher1';
-        $config['prooph']['event_store']['metadata_enrichers'][] = 'metadata_enricher2';
+        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default']['metadata_enrichers'][] = 'metadata_enricher1';
+        $config['prooph']['event_store']['default']['metadata_enrichers'][] = 'metadata_enricher2';
 
         $metadataEnricher1 = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher2 = $this->prophesize(MetadataEnricher::class);
@@ -176,8 +176,8 @@ class EventStoreFactoryTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Metadata enricher foobar does not implement the MetadataEnricher interface');
 
-        $config['prooph']['event_store']['adapter']['type'] = InMemoryAdapter::class;
-        $config['prooph']['event_store']['metadata_enrichers'][] = 'foobar';
+        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default']['metadata_enrichers'][] = 'foobar';
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn($config);
