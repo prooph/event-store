@@ -43,7 +43,7 @@ final class SnapshotStoreFactory implements RequiresConfig, RequiresConfigId, Re
      * <code>
      * <?php
      * return [
-     *     'prooph.event_store.service_name' => [EventStoreFactory::class, 'service_name'],
+     *     'prooph.snaptshot_store.service_name' => [SnapshotStoreFactory::class, 'service_name'],
      * ];
      * </code>
      *
