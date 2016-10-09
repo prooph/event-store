@@ -49,4 +49,33 @@ final class SnapshotStoreFactoryTest extends TestCase
 
         $this->assertInstanceOf(SnapshotStore::class, $snapshotStore);
     }
+
+    /**
+     * @test
+     */
+    public function it_creates_a_snapshot_store_via_callstatic(): void
+    {
+        $snapshotAdapter = $this->prophesize(Adapter::class);
+
+        $container = $this->prophesize(ContainerInterface::class);
+
+        $container->get('config')->willReturn([
+            'prooph' => [
+                'snapshot_store' => [
+                    'another' => [
+                        'adapter' => [
+                            'type' => 'mock_adapter'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $container->get('mock_adapter')->willReturn($snapshotAdapter->reveal());
+
+        $type = 'another';
+        $snapshotStore = SnapshotStoreFactory::$type($container->reveal());
+
+        $this->assertInstanceOf(SnapshotStore::class, $snapshotStore);
+    }
 }
