@@ -32,8 +32,10 @@ final class SnapshotStoreFactoryTest extends TestCase
         $container->get('config')->willReturn([
             'prooph' => [
                 'snapshot_store' => [
-                    'adapter' => [
-                        'type' => 'mock_adapter'
+                    'default' => [
+                        'adapter' => [
+                            'type' => 'mock_adapter'
+                        ]
                     ]
                 ]
             ]
