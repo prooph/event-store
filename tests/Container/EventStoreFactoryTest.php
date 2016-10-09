@@ -57,6 +57,25 @@ class EventStoreFactoryTest extends TestCase
     /**
      * @test
      */
+    public function it_creates_event_store_with_default_event_emitter_via_callstatic(): void
+    {
+        $config['prooph']['event_store']['another']['adapter']['type'] = InMemoryAdapter::class;
+
+        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
+        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
+
+        $type = 'another';
+        $eventStore = EventStoreFactory::$type($containerMock);
+
+        $this->assertInstanceOf(EventStore::class, $eventStore);
+        $this->assertInstanceOf(InMemoryAdapter::class, $eventStore->getAdapter());
+        $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
+    }
+
+    /**
+     * @test
+     */
     public function it_injects_custom_event_emitter(): void
     {
         $config['prooph']['event_store']['default']['event_emitter'] = 'event_emitter';
