@@ -399,4 +399,32 @@ class AggregateRepositoryTest extends TestCase
 
         $this->eventStore->commit();
     }
+
+    /**
+     * @test
+     */
+    public function it_clears_identity_map_manually() : void
+    {
+        $this->eventStore->beginTransaction();
+
+        $user = User::create('John Doe', 'contact@prooph.de');
+
+        $this->repository->addAggregateRoot($user);
+
+        $this->eventStore->commit();
+
+        // fill identity map
+        $fetchedUser = $this->repository->getAggregateRoot(
+            $user->getId()->toString()
+        );
+
+        $reflectionClass = new \ReflectionClass($this->repository);
+
+        $reflectionProperty = $reflectionClass->getProperty('identityMap');
+        $reflectionProperty->setAccessible(true);
+
+        self::assertCount(1, $reflectionProperty->getValue($this->repository));
+        $this->repository->clearIdentityMap();
+        self::assertCount(0, $reflectionProperty->getValue($this->repository));
+    }
 }

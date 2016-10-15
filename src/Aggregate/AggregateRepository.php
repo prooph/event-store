@@ -200,6 +200,14 @@ class AggregateRepository
     }
 
     /**
+     * Empties the identity map. Use this if you load thousands of aggregates to free memory e.g. modulo 500.
+     */
+    public function clearIdentityMap() : void
+    {
+        $this->identityMap = [];
+    }
+
+    /**
      * @param string $aggregateId
      *
      * @return null|object
