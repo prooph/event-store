@@ -234,4 +234,24 @@ processes dealing with the same aggregate would run into concurrency issues very
 The test case has some more tests including snapshot usage and working with different stream names / strategies.
 Just browse through the test methods for details.
 
+## Loading of thousands aggregates
+If you need to load thousands of aggregates for reading only, your memory can be exhausted, because the 
+`AggregateRepository` uses an identity map. So every loaded aggregate is stored there, unless a commit is executed. If
+you have a read only process, you should consider to clear the identity map at sometime. This can be done by calling 
+`clearIdentityMap()`.
 
+```php
+$thousandsOfAggregateIds = [];
+$number = count($thousandsOfAggregateIds);
+
+foreach ($thousandsOfAggregateIds as $aggregateId) {
+    $aggregate = $this->repository->getAggregateRoot($aggregateId);
+
+    // do something with the aggregate data e.g. build read model
+
+    // clear on every 500th aggregate
+    if (0 === $number % 500) {
+        $this->repository->clearIdentityMap();
+    }
+}
+```
