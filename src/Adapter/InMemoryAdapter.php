@@ -71,16 +71,14 @@ class InMemoryAdapter implements Adapter
         $filteredEvents = [];
 
         foreach ($streamEvents as $streamEvent) {
-            if ($streamEvent->version() >= $fromNumber) {
+            if ((null === $count
+                    && $streamEvent->version() >= $fromNumber
+                ) || (null !== $count
+                    && $streamEvent->version() >= $fromNumber
+                    && $streamEvent->version() <= ($fromNumber + $count - 1)
+                )
+            ) {
                 $filteredEvents[] = $streamEvent;
-            }
-        }
-
-        if (null !== $count) {
-            foreach ($filteredEvents as $key => $streamEvent) {
-                if ($streamEvent->version() > ($fromNumber + $count - 1)) {
-                    unset($filteredEvents[$key]);
-                }
             }
         }
 
@@ -101,16 +99,15 @@ class InMemoryAdapter implements Adapter
         $filteredEvents = [];
 
         foreach ($streamEvents as $streamEvent) {
-            if ($streamEvent->version() <= $fromNumber) {
+            if ((null === $count
+                    && $streamEvent->version() <= $fromNumber
+                )
+                || (null !== $count
+                    && $streamEvent->version() <= $fromNumber
+                    && $streamEvent->version() >= ($fromNumber - $count + 1)
+                )
+            ) {
                 $filteredEvents[] = $streamEvent;
-            }
-        }
-
-        if (null !== $count) {
-            foreach ($filteredEvents as $key => $streamEvent) {
-                if ($streamEvent->version() < ($fromNumber - $count + 1)) {
-                    unset($filteredEvents[$key]);
-                }
             }
         }
 
@@ -132,13 +129,15 @@ class InMemoryAdapter implements Adapter
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
-            if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                if ($streamEvent->version() >= $fromNumber) {
-                    $streamEvents[$index] = $streamEvent;
-                }
-                if (null !== $count && $streamEvent->version() > ($fromNumber + $count - 1)) {
-                    unset($streamEvents[$index]);
-                }
+            if ($this->matchMetadataWith($streamEvent, $metadata)
+                && ((null === $count
+                        && $streamEvent->version() >= $fromNumber
+                    ) || (null !== $count
+                        && $streamEvent->version() < ($fromNumber + $count - 1)
+                    )
+                )
+            ) {
+                $streamEvents[] = $streamEvent;
             }
         }
 
@@ -158,13 +157,15 @@ class InMemoryAdapter implements Adapter
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
-            if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                if ($streamEvent->version() <= $fromNumber) {
-                    $streamEvents[$index] = $streamEvent;
-                }
-                if (null !== $count && $streamEvent->version() < ($fromNumber - $count + 1)) {
-                    unset($streamEvents[$index]);
-                }
+            if ($this->matchMetadataWith($streamEvent, $metadata)
+                && ((null === $count
+                        && $streamEvent->version() <= $fromNumber
+                    ) || (null !== $count
+                        && $streamEvent->version() <= ($fromNumber - $count + 1)
+                    )
+                )
+            ) {
+                $streamEvents[] = $streamEvent;
             }
         }
 
