@@ -14,6 +14,7 @@ namespace Prooph\EventStore;
 
 use AppendIterator;
 use ArrayIterator;
+use Assert\Assertion;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
@@ -147,6 +148,9 @@ class EventStore
         int $fromNumber = 0,
         int $count = null
     ): Stream {
+        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::nullOrGreaterOrEqualThan($count, 1);
+
         $preResult = $this->preLoad(
             __FUNCTION__ . '.pre',
             $streamName,
@@ -173,6 +177,9 @@ class EventStore
         int $fromNumber = 0,
         int $count = null
     ): Stream {
+        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::nullOrGreaterOrEqualThan($count, 1);
+
         list($streamName, $fromNumber, $count, $event) = $this->preLoad(
             __FUNCTION__ . '.pre',
             $streamName,
@@ -191,6 +198,9 @@ class EventStore
         int $fromNumber = 0,
         int $count = null
     ): Iterator {
+        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::nullOrGreaterOrEqualThan($count, 1);
+
         $preResult = $this->preloadEventsByMetadataFrom(
             __FUNCTION__ . '.pre',
             $streamName,
@@ -216,6 +226,9 @@ class EventStore
         int $fromNumber = 0,
         int $count = null
     ): Iterator {
+        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::nullOrGreaterOrEqualThan($count, 1);
+
         $preResult = $this->preloadEventsByMetadataFrom(
             __FUNCTION__ . '.pre',
             $streamName,
