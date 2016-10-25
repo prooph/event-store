@@ -12,6 +12,17 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class StreamNotFoundException extends \RuntimeException implements EventStoreException
+use Prooph\EventStore\Stream\StreamName;
+
+final class StreamNotFoundException extends \RuntimeException implements EventStoreException
 {
+    public static function with(StreamName $streamName): StreamNotFoundException
+    {
+        return new self(
+            sprintf(
+                'A stream with name %s could not be found',
+                $streamName->toString()
+            )
+        );
+    }
 }

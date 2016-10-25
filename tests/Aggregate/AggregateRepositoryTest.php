@@ -194,9 +194,15 @@ class AggregateRepositoryTest extends TestCase
     {
         $adapter = $this->prophesize(Adapter::class);
 
-        $adapter->load(Argument::that(function (StreamName $streamName) {
-            return $streamName->toString() === User::class . '-123';
-        }), null)->willReturn(new Stream(new StreamName(User::class . '-123'), new \ArrayIterator([])));
+        $adapter
+            ->load(
+                Argument::that(function (StreamName $streamName) {
+                    return $streamName->toString() === User::class . '-123';
+                }),
+                0,
+                null,
+                true
+            )->willReturn(new Stream(new StreamName(User::class . '-123'), new \ArrayIterator([])));
 
         $repository = new AggregateRepository(
             new EventStore($adapter->reveal(), new ProophActionEventEmitter()),

@@ -47,12 +47,7 @@ class InMemoryAdapter implements Adapter
     public function appendTo(StreamName $streamName, Iterator $domainEvents): void
     {
         if (! isset($this->streams[$streamName->toString()])) {
-            throw new StreamNotFoundException(
-                sprintf(
-                    'Stream with name %s cannot be found',
-                    $streamName->toString()
-                )
-            );
+            throw StreamNotFoundException::with($streamName);
         }
 
         $appendIterator = new AppendIterator();
@@ -62,34 +57,60 @@ class InMemoryAdapter implements Adapter
         $this->streams[$streamName->toString()] = $appendIterator;
     }
 
-    public function load(StreamName $streamName, int $minVersion = null): ?Stream
-    {
+    public function load(
+        StreamName $streamName,
+        int $fromNumber = 0,
+        int $toNumber = null,
+        bool $forward = true
+    ): ?Stream {
         if (! isset($this->streams[$streamName->toString()])) {
             return null;
         }
 
         $streamEvents = $this->streams[$streamName->toString()];
 
-        if (null !== $minVersion) {
-            $filteredEvents = [];
+        $filteredEvents = [];
 
-            foreach ($streamEvents as $streamEvent) {
-                if ($streamEvent->version() >= $minVersion) {
+        foreach ($streamEvents as $streamEvent) {
+            if ($forward) {
+                if ($streamEvent->version() >= $fromNumber) {
+                    $filteredEvents[] = $streamEvent;
+                }
+            } else {
+                if ($streamEvent->version() <= $fromNumber) {
                     $filteredEvents[] = $streamEvent;
                 }
             }
-
-            return new Stream($streamName, new \ArrayIterator($filteredEvents));
         }
 
-        //Rewind before returning cached iterator as event store uses Iterator::valid()
-        //to test if stream contains events
-        $streamEvents->rewind();
-        return new Stream($streamName, $streamEvents);
+        if (null !== $toNumber) {
+            foreach ($filteredEvents as $key => $streamEvent) {
+                if ($forward) {
+                    if ($streamEvent->version() > $toNumber) {
+                        unset($filteredEvents[$key]);
+                    }
+                } else {
+                    if ($streamEvent->version() < $toNumber) {
+                        unset($filteredEvents[$key]);
+                    }
+                }
+            }
+        }
+
+        if (! $forward) {
+            $filteredEvents = array_reverse($filteredEvents);
+        }
+
+        return new Stream($streamName, new \ArrayIterator($filteredEvents));
     }
 
-    public function loadEvents(StreamName $streamName, array $metadata = [], int $minVersion = null): Iterator
-    {
+    public function loadEvents(
+        StreamName $streamName,
+        array $metadata = [],
+        int $fromNumber = 0,
+        int $toNumber = null,
+        bool $forward = true
+    ): Iterator {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
         }
@@ -98,37 +119,32 @@ class InMemoryAdapter implements Adapter
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                if (null === $minVersion || $streamEvent->version() >= $minVersion) {
-                    $streamEvents[] = $streamEvent;
+                if ($forward) {
+                    if ($streamEvent->version() >= $fromNumber) {
+                        $streamEvents[$index] = $streamEvent;
+                    }
+                    if (null !== $toNumber && $streamEvent->version() > $toNumber) {
+                        unset($streamEvents[$index]);
+                    }
+                } else {
+                    if ($streamEvent->version() <= $fromNumber) {
+                        $streamEvents[$index] = $streamEvent;
+                    }
+                    if (null !== $toNumber && $streamEvent->version() < $toNumber) {
+                        unset($streamEvents[$index]);
+                    }
                 }
             }
         }
 
-        return new ArrayIterator($streamEvents);
-    }
-
-    public function replay(StreamName $streamName, DateTimeInterface $since = null, array $metadata = []): Iterator
-    {
-        if (! isset($this->streams[$streamName->toString()])) {
-            return new ArrayIterator();
-        }
-
-        $streamEvents = [];
-
-        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
-            if (null === $since && $this->matchMetadataWith($streamEvent, $metadata)) {
-                $streamEvents[] = $streamEvent;
-            } elseif ($streamEvent->createdAt()->format('U.u') >= $since->format('U.u')
-                && $this->matchMetadataWith($streamEvent, $metadata)
-            ) {
-                $streamEvents[] = $streamEvent;
-            }
+        if (! $forward) {
+            $streamEvents = array_reverse($streamEvents);
         }
 
         return new ArrayIterator($streamEvents);
     }
 
-    protected function matchMetadataWith(Message $streamEvent, array $metadata): bool
+    private function matchMetadataWith(Message $streamEvent, array $metadata): bool
     {
         if (empty($metadata)) {
             return true;

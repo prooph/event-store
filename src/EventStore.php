@@ -144,9 +144,18 @@ class EventStore
     /**
      * @throws Exception\StreamNotFoundException
      */
-    public function load(StreamName $streamName, int $minVersion = null): Stream
-    {
-        $argv = ['streamName' => $streamName, 'minVersion' => $minVersion];
+    public function load(
+        StreamName $streamName,
+        int $fromNumber = 0,
+        int $toNumber = null,
+        bool $forward = true
+    ): Stream {
+        $argv = [
+            'streamName' => $streamName,
+            'fromNumber' => $fromNumber,
+            'toNumber'   => $toNumber,
+            'forward'    => $forward,
+        ];
 
         $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -159,27 +168,18 @@ class EventStore
                 return $stream;
             }
 
-            throw new StreamNotFoundException(
-                sprintf(
-                    'A stream with name %s could not be found',
-                    $streamName->toString()
-                )
-            );
+            throw StreamNotFoundException::with($streamName);
         }
 
         $streamName = $event->getParam('streamName');
+        $fromNumber = $event->getParam('fromNumber');
+        $toNumber   = $event->getParam('toNumber');
+        $forward    = $event->getParam('forward');
 
-        $minVersion = $event->getParam('minVersion');
-
-        $stream = $this->adapter->load($streamName, $minVersion);
+        $stream = $this->adapter->load($streamName, $fromNumber, $toNumber, $forward);
 
         if (! $stream) {
-            throw new StreamNotFoundException(
-                sprintf(
-                    'A stream with name %s could not be found',
-                    $streamName->toString()
-                )
-            );
+            throw StreamNotFoundException::with($streamName);
         }
 
         $event->setName(__FUNCTION__ . '.post');
@@ -189,20 +189,25 @@ class EventStore
         $this->getActionEventEmitter()->dispatch($event);
 
         if ($event->propagationIsStopped()) {
-            throw new StreamNotFoundException(
-                sprintf(
-                    'A stream with name %s could not be found',
-                    $streamName->toString()
-                )
-            );
+            throw StreamNotFoundException::with($streamName);
         }
 
         return $event->getParam('stream');
     }
 
-    public function loadEventsByMetadataFrom(StreamName $streamName, array $metadata, int $minVersion = null): Iterator
-    {
-        $argv = ['streamName' => $streamName, 'metadata' => $metadata, 'minVersion' => $minVersion];
+    public function loadEventsByMetadataFrom(
+        StreamName $streamName,
+        array $metadata,
+        int $fromNumber = 0,
+        int $toNumber = null,
+        bool $forward = true
+    ): Iterator {
+        $argv = [
+            'streamName' => $streamName,
+            'fromNumber' => $fromNumber,
+            'toNumber'   => $toNumber,
+            'forward'    => $forward,
+        ];
 
         $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
 
@@ -213,10 +218,11 @@ class EventStore
         }
 
         $streamName = $event->getParam('streamName');
-        $metadata = $event->getParam('metadata');
-        $minVersion = $event->getParam('minVersion');
+        $fromNumber = $event->getParam('fromNumber');
+        $toNumber   = $event->getParam('toNumber');
+        $forward    = $event->getParam('forward');
 
-        $events = $this->adapter->loadEvents($streamName, $metadata, $minVersion);
+        $events = $this->adapter->loadEvents($streamName, $metadata, $fromNumber, $toNumber, $forward);
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -229,46 +235,6 @@ class EventStore
         }
 
         return $event->getParam('streamEvents');
-    }
-
-    /**
-     * @param StreamName[] $streamNames
-     * @param DateTimeInterface|null $since
-     * @param null|array $metadatas One metadata array per stream name, same index order is required
-     *
-     * @return Iterator
-     *
-     * @throws Exception\InvalidArgumentException
-     */
-    public function replay(array $streamNames, DateTimeInterface $since = null, array $metadatas = null): Iterator
-    {
-        if (empty($streamNames)) {
-            throw new Exception\InvalidArgumentException('No stream names given');
-        }
-
-        if (null === $metadatas) {
-            $metadatas = array_fill(0, count($streamNames), []);
-        }
-
-        if (count($streamNames) !== count($metadatas)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'One metadata per stream name needed, given %s stream names but %s metadatas',
-                count($streamNames),
-                count($metadatas)
-            ));
-        }
-
-        $iterators = [];
-        foreach ($streamNames as $key => $streamName) {
-            $iterators[] = $this->adapter->replay($streamName, $since, $metadatas[$key]);
-        }
-
-        return new CompositeIterator($iterators, function (Message $message1 = null, Message $message2) {
-            if (null === $message1) {
-                return true;
-            }
-            return $message1->createdAt()->format('U.u') > $message2->createdAt()->format('U.u');
-        });
     }
 
     /**
