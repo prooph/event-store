@@ -147,13 +147,13 @@ class EventStore
     public function load(
         StreamName $streamName,
         int $fromNumber = 0,
-        int $toNumber = null,
+        int $count = null,
         bool $forward = true
     ): Stream {
         $argv = [
             'streamName' => $streamName,
             'fromNumber' => $fromNumber,
-            'toNumber'   => $toNumber,
+            'count'      => $count,
             'forward'    => $forward,
         ];
 
@@ -173,10 +173,10 @@ class EventStore
 
         $streamName = $event->getParam('streamName');
         $fromNumber = $event->getParam('fromNumber');
-        $toNumber   = $event->getParam('toNumber');
+        $count      = $event->getParam('count');
         $forward    = $event->getParam('forward');
 
-        $stream = $this->adapter->load($streamName, $fromNumber, $toNumber, $forward);
+        $stream = $this->adapter->load($streamName, $fromNumber, $count, $forward);
 
         if (! $stream) {
             throw StreamNotFoundException::with($streamName);
@@ -199,13 +199,13 @@ class EventStore
         StreamName $streamName,
         array $metadata,
         int $fromNumber = 0,
-        int $toNumber = null,
+        int $count = null,
         bool $forward = true
     ): Iterator {
         $argv = [
             'streamName' => $streamName,
             'fromNumber' => $fromNumber,
-            'toNumber'   => $toNumber,
+            'count'      => $count,
             'forward'    => $forward,
         ];
 
@@ -219,10 +219,10 @@ class EventStore
 
         $streamName = $event->getParam('streamName');
         $fromNumber = $event->getParam('fromNumber');
-        $toNumber   = $event->getParam('toNumber');
+        $count      = $event->getParam('count');
         $forward    = $event->getParam('forward');
 
-        $events = $this->adapter->loadEvents($streamName, $metadata, $fromNumber, $toNumber, $forward);
+        $events = $this->adapter->loadEvents($streamName, $metadata, $fromNumber, $count, $forward);
 
         $event->setName(__FUNCTION__ . '.post');
 

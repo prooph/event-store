@@ -60,7 +60,7 @@ class InMemoryAdapter implements Adapter
     public function load(
         StreamName $streamName,
         int $fromNumber = 0,
-        int $toNumber = null,
+        int $count = null,
         bool $forward = true
     ): ?Stream {
         if (! isset($this->streams[$streamName->toString()])) {
@@ -83,14 +83,14 @@ class InMemoryAdapter implements Adapter
             }
         }
 
-        if (null !== $toNumber) {
+        if (null !== $count) {
             foreach ($filteredEvents as $key => $streamEvent) {
                 if ($forward) {
-                    if ($streamEvent->version() > $toNumber) {
+                    if ($streamEvent->version() > ($fromNumber + $count - 1)) {
                         unset($filteredEvents[$key]);
                     }
                 } else {
-                    if ($streamEvent->version() < $toNumber) {
+                    if ($streamEvent->version() < ($fromNumber - $count + 1)) {
                         unset($filteredEvents[$key]);
                     }
                 }
@@ -108,7 +108,7 @@ class InMemoryAdapter implements Adapter
         StreamName $streamName,
         array $metadata = [],
         int $fromNumber = 0,
-        int $toNumber = null,
+        int $count = null,
         bool $forward = true
     ): Iterator {
         if (! isset($this->streams[$streamName->toString()])) {
@@ -123,14 +123,14 @@ class InMemoryAdapter implements Adapter
                     if ($streamEvent->version() >= $fromNumber) {
                         $streamEvents[$index] = $streamEvent;
                     }
-                    if (null !== $toNumber && $streamEvent->version() > $toNumber) {
+                    if (null !== $count && $streamEvent->version() > ($fromNumber + $count - 1)) {
                         unset($streamEvents[$index]);
                     }
                 } else {
                     if ($streamEvent->version() <= $fromNumber) {
                         $streamEvents[$index] = $streamEvent;
                     }
-                    if (null !== $toNumber && $streamEvent->version() < $toNumber) {
+                    if (null !== $count && $streamEvent->version() < ($fromNumber - $count + 1)) {
                         unset($streamEvents[$index]);
                     }
                 }

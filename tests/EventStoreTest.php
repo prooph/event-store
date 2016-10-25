@@ -230,7 +230,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_loads_events_by_from_number(): void
+    public function it_loads_events_from_number(): void
     {
         $stream = $this->getTestStream();
 
@@ -288,7 +288,7 @@ class EventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_loads_events_by_to_number(): void
+    public function it_loads_events_from_number_with_count(): void
     {
         $stream = $this->getTestStream();
 
@@ -398,7 +398,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $loadedEventStream = $this->eventStore->load($stream->streamName(), 2, 1, false);
+        $loadedEventStream = $this->eventStore->load($stream->streamName(), 2, 2, false);
 
         $count = 0;
         foreach ($loadedEventStream->streamEvents() as $event) {
@@ -410,7 +410,7 @@ class EventStoreTest extends TestCase
         $this->assertFalse($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertTrue($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 2, 1, false);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 2, 2, false);
 
         $count = 0;
         foreach ($loadedEvents as $event) {

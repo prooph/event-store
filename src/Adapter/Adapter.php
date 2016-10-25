@@ -38,7 +38,7 @@ interface Adapter
     public function load(
         StreamName $streamName,
         int $fromNumber = 0,
-        int $toNumber = null,
+        int $count = null,
         bool $forward = true
     ): ?Stream;
 
@@ -46,7 +46,7 @@ interface Adapter
         StreamName $streamName,
         array $metadata = [],
         int $fromNumber = 0,
-        int $toNumber = null,
+        int $count = null,
         bool $forward = true
     ): Iterator;
 }
