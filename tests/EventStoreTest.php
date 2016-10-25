@@ -398,7 +398,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $loadedEventStream = $this->eventStore->load($stream->streamName(), 2, 2, false);
+        $loadedEventStream = $this->eventStore->loadReverse($stream->streamName(), 2, 2);
 
         $count = 0;
         foreach ($loadedEventStream->streamEvents() as $event) {
@@ -410,7 +410,7 @@ class EventStoreTest extends TestCase
         $this->assertFalse($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertTrue($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 2, 2, false);
+        $loadedEvents = $this->eventStore->loadEventsReverseByMetadataFrom($stream->streamName(), [], 2, 2);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -818,7 +818,7 @@ class EventStoreTest extends TestCase
         $adapter->beginTransaction()->shouldBeCalled();
         $adapter->create($stream)->shouldBeCalled();
         $adapter->commit()->shouldBeCalled();
-        $adapter->load(Argument::any(), 0, null, true)->willReturn($stream);
+        $adapter->load(Argument::any(), 0, null)->willReturn($stream);
 
         $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
 

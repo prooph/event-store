@@ -16,6 +16,7 @@ use AppendIterator;
 use ArrayIterator;
 use DateTimeInterface;
 use Iterator;
+use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Adapter\Adapter;
@@ -147,94 +148,94 @@ class EventStore
     public function load(
         StreamName $streamName,
         int $fromNumber = 0,
-        int $count = null,
-        bool $forward = true
+        int $count = null
     ): Stream {
-        $argv = [
-            'streamName' => $streamName,
-            'fromNumber' => $fromNumber,
-            'count'      => $count,
-            'forward'    => $forward,
-        ];
+        $preResult = $this->preLoad(
+            __FUNCTION__ . '.pre',
+            $streamName,
+            $fromNumber,
+            $count
+        );
 
-        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
-
-        $this->getActionEventEmitter()->dispatch($event);
-
-        if ($event->propagationIsStopped()) {
-            $stream = $event->getParam('stream', false);
-
-            if ($stream instanceof Stream && $stream->streamName()->toString() == $streamName->toString()) {
-                return $stream;
-            }
-
-            throw StreamNotFoundException::with($streamName);
+        if ($preResult instanceof Stream) {
+            return $preResult;
         }
 
-        $streamName = $event->getParam('streamName');
-        $fromNumber = $event->getParam('fromNumber');
-        $count      = $event->getParam('count');
-        $forward    = $event->getParam('forward');
+        list($streamName, $fromNumber, $count, $event) = $preResult;
 
-        $stream = $this->adapter->load($streamName, $fromNumber, $count, $forward);
+        $stream = $this->adapter->load($streamName, $fromNumber, $count);
 
-        if (! $stream) {
-            throw StreamNotFoundException::with($streamName);
-        }
+        return $this->postLoad(__FUNCTION__ . '.post', $stream, $streamName, $event);
+    }
 
-        $event->setName(__FUNCTION__ . '.post');
+    /**
+     * @throws Exception\StreamNotFoundException
+     */
+    public function loadReverse(
+        StreamName $streamName,
+        int $fromNumber = 0,
+        int $count = null
+    ): Stream {
+        list($streamName, $fromNumber, $count, $event) = $this->preLoad(
+            __FUNCTION__ . '.pre',
+            $streamName,
+            $fromNumber,
+            $count
+        );
 
-        $event->setParam('stream', $stream);
+        $stream = $this->adapter->loadReverse($streamName, $fromNumber, $count);
 
-        $this->getActionEventEmitter()->dispatch($event);
-
-        if ($event->propagationIsStopped()) {
-            throw StreamNotFoundException::with($streamName);
-        }
-
-        return $event->getParam('stream');
+        return $this->postLoad(__FUNCTION__ . '.post', $stream, $streamName, $event);
     }
 
     public function loadEventsByMetadataFrom(
         StreamName $streamName,
         array $metadata,
         int $fromNumber = 0,
-        int $count = null,
-        bool $forward = true
+        int $count = null
     ): Iterator {
-        $argv = [
-            'streamName' => $streamName,
-            'fromNumber' => $fromNumber,
-            'count'      => $count,
-            'forward'    => $forward,
-        ];
+        $preResult = $this->preloadEventsByMetadataFrom(
+            __FUNCTION__ . '.pre',
+            $streamName,
+            $metadata,
+            $fromNumber,
+            $count
+        );
 
-        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
-
-        $this->getActionEventEmitter()->dispatch($event);
-
-        if ($event->propagationIsStopped()) {
-            return $event->getParam('streamEvents', new ArrayIterator([]));
+        if ($preResult instanceof Iterator) {
+            return $preResult;
         }
 
-        $streamName = $event->getParam('streamName');
-        $fromNumber = $event->getParam('fromNumber');
-        $count      = $event->getParam('count');
-        $forward    = $event->getParam('forward');
+        list($streamName, $metadata, $fromNumber, $count, $event) = $preResult;
 
-        $events = $this->adapter->loadEvents($streamName, $metadata, $fromNumber, $count, $forward);
+        $events = $this->adapter->loadEvents($streamName, $metadata, $fromNumber, $count);
 
-        $event->setName(__FUNCTION__ . '.post');
+        return $this->postLoadEventsByMetadataFrom(__FUNCTION__ . '.post', $events, $event);
+    }
 
-        $event->setParam('streamEvents', $events);
+    public function loadEventsReverseByMetadataFrom(
+        StreamName $streamName,
+        array $metadata,
+        int $fromNumber = 0,
+        int $count = null
+    ): Iterator {
+        $preResult = $this->preloadEventsByMetadataFrom(
+            __FUNCTION__ . '.pre',
+            $streamName,
+            $metadata,
+            $fromNumber,
+            $count
+        );
 
-        $this->getActionEventEmitter()->dispatch($event);
-
-        if ($event->propagationIsStopped()) {
-            return new ArrayIterator([]);
+        if ($preResult instanceof Iterator) {
+            return $preResult;
         }
 
-        return $event->getParam('streamEvents');
+        list($streamName, $metadata, $fromNumber, $count, $event) = $preResult;
+
+        $events = $this->adapter->loadEventsReverse($streamName, $metadata, $fromNumber, $count);
+
+        return $this->postLoadEventsByMetadataFrom(__FUNCTION__ . '.post', $events, $event);
     }
 
     /**
@@ -353,5 +354,109 @@ class EventStore
     public function getActionEventEmitter(): ActionEventEmitter
     {
         return $this->actionEventEmitter;
+    }
+
+    private function preLoad(string $action, StreamName $streamName, int $fromNumber, int $count = null)
+    {
+        $argv = [
+            'streamName' => $streamName,
+            'fromNumber' => $fromNumber,
+            'count'      => $count,
+        ];
+
+        $event = $this->actionEventEmitter->getNewActionEvent($action, $this, $argv);
+
+        $this->getActionEventEmitter()->dispatch($event);
+
+        if ($event->propagationIsStopped()) {
+            $stream = $event->getParam('stream', false);
+
+            if ($stream instanceof Stream && $stream->streamName()->toString() == $streamName->toString()) {
+                return $stream;
+            }
+
+            throw StreamNotFoundException::with($streamName);
+        }
+
+        $streamName = $event->getParam('streamName');
+        $fromNumber = $event->getParam('fromNumber');
+        $count      = $event->getParam('count');
+
+        return [
+            $streamName,
+            $fromNumber,
+            $count,
+            $event
+        ];
+    }
+
+    private function postLoad(string $action, ?Stream $stream, StreamName $streamName, ActionEvent $event): ?Stream
+    {
+        if (! $stream) {
+            throw StreamNotFoundException::with($streamName);
+        }
+
+        $event->setName($action);
+
+        $event->setParam('stream', $stream);
+
+        $this->getActionEventEmitter()->dispatch($event);
+
+        if ($event->propagationIsStopped()) {
+            throw StreamNotFoundException::with($streamName);
+        }
+
+        return $event->getParam('stream');
+    }
+
+    private function preloadEventsByMetadataFrom(
+        string $action,
+        StreamName $streamName,
+        array $metadata,
+        int $fromNumber,
+        int $count = null
+    ) {
+        $argv = [
+            'streamName' => $streamName,
+            'metadata'   => $metadata,
+            'fromNumber' => $fromNumber,
+            'count'      => $count,
+        ];
+
+        $event = $this->actionEventEmitter->getNewActionEvent($action, $this, $argv);
+
+        $this->getActionEventEmitter()->dispatch($event);
+
+        if ($event->propagationIsStopped()) {
+            return $event->getParam('streamEvents', new ArrayIterator([]));
+        }
+
+        $streamName = $event->getParam('streamName');
+        $metadata   = $event->getParam('metadata');
+        $fromNumber = $event->getParam('fromNumber');
+        $count      = $event->getParam('count');
+
+        return [
+            $streamName,
+            $metadata,
+            $fromNumber,
+            $count,
+            $event
+        ];
+    }
+
+    private function postLoadEventsByMetadataFrom(string $action, Iterator $events, ActionEvent $event): Iterator
+    {
+        $event->setName($action);
+
+        $event->setParam('streamEvents', $events);
+
+        $this->getActionEventEmitter()->dispatch($event);
+
+        if ($event->propagationIsStopped()) {
+            return new ArrayIterator([]);
+        }
+
+        return $event->getParam('streamEvents');
     }
 }

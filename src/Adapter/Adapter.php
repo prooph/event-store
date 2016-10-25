@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Adapter;
 
-use DateTimeInterface;
 use Iterator;
 use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\EventStore\Stream\Stream;
@@ -38,15 +37,26 @@ interface Adapter
     public function load(
         StreamName $streamName,
         int $fromNumber = 0,
-        int $count = null,
-        bool $forward = true
+        int $count = null
+    ): ?Stream;
+
+    public function loadReverse(
+        StreamName $streamName,
+        int $fromNumber = 0,
+        int $count = null
     ): ?Stream;
 
     public function loadEvents(
         StreamName $streamName,
         array $metadata = [],
         int $fromNumber = 0,
-        int $count = null,
-        bool $forward = true
+        int $count = null
+    ): Iterator;
+
+    public function loadEventsReverse(
+        StreamName $streamName,
+        array $metadata = [],
+        int $fromNumber = 0,
+        int $count = null
     ): Iterator;
 }

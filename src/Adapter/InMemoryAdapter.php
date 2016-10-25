@@ -60,8 +60,7 @@ class InMemoryAdapter implements Adapter
     public function load(
         StreamName $streamName,
         int $fromNumber = 0,
-        int $count = null,
-        bool $forward = true
+        int $count = null
     ): ?Stream {
         if (! isset($this->streams[$streamName->toString()])) {
             return null;
@@ -72,34 +71,50 @@ class InMemoryAdapter implements Adapter
         $filteredEvents = [];
 
         foreach ($streamEvents as $streamEvent) {
-            if ($forward) {
-                if ($streamEvent->version() >= $fromNumber) {
-                    $filteredEvents[] = $streamEvent;
-                }
-            } else {
-                if ($streamEvent->version() <= $fromNumber) {
-                    $filteredEvents[] = $streamEvent;
-                }
+            if ($streamEvent->version() >= $fromNumber) {
+                $filteredEvents[] = $streamEvent;
             }
         }
 
         if (null !== $count) {
             foreach ($filteredEvents as $key => $streamEvent) {
-                if ($forward) {
-                    if ($streamEvent->version() > ($fromNumber + $count - 1)) {
-                        unset($filteredEvents[$key]);
-                    }
-                } else {
-                    if ($streamEvent->version() < ($fromNumber - $count + 1)) {
-                        unset($filteredEvents[$key]);
-                    }
+                if ($streamEvent->version() > ($fromNumber + $count - 1)) {
+                    unset($filteredEvents[$key]);
                 }
             }
         }
 
-        if (! $forward) {
-            $filteredEvents = array_reverse($filteredEvents);
+        return new Stream($streamName, new \ArrayIterator($filteredEvents));
+    }
+
+    public function loadReverse(
+        StreamName $streamName,
+        int $fromNumber = 0,
+        int $count = null
+    ): ?Stream {
+        if (! isset($this->streams[$streamName->toString()])) {
+            return null;
         }
+
+        $streamEvents = $this->streams[$streamName->toString()];
+
+        $filteredEvents = [];
+
+        foreach ($streamEvents as $streamEvent) {
+            if ($streamEvent->version() <= $fromNumber) {
+                $filteredEvents[] = $streamEvent;
+            }
+        }
+
+        if (null !== $count) {
+            foreach ($filteredEvents as $key => $streamEvent) {
+                if ($streamEvent->version() < ($fromNumber - $count + 1)) {
+                    unset($filteredEvents[$key]);
+                }
+            }
+        }
+
+        $filteredEvents = array_reverse($filteredEvents);
 
         return new Stream($streamName, new \ArrayIterator($filteredEvents));
     }
@@ -108,8 +123,7 @@ class InMemoryAdapter implements Adapter
         StreamName $streamName,
         array $metadata = [],
         int $fromNumber = 0,
-        int $count = null,
-        bool $forward = true
+        int $count = null
     ): Iterator {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
@@ -119,27 +133,42 @@ class InMemoryAdapter implements Adapter
 
         foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)) {
-                if ($forward) {
-                    if ($streamEvent->version() >= $fromNumber) {
-                        $streamEvents[$index] = $streamEvent;
-                    }
-                    if (null !== $count && $streamEvent->version() > ($fromNumber + $count - 1)) {
-                        unset($streamEvents[$index]);
-                    }
-                } else {
-                    if ($streamEvent->version() <= $fromNumber) {
-                        $streamEvents[$index] = $streamEvent;
-                    }
-                    if (null !== $count && $streamEvent->version() < ($fromNumber - $count + 1)) {
-                        unset($streamEvents[$index]);
-                    }
+                if ($streamEvent->version() >= $fromNumber) {
+                    $streamEvents[$index] = $streamEvent;
+                }
+                if (null !== $count && $streamEvent->version() > ($fromNumber + $count - 1)) {
+                    unset($streamEvents[$index]);
                 }
             }
         }
 
-        if (! $forward) {
-            $streamEvents = array_reverse($streamEvents);
+        return new ArrayIterator($streamEvents);
+    }
+
+    public function loadEventsReverse(
+        StreamName $streamName,
+        array $metadata = [],
+        int $fromNumber = 0,
+        int $count = null
+    ): Iterator {
+        if (! isset($this->streams[$streamName->toString()])) {
+            return new ArrayIterator();
         }
+
+        $streamEvents = [];
+
+        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
+            if ($this->matchMetadataWith($streamEvent, $metadata)) {
+                if ($streamEvent->version() <= $fromNumber) {
+                    $streamEvents[$index] = $streamEvent;
+                }
+                if (null !== $count && $streamEvent->version() < ($fromNumber - $count + 1)) {
+                    unset($streamEvents[$index]);
+                }
+            }
+        }
+
+        $streamEvents = array_reverse($streamEvents);
 
         return new ArrayIterator($streamEvents);
     }
