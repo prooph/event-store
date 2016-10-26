@@ -86,7 +86,7 @@ final class MetadataEnricherPluginTest extends TestCase
         $this->assertEquals($messageEvent->payload(), $streamEvents[0]->payload());
         $this->assertEquals($messageEvent->version(), $streamEvents[0]->version());
         $this->assertEquals($messageEvent->createdAt(), $streamEvents[0]->createdAt());
-        $this->assertEquals(['foo' => 'bar'], $streamEvents[0]->metadata());
+        $this->assertEquals(['foo' => 'bar', '_version' => 1], $streamEvents[0]->metadata());
     }
 
     /**
@@ -127,7 +127,7 @@ final class MetadataEnricherPluginTest extends TestCase
         $this->assertEquals($messageEvent->payload(), $streamEvents[0]->payload());
         $this->assertEquals($messageEvent->version(), $streamEvents[0]->version());
         $this->assertEquals($messageEvent->createdAt(), $streamEvents[0]->createdAt());
-        $this->assertEquals(['foo' => 'bar'], $streamEvents[0]->metadata());
+        $this->assertEquals(['foo' => 'bar', '_version' => 1], $streamEvents[0]->metadata());
     }
 
 

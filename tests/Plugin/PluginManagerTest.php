@@ -14,12 +14,12 @@ namespace ProophTest\EventStore\Plugin;
 
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
-use Prooph\EventStore\Aggregate\AggregateRepository;
-use Prooph\EventStore\Aggregate\AggregateType;
-use Prooph\EventStore\Aggregate\ConfigurableAggregateTranslator;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamName;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\User;
+use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\TestCase;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
@@ -48,20 +48,24 @@ class PluginManagerTest extends TestCase
         $logger = $pluginManager->get('eventlogger');
         $logger->setUp($eventStore);
 
-        $repository = new AggregateRepository(
-            $eventStore,
-            AggregateType::fromAggregateRootClass('ProophTest\EventStore\Mock\User'),
-            new ConfigurableAggregateTranslator(),
-            null,
-            null,
-            true
-        );
-
         $eventStore->beginTransaction();
 
-        $user = User::create("Alex", "contact@prooph.de");
+        $eventStore->create(
+            new Stream(
+                new StreamName('user'),
+                new \ArrayIterator([
+                    UserCreated::with(
+                        [
+                            'name' => 'Alex',
+                            'email' => 'contact@prooph.de'
+                        ],
+                        1
+                    )
+                ])
+            )
+        );
 
-        $repository->addAggregateRoot($user);
+        $user = User::create("Alex", "contact@prooph.de");
 
         $eventStore->commit();
 
