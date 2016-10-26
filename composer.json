@@ -25,7 +25,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.1",
-        "prooph/common" : "dev-php_7_1 as 4.0"
+        "prooph/common" : "dev-develop as 4.0"
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
