@@ -66,6 +66,13 @@ class EventStoreTest extends TestCase
         $this->assertEquals(1, count($stream->streamEvents()));
 
         $this->assertEquals(1, count($recordedEvents));
+
+        $this->assertEquals(
+            [
+                'foo' => 'bar',
+            ],
+            $this->eventStore->fetchStreamMetadata(new StreamName('user'))
+        );
     }
 
     /**
@@ -850,6 +857,6 @@ class EventStoreTest extends TestCase
             0
         );
 
-        return new Stream(new StreamName('user'), new ArrayIterator([$streamEvent]));
+        return new Stream(new StreamName('user'), new ArrayIterator([$streamEvent]), ['foo' => 'bar']);
     }
 }
