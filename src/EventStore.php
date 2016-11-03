@@ -22,6 +22,7 @@ use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
@@ -199,9 +200,9 @@ class EventStore
 
     public function loadEventsByMetadataFrom(
         StreamName $streamName,
-        array $metadata,
         int $fromNumber = 0,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 0);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
@@ -209,27 +210,27 @@ class EventStore
         $preResult = $this->preloadEventsByMetadataFrom(
             __FUNCTION__ . '.pre',
             $streamName,
-            $metadata,
             $fromNumber,
-            $count
+            $count,
+            $metadataMatcher
         );
 
         if ($preResult instanceof Iterator) {
             return $preResult;
         }
 
-        list($streamName, $metadata, $fromNumber, $count, $event) = $preResult;
+        list($streamName, $fromNumber, $count, $event, $metadataMatcher) = $preResult;
 
-        $events = $this->adapter->loadEvents($streamName, $metadata, $fromNumber, $count);
+        $events = $this->adapter->loadEvents($streamName, $fromNumber, $count, $metadataMatcher);
 
         return $this->postLoadEventsByMetadataFrom(__FUNCTION__ . '.post', $events, $event);
     }
 
     public function loadEventsReverseByMetadataFrom(
         StreamName $streamName,
-        array $metadata,
         int $fromNumber = 0,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 0);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
@@ -237,18 +238,18 @@ class EventStore
         $preResult = $this->preloadEventsByMetadataFrom(
             __FUNCTION__ . '.pre',
             $streamName,
-            $metadata,
             $fromNumber,
-            $count
+            $count,
+            $metadataMatcher
         );
 
         if ($preResult instanceof Iterator) {
             return $preResult;
         }
 
-        list($streamName, $metadata, $fromNumber, $count, $event) = $preResult;
+        list($streamName, $fromNumber, $count, $event, $metadataMatcher) = $preResult;
 
-        $events = $this->adapter->loadEventsReverse($streamName, $metadata, $fromNumber, $count);
+        $events = $this->adapter->loadEventsReverse($streamName, $fromNumber, $count, $metadataMatcher);
 
         return $this->postLoadEventsByMetadataFrom(__FUNCTION__ . '.post', $events, $event);
     }
@@ -427,15 +428,15 @@ class EventStore
     private function preloadEventsByMetadataFrom(
         string $action,
         StreamName $streamName,
-        array $metadata,
         int $fromNumber,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ) {
         $argv = [
-            'streamName' => $streamName,
-            'metadata'   => $metadata,
-            'fromNumber' => $fromNumber,
-            'count'      => $count,
+            'streamName'        => $streamName,
+            'fromNumber'        => $fromNumber,
+            'count'             => $count,
+            'metadataMatcher'   => $metadataMatcher,
         ];
 
         $event = $this->actionEventEmitter->getNewActionEvent($action, $this, $argv);
@@ -446,17 +447,17 @@ class EventStore
             return $event->getParam('streamEvents', new ArrayIterator([]));
         }
 
-        $streamName = $event->getParam('streamName');
-        $metadata   = $event->getParam('metadata');
-        $fromNumber = $event->getParam('fromNumber');
-        $count      = $event->getParam('count');
+        $streamName      = $event->getParam('streamName');
+        $fromNumber      = $event->getParam('fromNumber');
+        $count           = $event->getParam('count');
+        $metadataMatcher = $event->getParam('metadataMatcher');
 
         return [
             $streamName,
-            $metadata,
             $fromNumber,
             $count,
-            $event
+            $event,
+            $metadataMatcher
         ];
     }
 

@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Adapter;
 
 use Iterator;
 use Prooph\EventStore\Exception\ConcurrencyException;
+use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prooph\EventStore\Exception\StreamNotFoundException;
@@ -50,15 +51,15 @@ interface Adapter
 
     public function loadEvents(
         StreamName $streamName,
-        array $metadata = [],
         int $fromNumber = 0,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ): Iterator;
 
     public function loadEventsReverse(
         StreamName $streamName,
-        array $metadata = [],
         int $fromNumber = 0,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ): Iterator;
 }

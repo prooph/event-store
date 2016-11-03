@@ -20,6 +20,8 @@ use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use ProophTest\EventStore\Mock\TransactionalInMemoryAdapterMock;
@@ -227,7 +229,10 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->addMetadataMatch('snapshot', Operator::EQUALS(), true);
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
 
         $this->assertEquals(1, count($loadedEvents));
 
@@ -279,7 +284,7 @@ class EventStoreTest extends TestCase
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 1);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -348,7 +353,7 @@ class EventStoreTest extends TestCase
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), [], 1, 2);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1, 2);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -417,7 +422,7 @@ class EventStoreTest extends TestCase
         $this->assertFalse($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertTrue($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsReverseByMetadataFrom($stream->streamName(), [], 2, 2);
+        $loadedEvents = $this->eventStore->loadEventsReverseByMetadataFrom($stream->streamName(), 2, 2);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -460,7 +465,10 @@ class EventStoreTest extends TestCase
             $event->stopPropagation(true);
         });
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->addMetadataMatch('snapshot', Operator::EQUALS(), true);
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
 
         $this->assertEquals(0, count($loadedEvents));
     }
@@ -503,7 +511,10 @@ class EventStoreTest extends TestCase
             $event->stopPropagation(true);
         });
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), ['snapshot' => true]);
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->addMetadataMatch('snapshot', Operator::EQUALS(), true);
+
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -649,7 +660,7 @@ class EventStoreTest extends TestCase
             $event->stopPropagation(true);
         });
 
-        $this->assertEmpty($this->eventStore->loadEventsByMetadataFrom($stream->streamName(), []));
+        $this->assertEmpty($this->eventStore->loadEventsByMetadataFrom($stream->streamName()));
     }
 
     /**
