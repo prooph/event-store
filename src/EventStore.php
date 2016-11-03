@@ -180,7 +180,7 @@ class EventStore
      */
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = PHP_INT_MAX,
         int $count = null
     ): Stream {
         Assertion::greaterOrEqualThan($fromNumber, 0);
@@ -228,7 +228,7 @@ class EventStore
 
     public function loadEventsReverseByMetadataFrom(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {

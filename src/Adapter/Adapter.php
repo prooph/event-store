@@ -45,7 +45,7 @@ interface Adapter
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = PHP_INT_MAX,
         int $count = null
     ): ?Stream;
 
@@ -58,7 +58,7 @@ interface Adapter
 
     public function loadEventsReverse(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator;
