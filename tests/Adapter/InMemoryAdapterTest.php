@@ -15,6 +15,7 @@ namespace ProophTest\EventStore\Adapter;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
 /**
@@ -31,6 +32,41 @@ final class InMemoryAdapterTest extends TestCase
     protected function setUp(): void
     {
         $this->adapter = new InMemoryAdapter();
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_null_when_asked_for_unknown_stream_metadata(): void
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('unknown')->shouldBeCalled();
+
+        $this->assertNull($this->adapter->fetchStreamMetadata($streamName->reveal()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_metadata_when_asked_for_stream_metadata(): void
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator());
+
+        $this->adapter->create($stream->reveal());
+
+        $this->assertEquals(
+            [
+                'foo' => 'bar'
+            ],
+            $this->adapter->fetchStreamMetadata($streamName)
+        );
     }
 
     /**

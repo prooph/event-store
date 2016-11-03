@@ -71,6 +71,11 @@ class EventStore
         return $this->recordedEvents;
     }
 
+    public function fetchStreamMetadata(StreamName $streamName): ?array
+    {
+        return $this->adapter->fetchStreamMetadata($streamName);
+    }
+
     /**
      * @throws Exception\RuntimeException
      */
