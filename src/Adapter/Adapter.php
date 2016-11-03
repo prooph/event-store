@@ -26,6 +26,8 @@ use Prooph\EventStore\Exception\StreamNotFoundException;
  */
 interface Adapter
 {
+    public function fetchStreamMetadata(StreamName $streamName): ?array;
+
     public function create(Stream $stream): void;
 
     /**

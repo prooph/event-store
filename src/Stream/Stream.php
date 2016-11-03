@@ -14,12 +14,6 @@ namespace Prooph\EventStore\Stream;
 
 use Iterator;
 
-/**
- * Class Stream
- *
- * @package Prooph\EventStore\Stream
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class Stream
 {
     /**
@@ -32,11 +26,16 @@ class Stream
      */
     protected $streamEvents;
 
-    public function __construct(StreamName $streamName, Iterator $streamEvents)
+    /**
+     * @var array
+     */
+    protected $metadata = [];
+
+    public function __construct(StreamName $streamName, Iterator $streamEvents, array $metadata = [])
     {
         $this->streamName = $streamName;
-
         $this->streamEvents = $streamEvents;
+        $this->metadata = $metadata;
     }
 
     public function streamName(): StreamName
@@ -47,5 +46,10 @@ class Stream
     public function streamEvents(): Iterator
     {
         return $this->streamEvents;
+    }
+
+    public function metadata(): array
+    {
+        return $this->metadata;
     }
 }

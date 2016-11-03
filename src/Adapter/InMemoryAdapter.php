@@ -14,7 +14,6 @@ namespace Prooph\EventStore\Adapter;
 
 use AppendIterator;
 use ArrayIterator;
-use DateTimeInterface;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
@@ -34,11 +33,21 @@ class InMemoryAdapter implements Adapter
      */
     protected $streams;
 
+    public function fetchStreamMetadata(StreamName $streamName): ?array
+    {
+        if (isset($this->streams[$streamName->toString()]['metadata'])) {
+            return $this->streams[$streamName->toString()]['metadata'];
+        }
+
+        return null;
+    }
+
     public function create(Stream $stream): void
     {
         $streamEvents = $stream->streamEvents();
         $streamEvents->rewind();
-        $this->streams[$stream->streamName()->toString()] = $streamEvents;
+        $this->streams[$stream->streamName()->toString()]['events'] = $streamEvents;
+        $this->streams[$stream->streamName()->toString()]['metadata'] = $stream->metadata();
     }
 
     /**
@@ -51,10 +60,10 @@ class InMemoryAdapter implements Adapter
         }
 
         $appendIterator = new AppendIterator();
-        $appendIterator->append($this->streams[$streamName->toString()]);
+        $appendIterator->append($this->streams[$streamName->toString()]['events']);
         $appendIterator->append($domainEvents);
 
-        $this->streams[$streamName->toString()] = $appendIterator;
+        $this->streams[$streamName->toString()]['events'] = $appendIterator;
     }
 
     public function load(
@@ -66,7 +75,7 @@ class InMemoryAdapter implements Adapter
             return null;
         }
 
-        $streamEvents = $this->streams[$streamName->toString()];
+        $streamEvents = $this->streams[$streamName->toString()]['events'];
 
         $filteredEvents = [];
 
@@ -82,7 +91,11 @@ class InMemoryAdapter implements Adapter
             }
         }
 
-        return new Stream($streamName, new \ArrayIterator($filteredEvents));
+        return new Stream(
+            $streamName,
+            new \ArrayIterator($filteredEvents),
+            $this->streams[$streamName->toString()]['metadata']
+        );
     }
 
     public function loadReverse(
@@ -94,7 +107,7 @@ class InMemoryAdapter implements Adapter
             return null;
         }
 
-        $streamEvents = $this->streams[$streamName->toString()];
+        $streamEvents = $this->streams[$streamName->toString()]['events'];
 
         $filteredEvents = [];
 
@@ -113,7 +126,11 @@ class InMemoryAdapter implements Adapter
 
         $filteredEvents = array_reverse($filteredEvents);
 
-        return new Stream($streamName, new \ArrayIterator($filteredEvents));
+        return new Stream(
+            $streamName,
+            new \ArrayIterator($filteredEvents),
+            $this->streams[$streamName->toString()]['metadata']
+        );
     }
 
     public function loadEvents(
@@ -128,7 +145,7 @@ class InMemoryAdapter implements Adapter
 
         $streamEvents = [];
 
-        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
+        foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)
                 && ((null === $count
                         && $streamEvent->version() >= $fromNumber
@@ -156,7 +173,7 @@ class InMemoryAdapter implements Adapter
 
         $streamEvents = [];
 
-        foreach ($this->streams[$streamName->toString()] as $index => $streamEvent) {
+        foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
             if ($this->matchMetadataWith($streamEvent, $metadata)
                 && ((null === $count
                         && $streamEvent->version() <= $fromNumber
