@@ -18,6 +18,7 @@ use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
@@ -151,7 +152,7 @@ class InMemoryAdapter implements Adapter
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
-            if ($metadataMatcher->matches($streamEvent->metadata())
+            if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
                 && ((null === $count
                         && $streamEvent->version() >= $fromNumber
                     ) || (null !== $count
@@ -183,7 +184,7 @@ class InMemoryAdapter implements Adapter
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
-            if ($metadataMatcher->matches($streamEvent->metadata())
+            if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
                 && ((null === $count
                         && $streamEvent->version() <= $fromNumber
                     ) || (null !== $count
@@ -198,5 +199,48 @@ class InMemoryAdapter implements Adapter
         $streamEvents = array_reverse($streamEvents);
 
         return new ArrayIterator($streamEvents);
+    }
+
+    private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
+    {
+        foreach ($metadataMatcher->data() as $key => $value) {
+            if (! isset($metadata[$key])) {
+                return false;
+            }
+
+            $testValue = $metadataMatcher->data()[$key]['value'];
+
+            switch ($metadataMatcher->data()[$key]['operator']) {
+                case Operator::EQUALS():
+                    if ($testValue != $value) {
+                        return false;
+                    }
+                    break;
+                case Operator::GREATER_THAN():
+                    if ($testValue <= $value) {
+                        return false;
+                    }
+                    break;
+                case Operator::GREATER_THAN_EQUALS():
+                    if ($testValue < $value) {
+                        return false;
+                    };
+                    break;
+                case Operator::LOWER_THAN():
+                    if ($testValue >= $value) {
+                        return false;
+                    }
+                    break;
+                case Operator::LOWER_THAN_EQUALS():
+                    if ($testValue > $value) {
+                        return false;
+                    }
+                    break;
+                default:
+                    throw new \UnexpectedValueException('Unknown operator found');
+            }
+        }
+
+        return true;
     }
 }

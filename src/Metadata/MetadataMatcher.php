@@ -30,49 +30,6 @@ class MetadataMatcher
         $this->data[$key] = ['operator' => $operator, 'value' => $value];
     }
 
-    public function matches(array $metadata): bool
-    {
-        foreach ($this->data as $key => $value) {
-            if (! isset($metadata[$key])) {
-                return false;
-            }
-
-            $testValue = $this->data[$key]['value'];
-
-            switch ($this->data[$key]['operator']) {
-                case Operator::EQUALS():
-                    if ($testValue != $value) {
-                        return false;
-                    }
-                    break;
-                case Operator::GREATER_THAN():
-                    if ($testValue <= $value) {
-                        return false;
-                    }
-                    break;
-                case Operator::GREATER_THAN_EQUALS():
-                    if ($testValue < $value) {
-                        return false;
-                    };
-                    break;
-                case Operator::LOWER_THAN():
-                    if ($testValue >= $value) {
-                        return false;
-                    }
-                    break;
-                case Operator::LOWER_THAN_EQUALS():
-                    if ($testValue > $value) {
-                        return false;
-                    }
-                    break;
-                default:
-                    throw new \UnexpectedValueException('Unknown operator found');
-            }
-        }
-
-        return true;
-    }
-
     /**
      * @param mixed $value
      * @throws InvalidArgumentException
