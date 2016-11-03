@@ -17,6 +17,7 @@ use ArrayIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 
@@ -135,18 +136,22 @@ class InMemoryAdapter implements Adapter
 
     public function loadEvents(
         StreamName $streamName,
-        array $metadata = [],
         int $fromNumber = 0,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ): Iterator {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
         }
 
+        if (null === $metadataMatcher) {
+            $metadataMatcher = new MetadataMatcher();
+        }
+
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
-            if ($this->matchMetadataWith($streamEvent, $metadata)
+            if ($metadataMatcher->matches($streamEvent->metadata())
                 && ((null === $count
                         && $streamEvent->version() >= $fromNumber
                     ) || (null !== $count
@@ -163,18 +168,22 @@ class InMemoryAdapter implements Adapter
 
     public function loadEventsReverse(
         StreamName $streamName,
-        array $metadata = [],
         int $fromNumber = 0,
-        int $count = null
+        int $count = null,
+        MetadataMatcher $metadataMatcher = null
     ): Iterator {
         if (! isset($this->streams[$streamName->toString()])) {
             return new ArrayIterator();
         }
 
+        if (null === $metadataMatcher) {
+            $metadataMatcher = new MetadataMatcher();
+        }
+
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
-            if ($this->matchMetadataWith($streamEvent, $metadata)
+            if ($metadataMatcher->matches($streamEvent->metadata())
                 && ((null === $count
                         && $streamEvent->version() <= $fromNumber
                     ) || (null !== $count
@@ -189,26 +198,5 @@ class InMemoryAdapter implements Adapter
         $streamEvents = array_reverse($streamEvents);
 
         return new ArrayIterator($streamEvents);
-    }
-
-    private function matchMetadataWith(Message $streamEvent, array $metadata): bool
-    {
-        if (empty($metadata)) {
-            return true;
-        }
-
-        $streamEventMetadata = $streamEvent->metadata();
-
-        foreach ($metadata as $key => $value) {
-            if (! isset($streamEventMetadata[$key])) {
-                return false;
-            }
-
-            if ($streamEventMetadata[$key] !== $value) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
