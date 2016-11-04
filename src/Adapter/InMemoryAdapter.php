@@ -201,16 +201,19 @@ class InMemoryAdapter implements Adapter
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
     {
-        foreach ($metadataMatcher->data() as $key => $value) {
+        foreach ($metadataMatcher->data() as $match) {
+            $key = $match['key'];
+
             if (! isset($metadata[$key])) {
                 return false;
             }
 
-            $expected = $value['value'];
+            $operator = $match['operator'];
+            $expected = $match['value'];
 
-            switch ($metadataMatcher->data()[$key]['operator']) {
+            switch ($operator) {
                 case Operator::EQUALS():
-                    if ($expected !== $metadata[$key]) {
+                    if ($metadata[$key] !== $expected) {
                         return false;
                     }
                     break;
@@ -231,6 +234,11 @@ class InMemoryAdapter implements Adapter
                     break;
                 case Operator::LOWER_THAN_EQUALS():
                     if (! ($metadata[$key] <= $expected)) {
+                        return false;
+                    }
+                    break;
+                case Operator::NOT_EQUALS():
+                    if ($metadata[$key] === $expected) {
                         return false;
                     }
                     break;

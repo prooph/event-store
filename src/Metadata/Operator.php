@@ -20,6 +20,7 @@ use MabeEnum\Enum;
  * @method static Operator GREATER_THAN_EQUALS
  * @method static Operator LOWER_THAN
  * @method static Operator LOWER_THAN_EQUALS
+ * @method static Operator NOT_EQUALS
  */
 class Operator extends Enum
 {
@@ -28,4 +29,5 @@ class Operator extends Enum
     const GREATER_THAN_EQUALS = '>=';
     const LOWER_THAN = '<';
     const LOWER_THAN_EQUALS = '<=';
+    const NOT_EQUALS = '!=';
 }

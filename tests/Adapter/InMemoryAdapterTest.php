@@ -74,7 +74,6 @@ final class InMemoryAdapterTest extends TestCase
 
     /**
      * @test
-     * @group ttt
      */
     public function it_returns_only_matched_metadata(): void
     {
@@ -98,6 +97,7 @@ final class InMemoryAdapterTest extends TestCase
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar');
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'baz');
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 4);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 4);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);

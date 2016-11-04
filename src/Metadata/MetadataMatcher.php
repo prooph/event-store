@@ -28,7 +28,7 @@ class MetadataMatcher
         $this->validateValue($value);
 
         $self = clone $this;
-        $self->data[$key] = ['operator' => $operator, 'value' => $value];
+        $self->data[] = ['key' => $key, 'operator' => $operator, 'value' => $value];
 
         return $self;
     }
