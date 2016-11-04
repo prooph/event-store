@@ -75,6 +75,8 @@ class EventStoreTest extends TestCase
             ],
             $this->eventStore->fetchStreamMetadata(new StreamName('user'))
         );
+
+        $this->assertTrue($this->eventStore->hasStream(new StreamName('user')));
     }
 
     /**

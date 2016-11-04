@@ -77,6 +77,11 @@ class EventStore
         return $this->adapter->fetchStreamMetadata($streamName);
     }
 
+    public function hasStream(StreamName $streamName): bool
+    {
+        return $this->adapter->hasStream($streamName);
+    }
+
     /**
      * @throws Exception\RuntimeException
      */
