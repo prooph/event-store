@@ -230,7 +230,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->commit();
 
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->addMetadataMatch('snapshot', Operator::EQUALS(), true);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
 
@@ -466,7 +466,7 @@ class EventStoreTest extends TestCase
         });
 
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->addMetadataMatch('snapshot', Operator::EQUALS(), true);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
 
@@ -512,7 +512,7 @@ class EventStoreTest extends TestCase
         });
 
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->addMetadataMatch('snapshot', Operator::EQUALS(), true);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
         $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
 

@@ -15,8 +15,11 @@ namespace ProophTest\EventStore\Adapter;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
+use ProophTest\EventStore\Mock\UserCreated;
 
 /**
  * Class InMemoryAdapterTest
@@ -67,6 +70,42 @@ final class InMemoryAdapterTest extends TestCase
             ],
             $this->adapter->fetchStreamMetadata($streamName)
         );
+    }
+
+    /**
+     * @test
+     * @group ttt
+     */
+    public function it_returns_only_matched_metadata(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn([])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator([$event]));
+
+        $this->adapter->create($stream->reveal());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar');
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 4);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 4);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 7);
+
+        $streamEvents = $this->adapter->loadEvents($streamName, 0, null, $metadataMatcher);
+
+        $this->assertCount(1, $streamEvents);
     }
 
     /**
