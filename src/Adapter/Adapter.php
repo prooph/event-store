@@ -29,6 +29,8 @@ interface Adapter
 {
     public function fetchStreamMetadata(StreamName $streamName): ?array;
 
+    public function hasStream(StreamName $streamName): bool;
+
     public function create(Stream $stream): void;
 
     /**

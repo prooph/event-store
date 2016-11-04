@@ -35,9 +35,14 @@ class InMemoryAdapter implements Adapter
      */
     protected $streams;
 
+    public function hasStream(StreamName $streamName): bool
+    {
+        return isset($this->streams[$streamName->toString()]['metadata']);
+    }
+
     public function fetchStreamMetadata(StreamName $streamName): ?array
     {
-        if (isset($this->streams[$streamName->toString()]['metadata'])) {
+        if ($this->hasStream($streamName)) {
             return $this->streams[$streamName->toString()]['metadata'];
         }
 
@@ -57,7 +62,7 @@ class InMemoryAdapter implements Adapter
      */
     public function appendTo(StreamName $streamName, Iterator $domainEvents): void
     {
-        if (! isset($this->streams[$streamName->toString()])) {
+        if (! $this->hasStream($streamName)) {
             throw StreamNotFoundException::with($streamName);
         }
 
@@ -73,7 +78,7 @@ class InMemoryAdapter implements Adapter
         int $fromNumber = 0,
         int $count = null
     ): ?Stream {
-        if (! isset($this->streams[$streamName->toString()])) {
+        if (! $this->hasStream($streamName)) {
             return null;
         }
 
@@ -103,7 +108,7 @@ class InMemoryAdapter implements Adapter
         int $fromNumber = 0,
         int $count = null
     ): ?Stream {
-        if (! isset($this->streams[$streamName->toString()])) {
+        if (! $this->hasStream($streamName)) {
             return null;
         }
 
@@ -139,7 +144,7 @@ class InMemoryAdapter implements Adapter
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
-        if (! isset($this->streams[$streamName->toString()])) {
+        if (! $this->hasStream($streamName)) {
             return new ArrayIterator();
         }
 
@@ -171,7 +176,7 @@ class InMemoryAdapter implements Adapter
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
-        if (! isset($this->streams[$streamName->toString()])) {
+        if (! $this->hasStream($streamName)) {
             return new ArrayIterator();
         }
 
