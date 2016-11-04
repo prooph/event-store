@@ -23,11 +23,14 @@ class MetadataMatcher
         return $this->data;
     }
 
-    public function addMetadataMatch(string $key, Operator $operator, $value): void
+    public function withMetadataMatch(string $key, Operator $operator, $value): MetadataMatcher
     {
         $this->validateValue($value);
 
-        $this->data[$key] = ['operator' => $operator, 'value' => $value];
+        $self = clone $this;
+        $self->data[$key] = ['operator' => $operator, 'value' => $value];
+
+        return $self;
     }
 
     /**

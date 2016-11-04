@@ -77,11 +77,9 @@ class InMemoryAdapter implements Adapter
             return null;
         }
 
-        $streamEvents = $this->streams[$streamName->toString()]['events'];
-
         $filteredEvents = [];
 
-        foreach ($streamEvents as $streamEvent) {
+        foreach ($this->streams[$streamName->toString()]['events'] as $streamEvent) {
             if ((null === $count
                     && $streamEvent->version() >= $fromNumber
                 ) || (null !== $count
@@ -151,7 +149,7 @@ class InMemoryAdapter implements Adapter
 
         $streamEvents = [];
 
-        foreach ($this->streams[$streamName->toString()]['events'] as $index => $streamEvent) {
+        foreach ($this->streams[$streamName->toString()]['events'] as $streamEvent) {
             if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
                 && ((null === $count
                         && $streamEvent->version() >= $fromNumber
@@ -208,31 +206,31 @@ class InMemoryAdapter implements Adapter
                 return false;
             }
 
-            $testValue = $metadataMatcher->data()[$key]['value'];
+            $expected = $value['value'];
 
             switch ($metadataMatcher->data()[$key]['operator']) {
                 case Operator::EQUALS():
-                    if ($testValue != $value) {
+                    if ($expected !== $metadata[$key]) {
                         return false;
                     }
                     break;
                 case Operator::GREATER_THAN():
-                    if ($testValue <= $value) {
+                    if (! ($metadata[$key] > $expected)) {
                         return false;
                     }
                     break;
                 case Operator::GREATER_THAN_EQUALS():
-                    if ($testValue < $value) {
+                    if (! ($metadata[$key] >= $expected)) {
                         return false;
                     };
                     break;
                 case Operator::LOWER_THAN():
-                    if ($testValue >= $value) {
+                    if (! ($metadata[$key] < $expected)) {
                         return false;
                     }
                     break;
                 case Operator::LOWER_THAN_EQUALS():
-                    if ($testValue > $value) {
+                    if (! ($metadata[$key] <= $expected)) {
                         return false;
                     }
                     break;
