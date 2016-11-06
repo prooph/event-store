@@ -11,7 +11,13 @@ matrix:
       env:
         - DEPENDENCIES="--prefer-lowest --prefer-stable"
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.local
+
 before_script:
+  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - composer self-update
   - composer update --prefer-dist $DEPENDENCIES
 

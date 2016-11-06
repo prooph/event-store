@@ -57,7 +57,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->create($stream);
 
-        $this->assertEquals(1, count($this->eventStore->getRecordedEvents()));
+        $this->assertEquals(1, iterator_count($this->eventStore->getRecordedEvents()));
 
         $this->eventStore->commit();
 
@@ -65,7 +65,7 @@ class EventStoreTest extends TestCase
 
         $this->assertEquals('user', $stream->streamName()->toString());
 
-        $this->assertEquals(1, count($stream->streamEvents()));
+        $this->assertEquals(1, iterator_count($stream->streamEvents()));
 
         $this->assertEquals(1, count($recordedEvents));
 
@@ -138,7 +138,7 @@ class EventStoreTest extends TestCase
 
         $secondStreamEvent = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $this->eventStore->beginTransaction();
@@ -175,7 +175,7 @@ class EventStoreTest extends TestCase
 
         $secondStreamEvent = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $this->eventStore->beginTransaction();
@@ -256,14 +256,14 @@ class EventStoreTest extends TestCase
 
         $streamEventVersion2 = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $streamEventVersion2 = $streamEventVersion2->withAddedMetadata('snapshot', true);
 
         $streamEventVersion3 = UsernameChanged::with(
             ['new_name' => 'Jane Doe'],
-            2
+            3
         );
 
         $streamEventVersion3 = $streamEventVersion3->withAddedMetadata('snapshot', false);
@@ -274,7 +274,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $loadedEventStream = $this->eventStore->load($stream->streamName(), 1);
+        $loadedEventStream = $this->eventStore->load($stream->streamName(), 2);
 
         $count = 0;
         foreach ($loadedEventStream->streamEvents() as $event) {
@@ -286,7 +286,7 @@ class EventStoreTest extends TestCase
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 2);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -314,21 +314,21 @@ class EventStoreTest extends TestCase
 
         $streamEventVersion2 = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $streamEventVersion2 = $streamEventVersion2->withAddedMetadata('snapshot', true);
 
         $streamEventVersion3 = UsernameChanged::with(
             ['new_name' => 'Jane Doe'],
-            2
+            3
         );
 
         $streamEventVersion3 = $streamEventVersion3->withAddedMetadata('snapshot', false);
 
         $streamEventVersion4 = UsernameChanged::with(
             ['new_name' => 'Jane Dole'],
-            3
+            4
         );
 
         $streamEventVersion4 = $streamEventVersion4->withAddedMetadata('snapshot', false);
@@ -383,21 +383,21 @@ class EventStoreTest extends TestCase
 
         $streamEventVersion2 = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $streamEventVersion2 = $streamEventVersion2->withAddedMetadata('snapshot', true);
 
         $streamEventVersion3 = UsernameChanged::with(
             ['new_name' => 'Jane Doe'],
-            2
+            3
         );
 
         $streamEventVersion3 = $streamEventVersion3->withAddedMetadata('snapshot', false);
 
         $streamEventVersion4 = UsernameChanged::with(
             ['new_name' => 'Jane Dole'],
-            3
+            4
         );
 
         $streamEventVersion4 = $streamEventVersion4->withAddedMetadata('snapshot', false);
@@ -490,7 +490,7 @@ class EventStoreTest extends TestCase
 
         $streamEventWithMetadata = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $streamEventWithMetadata = $streamEventWithMetadata->withAddedMetadata('snapshot', true);
@@ -504,7 +504,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->getActionEventEmitter()->attachListener('loadEventsByMetadataFrom.pre', function (ActionEvent $event) {
             $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
                 ['new_name' => 'John Doe'],
-                0
+                2
             );
 
             $streamEventWithMetadataButOtherUuid = $streamEventWithMetadataButOtherUuid->withAddedMetadata('snapshot', true);
@@ -516,7 +516,7 @@ class EventStoreTest extends TestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1, null, $metadataMatcher);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -810,7 +810,7 @@ class EventStoreTest extends TestCase
 
         $secondStreamEvent = UsernameChanged::with(
             ['new_name' => 'John Doe'],
-            1
+            2
         );
 
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent) {
@@ -838,7 +838,7 @@ class EventStoreTest extends TestCase
         $adapter->beginTransaction()->shouldBeCalled();
         $adapter->create($stream)->shouldBeCalled();
         $adapter->commit()->shouldBeCalled();
-        $adapter->load(Argument::any(), 0, null)->willReturn($stream);
+        $adapter->load(Argument::any(), 1, null)->willReturn($stream);
 
         $this->eventStore = new EventStore($adapter->reveal(), new ProophActionEventEmitter());
 
@@ -867,7 +867,7 @@ class EventStoreTest extends TestCase
     {
         $streamEvent = UserCreated::with(
             ['name' => 'Alex', 'email' => 'contact@prooph.de'],
-            0
+            1
         );
 
         return new Stream(new StreamName('user'), new ArrayIterator([$streamEvent]), ['foo' => 'bar']);

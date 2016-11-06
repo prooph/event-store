@@ -156,10 +156,10 @@ class EventStore
      */
     public function load(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = 1,
         int $count = null
     ): Stream {
-        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         $preResult = $this->preLoad(
@@ -188,7 +188,7 @@ class EventStore
         int $fromNumber = PHP_INT_MAX,
         int $count = null
     ): Stream {
-        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         list($streamName, $fromNumber, $count, $event) = $this->preLoad(
@@ -205,11 +205,11 @@ class EventStore
 
     public function loadEventsByMetadataFrom(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
-        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         $preResult = $this->preloadEventsByMetadataFrom(
@@ -237,7 +237,7 @@ class EventStore
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
-        Assertion::greaterOrEqualThan($fromNumber, 0);
+        Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         $preResult = $this->preloadEventsByMetadataFrom(

@@ -41,7 +41,7 @@ interface Adapter
 
     public function load(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = 1,
         int $count = null
     ): ?Stream;
 
@@ -53,7 +53,7 @@ interface Adapter
 
     public function loadEvents(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator;

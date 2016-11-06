@@ -53,7 +53,11 @@ class InMemoryAdapter implements Adapter
     {
         $streamEvents = $stream->streamEvents();
         $streamEvents->rewind();
-        $this->streams[$stream->streamName()->toString()]['events'] = $streamEvents;
+
+        $it = new AppendIterator();
+        $it->append($streamEvents);
+
+        $this->streams[$stream->streamName()->toString()]['events'] = $it;
         $this->streams[$stream->streamName()->toString()]['metadata'] = $stream->metadata();
     }
 
@@ -66,16 +70,12 @@ class InMemoryAdapter implements Adapter
             throw StreamNotFoundException::with($streamName);
         }
 
-        $appendIterator = new AppendIterator();
-        $appendIterator->append($this->streams[$streamName->toString()]['events']);
-        $appendIterator->append($domainEvents);
-
-        $this->streams[$streamName->toString()]['events'] = $appendIterator;
+        $this->streams[$streamName->toString()]['events']->append($domainEvents);
     }
 
     public function load(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = 1,
         int $count = null
     ): ?Stream {
         if (! $this->hasStream($streamName)) {
@@ -105,7 +105,7 @@ class InMemoryAdapter implements Adapter
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = PHP_INT_MAX,
         int $count = null
     ): ?Stream {
         if (! $this->hasStream($streamName)) {
@@ -140,7 +140,7 @@ class InMemoryAdapter implements Adapter
 
     public function loadEvents(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
@@ -172,7 +172,7 @@ class InMemoryAdapter implements Adapter
 
     public function loadEventsReverse(
         StreamName $streamName,
-        int $fromNumber = 0,
+        int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
