@@ -322,7 +322,7 @@ class EventStore
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.post', $this, ['recordedEvents' => $this->recordedEvents]);
 
-        $this->resetRecordedEvents();
+        $this->recordedEvents = new AppendIterator();
 
         $this->getActionEventEmitter()->dispatch($event);
     }
@@ -350,7 +350,7 @@ class EventStore
 
         $this->actionEventEmitter->dispatch($event);
 
-        $this->resetRecordedEvents();
+        $this->recordedEvents = new AppendIterator();
     }
 
     public function isInTransaction(): bool
@@ -465,10 +465,5 @@ class EventStore
         }
 
         return $event->getParam('streamEvents');
-    }
-
-    private function resetRecordedEvents(): void
-    {
-        $this->recordedEvents = new AppendIterator();
     }
 }
