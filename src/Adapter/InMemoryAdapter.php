@@ -15,7 +15,6 @@ namespace Prooph\EventStore\Adapter;
 use AppendIterator;
 use ArrayIterator;
 use Iterator;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
@@ -31,13 +30,13 @@ use Prooph\EventStore\Stream\StreamName;
 class InMemoryAdapter implements Adapter
 {
     /**
-     * @var Iterator[]
+     * @var array
      */
     protected $streams;
 
     public function hasStream(StreamName $streamName): bool
     {
-        return isset($this->streams[$streamName->toString()]['metadata']);
+        return isset($this->streams[$streamName->toString()]);
     }
 
     public function fetchStreamMetadata(StreamName $streamName): ?array
@@ -54,10 +53,7 @@ class InMemoryAdapter implements Adapter
         $streamEvents = $stream->streamEvents();
         $streamEvents->rewind();
 
-        $it = new AppendIterator();
-        $it->append($streamEvents);
-
-        $this->streams[$stream->streamName()->toString()]['events'] = $it;
+        $this->streams[$stream->streamName()->toString()]['events'] = $streamEvents;
         $this->streams[$stream->streamName()->toString()]['metadata'] = $stream->metadata();
     }
 
@@ -70,7 +66,11 @@ class InMemoryAdapter implements Adapter
             throw StreamNotFoundException::with($streamName);
         }
 
-        $this->streams[$streamName->toString()]['events']->append($domainEvents);
+        $it = new AppendIterator();
+        $it->append($this->streams[$streamName->toString()]['events']);
+        $it->append($domainEvents);
+
+        $this->streams[$streamName->toString()]['events'] = $it;
     }
 
     public function load(

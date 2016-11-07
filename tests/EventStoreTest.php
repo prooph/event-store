@@ -234,7 +234,7 @@ class EventStoreTest extends TestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1, null, $metadataMatcher);
 
         $this->assertEquals(1, count($loadedEvents));
 
@@ -343,7 +343,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $loadedEventStream = $this->eventStore->load($stream->streamName(), 1, 2);
+        $loadedEventStream = $this->eventStore->load($stream->streamName(), 2, 2);
 
         $count = 0;
         foreach ($loadedEventStream->streamEvents() as $event) {
@@ -355,7 +355,7 @@ class EventStoreTest extends TestCase
         $this->assertTrue($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertFalse($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1, 2);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 2, 2);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -412,7 +412,7 @@ class EventStoreTest extends TestCase
 
         $this->eventStore->commit();
 
-        $loadedEventStream = $this->eventStore->loadReverse($stream->streamName(), 2, 2);
+        $loadedEventStream = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
 
         $count = 0;
         foreach ($loadedEventStream->streamEvents() as $event) {
@@ -424,7 +424,7 @@ class EventStoreTest extends TestCase
         $this->assertFalse($loadedEventStream->streamEvents()[0]->metadata()['snapshot']);
         $this->assertTrue($loadedEventStream->streamEvents()[1]->metadata()['snapshot']);
 
-        $loadedEvents = $this->eventStore->loadEventsReverseByMetadataFrom($stream->streamName(), 2, 2);
+        $loadedEvents = $this->eventStore->loadEventsReverseByMetadataFrom($stream->streamName(), 3, 2);
 
         $count = 0;
         foreach ($loadedEvents as $event) {
@@ -470,7 +470,7 @@ class EventStoreTest extends TestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
-        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 0, null, $metadataMatcher);
+        $loadedEvents = $this->eventStore->loadEventsByMetadataFrom($stream->streamName(), 1, null, $metadataMatcher);
 
         $this->assertEquals(0, count($loadedEvents));
     }
