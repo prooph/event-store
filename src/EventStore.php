@@ -137,7 +137,7 @@ class EventStore
 
         $this->recordedEvents->append($streamEvents);
 
-        $event->setName(__FUNCTION__, '.post');
+        $event->setName(__FUNCTION__ . '.post');
 
         $this->getActionEventEmitter()->dispatch($event);
     }
