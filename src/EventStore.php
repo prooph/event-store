@@ -63,7 +63,7 @@ class EventStore
     {
         $this->adapter = $adapter;
         $this->actionEventEmitter = $actionEventEmitter;
-        $this->recordedEvents = new ArrayIterator();
+        $this->recordedEvents = new AppendIterator();
     }
 
     /**
@@ -109,11 +109,7 @@ class EventStore
 
         $this->adapter->create($stream);
 
-        $appendIterator = new AppendIterator();
-        $appendIterator->append($this->recordedEvents);
-        $appendIterator->append($stream->streamEvents());
-
-        $this->recordedEvents = $appendIterator;
+        $this->recordedEvents->append($stream->streamEvents());
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -147,13 +143,9 @@ class EventStore
 
         $this->adapter->appendTo($streamName, $streamEvents);
 
-        $appendIterator = new AppendIterator();
-        $appendIterator->append($this->recordedEvents);
-        $appendIterator->append($streamEvents);
+        $this->recordedEvents->append($streamEvents);
 
-        $this->recordedEvents = $appendIterator;
-
-        $event->setName(__FUNCTION__, '.post');
+        $event->setName(__FUNCTION__ . '.post');
 
         $this->getActionEventEmitter()->dispatch($event);
     }
@@ -372,7 +364,7 @@ class EventStore
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.post', $this, ['recordedEvents' => $this->recordedEvents]);
 
-        $this->recordedEvents = new ArrayIterator();
+        $this->recordedEvents = new AppendIterator();
 
         $this->getActionEventEmitter()->dispatch($event);
     }
@@ -400,7 +392,7 @@ class EventStore
 
         $this->actionEventEmitter->dispatch($event);
 
-        $this->recordedEvents = new ArrayIterator();
+        $this->recordedEvents = new AppendIterator();
     }
 
     /**
