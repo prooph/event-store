@@ -765,7 +765,7 @@ class EventStoreTest extends TestCase
         $this->eventStore->create($stream1);
         $this->eventStore->commit();
 
-        $now = new \DateTime('now');
+        $now = new \DateTime('1 second ago', new \DateTimeZone('UTC'));
 
         $streamEvent2 = UsernameChanged::with(
             ['new_name' => 'John Doe'],
@@ -791,7 +791,7 @@ class EventStoreTest extends TestCase
 
         $count = 0;
         foreach ($iterator as $key => $event) {
-            $count += 1;
+            $count++;
             if (1 === $count) {
                 $this->assertInstanceOf(UsernameChanged::class, $event);
             }
