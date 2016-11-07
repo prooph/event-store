@@ -35,7 +35,6 @@ use Prooph\EventStore\Stream\StreamName;
 class EventStore
 {
     /**
-     *
      * @var Adapter
      */
     protected $adapter;
@@ -59,7 +58,7 @@ class EventStore
     {
         $this->adapter = $adapter;
         $this->actionEventEmitter = $actionEventEmitter;
-        $this->recordedEvents = new ArrayIterator();
+        $this->recordedEvents = new AppendIterator();
     }
 
     public function getAdapter(): Adapter
@@ -105,11 +104,7 @@ class EventStore
 
         $this->adapter->create($stream);
 
-        $appendIterator = new AppendIterator();
-        $appendIterator->append($this->recordedEvents);
-        $appendIterator->append($stream->streamEvents());
-
-        $this->recordedEvents = $appendIterator;
+        $this->recordedEvents->append($stream->streamEvents());
 
         $event->setName(__FUNCTION__ . '.post');
 
@@ -140,11 +135,7 @@ class EventStore
 
         $this->adapter->appendTo($streamName, $streamEvents);
 
-        $appendIterator = new AppendIterator();
-        $appendIterator->append($this->recordedEvents);
-        $appendIterator->append($streamEvents);
-
-        $this->recordedEvents = $appendIterator;
+        $this->recordedEvents->append($streamEvents);
 
         $event->setName(__FUNCTION__, '.post');
 
@@ -336,7 +327,7 @@ class EventStore
 
         $event = $this->getActionEventEmitter()->getNewActionEvent(__FUNCTION__ . '.post', $this, ['recordedEvents' => $this->recordedEvents]);
 
-        $this->recordedEvents = new ArrayIterator();
+        $this->recordedEvents = new AppendIterator();
 
         $this->getActionEventEmitter()->dispatch($event);
     }
@@ -364,7 +355,7 @@ class EventStore
 
         $this->actionEventEmitter->dispatch($event);
 
-        $this->recordedEvents = new ArrayIterator();
+        $this->recordedEvents = new AppendIterator();
     }
 
     public function isInTransaction(): bool
