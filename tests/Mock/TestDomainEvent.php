@@ -43,11 +43,11 @@ class TestDomainEvent extends DomainEvent implements PayloadConstructable
 
     public function withVersion(int $version): TestDomainEvent
     {
-        return $this->withAddedMetadata('_version', $version);
+        return $this->withAddedMetadata('_aggregate_version', $version);
     }
 
     public function version(): int
     {
-        return $this->metadata['_version'];
+        return $this->metadata['_aggregate_version'];
     }
 }

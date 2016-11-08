@@ -60,7 +60,7 @@ final class MetadataEnricherAggregateTest extends TestCase
         $this->assertEquals($originalEvent->version(), $enrichedEvent->version());
         $this->assertEquals($originalEvent->createdAt(), $enrichedEvent->createdAt());
 
-        $expectedMetadata = ['meta1' => 'data1', 'meta2' => 'data2', '_version' => 1];
+        $expectedMetadata = ['meta1' => 'data1', 'meta2' => 'data2', '_aggregate_version' => 1];
         $this->assertEquals($expectedMetadata, $enrichedEvent->metadata());
     }
 

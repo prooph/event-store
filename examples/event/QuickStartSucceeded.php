@@ -36,7 +36,7 @@ final class QuickStartSucceeded extends DomainEvent
     {
         Assertion::minLength($text, 1, 'Success message must be at least 1 char long');
         $this->text = $text;
-        $this->metadata['_version'] = 1;
+        $this->metadata['_aggregate_version'] = 1;
         $this->init();
     }
 
@@ -57,6 +57,6 @@ final class QuickStartSucceeded extends DomainEvent
 
     public function version(): int
     {
-        return $this->metadata['_version'];
+        return $this->metadata['_aggregate_version'];
     }
 }
