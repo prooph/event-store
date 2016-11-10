@@ -181,7 +181,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
     {
         $argv = ['stream' => $stream];
 
-        $event = $this->actionEventEmitter->getNewActionEvent(__FUNCTION__ . '.pre', $this, $argv);
+        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_CREATE, $this, $argv);
 
         $this->actionEventEmitter->dispatch($event);
 

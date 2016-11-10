@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Metadata;
 
 use Prooph\Common\Event\ActionEvent;
+use Prooph\EventStore\ActionEventEmitterAware;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\Stream\Stream;
@@ -33,8 +34,8 @@ final class MetadataEnricherPlugin implements Plugin
     {
         $eventEmitter = $eventStore->getActionEventEmitter();
 
-        $eventEmitter->attachListener('create.pre', [$this, 'onEventStoreCreateStream'], -1000);
-        $eventEmitter->attachListener('appendTo.pre', [$this, 'onEventStoreAppendToStream'], -1000);
+        $eventEmitter->attachListener(ActionEventEmitterAware::EVENT_CREATE, [$this, 'onEventStoreCreateStream'], -1000);
+        $eventEmitter->attachListener(ActionEventEmitterAware::EVENT_APPEND_TO, [$this, 'onEventStoreAppendToStream'], -1000);
     }
 
     /**

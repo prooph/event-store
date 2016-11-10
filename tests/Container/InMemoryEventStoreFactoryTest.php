@@ -14,14 +14,14 @@ namespace ProophTest\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStore\Container\InMemoryEventStoreFactory;
 use Prooph\EventStore\Exception\ConfigurationException;
+use Prooph\EventStore\InMemoryEventStore;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\Common\Messaging\Message;
-use Prooph\EventStore\Adapter\InMemoryAdapter;
-use Prooph\EventStore\Container\EventStoreFactory;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Plugin\Plugin;
@@ -29,28 +29,22 @@ use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prophecy\Argument;
 
-/**
- * Class EventStoreFactoryTest
- * @package ProophTest\EventStore\Container
- */
-class EventStoreFactoryTest extends TestCase
+class InMemoryEventStoreFactoryTest extends TestCase
 {
     /**
      * @test
      */
     public function it_creates_event_store_with_default_event_emitter(): void
     {
-        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['default'] = [];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
 
-        $factory = new EventStoreFactory();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf(EventStore::class, $eventStore);
-        $this->assertInstanceOf(InMemoryAdapter::class, $eventStore->getAdapter());
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
         $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
     }
 
@@ -59,17 +53,15 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_creates_event_store_with_default_event_emitter_via_callstatic(): void
     {
-        $config['prooph']['event_store']['another']['adapter']['type'] = InMemoryAdapter::class;
+        $config['prooph']['event_store']['another'] = [];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
 
         $type = 'another';
-        $eventStore = EventStoreFactory::$type($containerMock);
+        $eventStore = InMemoryEventStoreFactory::$type($containerMock);
 
-        $this->assertInstanceOf(EventStore::class, $eventStore);
-        $this->assertInstanceOf(InMemoryAdapter::class, $eventStore->getAdapter());
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
         $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
     }
 
@@ -79,19 +71,17 @@ class EventStoreFactoryTest extends TestCase
     public function it_injects_custom_event_emitter(): void
     {
         $config['prooph']['event_store']['default']['event_emitter'] = 'event_emitter';
-        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
 
         $eventEmitterMock = $this->getMockForAbstractClass(ActionEventEmitter::class);
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
-        $containerMock->expects($this->at(2))->method('get')->with('event_emitter')->willReturn($eventEmitterMock);
+        $containerMock->expects($this->at(1))->method('get')->with('event_emitter')->willReturn($eventEmitterMock);
 
-        $factory = new EventStoreFactory();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf(EventStore::class, $eventStore);
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
         $this->assertSame($eventEmitterMock, $eventStore->getActionEventEmitter());
     }
 
@@ -100,7 +90,6 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_injects_plugins(): void
     {
-        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
         $featureMock = $this->getMockForAbstractClass(Plugin::class);
@@ -108,13 +97,12 @@ class EventStoreFactoryTest extends TestCase
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
-        $containerMock->expects($this->at(2))->method('get')->with('plugin')->willReturn($featureMock);
+        $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock);
 
-        $factory = new EventStoreFactory();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf(EventStore::class, $eventStore);
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
     }
 
     /**
@@ -125,17 +113,15 @@ class EventStoreFactoryTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Plugin plugin does not implement the Plugin interface');
 
-        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
         $featureMock = 'foo';
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
-        $containerMock->expects($this->at(2))->method('get')->with('plugin')->willReturn($featureMock);
+        $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock);
 
-        $factory = new EventStoreFactory();
+        $factory = new InMemoryEventStoreFactory();
         $factory($containerMock);
     }
 
@@ -144,7 +130,6 @@ class EventStoreFactoryTest extends TestCase
      */
     public function it_injects_metadata_enrichers(): void
     {
-        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['default']['metadata_enrichers'][] = 'metadata_enricher1';
         $config['prooph']['event_store']['default']['metadata_enrichers'][] = 'metadata_enricher2';
 
@@ -153,14 +138,13 @@ class EventStoreFactoryTest extends TestCase
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn($config);
-        $container->get(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
         $container->get('metadata_enricher1')->willReturn($metadataEnricher1->reveal());
         $container->get('metadata_enricher2')->willReturn($metadataEnricher2->reveal());
 
-        $factory = new EventStoreFactory();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($container->reveal());
 
-        $this->assertInstanceOf(EventStore::class, $eventStore, 'Event store should be correctly instancied');
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
 
         // Some events to inject into the event store
         $events = [
@@ -182,9 +166,8 @@ class EventStoreFactoryTest extends TestCase
 
         $stream = new Stream(new StreamName('test'), new \ArrayIterator($events));
 
-        $eventStore->beginTransaction();
+        /* @var InMemoryEventStore $eventStore */
         $eventStore->create($stream);
-        $eventStore->commit();
     }
 
     /**
@@ -195,15 +178,13 @@ class EventStoreFactoryTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Metadata enricher foobar does not implement the MetadataEnricher interface');
 
-        $config['prooph']['event_store']['default']['adapter']['type'] = InMemoryAdapter::class;
         $config['prooph']['event_store']['default']['metadata_enrichers'][] = 'foobar';
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn($config);
-        $container->get(InMemoryAdapter::class)->willReturn(new InMemoryAdapter());
         $container->get('foobar')->willReturn(new \stdClass());
 
-        $factory = new EventStoreFactory();
-        $eventStore = $factory($container->reveal());
+        $factory = new InMemoryEventStoreFactory();
+        $factory($container->reveal());
     }
 }
