@@ -35,7 +35,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
-            function (ActionEvent $event) use (&$recordedEvents) {
+            function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('streamEvents', new \ArrayIterator()) as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
@@ -74,7 +74,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $event->stopPropagation(true);
             },
             1000
@@ -94,7 +94,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
-            function (ActionEvent $event) use (&$recordedEvents) {
+            function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('streamEvents', new \ArrayIterator()) as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
@@ -104,7 +104,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'appendTo',
-            function (ActionEvent $event) use (&$recordedEvents) {
+            function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('streamEvents', new \ArrayIterator()) as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
@@ -135,7 +135,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
-            function (ActionEvent $event) use (&$recordedEvents) {
+            function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
@@ -145,7 +145,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'appendTo',
-            function (ActionEvent $event) use (&$recordedEvents) {
+            function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
@@ -157,7 +157,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'appendTo',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $event->setParam('stream', false);
                 $event->stopPropagation(true);
             },
@@ -379,7 +379,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'load',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $event->stopPropagation(true);
             },
             1000
@@ -411,7 +411,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'load',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
                     ['new_name' => 'John Doe'],
                     2
@@ -455,7 +455,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'load',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $event->stopPropagation(true);
             },
             1000
@@ -477,7 +477,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'load',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $event->setParam('stream', new Stream(new StreamName('EmptyStream'), new ArrayIterator()));
                 $event->stopPropagation(true);
             },
@@ -498,7 +498,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'load',
-            function (ActionEvent $event) {
+            function (ActionEvent $event): void {
                 $event->setParam('stream', new Stream(new StreamName('user'), new ArrayIterator()));
                 $event->stopPropagation(true);
             },
