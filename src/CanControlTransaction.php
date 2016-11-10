@@ -10,20 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Adapter\Feature;
+namespace Prooph\EventStore;
 
 /**
- * Interface CanHandleTransaction
- *
- * An adapter implementing this interface can handle transactions.
- *
- * @author Alexander Miertsch <contact@prooph.de>
+ * This interfaces describes that an event store implementation allows control of the transaction handling
  */
-interface CanHandleTransaction
+interface CanControlTransaction
 {
     public function beginTransaction(): void;
 
     public function commit(): void;
 
     public function rollback(): void;
+
+    public function isInTransaction(): bool;
 }

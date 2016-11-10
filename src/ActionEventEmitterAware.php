@@ -10,14 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Adapter\Exception;
+namespace Prooph\EventStore;
 
-/**
- * Class InvalidArgumentException
- *
- * @package Prooph\EventStore\Adapter\Exception
- * @author Alexander Miertsch <contact@prooph.de>
- */
-class InvalidArgumentException extends \InvalidArgumentException implements AdapterException
+use Prooph\Common\Event\ActionEventEmitter;
+
+interface ActionEventEmitterAware
 {
+    const EVENT_APPEND_TO = 'appendTo';
+    const EVENT_CREATE = 'create';
+    const EVENT_LOAD = 'load';
+    const EVENT_LOAD_REVERSE = 'loadReverse';
+
+    public function getActionEventEmitter(): ActionEventEmitter;
 }

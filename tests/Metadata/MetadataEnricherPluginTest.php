@@ -12,20 +12,17 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
-use Prooph\Common\Event\DefaultListenerHandler;
-use Prooph\Common\Event\ListenerHandler;
-use ProophTest\EventStore\Mock\UserCreated;
-use ProophTest\EventStore\TestCase;
-use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\DefaultActionEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\TestCase;
 use Prophecy\Argument;
 
-final class MetadataEnricherPluginTest extends TestCase
+class MetadataEnricherPluginTest extends TestCase
 {
     /**
      * @test
@@ -33,32 +30,18 @@ final class MetadataEnricherPluginTest extends TestCase
     public function it_attaches_itself_to_event_store_events(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventEmitter = $this->prophesize(ActionEventEmitter::class);
 
         $createStreamListener = null;
         $appendToStreamListener = null;
 
-        $eventStore->getActionEventEmitter()->willReturn($eventEmitter);
-        $eventEmitter->attachListener('create.pre', Argument::any(), -1000)->will(
-            $function = function ($args) use (&$createStreamListener, &$function): ListenerHandler {
-                $createStreamListener = $args[1];
-                return new DefaultListenerHandler($function);
-            }
-        );
-        $eventEmitter->attachListener('appendTo.pre', Argument::any(), -1000)->will(
-            $function = function ($args) use (&$appendToStreamListener, &$function): ListenerHandler {
-                $appendToStreamListener = $args[1];
-                return new DefaultListenerHandler($function);
-            }
-        );
-
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
 
-        $plugin->setUp($eventStore->reveal());
+        $plugin->setUp($this->eventStore);
 
-        $this->assertEquals([$plugin, 'onEventStoreCreateStream'], $createStreamListener);
-        $this->assertEquals([$plugin, 'onEventStoreAppendToStream'], $appendToStreamListener);
+        $property = new \ReflectionProperty(get_class($this->eventStore->getActionEventEmitter()), 'events');
+        $property->setAccessible(true);
+
+        $this->assertCount(4, $property->getValue($this->eventStore->getActionEventEmitter()));
     }
 
     /**

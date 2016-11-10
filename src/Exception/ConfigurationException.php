@@ -12,11 +12,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-/**
- * ConfigurationException
- *
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class ConfigurationException extends RuntimeException implements EventStoreException
 {
     public static function configurationError(string $msg): ConfigurationException

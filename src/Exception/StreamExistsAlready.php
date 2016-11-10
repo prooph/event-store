@@ -12,6 +12,17 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class ConcurrencyException extends RuntimeException
+use Prooph\EventStore\StreamName;
+
+final class StreamExistsAlready extends RuntimeException
 {
+    public static function with(StreamName $streamName): StreamExistsAlready
+    {
+        return new self(
+            sprintf(
+                'A stream with name %s exists already',
+                $streamName->toString()
+            )
+        );
+    }
 }

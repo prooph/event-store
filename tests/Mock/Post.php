@@ -16,12 +16,6 @@ use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
 use Ramsey\Uuid\Uuid;
 
-/**
- * Class Post
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class Post
 {
     /**

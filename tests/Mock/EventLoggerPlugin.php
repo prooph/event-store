@@ -16,12 +16,6 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
 
-/**
- * Class EventLoggerFeature
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class EventLoggerPlugin implements Plugin
 {
     /**
@@ -40,15 +34,18 @@ class EventLoggerPlugin implements Plugin
      */
     public function setUp(EventStore $eventStore): void
     {
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, "onPostCommit"]);
+        $callable = \Closure::fromCallable([$this, 'on']);
+
+        $eventStore->getActionEventEmitter()->attachListener('create', $callable, -10000);
+        $eventStore->getActionEventEmitter()->attachListener('appendTo', $callable, -10000);
     }
 
     /**
      * @param ActionEvent $e
      */
-    public function onPostCommit(ActionEvent $e): void
+    private function on(ActionEvent $e): void
     {
-        $this->loggedStreamEvents = $e->getParam('recordedEvents', new \ArrayIterator());
+        $this->loggedStreamEvents = $e->getParam('streamEvents', new \ArrayIterator());
     }
 
     public function getLoggedStreamEvents(): \Iterator

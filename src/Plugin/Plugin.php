@@ -14,12 +14,6 @@ namespace Prooph\EventStore\Plugin;
 
 use Prooph\EventStore\EventStore;
 
-/**
- * Class FeatureInterface
- *
- * @package Prooph\EventStore\Plugin
- * @author Alexander Miertsch <contact@prooph.de>
- */
 interface Plugin
 {
     public function setUp(EventStore $eventStore): void;

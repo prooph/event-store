@@ -13,13 +13,14 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Metadata;
 
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\TestCase;
 use Prophecy\Argument;
 
-final class MetadataEnricherAggregateTest extends TestCase
+class MetadataEnricherAggregateTest extends TestCase
 {
     /**
      * @test
@@ -69,9 +70,9 @@ final class MetadataEnricherAggregateTest extends TestCase
      */
     public function it_only_accept_correct_instances(): void
     {
-        $this->expectException(\Assert\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
-        $metadataEnricherAggregate = new MetadataEnricherAggregate([
+        new MetadataEnricherAggregate([
             $this->prophesize(MetadataEnricher::class)->reveal(),
             new \stdClass(),
             $this->prophesize(MetadataEnricher::class)->reveal(),

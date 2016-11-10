@@ -13,27 +13,26 @@ declare(strict_types=1);
 namespace ProophTest\EventStore;
 
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\Adapter\InMemoryAdapter;
+use Prooph\EventStore\ActionEventEmitterAware;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\InMemoryEventStore;
 
-/**
- * TestCase for Prooph EventStore tests
- *
- * @author Alexander Miertsch <contact@prooph.de>
- * @package ProophTest\EventStore
- */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var EventStore
+     * @var InMemoryEventStore
      */
     protected $eventStore;
 
     protected function setUp(): void
     {
-        $inMemoryAdapter = new InMemoryAdapter();
-        $eventEmitter    = new ProophActionEventEmitter();
+        $eventEmitter = new ProophActionEventEmitter([
+            ActionEventEmitterAware::EVENT_APPEND_TO,
+            ActionEventEmitterAware::EVENT_CREATE,
+            ActionEventEmitterAware::EVENT_LOAD,
+            ActionEventEmitterAware::EVENT_LOAD_REVERSE,
+        ]);
 
-        $this->eventStore = new EventStore($inMemoryAdapter, $eventEmitter);
+        $this->eventStore = new InMemoryEventStore($eventEmitter);
     }
 }

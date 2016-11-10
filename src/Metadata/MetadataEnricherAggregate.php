@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Metadata;
 
-use Assert\Assertion;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\Util\Assertion;
 
 final class MetadataEnricherAggregate implements MetadataEnricher
 {

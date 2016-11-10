@@ -16,26 +16,21 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
-use Interop\Config\RequiresMandatoryOptions;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\EventStore;
+use Prooph\EventStore\ActionEventEmitterAware;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
 
-/**
- * Class EventStoreFactory
- * @package Prooph\EventStore\Container\Stream
- */
-final class EventStoreFactory implements
+final class InMemoryEventStoreFactory implements
     ProvidesDefaultOptions,
     RequiresConfig,
-    RequiresConfigId,
-    RequiresMandatoryOptions
+    RequiresConfigId
 {
     use ConfigurationTrait;
 
@@ -53,13 +48,13 @@ final class EventStoreFactory implements
      * <code>
      * <?php
      * return [
-     *     'prooph.event_store.service_name' => [EventStoreFactory::class, 'service_name'],
+     *     'prooph.event_store.service_name' => [InMemoryEventStoreFactory::class, 'service_name'],
      * ];
      * </code>
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): EventStore
+    public static function __callStatic(string $name, array $arguments): InMemoryEventStore
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -77,20 +72,23 @@ final class EventStoreFactory implements
     /**
      * @throws ConfigurationException
      */
-    public function __invoke(ContainerInterface $container): EventStore
+    public function __invoke(ContainerInterface $container): InMemoryEventStore
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
 
-        $adapter = $container->get($config['adapter']['type']);
-
         if (! isset($config['event_emitter'])) {
-            $eventEmitter = new ProophActionEventEmitter();
+            $eventEmitter = new ProophActionEventEmitter([
+                ActionEventEmitterAware::EVENT_APPEND_TO,
+                ActionEventEmitterAware::EVENT_CREATE,
+                ActionEventEmitterAware::EVENT_LOAD,
+                ActionEventEmitterAware::EVENT_LOAD_REVERSE,
+            ]);
         } else {
             $eventEmitter = $container->get($config['event_emitter']);
         }
 
-        $eventStore = new EventStore($adapter, $eventEmitter);
+        $eventStore = new InMemoryEventStore($eventEmitter);
 
         foreach ($config['plugins'] as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
@@ -137,20 +135,6 @@ final class EventStoreFactory implements
     public function dimensions(): array
     {
         return ['prooph', 'event_store'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mandatoryOptions(): array
-    {
-        return [
-            'adapter' => [
-                'type'
-            ],
-            'metadata_enrichers',
-            'plugins'
-        ];
     }
 
     /**

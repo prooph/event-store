@@ -12,12 +12,6 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Mock;
 
-/**
- * Class PostCreated
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class PostCreated extends TestDomainEvent
 {
 }

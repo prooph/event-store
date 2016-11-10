@@ -14,12 +14,6 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
-/**
- * Interface CustomAggregateRootContract
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 interface CustomAggregateRootContract
 {
     public function version(): int;

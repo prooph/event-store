@@ -14,12 +14,6 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
-/**
- * Class FaultyAggregateRoot
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 final class FaultyAggregateRoot implements DefaultAggregateRootContract
 {
     public function getVersion(): int

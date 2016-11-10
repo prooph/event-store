@@ -16,12 +16,6 @@ use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\PayloadConstructable;
 use Prooph\Common\Messaging\PayloadTrait;
 
-/**
- * Class DomainEvent
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class TestDomainEvent extends DomainEvent implements PayloadConstructable
 {
     use PayloadTrait;

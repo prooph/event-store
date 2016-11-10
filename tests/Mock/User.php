@@ -16,12 +16,6 @@ use Iterator;
 use Prooph\Common\Messaging\DomainEvent;
 use Ramsey\Uuid\Uuid;
 
-/**
- * Class User
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class User
 {
     /**

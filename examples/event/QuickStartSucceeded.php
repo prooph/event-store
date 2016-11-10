@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Example\Event;
+namespace Prooph\EventStore\QuickStart\Event;
 
-use Assert\Assertion;
 use Prooph\Common\Messaging\DomainEvent;
+use Prooph\EventStore\Util\Assertion;
 
 /**
  * Class QuickStartSucceeded
@@ -53,10 +53,5 @@ final class QuickStartSucceeded extends DomainEvent
     protected function setPayload(array $payload): void
     {
         $this->text = $payload['text'];
-    }
-
-    public function version(): int
-    {
-        return $this->metadata['_aggregate_version'];
     }
 }
