@@ -65,6 +65,11 @@
             "ProophTest\\EventStore\\": "tests/"
         }
     },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "7.0-dev"
+        }
+    },
     "scripts": {
         "check": [
             "@cs",

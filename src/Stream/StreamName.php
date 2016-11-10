@@ -30,7 +30,6 @@ class StreamName
     public function __construct(string $name)
     {
         Assertion::notEmpty($name, 'StreamName must not be empty');
-        Assertion::maxLength($name, 200, 'StreamName should not be longer than 200 chars');
 
         $this->name = $name;
     }

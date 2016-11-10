@@ -15,7 +15,7 @@ namespace Prooph\EventStore;
 /**
  * This interfaces describes that an event store implementation allows control of the transaction handling
  */
-interface CanControlTransaction extends CanHandleTransaction
+interface CanControlTransaction
 {
     public function beginTransaction(): void;
 
