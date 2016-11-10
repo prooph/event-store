@@ -14,12 +14,6 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
-/**
- * Interface DefaultAggregateRootContract
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 interface DefaultAggregateRootContract
 {
     public static function reconstituteFromHistory(\Iterator $historyEvents): DefaultAggregateRootContract;

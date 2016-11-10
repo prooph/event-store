@@ -15,11 +15,7 @@ namespace ProophTest\EventStore\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Stream\StreamName;
 
-/**
- * Class StreamNameTest
- * @package ProophTest\EventStore\Stream
- */
-final class StreamNameTest extends TestCase
+class StreamNameTest extends TestCase
 {
     /**
      * @test

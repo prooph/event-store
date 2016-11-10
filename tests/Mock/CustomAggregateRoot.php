@@ -14,12 +14,6 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
-/**
- * Class CustomAggregateRoot
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 final class CustomAggregateRoot implements CustomAggregateRootContract
 {
     private $historyEvents = [];

@@ -30,12 +30,6 @@ use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
 
-/**
- * Class EventStoreTest
- *
- * @package ProophTest\EventStore
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class EventStoreTest extends TestCase
 {
     /**

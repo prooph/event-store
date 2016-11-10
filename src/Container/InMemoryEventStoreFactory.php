@@ -16,7 +16,6 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
-use Interop\Config\RequiresMandatoryOptions;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterAware;

@@ -14,12 +14,6 @@ namespace Prooph\EventStore\Stream;
 
 use Assert\Assertion;
 
-/**
- * Class StreamName
- *
- * @package Prooph\EventStore\Stream
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class StreamName
 {
     /**

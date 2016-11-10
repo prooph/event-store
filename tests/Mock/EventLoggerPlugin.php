@@ -16,12 +16,6 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
 
-/**
- * Class EventLoggerFeature
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class EventLoggerPlugin implements Plugin
 {
     /**

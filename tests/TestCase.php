@@ -16,12 +16,6 @@ use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\EventStore;
 
-/**
- * TestCase for Prooph EventStore tests
- *
- * @author Alexander Miertsch <contact@prooph.de>
- * @package ProophTest\EventStore
- */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**

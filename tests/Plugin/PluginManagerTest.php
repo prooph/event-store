@@ -24,12 +24,6 @@ use ProophTest\EventStore\TestCase;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-/**
- * Class FeatureManagerTest
- *
- * @package ProophTest\EventStore\Plugin
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class PluginManagerTest extends TestCase
 {
     /**

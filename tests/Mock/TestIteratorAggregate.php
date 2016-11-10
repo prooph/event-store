@@ -15,10 +15,6 @@ namespace ProophTest\EventStore\Mock;
 use ArrayIterator;
 use IteratorAggregate;
 
-/**
- * Class TestIteratorAggregate
- * @package ProophTest\EventStore\Mock
- */
 final class TestIteratorAggregate implements IteratorAggregate
 {
     public function getIterator(): ArrayIterator

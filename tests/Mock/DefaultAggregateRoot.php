@@ -14,12 +14,6 @@ namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\Message;
 
-/**
- * Class DefaultAggregateRoot
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 final class DefaultAggregateRoot implements DefaultAggregateRootContract
 {
     private $historyEvents = [];

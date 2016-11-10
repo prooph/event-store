@@ -19,7 +19,7 @@ use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\TestCase;
 use Prophecy\Argument;
 
-final class MetadataEnricherAggregateTest extends TestCase
+class MetadataEnricherAggregateTest extends TestCase
 {
     /**
      * @test

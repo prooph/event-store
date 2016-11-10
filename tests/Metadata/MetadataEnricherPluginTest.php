@@ -25,7 +25,7 @@ use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use Prophecy\Argument;
 
-final class MetadataEnricherPluginTest extends TestCase
+class MetadataEnricherPluginTest extends TestCase
 {
     /**
      * @test

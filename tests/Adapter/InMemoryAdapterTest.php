@@ -21,10 +21,6 @@ use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
 
-/**
- * Class InMemoryAdapterTest
- * @package ProophTest\EventStore\Adapter
- */
 final class InMemoryAdapterTest extends TestCase
 {
     /**
