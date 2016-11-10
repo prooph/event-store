@@ -12,11 +12,15 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-interface ActionEventEmitterAware extends \Prooph\Common\Event\ActionEventEmitterAware
+use Prooph\Common\Event\ActionEventEmitter;
+
+interface ActionEventEmitterAware
 {
     const EVENT_APPEND_TO = 'appendTo';
     const EVENT_CREATE = 'create';
     const EVENT_LOAD = 'load';
     const EVENT_LOAD_EVENTS = 'loadEvents';
     const EVENT_LOAD_REVERSE = 'loadReverse';
+
+    public function getActionEventEmitter(): ActionEventEmitter;
 }

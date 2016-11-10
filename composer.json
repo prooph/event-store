@@ -25,7 +25,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.1",
-        "prooph/common" : "dev-develop as 4.0",
+        "prooph/common" : "4.0.x-dev",
         "marc-mabe/php-enum": "^2.2.1"
     },
     "require-dev": {
