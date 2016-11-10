@@ -14,7 +14,7 @@ namespace ProophTest\EventStore\Adapter;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Adapter\InMemoryAdapter;
-use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -109,7 +109,7 @@ final class InMemoryAdapterTest extends TestCase
      */
     public function it_throws_exception_when_trying_to_append_on_non_existing_stream(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
 
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test');

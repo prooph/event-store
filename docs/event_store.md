@@ -19,9 +19,9 @@ The following events are available (event target is always the event store):
 - `appendTo.post`: event params: `streamName`, `streamEvents`
 - `load.pre`: event params: `streamName`, `minVersion`
   - If a listener injects a `stream` as event param and stops the event, the `stream` is returned immediately (adapter is not invoked)
-  - If `stream` is false a `StreamNotFoundException` is thrown
+  - If `stream` is false a `StreamNotFound` is thrown
 - `load.post`: event params: `streamName`, `minVersion`, `stream`
-  - If a listener stops the event, a `StreamNotFoundException` is thrown
+  - If a listener stops the event, a `StreamNotFound` is thrown
 - `loadEventsByMetadataFrom.pre`: event params: `streamName`, `minVersion`, `metadata`
   - If a listener injects a `streamEvents` iterator as event param and stops the event, `streamEvents` is returned immediately (adapter is not invoked)
 - `loadEventsByMetadataFrom.post`: event params: `streamName`, `minVersion`, `metadata`, `streamEvents`

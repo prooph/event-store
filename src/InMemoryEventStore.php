@@ -17,7 +17,8 @@ use ArrayIterator;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Exception\StreamExistsAlready;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -49,6 +50,10 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
         $actionEventEmitter->attachListener(self::EVENT_CREATE, function (ActionEvent $event) {
             $stream = $event->getParam('stream');
 
+            if ($this->hasStream($stream->streamName())) {
+                throw StreamExistsAlready::with($stream->streamName());
+            }
+
             $streamEvents = $stream->streamEvents();
             $streamEvents->rewind();
 
@@ -64,7 +69,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
             $streamEvents = $event->getParam('streamEvents');
 
             if (! $this->hasStream($streamName)) {
-                throw StreamNotFoundException::with($streamName);
+                throw StreamNotFound::with($streamName);
             }
 
             $it = new AppendIterator();
@@ -83,7 +88,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             if (! $this->hasStream($streamName)) {
-                throw StreamNotFoundException::with($streamName);
+                throw StreamNotFound::with($streamName);
             }
 
             if (null === $metadataMatcher) {
@@ -120,7 +125,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             if (! $this->hasStream($streamName)) {
-                throw StreamNotFoundException::with($streamName);
+                throw StreamNotFound::with($streamName);
             }
 
             if (null === $metadataMatcher) {
@@ -171,7 +176,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
     public function fetchStreamMetadata(StreamName $streamName): array
     {
         if (! $this->hasStream($streamName)) {
-            throw StreamNotFoundException::with($streamName);
+            throw StreamNotFound::with($streamName);
         }
 
         return $this->streams[$streamName->toString()]['metadata'];
@@ -225,7 +230,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
             return $stream;
         }
 
-        throw StreamNotFoundException::with($streamName);
+        throw StreamNotFound::with($streamName);
     }
 
     public function loadReverse(
@@ -254,7 +259,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
             return $stream;
         }
 
-        throw StreamNotFoundException::with($streamName);
+        throw StreamNotFound::with($streamName);
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool

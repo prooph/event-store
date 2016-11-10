@@ -19,7 +19,7 @@ use Prooph\EventStore\Adapter\Adapter;
 use Prooph\EventStore\Adapter\Feature\CanHandleTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
-use Prooph\EventStore\Exception\StreamNotFoundException;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -30,7 +30,7 @@ use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
 
-class EventStoreTest extends TestCase
+class InMemoryEventStoreTest extends TestCase
 {
     /**
      * @test
@@ -528,7 +528,7 @@ class EventStoreTest extends TestCase
      */
     public function it_breaks_loading_a_stream_when_listener_stops_propagation_but_does_not_provide_a_stream(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
         $stream = $this->getTestStream();
 
         $this->eventStore->beginTransaction();
@@ -549,7 +549,7 @@ class EventStoreTest extends TestCase
      */
     public function it_breaks_loading_a_stream_when_listener_stops_propagation_and_provides_stream_with_wrong_name(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
@@ -600,7 +600,7 @@ class EventStoreTest extends TestCase
      */
     public function it_throws_stream_not_found_exception_if_adapter_loads_nothing(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
@@ -622,7 +622,7 @@ class EventStoreTest extends TestCase
      */
     public function it_throws_stream_not_found_exception_if_event_propagation_is_stopped_on_load_post(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
@@ -703,7 +703,7 @@ class EventStoreTest extends TestCase
      */
     public function it_can_rollback_transaction(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
@@ -726,7 +726,7 @@ class EventStoreTest extends TestCase
      */
     public function it_makes_rollback_when_event_is_stopped_during_commit(): void
     {
-        $this->expectException(StreamNotFoundException::class);
+        $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
