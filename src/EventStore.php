@@ -12,20 +12,16 @@ namespace Prooph\EventStore;
 
 use Iterator;
 use Prooph\EventStore\Metadata\MetadataMatcher;
-use Prooph\EventStore\Stream;
-use Prooph\EventStore\StreamName;
 
 interface EventStore
 {
-    public function getRecordedEvents(): Iterator;
-
     public function fetchStreamMetadata(StreamName $streamName): array;
 
     public function hasStream(StreamName $streamName): bool;
 
-    public function create(Stream $stream): bool;
+    public function create(Stream $stream): void;
 
-    public function appendTo(StreamName $streamName, Iterator $streamEvents): bool;
+    public function appendTo(StreamName $streamName, Iterator $streamEvents): void;
 
     public function load(
         StreamName $streamName,

@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use AppendIterator;
 use ArrayIterator;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
@@ -21,17 +20,10 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Stream;
-use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\Assertion;
 
 final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 {
-    /**
-     * @var Iterator
-     */
-    protected $recordedEvents;
-
     /**
      * @var array
      */
@@ -45,50 +37,49 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
     public function __construct(ActionEventEmitter $actionEventEmitter)
     {
         $this->actionEventEmitter = $actionEventEmitter;
-        $this->recordedEvents = new AppendIterator();
 
-        $actionEventEmitter->attachListener(self::EVENT_CREATE, function (ActionEvent $event) {
+        $actionEventEmitter->attachListener(self::EVENT_CREATE, function (ActionEvent $event): void {
             $stream = $event->getParam('stream');
 
             if ($this->hasStream($stream->streamName())) {
-                throw StreamExistsAlready::with($stream->streamName());
+                $event->stopPropagation();
+                return;
             }
 
-            $streamEvents = $stream->streamEvents();
-            $streamEvents->rewind();
+            foreach ($stream->streamEvents() as $streamEvent) {
+                $this->streams[$stream->streamName()->toString()]['events'][] = $streamEvent;
+            }
 
-            $this->streams[$stream->streamName()->toString()]['events'] = $streamEvents;
             $this->streams[$stream->streamName()->toString()]['metadata'] = $stream->metadata();
-            $this->recordedEvents->append($stream->streamEvents());
 
             $event->setParam('result', true);
         });
 
-        $actionEventEmitter->attachListener(self::EVENT_APPEND_TO, function (ActionEvent $event) {
+        $actionEventEmitter->attachListener(self::EVENT_APPEND_TO, function (ActionEvent $event): void {
             $streamName = $event->getParam('streamName');
             $streamEvents = $event->getParam('streamEvents');
 
             if (! $this->hasStream($streamName)) {
-                throw StreamNotFound::with($streamName);
+                $event->stopPropagation();
+                return;
             }
 
-            $it = new AppendIterator();
-            $it->append($this->streams[$streamName->toString()]['events']);
-            $it->append($streamEvents);
-
-            $this->streams[$streamName->toString()]['events'] = $it;
+            foreach ($streamEvents as $streamEvent) {
+                $this->streams[$streamName->toString()]['events'][] = $streamEvent;
+            }
 
             $event->setParam('result', true);
         });
 
-        $actionEventEmitter->attachListener(self::EVENT_LOAD, function (ActionEvent $event) {
+        $actionEventEmitter->attachListener(self::EVENT_LOAD, function (ActionEvent $event): void {
             $streamName = $event->getParam('streamName');
             $fromNumber = $event->getParam('fromNumber');
             $count = $event->getParam('count');
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             if (! $this->hasStream($streamName)) {
-                throw StreamNotFound::with($streamName);
+                $event->stopPropagation();
+                return;
             }
 
             if (null === $metadataMatcher) {
@@ -118,14 +109,15 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
             ));
         });
 
-        $actionEventEmitter->attachListener(self::EVENT_LOAD_REVERSE, function (ActionEvent $event) {
+        $actionEventEmitter->attachListener(self::EVENT_LOAD_REVERSE, function (ActionEvent $event): void {
             $streamName = $event->getParam('streamName');
             $fromNumber = $event->getParam('fromNumber');
             $count = $event->getParam('count');
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             if (! $this->hasStream($streamName)) {
-                throw StreamNotFound::with($streamName);
+                $event->stopPropagation();
+                return;
             }
 
             if (null === $metadataMatcher) {
@@ -152,15 +144,10 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 
             $event->setParam('stream', new Stream(
                 $streamName,
-                new \ArrayIterator($streamEvents),
+                new ArrayIterator($streamEvents),
                 $this->streams[$streamName->toString()]['metadata']
             ));
         });
-    }
-
-    public function getRecordedEvents(): Iterator
-    {
-        return $this->recordedEvents;
     }
 
     public function getActionEventEmitter(): ActionEventEmitter
@@ -182,18 +169,20 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
         return $this->streams[$streamName->toString()]['metadata'];
     }
 
-    public function create(Stream $stream): bool
+    public function create(Stream $stream): void
     {
-        $argv = ['stream' => $stream];
+        $argv = ['stream' => $stream, 'streamEvents' => $stream->streamEvents()];
 
         $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_CREATE, $this, $argv);
 
         $this->actionEventEmitter->dispatch($event);
 
-        return $event->getParam('result', false);
+        if (! $event->getParam('result', false)) {
+            throw StreamExistsAlready::with($stream->streamName());
+        }
     }
 
-    public function appendTo(StreamName $streamName, Iterator $streamEvents): bool
+    public function appendTo(StreamName $streamName, Iterator $streamEvents): void
     {
         $argv = ['streamName' => $streamName, 'streamEvents' => $streamEvents];
 
@@ -201,7 +190,9 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 
         $this->getActionEventEmitter()->dispatch($event);
 
-        return $event->getParam('result', false);
+        if (! $event->getParam('result', false)) {
+            throw StreamNotFound::with($streamName);
+        }
     }
 
     public function load(
@@ -214,9 +205,9 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         $argv = [
-            'streamName'      => $streamName,
-            'fromNumber'      => $fromNumber,
-            'count'           => $count,
+            'streamName' => $streamName,
+            'fromNumber' => $fromNumber,
+            'count' => $count,
             'metadataMatcher' => $metadataMatcher,
         ];
 
@@ -243,13 +234,13 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         $argv = [
-            'streamName'      => $streamName,
-            'fromNumber'      => $fromNumber,
-            'count'           => $count,
+            'streamName' => $streamName,
+            'fromNumber' => $fromNumber,
+            'count' => $count,
             'metadataMatcher' => $metadataMatcher,
         ];
 
-        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_LOAD, $this, $argv);
+        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_LOAD_REVERSE, $this, $argv);
 
         $this->getActionEventEmitter()->dispatch($event);
 

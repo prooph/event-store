@@ -34,15 +34,18 @@ class EventLoggerPlugin implements Plugin
      */
     public function setUp(EventStore $eventStore): void
     {
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, "onPostCommit"]);
+        $callable = \Closure::fromCallable([$this, 'on']);
+
+        $eventStore->getActionEventEmitter()->attachListener('create', $callable, -10000);
+        $eventStore->getActionEventEmitter()->attachListener('appendTo', $callable, -10000);
     }
 
     /**
      * @param ActionEvent $e
      */
-    public function onPostCommit(ActionEvent $e): void
+    private function on(ActionEvent $e): void
     {
-        $this->loggedStreamEvents = $e->getParam('recordedEvents', new \ArrayIterator());
+        $this->loggedStreamEvents = $e->getParam('streamEvents', new \ArrayIterator());
     }
 
     public function getLoggedStreamEvents(): \Iterator

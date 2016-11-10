@@ -20,4 +20,15 @@ class Assertion extends \Assert\Assertion
      * @var string
      */
     protected static $exceptionClass = InvalidArgumentException::class;
+
+    protected static function createException(
+        $value,
+        $message,
+        $code,
+        $propertyPath,
+        array $constraints = []
+    ): InvalidArgumentException {
+        $exceptionClass = static::$exceptionClass;
+        return new $exceptionClass($message, $code);
+    }
 }

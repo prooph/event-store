@@ -21,9 +21,8 @@ use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterAware;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\QuickStart\Event\QuickStartSucceeded;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
-
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 
 /**
  * Here we use the InMemoryAdapter but in a real project
@@ -77,11 +76,6 @@ $singleStream = new Stream($streamName, new ArrayIterator());
 $eventStore->create($singleStream);
 
 /**
- * Now we can easily add events to the stream ...
- */
-$eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, ...*/]));
-
-/**
  * Next step would be to commit the transaction.
  * But let's attach a plugin first that prints some information about currently added events.
  * Plugins are simple event listeners. See the docs of prooph/common for more details about event listeners.
@@ -95,7 +89,7 @@ $eventStore->getActionEventEmitter()->attachListener(
          * It is the ideal place to attach a domain event dispatcher.
          * We only use a closure here to print the recorded events in the terminal
          */
-        $recordedEvents = $actionEvent->getParam('recordedEvents');
+        $recordedEvents = $actionEvent->getParam('streamEvents');
 
         foreach ($recordedEvents as $recordedEvent) {
             echo sprintf(
@@ -107,6 +101,11 @@ $eventStore->getActionEventEmitter()->attachListener(
     },
     -1000 // low priority, so after action happened
 );
+
+/**
+ * Now we can easily add events to the stream ...
+ */
+$eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, ...*/]));
 
 /**
  * Once committed you can of course also load a set of events or the entire stream

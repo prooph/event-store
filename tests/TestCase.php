@@ -20,7 +20,7 @@ use Prooph\EventStore\InMemoryEventStore;
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var EventStore
+     * @var InMemoryEventStore
      */
     protected $eventStore;
 

@@ -22,7 +22,6 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\Common\Messaging\Message;
-use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\Stream;

@@ -14,7 +14,7 @@ namespace ProophTest\EventStore\Example;
 
 use PHPUnit_Framework_TestCase as TestCase;
 
-class QuickstartTest extends TestCase
+class QuickStartTest extends TestCase
 {
     /**
      * @test
@@ -22,7 +22,7 @@ class QuickstartTest extends TestCase
     public function it_provides_the_correct_example_output(): void
     {
         $pattern = sprintf(
-            '~^Event with name Example\\\\Event\\\\QuickStartSucceeded was recorded\. It occurred on %s ///\n\nIt works$~',
+            '~^Event with name Prooph\\\\EventStore\\\\QuickStart\\\\Event\\\\QuickStartSucceeded was recorded\. It occurred on %s ///\n\nIt works$~',
             '\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
         );
 
