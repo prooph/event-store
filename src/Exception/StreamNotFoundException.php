@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\StreamName;
 
 final class StreamNotFoundException extends \RuntimeException implements EventStoreException
 {

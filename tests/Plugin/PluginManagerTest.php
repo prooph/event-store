@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Plugin;
 
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\TestCase;

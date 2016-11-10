@@ -17,8 +17,8 @@ use Prooph\EventStore\Adapter\InMemoryAdapter;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
 
 final class InMemoryAdapterTest extends TestCase

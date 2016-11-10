@@ -21,8 +21,8 @@ use Prooph\Common\Event\DefaultActionEvent;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 use Prophecy\Argument;
 
 class MetadataEnricherPluginTest extends TestCase

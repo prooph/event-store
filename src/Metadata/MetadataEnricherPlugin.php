@@ -16,7 +16,7 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterAware;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
-use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream;
 
 final class MetadataEnricherPlugin implements Plugin
 {

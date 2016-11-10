@@ -12,8 +12,8 @@ namespace Prooph\EventStore;
 
 use Iterator;
 use Prooph\EventStore\Metadata\MetadataMatcher;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 
 interface EventStore
 {

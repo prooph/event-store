@@ -25,8 +25,8 @@ use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Plugin\Plugin;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 use Prophecy\Argument;
 
 class InMemoryEventStoreFactoryTest extends TestCase

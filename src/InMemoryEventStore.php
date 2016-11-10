@@ -20,8 +20,8 @@ use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\EventStore\Exception\StreamNotFoundException;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Stream\Stream;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\Assertion;
 
 final class InMemoryEventStore implements EventStore, ActionEventEmitterAware

@@ -10,9 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Stream;
-
-use Prooph\EventStore\Util\Assertion;
+namespace Prooph\EventStore;
 
 class StreamName
 {
@@ -23,7 +21,7 @@ class StreamName
 
     public function __construct(string $name)
     {
-        Assertion::notEmpty($name, 'StreamName must not be empty');
+        Util\Assertion::notEmpty($name, 'StreamName must not be empty');
 
         $this->name = $name;
     }
