@@ -12,13 +12,9 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Plugin;
 
-use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\Adapter\InMemoryAdapter;
-use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
-use ProophTest\EventStore\Mock\User;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\TestCase;
 use Zend\ServiceManager\Config;
@@ -37,14 +33,10 @@ class PluginManagerTest extends TestCase
             ]
         ]));
 
-        $eventStore = new EventStore(new InMemoryAdapter(), new ProophActionEventEmitter());
-
         $logger = $pluginManager->get('eventlogger');
-        $logger->setUp($eventStore);
+        $logger->setUp($this->eventStore);
 
-        $eventStore->beginTransaction();
-
-        $eventStore->create(
+        $this->eventStore->create(
             new Stream(
                 new StreamName('user'),
                 new \ArrayIterator([
@@ -58,10 +50,6 @@ class PluginManagerTest extends TestCase
                 ])
             )
         );
-
-        $user = User::create("Alex", "contact@prooph.de");
-
-        $eventStore->commit();
 
         $loggedStreamEvents = $pluginManager->get("eventlogger")->getLoggedStreamEvents();
 
