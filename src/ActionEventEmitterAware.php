@@ -10,14 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Adapter\Exception;
+namespace Prooph\EventStore;
 
-/**
- * Class RuntimeException
- *
- * @package Prooph\EventStore\Adapter\Exception
- * @author Alexander Miertsch <contact@prooph.de>
- */
-final class RuntimeException extends \RuntimeException implements AdapterException
+interface ActionEventEmitterAware extends \Prooph\Common\Event\ActionEventEmitterAware
 {
+    const EVENT_APPEND_TO = 'appendTo';
+    const EVENT_CREATE = 'create';
+    const EVENT_LOAD = 'load';
+    const EVENT_LOAD_EVENTS = 'loadEvents';
+    const EVENT_LOAD_REVERSE = 'loadReverse';
 }

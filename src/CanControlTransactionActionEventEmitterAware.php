@@ -10,14 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Adapter\Exception;
+namespace Prooph\EventStore;
 
-/**
- * Class InvalidArgumentException
- *
- * @package Prooph\EventStore\Adapter\Exception
- * @author Alexander Miertsch <contact@prooph.de>
- */
-class InvalidArgumentException extends \InvalidArgumentException implements AdapterException
+interface CanControlTransactionActionEventEmitterAware extends CanControlTransaction, ActionEventEmitterAware
 {
+    const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
+    const EVENT_COMMIT = 'commit';
+    const EVENT_IS_IN_TRANSACTION = 'isInTransaction';
+    const EVENT_ROLLBACK = 'rollback';
 }
