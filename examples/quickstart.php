@@ -10,18 +10,24 @@
 
 declare(strict_types=1);
 
+namespace Prooph\EventStore\QuickStart;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/event/QuickStartSucceeded.php';
 
+use ArrayIterator;
+use Prooph\Common\Event\ActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\ActionEventEmitterAware;
+use Prooph\EventStore\InMemoryEventStore;
+use Prooph\EventStore\QuickStart\Event\QuickStartSucceeded;
+use Prooph\EventStore\Stream\Stream;
+use Prooph\EventStore\Stream\StreamName;
+
+
 /**
- * The event store has two dependencies:
- *
- * - Prooph\EventStore\Adapter\Adapter
- * - Prooph\Common\Event\ActionEventEmitter
- *
  * Here we use the InMemoryAdapter but in a real project
- * you need to set up one of the available
- * persistence adapters.
+ * you need to chose another implementation.
  *
  * Prooph\Common\Event\ActionEventEmitter is an interface
  * that encapsulates functionality of an event dispatcher.
@@ -29,10 +35,16 @@ require_once __DIR__ . '/event/QuickStartSucceeded.php';
  * you write a wrapper for the event dispatcher used
  * by your web framework.
  */
-$eventStore = new \Prooph\EventStore\EventStore(
-    new \Prooph\EventStore\Adapter\InMemoryAdapter(),
-    new \Prooph\Common\Event\ProophActionEventEmitter()
-);
+$eventEmitter = new ProophActionEventEmitter([
+    ActionEventEmitterAware::EVENT_APPEND_TO,
+    ActionEventEmitterAware::EVENT_APPEND_TO,
+    ActionEventEmitterAware::EVENT_CREATE,
+    ActionEventEmitterAware::EVENT_LOAD,
+    ActionEventEmitterAware::EVENT_LOAD_EVENTS,
+    ActionEventEmitterAware::EVENT_LOAD_REVERSE,
+]);
+
+$eventStore = new InMemoryEventStore($eventEmitter);
 
 /**
  * We need a test event so let's create one.
@@ -44,23 +56,15 @@ $eventStore = new \Prooph\EventStore\EventStore(
  * in your domain and use a translator to
  * convert them. We'll come to that later.
  */
-$quickStartSucceeded = \Example\Event\QuickStartSucceeded::withSuccessMessage('It works');
-
-/**
- * Use the event store to manage transactions.
- * It will delegate transaction handling to
- * the underlying adapter if the adapter supports
- * transactions.
- */
-$eventStore->beginTransaction();
+$quickStartSucceeded = QuickStartSucceeded::withSuccessMessage('It works');
 
 /**
  * Events are organized in so called event streams.
  * An event stream is a logical unit for a group of events.
  */
-$streamName = new \Prooph\EventStore\Stream\StreamName('event_stream');
+$streamName = new StreamName('event_stream');
 
-$singleStream = new \Prooph\EventStore\Stream\Stream($streamName, new ArrayIterator());
+$singleStream = new Stream($streamName, new ArrayIterator());
 
 /**
  * As we are using the InMemoryAdapter we have to create the event stream
@@ -83,8 +87,8 @@ $eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, .
  * Plugins are simple event listeners. See the docs of prooph/common for more details about event listeners.
  */
 $eventStore->getActionEventEmitter()->attachListener(
-    'commit.post', //Most of the event store methods provide pre and post hooks
-    function (\Prooph\Common\Event\ActionEvent $actionEvent): void {
+    ActionEventEmitterAware::EVENT_APPEND_TO, // InMemoryAdapter provides event hooks
+    function (ActionEvent $actionEvent): void {
         /**
          * In the *commit.post* action event a plugin has access to
          * all recorded events which were added in the current committed transaction.
@@ -100,12 +104,9 @@ $eventStore->getActionEventEmitter()->attachListener(
                 $recordedEvent->createdAt()->format('Y-m-d H:i:s')
             );
         }
-    }
+    },
+    -1000 // low priority, so after action happened
 );
-
-//Now let's commit the transaction. Our closure plugin will print the event information
-//so check your terminal
-$eventStore->commit();
 
 /**
  * Once committed you can of course also load a set of events or the entire stream
@@ -117,7 +118,7 @@ $eventStore->commit();
 $persistedEventStream = $eventStore->load($streamName);
 
 foreach ($persistedEventStream->streamEvents() as $event) {
-    if ($event instanceof \Example\Event\QuickStartSucceeded) {
+    if ($event instanceof QuickStartSucceeded) {
         echo $event->getText();
     }
 }

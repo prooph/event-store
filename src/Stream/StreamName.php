@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Stream;
 
-use Assert\Assertion;
+use Prooph\EventStore\Util\Assertion;
 
 class StreamName
 {

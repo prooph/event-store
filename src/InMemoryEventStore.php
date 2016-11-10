@@ -14,7 +14,6 @@ namespace Prooph\EventStore;
 
 use AppendIterator;
 use ArrayIterator;
-use Assert\Assertion;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
@@ -23,6 +22,7 @@ use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream\Stream;
 use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\Util\Assertion;
 
 final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 {
