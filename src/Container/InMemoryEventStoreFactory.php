@@ -80,10 +80,8 @@ final class InMemoryEventStoreFactory implements
         if (! isset($config['event_emitter'])) {
             $eventEmitter = new ProophActionEventEmitter([
                 ActionEventEmitterAware::EVENT_APPEND_TO,
-                ActionEventEmitterAware::EVENT_APPEND_TO,
                 ActionEventEmitterAware::EVENT_CREATE,
                 ActionEventEmitterAware::EVENT_LOAD,
-                ActionEventEmitterAware::EVENT_LOAD_EVENTS,
                 ActionEventEmitterAware::EVENT_LOAD_REVERSE,
             ]);
         } else {

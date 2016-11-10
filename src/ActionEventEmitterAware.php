@@ -19,7 +19,6 @@ interface ActionEventEmitterAware
     const EVENT_APPEND_TO = 'appendTo';
     const EVENT_CREATE = 'create';
     const EVENT_LOAD = 'load';
-    const EVENT_LOAD_EVENTS = 'loadEvents';
     const EVENT_LOAD_REVERSE = 'loadReverse';
 
     public function getActionEventEmitter(): ActionEventEmitter;

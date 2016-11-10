@@ -25,7 +25,7 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 
 /**
- * Here we use the InMemoryAdapter but in a real project
+ * Here we use the InMemoryEventStore but in a real project
  * you need to chose another implementation.
  *
  * Prooph\Common\Event\ActionEventEmitter is an interface
@@ -36,10 +36,8 @@ use Prooph\EventStore\StreamName;
  */
 $eventEmitter = new ProophActionEventEmitter([
     ActionEventEmitterAware::EVENT_APPEND_TO,
-    ActionEventEmitterAware::EVENT_APPEND_TO,
     ActionEventEmitterAware::EVENT_CREATE,
     ActionEventEmitterAware::EVENT_LOAD,
-    ActionEventEmitterAware::EVENT_LOAD_EVENTS,
     ActionEventEmitterAware::EVENT_LOAD_REVERSE,
 ]);
 
@@ -66,7 +64,7 @@ $streamName = new StreamName('event_stream');
 $singleStream = new Stream($streamName, new ArrayIterator());
 
 /**
- * As we are using the InMemoryAdapter we have to create the event stream
+ * As we are using the InMemoryEventStore we have to create the event stream
  * each time running the quick start. With a real persistence adapter this
  * is not required. In this case you should create the stream once. For example
  * with the help of a migration script.
@@ -81,7 +79,7 @@ $eventStore->create($singleStream);
  * Plugins are simple event listeners. See the docs of prooph/common for more details about event listeners.
  */
 $eventStore->getActionEventEmitter()->attachListener(
-    ActionEventEmitterAware::EVENT_APPEND_TO, // InMemoryAdapter provides event hooks
+    ActionEventEmitterAware::EVENT_APPEND_TO, // InMemoryEventStore provides event hooks
     function (ActionEvent $actionEvent): void {
         /**
          * In the *commit.post* action event a plugin has access to
