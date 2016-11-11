@@ -188,7 +188,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 
         $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_APPEND_TO, $this, $argv);
 
-        $this->getActionEventEmitter()->dispatch($event);
+        $this->actionEventEmitter->dispatch($event);
 
         if (! $event->getParam('result', false)) {
             throw StreamNotFound::with($streamName);
@@ -213,7 +213,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 
         $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_LOAD, $this, $argv);
 
-        $this->getActionEventEmitter()->dispatch($event);
+        $this->actionEventEmitter->dispatch($event);
 
         $stream = $event->getParam('stream', false);
 
@@ -242,7 +242,7 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
 
         $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_LOAD_REVERSE, $this, $argv);
 
-        $this->getActionEventEmitter()->dispatch($event);
+        $this->actionEventEmitter->dispatch($event);
 
         $stream = $event->getParam('stream', false);
 
