@@ -164,9 +164,9 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
     {
         foreach ($metadataMatcher->data() as $match) {
-            $key = $match['key'];
+            $field = $match['field'];
 
-            if (! isset($metadata[$key])) {
+            if (! isset($metadata[$field])) {
                 return false;
             }
 
@@ -175,32 +175,32 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
 
             switch ($operator) {
                 case Operator::EQUALS():
-                    if ($metadata[$key] !== $expected) {
+                    if ($metadata[$field] !== $expected) {
                         return false;
                     }
                     break;
                 case Operator::GREATER_THAN():
-                    if (! ($metadata[$key] > $expected)) {
+                    if (! ($metadata[$field] > $expected)) {
                         return false;
                     }
                     break;
                 case Operator::GREATER_THAN_EQUALS():
-                    if (! ($metadata[$key] >= $expected)) {
+                    if (! ($metadata[$field] >= $expected)) {
                         return false;
                     };
                     break;
                 case Operator::LOWER_THAN():
-                    if (! ($metadata[$key] < $expected)) {
+                    if (! ($metadata[$field] < $expected)) {
                         return false;
                     }
                     break;
                 case Operator::LOWER_THAN_EQUALS():
-                    if (! ($metadata[$key] <= $expected)) {
+                    if (! ($metadata[$field] <= $expected)) {
                         return false;
                     }
                     break;
                 case Operator::NOT_EQUALS():
-                    if ($metadata[$key] === $expected) {
+                    if ($metadata[$field] === $expected) {
                         return false;
                     }
                     break;
