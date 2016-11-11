@@ -525,7 +525,7 @@ class InMemoryEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_null_when_asked_for_unknown_stream_metadata(): void
+    public function it_throws_exception_when_asked_for_unknown_stream_metadata(): void
     {
         $this->expectException(StreamNotFound::class);
 
