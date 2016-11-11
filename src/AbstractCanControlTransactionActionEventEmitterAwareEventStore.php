@@ -16,8 +16,7 @@ use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotCommitted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 
-abstract class AbstractCanControlTransactionActionEventEmitterAwareEventStore
-    extends AbstractActionEventEmitterAwareEventStore implements
+abstract class AbstractCanControlTransactionActionEventEmitterAwareEventStore extends AbstractActionEventEmitterAwareEventStore implements
     CanControlTransactionActionEventEmitterAware
 {
     /**
