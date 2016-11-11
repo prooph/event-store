@@ -13,16 +13,13 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use ArrayIterator;
-use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Util\Assertion;
 
-final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
+final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
 {
     /**
      * @var array
@@ -150,11 +147,6 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
         });
     }
 
-    public function getActionEventEmitter(): ActionEventEmitter
-    {
-        return $this->actionEventEmitter;
-    }
-
     public function hasStream(StreamName $streamName): bool
     {
         return isset($this->streams[$streamName->toString()]);
@@ -167,90 +159,6 @@ final class InMemoryEventStore implements EventStore, ActionEventEmitterAware
         }
 
         return $this->streams[$streamName->toString()]['metadata'];
-    }
-
-    public function create(Stream $stream): void
-    {
-        $argv = ['stream' => $stream, 'streamEvents' => $stream->streamEvents()];
-
-        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_CREATE, $this, $argv);
-
-        $this->actionEventEmitter->dispatch($event);
-
-        if (! $event->getParam('result', false)) {
-            throw StreamExistsAlready::with($stream->streamName());
-        }
-    }
-
-    public function appendTo(StreamName $streamName, Iterator $streamEvents): void
-    {
-        $argv = ['streamName' => $streamName, 'streamEvents' => $streamEvents];
-
-        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_APPEND_TO, $this, $argv);
-
-        $this->actionEventEmitter->dispatch($event);
-
-        if (! $event->getParam('result', false)) {
-            throw StreamNotFound::with($streamName);
-        }
-    }
-
-    public function load(
-        StreamName $streamName,
-        int $fromNumber = 1,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
-    ): Stream {
-        Assertion::greaterOrEqualThan($fromNumber, 1);
-        Assertion::nullOrGreaterOrEqualThan($count, 1);
-
-        $argv = [
-            'streamName' => $streamName,
-            'fromNumber' => $fromNumber,
-            'count' => $count,
-            'metadataMatcher' => $metadataMatcher,
-        ];
-
-        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_LOAD, $this, $argv);
-
-        $this->actionEventEmitter->dispatch($event);
-
-        $stream = $event->getParam('stream', false);
-
-        if ($stream instanceof Stream && $stream->streamName()->toString() === $streamName->toString()) {
-            return $stream;
-        }
-
-        throw StreamNotFound::with($streamName);
-    }
-
-    public function loadReverse(
-        StreamName $streamName,
-        int $fromNumber = PHP_INT_MAX,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
-    ): Stream {
-        Assertion::greaterOrEqualThan($fromNumber, 1);
-        Assertion::nullOrGreaterOrEqualThan($count, 1);
-
-        $argv = [
-            'streamName' => $streamName,
-            'fromNumber' => $fromNumber,
-            'count' => $count,
-            'metadataMatcher' => $metadataMatcher,
-        ];
-
-        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_LOAD_REVERSE, $this, $argv);
-
-        $this->actionEventEmitter->dispatch($event);
-
-        $stream = $event->getParam('stream', false);
-
-        if ($stream instanceof Stream && $stream->streamName()->toString() === $streamName->toString()) {
-            return $stream;
-        }
-
-        throw StreamNotFound::with($streamName);
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
