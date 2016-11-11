@@ -20,6 +20,9 @@ abstract class AbstractCanControlTransactionActionEventEmitterAwareEventStore
     extends AbstractActionEventEmitterAwareEventStore implements
     CanControlTransactionActionEventEmitterAware
 {
+    /**
+     * @var bool
+     */
     protected $isInTransaction = false;
 
     public function beginTransaction(): void
