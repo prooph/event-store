@@ -48,7 +48,7 @@ final class InMemoryEventStoreFactory implements
      * <code>
      * <?php
      * return [
-     *     'prooph.event_store.service_name' => [InMemoryEventStoreFactory::class, 'service_name'],
+     *     InMemoryEventStore::class => [InMemoryEventStoreFactory::class, 'service_name'],
      * ];
      * </code>
      *
