@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\StreamProjection;
+namespace Prooph\EventStore\Projection;
 
 use Prooph\Common\Messaging\Message;
 
-interface StreamProjection extends Query
+interface Projection extends Query
 {
     public function getName(): string;
 

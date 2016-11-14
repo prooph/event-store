@@ -14,7 +14,7 @@ namespace ProophTest\StreamProjection;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
-use Prooph\EventStore\StreamProjection\Position;
+use Prooph\EventStore\Projection\Position;
 
 class PositionTest extends TestCase
 {

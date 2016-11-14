@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\StreamProjection;
+namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 

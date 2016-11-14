@@ -10,30 +10,33 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\StreamProjection;
+namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\InMemoryEventStore;
 
-final class InMemoryStreamProjection extends AbstractStreamProjection
+final class InMemoryEventStoreProjection extends AbstractProjection
 {
-    use InMemoryQueryTrait;
+    use InMemoryEventStoreQueryTrait;
 
-    private $storage;
-
-    public function __construct(InMemoryEventStore $eventStore, string $name, int $persistBatches, bool $enableEmit)
+    public function __construct(InMemoryEventStore $eventStore, string $name, bool $emitEnabled)
     {
-        parent::__construct($eventStore, $name, $persistBatches, $enableEmit);
+        parent::__construct($eventStore, $name, $emitEnabled);
 
         $this->buildKnownStreams();
     }
 
     protected function load(): void
     {
-        // InMemoryStreamProjection cannot load
+        // InMemoryEventStoreProjection cannot load
     }
 
     protected function persist(): void
     {
-        // InMemoryStreamProjection cannot persist
+        // InMemoryEventStoreProjection cannot persist
+    }
+
+    protected function resetProjection(): void
+    {
+        // There is nothing to do
     }
 }

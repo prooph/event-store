@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\StreamProjection;
+namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\InMemoryEventStore;
 
-final class InMemoryQuery extends AbstractQuery
+final class InMemoryEventStoreQuery extends AbstractQuery
 {
-    use InMemoryQueryTrait;
+    use InMemoryEventStoreQueryTrait;
 
     public function __construct(InMemoryEventStore $eventStore)
     {

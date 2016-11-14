@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\StreamProjection;
+namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\Exception\RuntimeException;
 
-trait InMemoryQueryTrait
+trait InMemoryEventStoreQueryTrait
 {
     /**
      * @var array
@@ -76,6 +76,10 @@ trait InMemoryQueryTrait
 
         $streams = [];
         foreach ($this->knownStreams as $stream) {
+            if (substr($streams, 0, 1) == '$') {
+                // ignore internal streams
+                continue;
+            }
             $streams[$stream] = 0;
         }
 

@@ -10,9 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\StreamProjection;
+namespace Prooph\EventStore\Projection;
 
 use Closure;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -67,7 +68,7 @@ abstract class AbstractQuery implements Query
         $this->state = $callback();
 
         if (! $this->state instanceof stdClass) {
-            throw new RuntimeException('init callback is expected to return an instance of stdClass');
+            throw new RuntimeException('Init callback is expected to return an instance of stdClass');
         }
 
         $this->initCallback = $callback;
@@ -78,7 +79,7 @@ abstract class AbstractQuery implements Query
     public function fromStream(string $streamName): Query
     {
         if (null !== $this->position) {
-            throw new RuntimeException('from was already called');
+            throw new RuntimeException('From was already called');
         }
 
         $this->position = new Position([$streamName => 0]);
@@ -89,7 +90,7 @@ abstract class AbstractQuery implements Query
     public function fromStreams(string ...$streamNames): Query
     {
         if (null !== $this->position) {
-            throw new RuntimeException('from was already called');
+            throw new RuntimeException('From was already called');
         }
 
         $streamPositions = [];
@@ -106,7 +107,7 @@ abstract class AbstractQuery implements Query
     public function when(array $handlers): Query
     {
         if (! empty($this->handlers)) {
-            throw new RuntimeException('when was already called');
+            throw new RuntimeException('When was already called');
         }
 
         foreach ($handlers as $eventName => $handler) {
@@ -153,7 +154,7 @@ abstract class AbstractQuery implements Query
         if (null === $this->position
             || (null === $this->handler && empty($this->handlers))
         ) {
-            throw new RuntimeException('No projection configured');
+            throw new RuntimeException('No handlers configured');
         }
 
         $singleHandler = null !== $this->handler;
@@ -161,20 +162,10 @@ abstract class AbstractQuery implements Query
         foreach ($this->position->streamPositions() as $streamName => $position) {
             $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
 
-            foreach ($stream->streamEvents() as $event) {
-                /* @var Message $event */
-                $this->position->inc($streamName);
-                if ($singleHandler) {
-                    $handler = $this->handler;
-                    $handler($this->state, $event);
-                } else {
-                    foreach ($this->handlers as $eventName => $handler) {
-                        if ($eventName === $event->messageName()) {
-                            $handler($this->state, $event);
-                            break;
-                        }
-                    }
-                }
+            if ($singleHandler) {
+                $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
+            } else {
+                $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
             }
         }
     }
@@ -182,5 +173,28 @@ abstract class AbstractQuery implements Query
     public function getState(): stdClass
     {
         return $this->state;
+    }
+
+    private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    {
+        foreach ($events as $event) {
+            /* @var Message $event */
+            $this->position->inc($streamName);
+            $handler = $this->handler;
+            $handler($this->state, $event);
+        }
+    }
+
+    private function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    {
+        foreach ($events as $event) {
+            /* @var Message $event */
+            $this->position->inc($streamName);
+            if (! isset($this->handlers[$event->messageName()])) {
+                continue;
+            }
+            $handler = $this->handlers[$event->messageName()];
+            $handler($this->state, $event);
+        }
     }
 }
