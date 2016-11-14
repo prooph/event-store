@@ -69,9 +69,9 @@ abstract class AbstractStreamProjection extends AbstractQuery implements StreamP
         $this->eventStore->appendTo(new StreamName($streamName), new ArrayIterator([$event]));
     }
 
-    abstract protected function load();
+    abstract protected function load(): void;
 
-    abstract protected function persist();
+    abstract protected function persist(): void;
 
     public function run(): void
     {
