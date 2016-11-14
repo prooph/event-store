@@ -33,7 +33,7 @@ abstract class AbstractQuery implements Query
     protected $position;
 
     /**
-     * @var mixed
+     * @var stdClass
      */
     protected $state;
 
