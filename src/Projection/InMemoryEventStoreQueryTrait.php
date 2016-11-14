@@ -36,8 +36,9 @@ trait InMemoryEventStoreQueryTrait
         }
 
         $streams = [];
+
         foreach ($this->knownStreams as $stream) {
-            if (substr($stream, 0, strlen($name) + 1) === $stream . '-') {
+            if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
                 $streams[$stream] = 0;
             }
         }
@@ -56,10 +57,10 @@ trait InMemoryEventStoreQueryTrait
         $streams = [];
         foreach ($this->knownStreams as $stream) {
             foreach ($names as $name) {
-                if (substr($stream, 0, strlen($name) + 1) === $stream . '-') {
+                if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
                     $streams[$stream] = 0;
+                    break;
                 }
-                break;
             }
         }
 
@@ -76,7 +77,7 @@ trait InMemoryEventStoreQueryTrait
 
         $streams = [];
         foreach ($this->knownStreams as $stream) {
-            if (substr($streams, 0, 1) == '$') {
+            if (substr($stream, 0, 1) === '$') {
                 // ignore internal streams
                 continue;
             }

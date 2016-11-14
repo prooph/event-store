@@ -106,7 +106,7 @@ abstract class AbstractQuery implements Query
 
     public function when(array $handlers): Query
     {
-        if (! empty($this->handlers)) {
+        if (null !== $this->handler || ! empty($this->handlers)) {
             throw new RuntimeException('When was already called');
         }
 
@@ -129,6 +129,10 @@ abstract class AbstractQuery implements Query
 
     public function whenAny(Closure $closure): Query
     {
+        if (null !== $this->handler || ! empty($this->handlers)) {
+            throw new RuntimeException('When was already called');
+        }
+
         $closure = Closure::bind($closure, $this);
 
         $this->handler = $closure;
@@ -138,7 +142,9 @@ abstract class AbstractQuery implements Query
 
     public function reset(): void
     {
-        $this->position->reset();
+        if (null !== $this->position) {
+            $this->position->reset();
+        }
 
         $callback = $this->initCallback;
 
