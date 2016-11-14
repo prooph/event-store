@@ -25,7 +25,8 @@ class Position
         }
     }
 
-    public function merge(array $streamNames) {
+    public function merge(array $streamNames)
+    {
         $this->streams = array_merge($this->streams, $streamNames);
     }
 
