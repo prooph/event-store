@@ -233,7 +233,8 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->init(function () {});
+        $query->init(function () {
+        });
     }
 
     /**
@@ -245,8 +246,12 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->init(function () { return new \stdClass(); });
-        $query->init(function () { return new \stdClass(); });
+        $query->init(function () {
+            return new \stdClass();
+        });
+        $query->init(function () {
+            return new \stdClass();
+        });
     }
 
     /**
@@ -323,8 +328,10 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->when(['foo' => function () {}]);
-        $query->when(['foo' => function () {}]);
+        $query->when(['foo' => function () {
+        }]);
+        $query->when(['foo' => function () {
+        }]);
     }
 
     /**
@@ -336,7 +343,8 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->when(['1' => function () {}]);
+        $query->when(['1' => function () {
+        }]);
     }
 
     /**
@@ -360,8 +368,10 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->whenAny(function () {});
-        $query->whenAny(function () {});
+        $query->whenAny(function () {
+        });
+        $query->whenAny(function () {
+        });
     }
 
     /**
