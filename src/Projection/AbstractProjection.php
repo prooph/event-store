@@ -57,7 +57,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             throw new RuntimeException('Emit is disabled');
         }
 
-        $this->eventStore->appendTo(new StreamName($this->name), new ArrayIterator([$event]));
+        $this->linkTo($this->name, $event);
     }
 
     public function linkTo(string $streamName, Message $event): void
