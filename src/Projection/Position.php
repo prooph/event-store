@@ -30,13 +30,6 @@ class Position
         $this->streams = array_merge($this->streams, $streamNames);
     }
 
-    public function add(string ...$streamNames)
-    {
-        foreach ($streamNames as $streamName) {
-            $this->streams[$streamName] = 0;
-        }
-    }
-
     public function inc(string $streamName)
     {
         if (! isset($this->streams[$streamName])) {
