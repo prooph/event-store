@@ -14,7 +14,6 @@ namespace ProophTest\EventStore;
 
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterAware;
-use Prooph\EventStore\EventStore;
 use Prooph\EventStore\InMemoryEventStore;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace ProophTest\StreamProjection;
+namespace ProophTest\EventStore\Projection;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -51,16 +51,13 @@ class PositionTest extends TestCase
     /**
      * @test
      */
-    public function it_add_and_merges_position(): void
+    public function it__merges_position(): void
     {
         $position = new Position(['foo' => 0, 'bar' => 0]);
-        $position->add('baz', 'bam');
-
-        $this->assertEquals(['foo' => 0, 'bar' => 0, 'baz' => 0, 'bam' => 0], $position->streamPositions());
 
         $position->merge(['foo' => 0, 'bar' => 1, 'bag' => 0]);
 
-        $this->assertEquals(['foo' => 0, 'bar' => 1, 'baz' => 0, 'bam' => 0, 'bag' => 0], $position->streamPositions());
+        $this->assertEquals(['foo' => 0, 'bar' => 1, 'bag' => 0], $position->streamPositions());
     }
 
     /**
