@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace ProophTest\EventStore\Stream;
+namespace ProophTest\EventStore;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\StreamName;
