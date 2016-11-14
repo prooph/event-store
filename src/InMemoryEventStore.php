@@ -29,7 +29,7 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
     /**
      * @var ActionEventEmitter
      */
-    private $actionEventEmitter;
+    protected $actionEventEmitter;
 
     public function __construct(ActionEventEmitter $actionEventEmitter)
     {
