@@ -36,4 +36,6 @@ interface EventStore
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Stream;
+
+    public function delete(StreamName $streamName): void;
 }

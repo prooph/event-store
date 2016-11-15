@@ -145,6 +145,14 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
                 $this->streams[$streamName->toString()]['metadata']
             ));
         });
+
+        $actionEventEmitter->attachListener(self::EVENT_DELETE, function (ActionEvent $event): void {
+            $streamName = $event->getParam('streamName');
+
+            unset($this->streams[$streamName->toString()]);
+
+            $event->setParam('result', true);
+        });
     }
 
     public function hasStream(StreamName $streamName): bool

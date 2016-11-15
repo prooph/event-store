@@ -29,9 +29,11 @@ class InMemoryEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_new_stream_and_records_the_stream_events(): void
+    public function it_creates_a_new_stream_and_records_the_stream_events_and_deletes(): void
     {
         $recordedEvents = [];
+
+        $streamName = new StreamName('user');
 
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
@@ -47,7 +49,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->eventStore->create($stream);
 
-        $stream = $this->eventStore->load(new StreamName('user'));
+        $stream = $this->eventStore->load($streamName);
 
         $this->assertEquals('user', $stream->streamName()->toString());
 
@@ -59,10 +61,14 @@ class InMemoryEventStoreTest extends TestCase
             [
                 'foo' => 'bar',
             ],
-            $this->eventStore->fetchStreamMetadata(new StreamName('user'))
+            $this->eventStore->fetchStreamMetadata($streamName)
         );
 
-        $this->assertTrue($this->eventStore->hasStream(new StreamName('user')));
+        $this->assertTrue($this->eventStore->hasStream($streamName));
+
+        $this->eventStore->delete($streamName);
+
+        $this->assertFalse($this->eventStore->hasStream($streamName));
     }
 
     /**

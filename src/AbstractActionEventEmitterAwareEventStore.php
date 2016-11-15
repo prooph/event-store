@@ -14,6 +14,7 @@ namespace Prooph\EventStore;
 
 use Iterator;
 use Prooph\Common\Event\ActionEventEmitter;
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
@@ -113,5 +114,16 @@ abstract class AbstractActionEventEmitterAwareEventStore implements EventStore, 
         }
 
         throw StreamNotFound::with($streamName);
+    }
+
+    public function delete(StreamName $streamName): void
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_DELETE, $this, ['streamName' => $streamName]);
+
+        $this->actionEventEmitter->dispatch($event);
+
+        if (! $event->getParam('result', false)) {
+            throw new RuntimeException("Could not delete stream '$streamName'");
+        }
     }
 }
