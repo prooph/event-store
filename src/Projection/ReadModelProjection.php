@@ -16,6 +16,8 @@ interface ReadModelProjection
 {
     public function initProjection(): void;
 
+    public function projectionIsInitialized(): bool;
+
     public function resetProjection(): void;
 
     public function deleteProjection(): void;

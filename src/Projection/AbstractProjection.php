@@ -99,7 +99,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         }
     }
 
-    private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
     {
         foreach ($events as $event) {
             /* @var Message $event */
@@ -110,7 +110,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         }
     }
 
-    private function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    protected function handleStreamWithHandlers(string $streamName, Iterator $events): void
     {
         foreach ($events as $event) {
             /* @var Message $event */

@@ -20,7 +20,7 @@ interface Query
     /**
      * The callback has to return an instance of stdClass
      */
-    public function init(callable $callback): Query;
+    public function init(Closure $callback): Query;
 
     public function fromStream(string $streamName): Query;
 

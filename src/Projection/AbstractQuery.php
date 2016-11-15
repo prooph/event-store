@@ -59,11 +59,13 @@ abstract class AbstractQuery implements Query
         $this->state = new stdClass();
     }
 
-    public function init(callable $callback): Query
+    public function init(Closure $callback): Query
     {
         if (null !== $this->initCallback) {
             throw new RuntimeException('Projection already initialized');
         }
+
+        $callback = Closure::bind($callback, $this);
 
         $this->state = $callback();
 
