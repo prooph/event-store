@@ -44,7 +44,10 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     abstract protected function persist(): void;
 
-    abstract protected function resetProjection(): void;
+    protected function resetProjection(): void
+    {
+        $this->eventStore->delete(new StreamName($this->name));
+    }
 
     public function getName(): string
     {

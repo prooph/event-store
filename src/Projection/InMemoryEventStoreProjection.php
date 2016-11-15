@@ -41,14 +41,4 @@ final class InMemoryEventStoreProjection extends AbstractProjection
     {
         // InMemoryEventStoreProjection cannot persist
     }
-
-    protected function resetProjection(): void
-    {
-        $reflectionProperty = new \ReflectionProperty(get_class($this->eventStore), 'streams');
-        $reflectionProperty->setAccessible(true);
-
-        $events = $reflectionProperty->getValue($this->eventStore);
-        unset($events[$this->name]);
-        $reflectionProperty->setValue($this->eventStore, $events);
-    }
 }
