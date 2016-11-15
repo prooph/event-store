@@ -39,10 +39,10 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
         $projection
             ->fromAll()
             ->when([
-                UserCreated::class => function ($state, Message $event) {
+                UserCreated::class => function ($state, Message $event): void {
                     $this->readModelProjection()->insert('name', $event->payload()['name']);
                 },
-                UsernameChanged::class => function ($state, Message $event) {
+                UsernameChanged::class => function ($state, Message $event): void {
                     $this->readModelProjection()->update('name', $event->payload()['name']);
                 }
             ])
@@ -63,11 +63,11 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
         $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel);
 
         $projection
-            ->init(function () {
+            ->init(function (): void {
                 $this->readModelProjection()->insert('name', null);
             })
             ->fromStream('user-123')
-            ->whenAny(function ($state, Message $event) {
+            ->whenAny(function ($state, Message $event): void {
                 $this->readModelProjection()->update('name', $event->payload()['name']);
             }
             )

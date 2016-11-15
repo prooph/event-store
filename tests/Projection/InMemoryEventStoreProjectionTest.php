@@ -37,7 +37,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $projection
             ->fromStream('user-123')
             ->whenAny(
-                function (array $state, Message $event) {
+                function (array $state, Message $event): array {
                     $this->linkTo('foo', $event);
                     return $state;
                 }
@@ -61,7 +61,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $projection
             ->fromStream('user-123')
             ->when([
-                UserCreated::class => function (array $state, UserCreated $event) {
+                UserCreated::class => function (array $state, UserCreated $event): void {
                     $this->emit($event);
                 }
             ])
@@ -91,7 +91,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $projection
             ->fromStream('user-123')
             ->when([
-                UserCreated::class => function (array $state, UserCreated $event) {
+                UserCreated::class => function (array $state, UserCreated $event): array {
                     $this->emit($event);
                     return $state;
                 }
@@ -122,7 +122,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
         $projection
             ->fromStream('user-123')
-            ->whenAny(function (array $state, Message $event) {
+            ->whenAny(function (array $state, Message $event): void {
                 $this->emit($event);
             })
             ->run();

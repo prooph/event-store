@@ -35,12 +35,12 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
-            ->init(function () {
+            ->init(function (): array {
                 return ['count' => 0];
             })
             ->fromStream('user-123')
             ->when([
-                UsernameChanged::class => function (array $state, UsernameChanged $event) {
+                UsernameChanged::class => function (array $state, UsernameChanged $event): array {
                     $state['count']++;
                     return $state;
                 }
@@ -67,12 +67,12 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
-            ->init(function () {
+            ->init(function (): array {
                 return ['count' => 0];
             })
             ->fromStreams('user-123', 'user-234')
             ->whenAny(
-                function (array $state, Message $event) {
+                function (array $state, Message $event): array {
                     $state['count']++;
                     return $state;
                 }
@@ -94,12 +94,12 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
-            ->init(function () {
+            ->init(function (): array {
                 return ['count' => 0];
             })
             ->fromAll()
             ->whenAny(
-                function (array $state, Message $event) {
+                function (array $state, Message $event): array {
                     $state['count']++;
                     return $state;
                 }
@@ -120,12 +120,12 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
-            ->init(function () {
+            ->init(function (): array {
                 return ['count' => 0];
             })
             ->fromCategory('user')
             ->whenAny(
-                function (array $state, Message $event) {
+                function (array $state, Message $event): array {
                     $state['count']++;
                     return $state;
                 }
@@ -148,12 +148,12 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
-            ->init(function () {
+            ->init(function (): array {
                 return ['count' => 0];
             })
             ->fromCategories('user', 'guest')
             ->when([
-                UserCreated::class => function (array $state, Message $event) {
+                UserCreated::class => function (array $state, Message $event): array {
                     $state['count']++;
                     return $state;
                 }
@@ -170,12 +170,12 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
-            ->init(function () {
+            ->init(function (): array {
                 return ['count' => 0];
             })
             ->fromCategories('user', 'guest')
             ->when([
-                UsernameChanged::class => function (array $state, Message $event) {
+                UsernameChanged::class => function (array $state, Message $event): array {
                     $state['count']++;
                     return $state;
                 }
@@ -225,10 +225,10 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->init(function () {
+        $query->init(function (): array {
             return [];
         });
-        $query->init(function () {
+        $query->init(function (): array {
             return [];
         });
     }
@@ -307,9 +307,9 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->when(['foo' => function () {
+        $query->when(['foo' => function (): void {
         }]);
-        $query->when(['foo' => function () {
+        $query->when(['foo' => function (): void {
         }]);
     }
 
@@ -322,7 +322,7 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->when(['1' => function () {
+        $query->when(['1' => function (): void {
         }]);
     }
 
@@ -347,9 +347,9 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
-        $query->whenAny(function () {
+        $query->whenAny(function (): void {
         });
-        $query->whenAny(function () {
+        $query->whenAny(function (): void {
         });
     }
 
