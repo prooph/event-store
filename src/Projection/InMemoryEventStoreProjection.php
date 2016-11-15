@@ -27,7 +27,7 @@ final class InMemoryEventStoreProjection extends AbstractProjection
 
     public function delete(bool $deleteEmittedEvents): void
     {
-        if ($deleteEmittedEvents) {
+        if ($deleteEmittedEvents && $this->emitEnabled) {
             $this->resetProjection();
         }
     }
