@@ -15,6 +15,7 @@ namespace ProophTest\EventStore\Projection;
 use ArrayIterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
@@ -50,7 +51,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
-    public function it_emits_events(): void
+    public function it_emits_events_and_resets(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -72,6 +73,38 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $projection->reset();
         $this->assertEquals('test_projection', $projection->getName());
+
+        $this->expectException(StreamNotFound::class);
+        $this->eventStore->load(new StreamName('test_projection'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_emits_events_and_deletes(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
+        $projection
+            ->fromStream('user-123')
+            ->when([
+                UserCreated::class => function (\stdClass $state, UserCreated $event) {
+                    $this->emit($event);
+                }
+            ])
+            ->run();
+
+        $streams = $this->eventStore->load(new StreamName('test_projection'));
+        $events = $streams->streamEvents();
+
+        $this->assertCount(1, $events);
+        $this->assertEquals('Alex', $events->current()->payload()['name']);
+
+        $projection->delete(true);
+
+        $this->expectException(StreamNotFound::class);
+        $this->eventStore->load(new StreamName('test_projection'));
     }
 
     /**

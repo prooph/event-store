@@ -12,15 +12,11 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
-use Prooph\Common\Messaging\Message;
-
-interface Projection extends Query
+interface ReadModelProjection
 {
-    public function getName(): string;
+    public function initProjection(): void;
 
-    public function emit(Message $event): void;
+    public function resetProjection(): void;
 
-    public function linkTo(string $streamName, Message $event): void;
-
-    public function delete(bool $deleteEmittedEvents): void;
+    public function deleteProjection(): void;
 }

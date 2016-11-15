@@ -25,6 +25,13 @@ final class InMemoryEventStoreProjection extends AbstractProjection
         $this->buildKnownStreams();
     }
 
+    public function delete(bool $deleteEmittedEvents): void
+    {
+        if ($deleteEmittedEvents) {
+            $this->resetProjection();
+        }
+    }
+
     protected function load(): void
     {
         // InMemoryEventStoreProjection cannot load
@@ -37,6 +44,11 @@ final class InMemoryEventStoreProjection extends AbstractProjection
 
     protected function resetProjection(): void
     {
-        // There is nothing to do
+        $reflectionProperty = new \ReflectionProperty(get_class($this->eventStore), 'streams');
+        $reflectionProperty->setAccessible(true);
+
+        $events = $reflectionProperty->getValue($this->eventStore);
+        unset($events[$this->name]);
+        $reflectionProperty->setValue($this->eventStore, $events);
     }
 }
