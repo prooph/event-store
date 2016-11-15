@@ -13,12 +13,11 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use Closure;
-use stdClass;
 
 interface Query
 {
     /**
-     * The callback has to return an instance of stdClass
+     * The callback has to return an array
      */
     public function init(Closure $callback): Query;
 
@@ -36,11 +35,13 @@ interface Query
      * For example:
      *
      * when([
-     *     'UserCreated' => function (stdClass $state, Message $event) {
+     *     'UserCreated' => function (array $state, Message $event) {
      *         $state->count++;
+     *         return $state;
      *     },
-     *     'UserDeleted' => function (stdClass $state, Message $event) {
+     *     'UserDeleted' => function (array $state, Message $event) {
      *         $state->count--;
+     *         return $state;
      *     }
      * ])
      */
@@ -48,7 +49,7 @@ interface Query
 
     /**
      * For example:
-     * function(stdClass $state, Message $event) {
+     * function(array $state, Message $event) {
      *     $state->count++;
      *     return $state;
      * }
@@ -59,5 +60,5 @@ interface Query
 
     public function run(): void;
 
-    public function getState(): stdClass;
+    public function getState(): array;
 }

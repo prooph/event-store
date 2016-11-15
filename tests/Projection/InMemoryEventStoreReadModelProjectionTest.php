@@ -65,7 +65,6 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
         $projection
             ->init(function () {
                 $this->readModelProjection()->insert('name', null);
-                return new \stdClass();
             })
             ->fromStream('user-123')
             ->whenAny(function ($state, Message $event) {

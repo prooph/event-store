@@ -105,7 +105,12 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             /* @var Message $event */
             $this->position->inc($streamName);
             $handler = $this->handler;
-            $handler($this->state, $event);
+            $result = $handler($this->state, $event);
+
+            if (is_array($result)) {
+                $this->state = $result;
+            }
+
             $this->persist();
         }
     }
@@ -119,7 +124,12 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 continue;
             }
             $handler = $this->handlers[$event->messageName()];
-            $handler($this->state, $event);
+            $result = $handler($this->state, $event);
+
+            if (is_array($result)) {
+                $this->state = $result;
+            }
+
             $this->persist();
         }
     }

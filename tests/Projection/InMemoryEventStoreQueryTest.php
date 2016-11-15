@@ -36,25 +36,24 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query
             ->init(function () {
-                $state = new \stdClass();
-                $state->count = 0;
-                return $state;
+                return ['count' => 0];
             })
             ->fromStream('user-123')
             ->when([
-                UsernameChanged::class => function (\stdClass $state, UsernameChanged $event) {
-                    $state->count++;
+                UsernameChanged::class => function (array $state, UsernameChanged $event) {
+                    $state['count']++;
+                    return $state;
                 }
             ])
             ->run();
 
-        $this->assertEquals(49, $query->getState()->count);
+        $this->assertEquals(49, $query->getState()['count']);
 
         $query->reset();
 
         $query->run();
 
-        $this->assertEquals(49, $query->getState()->count);
+        $this->assertEquals(49, $query->getState()['count']);
     }
 
     /**
@@ -69,19 +68,18 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query
             ->init(function () {
-                $state = new \stdClass();
-                $state->count = 0;
-                return $state;
+                return ['count' => 0];
             })
             ->fromStreams('user-123', 'user-234')
             ->whenAny(
-                function (\stdClass $state, Message $event) {
-                    $state->count++;
+                function (array $state, Message $event) {
+                    $state['count']++;
+                    return $state;
                 }
             )
             ->run();
 
-        $this->assertEquals(100, $query->getState()->count);
+        $this->assertEquals(100, $query->getState()['count']);
     }
 
     /**
@@ -97,19 +95,18 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query
             ->init(function () {
-                $state = new \stdClass();
-                $state->count = 0;
-                return $state;
+                return ['count' => 0];
             })
             ->fromAll()
             ->whenAny(
-                function (\stdClass $state, Message $event) {
-                    $state->count++;
+                function (array $state, Message $event) {
+                    $state['count']++;
+                    return $state;
                 }
             )
             ->run();
 
-        $this->assertEquals(100, $query->getState()->count);
+        $this->assertEquals(100, $query->getState()['count']);
     }
 
     /**
@@ -124,19 +121,18 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query
             ->init(function () {
-                $state = new \stdClass();
-                $state->count = 0;
-                return $state;
+                return ['count' => 0];
             })
             ->fromCategory('user')
             ->whenAny(
-                function (\stdClass $state, Message $event) {
-                    $state->count++;
+                function (array $state, Message $event) {
+                    $state['count']++;
+                    return $state;
                 }
             )
             ->run();
 
-        $this->assertEquals(100, $query->getState()->count);
+        $this->assertEquals(100, $query->getState()['count']);
     }
 
     /**
@@ -153,19 +149,18 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query
             ->init(function () {
-                $state = new \stdClass();
-                $state->count = 0;
-                return $state;
+                return ['count' => 0];
             })
             ->fromCategories('user', 'guest')
             ->when([
-                UserCreated::class => function (\stdClass $state, Message $event) {
-                    $state->count++;
+                UserCreated::class => function (array $state, Message $event) {
+                    $state['count']++;
+                    return $state;
                 }
             ])
             ->run();
 
-        $this->assertEquals(4, $query->getState()->count);
+        $this->assertEquals(4, $query->getState()['count']);
     }
 
     public function it_resumes_query_from_position(): void
@@ -176,19 +171,18 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query
             ->init(function () {
-                $state = new \stdClass();
-                $state->count = 0;
-                return $state;
+                return ['count' => 0];
             })
             ->fromCategories('user', 'guest')
             ->when([
-                UsernameChanged::class => function (\stdClass $state, Message $event) {
-                    $state->count++;
+                UsernameChanged::class => function (array $state, Message $event) {
+                    $state['count']++;
+                    return $state;
                 }
             ])
             ->run();
 
-        $this->assertEquals(49, $query->getState()->count);
+        $this->assertEquals(49, $query->getState()['count']);
 
         $events = [];
         for ($i = 51; $i <= 100; $i++) {
@@ -201,40 +195,25 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $query->run();
 
-        $this->assertEquals(99, $query->getState()->count);
+        $this->assertEquals(99, $query->getState()['count']);
     }
 
     /**
      * @test
      */
-    public function it_resets_to_empty_stdClass(): void
+    public function it_resets_to_empty_array(): void
     {
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $state = $query->getState();
 
-        $this->assertInstanceOf(\stdClass::class, $state);
+        $this->assertInternalType('array', $state);
 
         $query->reset();
 
         $state2 = $query->getState();
 
-        $this->assertInstanceOf(\stdClass::class, $state2);
-
-        $this->assertNotSame($state, $state2);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_invalid_init_callback_provided(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $query = new InMemoryEventStoreQuery($this->eventStore);
-
-        $query->init(function () {
-        });
+        $this->assertInternalType('array', $state2);
     }
 
     /**
@@ -247,10 +226,10 @@ class InMemoryEventStoreQueryTest extends TestCase
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query->init(function () {
-            return new \stdClass();
+            return [];
         });
         $query->init(function () {
-            return new \stdClass();
+            return [];
         });
     }
 

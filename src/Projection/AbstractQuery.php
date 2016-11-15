@@ -19,7 +19,6 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\StreamName;
-use stdClass;
 
 abstract class AbstractQuery implements Query
 {
@@ -34,9 +33,9 @@ abstract class AbstractQuery implements Query
     protected $position;
 
     /**
-     * @var stdClass
+     * @var array
      */
-    protected $state;
+    protected $state = [];
 
     /**
      * @var callable|null
@@ -56,7 +55,6 @@ abstract class AbstractQuery implements Query
     public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
-        $this->state = new stdClass();
     }
 
     public function init(Closure $callback): Query
@@ -67,10 +65,10 @@ abstract class AbstractQuery implements Query
 
         $callback = Closure::bind($callback, $this);
 
-        $this->state = $callback();
+        $result = $callback();
 
-        if (! $this->state instanceof stdClass) {
-            throw new RuntimeException('Init callback is expected to return an instance of stdClass');
+        if (is_array($result)) {
+            $this->state = $result;
         }
 
         $this->initCallback = $callback;
@@ -151,10 +149,15 @@ abstract class AbstractQuery implements Query
         $callback = $this->initCallback;
 
         if (is_callable($callback)) {
-            $this->state = $callback();
-        } else {
-            $this->state = new stdClass();
+            $result = $callback();
+
+            if (is_array($result)) {
+                $this->state = $result;
+                return;
+            }
         }
+
+        $this->state = [];
     }
 
     public function run(): void
@@ -178,7 +181,7 @@ abstract class AbstractQuery implements Query
         }
     }
 
-    public function getState(): stdClass
+    public function getState(): array
     {
         return $this->state;
     }
@@ -189,7 +192,11 @@ abstract class AbstractQuery implements Query
             /* @var Message $event */
             $this->position->inc($streamName);
             $handler = $this->handler;
-            $handler($this->state, $event);
+            $result = $handler($this->state, $event);
+
+            if (is_array($result)) {
+                $this->state = $result;
+            }
         }
     }
 
@@ -198,11 +205,17 @@ abstract class AbstractQuery implements Query
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
+
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;
             }
+
             $handler = $this->handlers[$event->messageName()];
-            $handler($this->state, $event);
+            $result = $handler($this->state, $event);
+
+            if (is_array($result)) {
+                $this->state = $result;
+            }
         }
     }
 }
