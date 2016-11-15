@@ -24,7 +24,7 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
     /**
      * @var array
      */
-    protected $streams;
+    private $streams = [];
 
     /**
      * @var ActionEventEmitter
@@ -144,6 +144,14 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
                 new ArrayIterator($streamEvents),
                 $this->streams[$streamName->toString()]['metadata']
             ));
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_DELETE, function (ActionEvent $event): void {
+            $streamName = $event->getParam('streamName');
+
+            unset($this->streams[$streamName->toString()]);
+
+            $event->setParam('result', true);
         });
     }
 

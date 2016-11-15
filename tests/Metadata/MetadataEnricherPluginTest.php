@@ -41,7 +41,7 @@ class MetadataEnricherPluginTest extends TestCase
         $property = new \ReflectionProperty(get_class($this->eventStore->getActionEventEmitter()), 'events');
         $property->setAccessible(true);
 
-        $this->assertCount(4, $property->getValue($this->eventStore->getActionEventEmitter()));
+        $this->assertCount(5, $property->getValue($this->eventStore->getActionEventEmitter()));
     }
 
     /**

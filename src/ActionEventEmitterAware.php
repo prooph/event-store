@@ -20,6 +20,7 @@ interface ActionEventEmitterAware
     const EVENT_CREATE = 'create';
     const EVENT_LOAD = 'load';
     const EVENT_LOAD_REVERSE = 'loadReverse';
+    const EVENT_DELETE = 'delete';
 
     public function getActionEventEmitter(): ActionEventEmitter;
 }
