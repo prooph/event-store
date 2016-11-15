@@ -37,8 +37,8 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $projection
             ->fromStream('user-123')
             ->whenAny(function (\stdClass $state, Message $event) {
-                    $this->linkTo('foo', $event);
-                }
+                $this->linkTo('foo', $event);
+            }
             )
             ->run();
 
