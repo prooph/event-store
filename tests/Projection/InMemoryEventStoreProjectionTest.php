@@ -135,8 +135,8 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
-        $query->run();
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
+        $projection->run();
     }
 
     private function prepareEventStream(string $name): void
