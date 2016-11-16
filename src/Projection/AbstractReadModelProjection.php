@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\StreamName;
 
 abstract class AbstractReadModelProjection extends AbstractProjection
@@ -59,7 +60,12 @@ abstract class AbstractReadModelProjection extends AbstractProjection
         $singleHandler = null !== $this->handler;
 
         foreach ($this->position->streamPositions() as $streamName => $position) {
-            $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            try {
+                $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            } catch (StreamNotFound $e) {
+                // no newer events found
+                continue;
+            }
 
             if ($singleHandler) {
                 $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());

@@ -17,6 +17,7 @@ use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 
@@ -92,7 +93,12 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         $singleHandler = null !== $this->handler;
 
         foreach ($this->position->streamPositions() as $streamName => $position) {
-            $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            try {
+                $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            } catch (StreamNotFound $e) {
+                // no newer events found
+                continue;
+            }
 
             if ($singleHandler) {
                 $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
