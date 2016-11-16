@@ -78,13 +78,13 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     public function run(): void
     {
-        $this->load();
-
         if (null === $this->position
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new RuntimeException('No handlers configured');
         }
+
+        $this->load();
 
         if ($this->emitEnabled && ! $this->eventStore->hasStream(new StreamName($this->name))) {
             $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));

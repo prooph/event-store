@@ -45,13 +45,13 @@ abstract class AbstractReadModelProjection extends AbstractProjection
 
     public function run(): void
     {
-        $this->load();
-
         if (null === $this->position
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new RuntimeException('No handlers configured');
         }
+
+        $this->load();
 
         if (! $this->readModelProjection->projectionIsInitialized()) {
             $this->readModelProjection->initProjection();
