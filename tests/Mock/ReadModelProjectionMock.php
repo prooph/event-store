@@ -33,6 +33,11 @@ class ReadModelProjectionMock implements ReadModelProjection
         $this->storage[$key] = $value;
     }
 
+    public function hasKey(string $key): bool
+    {
+        return array_key_exists($key, $this->storage);
+    }
+
     public function read(string $key)
     {
         return $this->storage[$key];
