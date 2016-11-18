@@ -54,6 +54,39 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
     /**
      * @test
      */
+    public function it_can_be_stopped_while_processing()
+    {
+        $this->prepareEventStream('user-123');
+
+        $readModel = new ReadModelProjectionMock();
+
+        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel);
+
+        $projection
+            ->init(function (): array {
+                $this->readModelProjection()->insert('count', 0);
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->whenAny(function ($state, Message $event): array {
+                $state['count']++;
+
+                if ($state['count'] === 10) {
+                    $this->stop();
+                }
+
+                $this->readModelProjection()->update('count', $state['count']);
+
+                return $state;
+            })->run();
+
+        $this->assertEquals(10, $projection->getState()['count']);
+        $this->assertEquals(10, $readModel->read('count'));
+    }
+
+    /**
+     * @test
+     */
     public function it_updates_read_model_using_when_any(): void
     {
         $this->prepareEventStream('user-123');

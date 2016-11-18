@@ -59,6 +59,34 @@ class InMemoryEventStoreQueryTest extends TestCase
     /**
      * @test
      */
+    public function it_can_be_stopped_while_processing()
+    {
+        $this->prepareEventStream('user-123');
+
+        $query = new InMemoryEventStoreQuery($this->eventStore);
+
+        $query
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->whenAny(function (array $state, Message $event): array {
+                $state['count']++;
+
+                if ($state['count'] === 10) {
+                    $this->stop();
+                }
+
+                return $state;
+            })
+            ->run();
+
+        $this->assertEquals(10, $query->getState()['count']);
+    }
+
+    /**
+     * @test
+     */
     public function it_can_query_from_streams(): void
     {
         $this->prepareEventStream('user-123');
