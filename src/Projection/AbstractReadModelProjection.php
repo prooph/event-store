@@ -72,6 +72,10 @@ abstract class AbstractReadModelProjection extends AbstractProjection
             } else {
                 $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
             }
+
+            if ($this->isStopped) {
+                break;
+            }
         }
     }
 

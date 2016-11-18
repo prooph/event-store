@@ -52,6 +52,11 @@ abstract class AbstractQuery implements Query
      */
     protected $handlers = [];
 
+    /**
+     * @var boolean
+     */
+    protected $isStopped = false;
+
     public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
@@ -178,7 +183,16 @@ abstract class AbstractQuery implements Query
             } else {
                 $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
             }
+
+            if ($this->isStopped) {
+                break;
+            }
         }
+    }
+
+    public function stop(): void
+    {
+        $this->isStopped = true;
     }
 
     public function getState(): array
@@ -196,6 +210,10 @@ abstract class AbstractQuery implements Query
 
             if (is_array($result)) {
                 $this->state = $result;
+            }
+
+            if ($this->isStopped) {
+                break;
             }
         }
     }
@@ -215,6 +233,10 @@ abstract class AbstractQuery implements Query
 
             if (is_array($result)) {
                 $this->state = $result;
+            }
+
+            if ($this->isStopped) {
+                break;
             }
         }
     }

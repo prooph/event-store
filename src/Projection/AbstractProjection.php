@@ -105,6 +105,10 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             } else {
                 $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
             }
+
+            if ($this->isStopped) {
+                break;
+            }
         }
     }
 
@@ -121,6 +125,10 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             }
 
             $this->persist();
+
+            if ($this->isStopped) {
+                break;
+            }
         }
     }
 
@@ -140,6 +148,10 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             }
 
             $this->persist();
+
+            if ($this->isStopped) {
+                break;
+            }
         }
     }
 }
