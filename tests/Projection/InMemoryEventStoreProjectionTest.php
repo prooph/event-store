@@ -53,6 +53,34 @@ class InMemoryEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
+    public function it_can_be_stopped_while_processing()
+    {
+        $this->prepareEventStream('user-123');
+
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->whenAny(function (array $state, Message $event): array {
+                $state['count']++;
+
+                if ($state['count'] === 10) {
+                    $this->stop();
+                }
+
+                return $state;
+            })
+            ->run();
+
+        $this->assertEquals(10, $projection->getState()['count']);
+    }
+
+    /**
+     * @test
+     */
     public function it_emits_events_and_resets(): void
     {
         $this->prepareEventStream('user-123');
