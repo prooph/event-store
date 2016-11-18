@@ -21,6 +21,8 @@ interface ActionEventEmitterAware
     const EVENT_LOAD = 'load';
     const EVENT_LOAD_REVERSE = 'loadReverse';
     const EVENT_DELETE = 'delete';
+    const EVENT_HAS_STREAM = 'hasStream';
+    const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
 
     public function getActionEventEmitter(): ActionEventEmitter;
 }

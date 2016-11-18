@@ -31,6 +31,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             ActionEventEmitterAware::EVENT_LOAD,
             ActionEventEmitterAware::EVENT_LOAD_REVERSE,
             ActionEventEmitterAware::EVENT_DELETE,
+            ActionEventEmitterAware::EVENT_HAS_STREAM,
+            ActionEventEmitterAware::EVENT_FETCH_STREAM_METADATA,
         ]);
 
         $this->eventStore = new InMemoryEventStore($eventEmitter);

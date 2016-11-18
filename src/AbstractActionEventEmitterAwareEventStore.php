@@ -126,4 +126,36 @@ abstract class AbstractActionEventEmitterAwareEventStore implements EventStore, 
             throw new RuntimeException("Could not delete stream '$streamName'");
         }
     }
+
+    public function hasStream(StreamName $streamName): bool
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_HAS_STREAM,
+            $this,
+            ['streamName' => $streamName]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('result', false);
+    }
+
+    public function fetchStreamMetadata(StreamName $streamName): array
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_STREAM_METADATA,
+            $this,
+            ['streamName' => $streamName]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        $metadata = $event->getParam('metadata', false);
+
+        if (false === $metadata) {
+            throw StreamNotFound::with($streamName);
+        }
+
+        return $metadata;
+    }
 }
