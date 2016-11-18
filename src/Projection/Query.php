@@ -60,5 +60,7 @@ interface Query
 
     public function run(): void;
 
+    public function stop(): void;
+
     public function getState(): array;
 }
