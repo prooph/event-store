@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Metadata;
 
 use Prooph\Common\Event\DefaultActionEvent;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Stream;
@@ -41,7 +42,7 @@ class MetadataEnricherPluginTest extends TestCase
         $property = new \ReflectionProperty(get_class($this->eventStore->getActionEventEmitter()), 'events');
         $property->setAccessible(true);
 
-        $this->assertCount(5, $property->getValue($this->eventStore->getActionEventEmitter()));
+        $this->assertCount(7, $property->getValue($this->eventStore->getActionEventEmitter()));
     }
 
     /**
@@ -54,7 +55,7 @@ class MetadataEnricherPluginTest extends TestCase
 
         $messageEvent = UserCreated::with(['name' => 'Test'], 1);
         $stream = new Stream(new StreamName('test'), new \ArrayIterator([$messageEvent]));
-        $actionEvent = new DefaultActionEvent('create.pre');
+        $actionEvent = new DefaultActionEvent('create');
         $actionEvent->setParam('stream', $stream);
 
         $metadataEnricher->enrich($messageEvent)->willReturn(
@@ -80,7 +81,7 @@ class MetadataEnricherPluginTest extends TestCase
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();
 
-        $actionEvent = new DefaultActionEvent('create.pre');
+        $actionEvent = new DefaultActionEvent('create');
 
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
         $plugin->onEventStoreCreateStream($actionEvent);
@@ -95,7 +96,7 @@ class MetadataEnricherPluginTest extends TestCase
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
 
         $messageEvent = UserCreated::with(['name' => 'Test'], 1);
-        $actionEvent = new DefaultActionEvent('appendTo.pre');
+        $actionEvent = new DefaultActionEvent('appendTo');
         $actionEvent->setParam('streamEvents', new \ArrayIterator([$messageEvent]));
 
         $metadataEnricher->enrich($messageEvent)->willReturn(
@@ -122,9 +123,24 @@ class MetadataEnricherPluginTest extends TestCase
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
         $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();
 
-        $actionEvent = new DefaultActionEvent('appendTo.pre');
+        $actionEvent = new DefaultActionEvent('appendTo');
 
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
         $plugin->onEventStoreAppendToStream($actionEvent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_non_action_event_emitter_aware_event_store_used(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
+
+        $eventStore = $this->prophesize(EventStore::class);
+
+        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
+        $plugin->setUp($eventStore->reveal());
     }
 }

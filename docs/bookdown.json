@@ -5,7 +5,6 @@
     {"repositories": "repositories.md"},
     {"event_store": "event_store.md"},
     {"snapshots": "snapshots.md"},
-    {"replay_history": "replay_history.md"},
     {"upcasting": "upcasting.md"},
     {"inheritance": "inheritance.md"},
     {"interop_factories": "interop_factories.md"}

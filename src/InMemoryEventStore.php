@@ -15,7 +15,6 @@ namespace Prooph\EventStore;
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 
@@ -38,8 +37,7 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
         $actionEventEmitter->attachListener(self::EVENT_CREATE, function (ActionEvent $event): void {
             $stream = $event->getParam('stream');
 
-            if ($this->hasStream($stream->streamName())) {
-                $event->stopPropagation();
+            if (isset($this->streams[$stream->streamName()->toString()])) {
                 return;
             }
 
@@ -56,8 +54,7 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
             $streamName = $event->getParam('streamName');
             $streamEvents = $event->getParam('streamEvents');
 
-            if (! $this->hasStream($streamName)) {
-                $event->stopPropagation();
+            if (! isset($this->streams[$streamName->toString()])) {
                 return;
             }
 
@@ -74,8 +71,7 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
             $count = $event->getParam('count');
             $metadataMatcher = $event->getParam('metadataMatcher');
 
-            if (! $this->hasStream($streamName)) {
-                $event->stopPropagation();
+            if (! isset($this->streams[$streamName->toString()])) {
                 return;
             }
 
@@ -112,8 +108,7 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
             $count = $event->getParam('count');
             $metadataMatcher = $event->getParam('metadataMatcher');
 
-            if (! $this->hasStream($streamName)) {
-                $event->stopPropagation();
+            if (! isset($this->streams[$streamName->toString()])) {
                 return;
             }
 
@@ -153,20 +148,26 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
 
             $event->setParam('result', true);
         });
-    }
 
-    public function hasStream(StreamName $streamName): bool
-    {
-        return isset($this->streams[$streamName->toString()]);
-    }
+        $actionEventEmitter->attachListener(self::EVENT_HAS_STREAM, function (ActionEvent $event): void {
+            $streamName = $event->getParam('streamName');
 
-    public function fetchStreamMetadata(StreamName $streamName): array
-    {
-        if (! $this->hasStream($streamName)) {
-            throw StreamNotFound::with($streamName);
-        }
+            $result = isset($this->streams[$streamName->toString()]);
 
-        return $this->streams[$streamName->toString()]['metadata'];
+            $event->setParam('result', $result);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_STREAM_METADATA, function (ActionEvent $event): void {
+            $streamName = $event->getParam('streamName');
+
+            if (! isset($this->streams[$streamName->toString()])) {
+                return;
+            }
+
+            $metadata = $this->streams[$streamName->toString()]['metadata'];
+
+            $event->setParam('metadata', $metadata);
+        });
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
