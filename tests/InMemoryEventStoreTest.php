@@ -15,6 +15,7 @@ namespace ProophTest\EventStore;
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\CanControlTransactionActionEventEmitterAware;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -775,6 +776,77 @@ class InMemoryEventStoreTest extends TestCase
         $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
         $this->assertCount(1, $stream->streamEvents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_only_matched_metadata_2(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn([])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator([$event]));
+
+        $this->eventStore->create($stream->reveal());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'baz');
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
     }
 
     /**
