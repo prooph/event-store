@@ -18,7 +18,7 @@ use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\ActionEventEmitterAware;
+use Prooph\EventStore\CanControlTransactionActionEventEmitterAware;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
@@ -79,13 +79,16 @@ final class InMemoryEventStoreFactory implements
 
         if (! isset($config['event_emitter'])) {
             $eventEmitter = new ProophActionEventEmitter([
-                ActionEventEmitterAware::EVENT_APPEND_TO,
-                ActionEventEmitterAware::EVENT_CREATE,
-                ActionEventEmitterAware::EVENT_LOAD,
-                ActionEventEmitterAware::EVENT_LOAD_REVERSE,
-                ActionEventEmitterAware::EVENT_DELETE,
-                ActionEventEmitterAware::EVENT_HAS_STREAM,
-                ActionEventEmitterAware::EVENT_FETCH_STREAM_METADATA,
+                CanControlTransactionActionEventEmitterAware::EVENT_APPEND_TO,
+                CanControlTransactionActionEventEmitterAware::EVENT_CREATE,
+                CanControlTransactionActionEventEmitterAware::EVENT_LOAD,
+                CanControlTransactionActionEventEmitterAware::EVENT_LOAD_REVERSE,
+                CanControlTransactionActionEventEmitterAware::EVENT_DELETE,
+                CanControlTransactionActionEventEmitterAware::EVENT_HAS_STREAM,
+                CanControlTransactionActionEventEmitterAware::EVENT_FETCH_STREAM_METADATA,
+                CanControlTransactionActionEventEmitterAware::EVENT_BEGIN_TRANSACTION,
+                CanControlTransactionActionEventEmitterAware::EVENT_COMMIT,
+                CanControlTransactionActionEventEmitterAware::EVENT_ROLLBACK,
             ]);
         } else {
             $eventEmitter = $container->get($config['event_emitter']);

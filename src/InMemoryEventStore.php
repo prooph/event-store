@@ -18,12 +18,22 @@ use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 
-final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
+final class InMemoryEventStore extends AbstractCanControlTransactionActionEventEmitterAwareEventStore
 {
     /**
      * @var array
      */
     private $streams = [];
+
+    /**
+     * @var array
+     */
+    private $cachedStreams = [];
+
+    /**
+     * @var bool
+     */
+    private $inTransaction = false;
 
     /**
      * @var ActionEventEmitter
@@ -37,29 +47,47 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
         $actionEventEmitter->attachListener(self::EVENT_CREATE, function (ActionEvent $event): void {
             $stream = $event->getParam('stream');
 
-            if (isset($this->streams[$stream->streamName()->toString()])) {
+            $streamName = $stream->streamName()->toString();
+
+            if (isset($this->streams[$streamName])
+                || isset($this->cachedStreams[$streamName])
+            ) {
                 return;
             }
 
-            foreach ($stream->streamEvents() as $streamEvent) {
-                $this->streams[$stream->streamName()->toString()]['events'][] = $streamEvent;
+            if ($this->inTransaction) {
+                $this->cachedStreams[$streamName]['events'] = $stream->streamEvents();
+                $this->cachedStreams[$streamName]['metadata'] = $stream->metadata();
+            } else {
+                $this->streams[$streamName]['events'] = $stream->streamEvents();
+                $this->streams[$streamName]['metadata'] = $stream->metadata();
             }
-
-            $this->streams[$stream->streamName()->toString()]['metadata'] = $stream->metadata();
 
             $event->setParam('result', true);
         });
 
         $actionEventEmitter->attachListener(self::EVENT_APPEND_TO, function (ActionEvent $event): void {
-            $streamName = $event->getParam('streamName');
+            $streamName = $event->getParam('streamName')->toString();
             $streamEvents = $event->getParam('streamEvents');
 
-            if (! isset($this->streams[$streamName->toString()])) {
+            if (! isset($this->streams[$streamName])
+                || ! isset($this->streams[$streamName])
+            ) {
                 return;
             }
 
-            foreach ($streamEvents as $streamEvent) {
-                $this->streams[$streamName->toString()]['events'][] = $streamEvent;
+            if ($this->inTransaction) {
+                if (! isset($this->cachedStreams[$streamName])) {
+                    $this->cachedStreams[$streamName]['events'] = [];
+                }
+
+                foreach ($streamEvents as $streamEvent) {
+                    $this->cachedStreams[$streamName]['events'][] = $streamEvent;
+                }
+            } else {
+                foreach ($streamEvents as $streamEvent) {
+                    $this->streams[$streamName]['events'][] = $streamEvent;
+                }
             }
 
             $event->setParam('result', true);
@@ -142,11 +170,14 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
         });
 
         $actionEventEmitter->attachListener(self::EVENT_DELETE, function (ActionEvent $event): void {
-            $streamName = $event->getParam('streamName');
+            $streamName = $event->getParam('streamName')->toString();
 
-            unset($this->streams[$streamName->toString()]);
-
-            $event->setParam('result', true);
+            if (isset($this->streams[$streamName])) {
+                unset($this->streams[$streamName]);
+                $event->setParam('result', true);
+            } else {
+                $event->setParam('result', false);
+            }
         });
 
         $actionEventEmitter->attachListener(self::EVENT_HAS_STREAM, function (ActionEvent $event): void {
@@ -167,6 +198,36 @@ final class InMemoryEventStore extends AbstractActionEventEmitterAwareEventStore
             $metadata = $this->streams[$streamName->toString()]['metadata'];
 
             $event->setParam('metadata', $metadata);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_BEGIN_TRANSACTION, function (ActionEvent $event): void {
+            $this->inTransaction = true;
+
+            $event->setParam('inTransaction', true);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_COMMIT, function (ActionEvent $event): void {
+            foreach ($this->cachedStreams as $streamName => $data) {
+                if (isset($data['metadata'])) {
+                    $this->streams[$streamName] = $data;
+                } else {
+                    foreach ($data['events'] as $event) {
+                        $this->streams[$streamName]['events'][] = $event;
+                    }
+                }
+            }
+
+            $this->cachedStreams = [];
+            $this->inTransaction = false;
+
+            $event->setParam('inTransaction', false);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_ROLLBACK, function (ActionEvent $event): void {
+            $this->cachedStreams = [];
+            $this->inTransaction = false;
+
+            $event->setParam('inTransaction', false);
         });
     }
 

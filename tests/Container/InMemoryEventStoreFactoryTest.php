@@ -16,6 +16,7 @@ use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Container\InMemoryEventStoreFactory;
 use Prooph\EventStore\Exception\ConfigurationException;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
@@ -185,5 +186,16 @@ class InMemoryEventStoreFactoryTest extends TestCase
 
         $factory = new InMemoryEventStoreFactory();
         $factory($container->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_container_given_to_callstatic(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $type = 'another';
+        InMemoryEventStoreFactory::$type('invalid container');
     }
 }

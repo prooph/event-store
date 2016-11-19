@@ -14,8 +14,15 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
+use Prooph\EventStore\CanControlTransactionActionEventEmitterAware;
+use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
+use Prooph\EventStore\Exception\TransactionAlreadyStarted;
+use Prooph\EventStore\Exception\TransactionNotCommitted;
+use Prooph\EventStore\Exception\TransactionNotRolledBack;
+use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -519,13 +526,25 @@ class InMemoryEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_stream_not_found_exception_if_adapter_loads_nothing(): void
+    public function it_throws_stream_not_found_exception_if_it_loads_nothing(): void
     {
         $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
         $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_stream_not_found_exception_if_it_loads_nothing_reverse(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->loadReverse($stream->streamName());
     }
 
     /**
@@ -539,6 +558,20 @@ class InMemoryEventStoreTest extends TestCase
         $streamName->toString()->willReturn('unknown')->shouldBeCalled();
 
         $this->eventStore->fetchStreamMetadata($streamName->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_it_could_not_delete_stream(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Could not delete stream 'foo'");
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('foo')->shouldBeCalled();
+
+        $this->eventStore->delete($streamName->reveal());
     }
 
     /**
@@ -563,6 +596,176 @@ class InMemoryEventStoreTest extends TestCase
             ],
             $this->eventStore->fetchStreamMetadata($streamName)
         );
+    }
+
+    /**
+     * @test
+     */
+    public function it_works_transactional(): void
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator());
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream->reveal());
+
+        $this->assertFalse($this->eventStore->hasStream($streamName));
+
+        $this->eventStore->commit();
+
+        $this->assertTrue($this->eventStore->hasStream($streamName));
+    }
+
+    /**
+     * @test
+     */
+    public function it_rolls_back_transaction(): void
+    {
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator());
+
+        $this->eventStore->beginTransaction();
+
+        $this->assertTrue($this->eventStore->isInTransaction());
+
+        $this->eventStore->create($stream->reveal());
+
+        $this->assertFalse($this->eventStore->hasStream($streamName));
+
+        $this->eventStore->rollback();
+
+        $this->assertFalse($this->eventStore->hasStream($streamName));
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_no_transaction_started_on_commit(): void
+    {
+        $this->expectException(TransactionNotStarted::class);
+
+        $this->eventStore->commit();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_no_transaction_started_on_rollback(): void
+    {
+        $this->expectException(TransactionNotStarted::class);
+
+        $this->eventStore->rollback();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_transaction_already_started(): void
+    {
+        $this->expectException(TransactionAlreadyStarted::class);
+
+        $this->eventStore->beginTransaction();
+        $this->eventStore->beginTransaction();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_transaction_already_started_2(): void
+    {
+        $this->expectException(TransactionAlreadyStarted::class);
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            CanControlTransactionActionEventEmitterAware::EVENT_BEGIN_TRANSACTION,
+            function (ActionEvent $event) {
+                $event->setParam('inTransaction', false);
+                $event->stopPropagation();
+            },
+            1000
+        );
+
+        $this->eventStore->beginTransaction();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_transaction_could_not_commit(): void
+    {
+        $this->expectException(TransactionNotCommitted::class);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator());
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream->reveal());
+
+        $this->assertFalse($this->eventStore->hasStream($streamName));
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            CanControlTransactionActionEventEmitterAware::EVENT_COMMIT,
+            function (ActionEvent $event) {
+                $event->setParam('inTransaction', true);
+                $event->stopPropagation();
+            },
+            1000
+        );
+
+        $this->eventStore->commit();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_transaction_could_not_rollback(): void
+    {
+        $this->expectException(TransactionNotRolledBack::class);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator());
+
+        $this->eventStore->beginTransaction();
+
+        $this->eventStore->create($stream->reveal());
+
+        $this->assertFalse($this->eventStore->hasStream($streamName));
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            CanControlTransactionActionEventEmitterAware::EVENT_ROLLBACK,
+            function (ActionEvent $event) {
+                $event->setParam('inTransaction', true);
+                $event->stopPropagation();
+            },
+            1000
+        );
+
+        $this->eventStore->rollback();
     }
 
     /**
@@ -599,6 +802,77 @@ class InMemoryEventStoreTest extends TestCase
         $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
         $this->assertCount(1, $stream->streamEvents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_only_matched_metadata_2(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn([])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator([$event]));
+
+        $this->eventStore->create($stream->reveal());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'baz');
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
+
+        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertCount(0, $stream->streamEvents());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
     }
 
     /**

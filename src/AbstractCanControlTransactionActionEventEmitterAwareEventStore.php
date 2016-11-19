@@ -14,6 +14,7 @@ namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotCommitted;
+use Prooph\EventStore\Exception\TransactionNotRolledBack;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 
 abstract class AbstractCanControlTransactionActionEventEmitterAwareEventStore extends AbstractActionEventEmitterAwareEventStore implements
@@ -84,7 +85,7 @@ abstract class AbstractCanControlTransactionActionEventEmitterAwareEventStore ex
         $result = $event->getParam('inTransaction', true);
 
         if ($result) {
-            throw new TransactionNotCommitted();
+            throw new TransactionNotRolledBack();
         }
 
         $this->isInTransaction = false;

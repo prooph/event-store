@@ -43,12 +43,6 @@ class MetadataMatcher
             return;
         }
 
-        if (is_array($value)) {
-            foreach ($value as $v) {
-                $this->validateValue($v);
-            }
-        }
-
-        throw new InvalidArgumentException('Invalid metadata given');
+        throw new InvalidArgumentException('A metadata value must have a scalar type.');
     }
 }
