@@ -27,11 +27,11 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
 
     protected function load(): void
     {
-        // InMemoryEventStoreProjection cannot load
+        // InMemoryEventStoreReadModelProjection cannot load
     }
 
     protected function persist(): void
     {
-        // InMemoryEventStoreProjection cannot persist
+        // InMemoryEventStoreReadModelProjection cannot persist
     }
 }

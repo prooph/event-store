@@ -143,7 +143,8 @@ class InMemoryEventStoreProjectionTest extends TestCase
      */
     public function it_doesnt_emits_events_when_disabled(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage('Call to undefined method class@anonymous::emit()');
 
         $this->prepareEventStream('user-123');
 

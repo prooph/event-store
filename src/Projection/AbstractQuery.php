@@ -68,7 +68,7 @@ abstract class AbstractQuery implements Query
             throw new RuntimeException('Projection already initialized');
         }
 
-        $callback = Closure::bind($callback, $this);
+        $callback = Closure::bind($callback, $this->createHandlerContext());
 
         $result = $callback();
 
@@ -124,7 +124,7 @@ abstract class AbstractQuery implements Query
                 throw new InvalidArgumentException('Invalid handler given, Closure expected');
             }
 
-            $handler = Closure::bind($handler, $this);
+            $handler = Closure::bind($handler, $this->createHandlerContext());
 
             $this->handlers[$eventName] = $handler;
         }
@@ -132,15 +132,15 @@ abstract class AbstractQuery implements Query
         return $this;
     }
 
-    public function whenAny(Closure $closure): Query
+    public function whenAny(Closure $handler): Query
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new RuntimeException('When was already called');
         }
 
-        $closure = Closure::bind($closure, $this);
+        $handler = Closure::bind($handler, $this->createHandlerContext());
 
-        $this->handler = $closure;
+        $this->handler = $handler;
 
         return $this;
     }
@@ -239,5 +239,26 @@ abstract class AbstractQuery implements Query
                 break;
             }
         }
+    }
+
+    protected function createHandlerContext()
+    {
+        return new class($this) {
+
+            /**
+             * @var Query
+             */
+            private $query;
+
+            public function __construct(Query $query)
+            {
+                $this->query = $query;
+            }
+
+            public function stop(): void
+            {
+                $this->query->stop();
+            }
+        };
     }
 }
