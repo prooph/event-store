@@ -154,7 +154,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
     protected function createHandlerContext()
     {
         if ($this->emitEnabled) {
-            return new class ($this) {
+            return new class($this) {
 
                 /**
                  * @var Projection
@@ -182,7 +182,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 }
             };
         } else {
-            return new class ($this) {
+            return new class($this) {
 
                 /**
                  * @var Projection

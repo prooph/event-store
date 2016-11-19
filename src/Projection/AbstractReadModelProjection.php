@@ -86,7 +86,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection
 
     protected function createHandlerContext()
     {
-        return new class ($this) {
+        return new class($this) {
 
             /**
              * @var Projection
