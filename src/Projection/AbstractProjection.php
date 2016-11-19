@@ -57,10 +57,6 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     public function emit(Message $event): void
     {
-        if (! $this->emitEnabled) {
-            throw new RuntimeException('Emit is disabled');
-        }
-
         $this->linkTo($this->name, $event);
     }
 
@@ -153,5 +149,60 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 break;
             }
         }
+    }
+
+    protected function createHandlerContext()
+    {
+        if ($this->emitEnabled) {
+            return new class($this) {
+
+                /**
+                 * @var Projection
+                 */
+                private $projection;
+
+                public function __construct(Projection $projection)
+                {
+                    $this->projection = $projection;
+                }
+
+                public function stop(): void
+                {
+                    $this->projection->stop();
+                }
+
+                public function linkTo(string $streamName, Message $event): void
+                {
+                    $this->projection->linkTo($streamName, $event);
+                }
+
+                public function emit(Message $event): void
+                {
+                    $this->projection->emit($event);
+                }
+            };
+        }
+
+        return new class($this) {
+            /**
+             * @var Projection
+             */
+            private $projection;
+
+            public function __construct(Projection $projection)
+            {
+                $this->projection = $projection;
+            }
+
+            public function stop(): void
+            {
+                $this->projection->stop();
+            }
+
+            public function linkTo(string $streamName, Message $event): void
+            {
+                $this->projection->linkTo($streamName, $event);
+            }
+        };
     }
 }
