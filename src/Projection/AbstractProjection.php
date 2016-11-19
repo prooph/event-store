@@ -181,29 +181,28 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                     $this->projection->emit($event);
                 }
             };
-        } else {
-            return new class($this) {
-
-                /**
-                 * @var Projection
-                 */
-                private $projection;
-
-                public function __construct(Projection $projection)
-                {
-                    $this->projection = $projection;
-                }
-
-                public function stop(): void
-                {
-                    $this->projection->stop();
-                }
-
-                public function linkTo(string $streamName, Message $event): void
-                {
-                    $this->projection->linkTo($streamName, $event);
-                }
-            };
         }
+
+        return new class($this) {
+            /**
+             * @var Projection
+             */
+            private $projection;
+
+            public function __construct(Projection $projection)
+            {
+                $this->projection = $projection;
+            }
+
+            public function stop(): void
+            {
+                $this->projection->stop();
+            }
+
+            public function linkTo(string $streamName, Message $event): void
+            {
+                $this->projection->linkTo($streamName, $event);
+            }
+        };
     }
 }
