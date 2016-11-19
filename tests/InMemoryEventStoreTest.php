@@ -657,6 +657,25 @@ class InMemoryEventStoreTest extends TestCase
     /**
      * @test
      */
+    public function it_throws_exception_when_transaction_already_started_2(): void
+    {
+        $this->expectException(TransactionAlreadyStarted::class);
+
+        $this->eventStore->getActionEventEmitter()->attachListener(
+            CanControlTransactionActionEventEmitterAware::EVENT_BEGIN_TRANSACTION,
+            function (ActionEvent $event) {
+                $event->setParam('inTransaction', false);
+                $event->stopPropagation();
+            },
+            1000
+        );
+
+        $this->eventStore->beginTransaction();
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_exception_when_transaction_could_not_commit(): void
     {
         $this->expectException(TransactionNotCommitted::class);
