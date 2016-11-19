@@ -16,6 +16,7 @@ use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\CanControlTransactionActionEventEmitterAware;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -525,13 +526,25 @@ class InMemoryEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_stream_not_found_exception_if_adapter_loads_nothing(): void
+    public function it_throws_stream_not_found_exception_if_it_loads_nothing(): void
     {
         $this->expectException(StreamNotFound::class);
 
         $stream = $this->getTestStream();
 
         $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_stream_not_found_exception_if_it_loads_nothing_reverse(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->loadReverse($stream->streamName());
     }
 
     /**
@@ -545,6 +558,20 @@ class InMemoryEventStoreTest extends TestCase
         $streamName->toString()->willReturn('unknown')->shouldBeCalled();
 
         $this->eventStore->fetchStreamMetadata($streamName->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_it_could_not_delete_stream(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Could not delete stream 'foo'");
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('foo')->shouldBeCalled();
+
+        $this->eventStore->delete($streamName->reveal());
     }
 
     /**
@@ -573,7 +600,6 @@ class InMemoryEventStoreTest extends TestCase
 
     /**
      * @test
-     * @group ff
      */
     public function it_works_transactional(): void
     {
@@ -846,7 +872,7 @@ class InMemoryEventStoreTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher = $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
+        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
     }
 
     /**

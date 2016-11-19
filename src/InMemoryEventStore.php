@@ -170,11 +170,14 @@ final class InMemoryEventStore extends AbstractCanControlTransactionActionEventE
         });
 
         $actionEventEmitter->attachListener(self::EVENT_DELETE, function (ActionEvent $event): void {
-            $streamName = $event->getParam('streamName');
+            $streamName = $event->getParam('streamName')->toString();
 
-            unset($this->streams[$streamName->toString()]);
-
-            $event->setParam('result', true);
+            if (isset($this->streams[$streamName])) {
+                unset($this->streams[$streamName]);
+                $event->setParam('result', true);
+            } else {
+                $event->setParam('result', false);
+            }
         });
 
         $actionEventEmitter->attachListener(self::EVENT_HAS_STREAM, function (ActionEvent $event): void {

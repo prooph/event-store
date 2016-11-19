@@ -123,6 +123,7 @@ abstract class AbstractActionEventEmitterAwareEventStore implements EventStore, 
         $this->actionEventEmitter->dispatch($event);
 
         if (! $event->getParam('result', false)) {
+            $streamName = $streamName->toString();
             throw new RuntimeException("Could not delete stream '$streamName'");
         }
     }
