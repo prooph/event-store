@@ -9,7 +9,7 @@ So let's directly jump into it and see what you can do with it.
 
 ## Event Hooks
 
-Requirements: an event store implementing \Prooph\EventStore\ActionEventEmitterAware.
+Requirements: an event store implementing \Prooph\EventStore\ActionEventEmitterAwareEventStore.
 
 Action events are triggered when methods of the event store are invoked. The action events are named like the 
 event store methods and most of them have a suffix to indicate whether they are triggered before or after the
@@ -23,7 +23,7 @@ logic of the method itself is executed. The following events are available (even
 - `hasStream`: event params: `streamName` - result params: `result`
 - `fetchStreamMetadata`: event params: `streamName` - result params: `metadata`
 
-If the event store implements additionally \Prooph\EventStore\CanControlTransactionActionEventEmitterAware,
+If the event store implements additionally \Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore,
 the following additional events are available:
 
 - `beginTransaction`: event params: `inTransaction` - result params: none

@@ -18,7 +18,7 @@ use Prooph\EventStore\Exception\TransactionNotRolledBack;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 
 abstract class AbstractCanControlTransactionActionEventEmitterAwareEventStore extends AbstractActionEventEmitterAwareEventStore implements
-    CanControlTransactionActionEventEmitterAware
+    CanControlTransactionActionEventEmitterAwareEventStore
 {
     /**
      * @var bool

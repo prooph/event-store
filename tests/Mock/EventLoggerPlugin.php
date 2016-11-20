@@ -12,14 +12,17 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Mock;
 
+use Iterator;
 use Prooph\Common\Event\ActionEvent;
+use Prooph\EventStore\ActionEventEmitterAwareEventStore;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Plugin\Plugin;
 
 class EventLoggerPlugin implements Plugin
 {
     /**
-     * @var \Iterator
+     * @var Iterator
      */
     protected $loggedStreamEvents;
 
@@ -28,27 +31,37 @@ class EventLoggerPlugin implements Plugin
         $this->loggedStreamEvents = new \ArrayIterator();
     }
 
-    /**
-     * @param EventStore $eventStore
-     * @return void
-     */
     public function setUp(EventStore $eventStore): void
     {
-        $callable = \Closure::fromCallable([$this, 'on']);
+        if (! $eventStore instanceof ActionEventEmitterAwareEventStore) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'EventStore must implement %s',
+                    ActionEventEmitterAwareEventStore::class
+                )
+            );
+        }
 
-        $eventStore->getActionEventEmitter()->attachListener('create', $callable, -10000);
-        $eventStore->getActionEventEmitter()->attachListener('appendTo', $callable, -10000);
+        $eventStore->getActionEventEmitter()->attachListener(
+            ActionEventEmitterAwareEventStore::EVENT_CREATE,
+            function (ActionEvent $event): void {
+                $stream = $event->getParam('stream');
+
+                $this->loggedStreamEvents = $stream->streamEvents();
+            },
+            -10000
+        );
+
+        $eventStore->getActionEventEmitter()->attachListener(
+            ActionEventEmitterAwareEventStore::EVENT_APPEND_TO,
+            function (ActionEvent $event): void {
+                $this->loggedStreamEvents = $event->getParam('streamEvents', new \ArrayIterator());
+            },
+            -10000
+        );
     }
 
-    /**
-     * @param ActionEvent $e
-     */
-    private function on(ActionEvent $e): void
-    {
-        $this->loggedStreamEvents = $e->getParam('streamEvents', new \ArrayIterator());
-    }
-
-    public function getLoggedStreamEvents(): \Iterator
+    public function getLoggedStreamEvents(): Iterator
     {
         return $this->loggedStreamEvents;
     }

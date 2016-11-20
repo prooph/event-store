@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace ProophTest\EventStore;
 
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\CanControlTransactionActionEventEmitterAware;
+use Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore;
 use Prooph\EventStore\InMemoryEventStore;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
@@ -26,16 +26,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function setUp(): void
     {
         $eventEmitter = new ProophActionEventEmitter([
-            CanControlTransactionActionEventEmitterAware::EVENT_APPEND_TO,
-            CanControlTransactionActionEventEmitterAware::EVENT_CREATE,
-            CanControlTransactionActionEventEmitterAware::EVENT_LOAD,
-            CanControlTransactionActionEventEmitterAware::EVENT_LOAD_REVERSE,
-            CanControlTransactionActionEventEmitterAware::EVENT_DELETE,
-            CanControlTransactionActionEventEmitterAware::EVENT_HAS_STREAM,
-            CanControlTransactionActionEventEmitterAware::EVENT_FETCH_STREAM_METADATA,
-            CanControlTransactionActionEventEmitterAware::EVENT_BEGIN_TRANSACTION,
-            CanControlTransactionActionEventEmitterAware::EVENT_COMMIT,
-            CanControlTransactionActionEventEmitterAware::EVENT_ROLLBACK,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_APPEND_TO,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_CREATE,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_LOAD,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_LOAD_REVERSE,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_DELETE,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_HAS_STREAM,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_FETCH_STREAM_METADATA,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_BEGIN_TRANSACTION,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_COMMIT,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_ROLLBACK,
         ]);
 
         $this->eventStore = new InMemoryEventStore($eventEmitter);
