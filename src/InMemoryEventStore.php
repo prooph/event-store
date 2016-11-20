@@ -71,7 +71,7 @@ final class InMemoryEventStore extends AbstractCanControlTransactionActionEventE
             $streamEvents = $event->getParam('streamEvents');
 
             if (! isset($this->streams[$streamName])
-                || ! isset($this->streams[$streamName])
+                && ! isset($this->cachedStreams[$streamName])
             ) {
                 return;
             }
