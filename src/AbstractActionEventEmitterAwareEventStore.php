@@ -20,7 +20,7 @@ use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Util\Assertion;
 
-abstract class AbstractActionEventEmitterAwareEventStore implements EventStore, ActionEventEmitterAware
+abstract class AbstractActionEventEmitterAwareEventStore implements ActionEventEmitterAwareEventStore
 {
     /**
      * @var ActionEventEmitter

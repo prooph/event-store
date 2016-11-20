@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-interface CanControlTransactionActionEventEmitterAware extends CanControlTransaction, ActionEventEmitterAware
+interface CanControlTransactionActionEventEmitterAwareEventStore extends
+    ActionEventEmitterAwareEventStore,
+    CanControlTransactionEventStore
 {
     const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
     const EVENT_COMMIT = 'commit';

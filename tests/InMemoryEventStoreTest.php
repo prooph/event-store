@@ -14,7 +14,7 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\CanControlTransactionActionEventEmitterAware;
+use Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
@@ -689,7 +689,7 @@ class InMemoryEventStoreTest extends TestCase
         $this->expectException(TransactionAlreadyStarted::class);
 
         $this->eventStore->getActionEventEmitter()->attachListener(
-            CanControlTransactionActionEventEmitterAware::EVENT_BEGIN_TRANSACTION,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_BEGIN_TRANSACTION,
             function (ActionEvent $event) {
                 $event->setParam('inTransaction', false);
                 $event->stopPropagation();
@@ -723,7 +723,7 @@ class InMemoryEventStoreTest extends TestCase
         $this->assertFalse($this->eventStore->hasStream($streamName));
 
         $this->eventStore->getActionEventEmitter()->attachListener(
-            CanControlTransactionActionEventEmitterAware::EVENT_COMMIT,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_COMMIT,
             function (ActionEvent $event) {
                 $event->setParam('inTransaction', true);
                 $event->stopPropagation();
@@ -757,7 +757,7 @@ class InMemoryEventStoreTest extends TestCase
         $this->assertFalse($this->eventStore->hasStream($streamName));
 
         $this->eventStore->getActionEventEmitter()->attachListener(
-            CanControlTransactionActionEventEmitterAware::EVENT_ROLLBACK,
+            CanControlTransactionActionEventEmitterAwareEventStore::EVENT_ROLLBACK,
             function (ActionEvent $event) {
                 $event->setParam('inTransaction', true);
                 $event->stopPropagation();

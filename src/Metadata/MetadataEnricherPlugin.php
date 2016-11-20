@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Metadata;
 
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\ActionEventEmitterAware;
+use Prooph\EventStore\ActionEventEmitterAwareEventStore;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Plugin\Plugin;
@@ -33,18 +33,18 @@ final class MetadataEnricherPlugin implements Plugin
 
     public function setUp(EventStore $eventStore): void
     {
-        if (! $eventStore instanceof ActionEventEmitterAware) {
+        if (! $eventStore instanceof ActionEventEmitterAwareEventStore) {
             throw new InvalidArgumentException(
                 sprintf(
                     'MetadataEnricherPlugin expects an EventStore implementing %s',
-                    ActionEventEmitterAware::class
+                    ActionEventEmitterAwareEventStore::class
                 )
             );
         }
         $eventEmitter = $eventStore->getActionEventEmitter();
 
-        $eventEmitter->attachListener(ActionEventEmitterAware::EVENT_CREATE, [$this, 'onEventStoreCreateStream'], -1000);
-        $eventEmitter->attachListener(ActionEventEmitterAware::EVENT_APPEND_TO, [$this, 'onEventStoreAppendToStream'], -1000);
+        $eventEmitter->attachListener(ActionEventEmitterAwareEventStore::EVENT_CREATE, [$this, 'onEventStoreCreateStream'], -1000);
+        $eventEmitter->attachListener(ActionEventEmitterAwareEventStore::EVENT_APPEND_TO, [$this, 'onEventStoreAppendToStream'], -1000);
     }
 
     /**
