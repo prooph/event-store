@@ -34,7 +34,7 @@ abstract class AbstractActionEventEmitterAwareEventStore implements ActionEventE
 
     public function create(Stream $stream): void
     {
-        $argv = ['stream' => $stream, 'streamEvents' => $stream->streamEvents()];
+        $argv = ['stream' => $stream];
 
         $event = $this->actionEventEmitter->getNewActionEvent(self::EVENT_CREATE, $this, $argv);
 

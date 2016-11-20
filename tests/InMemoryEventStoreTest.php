@@ -45,7 +45,9 @@ class InMemoryEventStoreTest extends TestCase
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
             function (ActionEvent $event) use (&$recordedEvents): void {
-                foreach ($event->getParam('streamEvents', new \ArrayIterator()) as $recordedEvent) {
+                $stream = $event->getParam('stream');
+
+                foreach ($stream->streamEvents() as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
             },
@@ -108,7 +110,9 @@ class InMemoryEventStoreTest extends TestCase
         $this->eventStore->getActionEventEmitter()->attachListener(
             'create',
             function (ActionEvent $event) use (&$recordedEvents): void {
-                foreach ($event->getParam('streamEvents', new \ArrayIterator()) as $recordedEvent) {
+                $stream = $event->getParam('stream');
+
+                foreach ($stream->streamEvents() as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
             },
