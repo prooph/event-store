@@ -14,7 +14,6 @@ namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
-use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\StreamName;
 
 abstract class AbstractReadModelProjection extends AbstractProjection
