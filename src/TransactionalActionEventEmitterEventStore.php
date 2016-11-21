@@ -12,16 +12,12 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-/**
- * This interfaces describes that an event store implementation allows control of the transaction handling
- */
-interface CanControlTransactionEventStore extends EventStore
+interface TransactionalActionEventEmitterEventStore extends
+    ActionEventEmitterEventStore,
+    TransactionalEventStore
 {
-    public function beginTransaction(): void;
-
-    public function commit(): void;
-
-    public function rollback(): void;
-
-    public function isInTransaction(): bool;
+    const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
+    const EVENT_COMMIT = 'commit';
+    const EVENT_IS_IN_TRANSACTION = 'isInTransaction';
+    const EVENT_ROLLBACK = 'rollback';
 }

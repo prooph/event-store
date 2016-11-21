@@ -18,7 +18,7 @@ use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 
-final class InMemoryEventStore extends AbstractCanControlTransactionActionEventEmitterAwareEventStore
+final class InMemoryEventStore extends AbstractTransactionalActionEventEmitterEventStore
 {
     /**
      * @var array
