@@ -14,7 +14,7 @@ namespace ProophTest\EventStore\Mock;
 
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\ActionEventEmitterAwareEventStore;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Plugin\Plugin;
@@ -33,17 +33,17 @@ class EventLoggerPlugin implements Plugin
 
     public function setUp(EventStore $eventStore): void
     {
-        if (! $eventStore instanceof ActionEventEmitterAwareEventStore) {
+        if (! $eventStore instanceof ActionEventEmitterEventStore) {
             throw new InvalidArgumentException(
                 sprintf(
                     'EventStore must implement %s',
-                    ActionEventEmitterAwareEventStore::class
+                    ActionEventEmitterEventStore::class
                 )
             );
         }
 
         $eventStore->getActionEventEmitter()->attachListener(
-            ActionEventEmitterAwareEventStore::EVENT_CREATE,
+            ActionEventEmitterEventStore::EVENT_CREATE,
             function (ActionEvent $event): void {
                 $stream = $event->getParam('stream');
 
@@ -53,7 +53,7 @@ class EventLoggerPlugin implements Plugin
         );
 
         $eventStore->getActionEventEmitter()->attachListener(
-            ActionEventEmitterAwareEventStore::EVENT_APPEND_TO,
+            ActionEventEmitterEventStore::EVENT_APPEND_TO,
             function (ActionEvent $event): void {
                 $this->loggedStreamEvents = $event->getParam('streamEvents', new \ArrayIterator());
             },
