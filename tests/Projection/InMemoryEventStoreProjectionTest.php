@@ -31,14 +31,18 @@ class InMemoryEventStoreProjectionTest extends TestCase
     public function it_links_to(): void
     {
         $this->prepareEventStream('user-123');
+
+        $testCase = $this;
+
         $this->eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator()));
 
         $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
         $projection
             ->fromStream('user-123')
             ->whenAny(
-                function (array $state, Message $event): array {
+                function (array $state, Message $event) use ($testCase): array {
                     $this->linkTo('foo', $event);
+                    $testCase->assertEquals('user-123', $this->streamName());
                     return $state;
                 }
             )
@@ -48,6 +52,35 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $events = $streams->streamEvents();
 
         $this->assertCount(50, $events);
+    }
+
+    /**
+     * @test
+     */
+    public function it_links_to_and_stops(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $testCase = $this;
+
+        $this->eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator()));
+
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
+        $projection
+            ->fromStream('user-123')
+            ->whenAny(
+                function (array $state, Message $event) use ($testCase): void {
+                    $this->linkTo('foo', $event);
+                    $testCase->assertEquals('user-123', $this->streamName());
+                    $this->stop();
+                }
+            )
+            ->run();
+
+        $streams = $this->eventStore->load(new StreamName('foo'));
+        $events = $streams->streamEvents();
+
+        $this->assertCount(1, $events);
     }
 
     /**

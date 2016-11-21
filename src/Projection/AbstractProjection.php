@@ -90,12 +90,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         $singleHandler = null !== $this->handler;
 
         foreach ($this->position->streamPositions() as $streamName => $position) {
-            try {
-                $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
-            } catch (StreamNotFound $e) {
-                // no newer events found
-                continue;
-            }
+            $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
 
             if ($singleHandler) {
                 $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
