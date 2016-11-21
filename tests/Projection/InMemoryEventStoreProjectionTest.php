@@ -85,11 +85,14 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
+        $testCase = $this;
+
         $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
         $projection
             ->fromStream('user-123')
             ->when([
-                UserCreated::class => function (array $state, UserCreated $event): void {
+                UserCreated::class => function (array $state, UserCreated $event) use ($testCase): void {
+                    $testCase->assertEquals('user-123', $this->streamName());
                     $this->emit($event);
                 }
             ])

@@ -32,6 +32,8 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
+        $testCase = $this;
+
         $readModel = new ReadModelProjectionMock();
 
         $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel);
@@ -39,10 +41,12 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
         $projection
             ->fromAll()
             ->when([
-                UserCreated::class => function ($state, Message $event): void {
+                UserCreated::class => function ($state, Message $event) use ($testCase): void {
+                    $testCase->assertEquals('user-123', $this->streamName());
                     $this->readModelProjection()->insert('name', $event->payload()['name']);
                 },
-                UsernameChanged::class => function ($state, Message $event): void {
+                UsernameChanged::class => function ($state, Message $event) use ($testCase): void {
+                    $testCase->assertEquals('user-123', $this->streamName());
                     $this->readModelProjection()->update('name', $event->payload()['name']);
                 }
             ])

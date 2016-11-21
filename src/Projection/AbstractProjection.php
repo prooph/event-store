@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use ArrayIterator;
+use Closure;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
@@ -110,10 +111,13 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
     {
+        $handler = $this->handler;
+        $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
+
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
-            $handler = $this->handler;
+
             $result = $handler($this->state, $event);
 
             if (is_array($result)) {
@@ -133,10 +137,13 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
+
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;
             }
+
             $handler = $this->handlers[$event->messageName()];
+            $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
             $result = $handler($this->state, $event);
 
             if (is_array($result)) {
@@ -151,19 +158,24 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         }
     }
 
-    protected function createHandlerContext()
+    protected function createHandlerContext(?string $streamName)
     {
         if ($this->emitEnabled) {
-            return new class($this) {
-
+            return new class($this, $streamName) {
                 /**
                  * @var Projection
                  */
                 private $projection;
 
-                public function __construct(Projection $projection)
+                /**
+                 * @var ?string
+                 */
+                private $streamName;
+
+                public function __construct(Projection $projection, ?string $streamName)
                 {
                     $this->projection = $projection;
+                    $this->streamName = $streamName;
                 }
 
                 public function stop(): void
@@ -180,18 +192,29 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 {
                     $this->projection->emit($event);
                 }
+
+                public function streamName(): ?string
+                {
+                    return $this->streamName;
+                }
             };
         }
 
-        return new class($this) {
+        return new class($this, $streamName) {
             /**
              * @var Projection
              */
             private $projection;
 
-            public function __construct(Projection $projection)
+            /**
+             * @var ?string
+             */
+            private $streamName;
+
+            public function __construct(Projection $projection, ?string $streamName)
             {
                 $this->projection = $projection;
+                $this->streamName = $streamName;
             }
 
             public function stop(): void
@@ -202,6 +225,11 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             public function linkTo(string $streamName, Message $event): void
             {
                 $this->projection->linkTo($streamName, $event);
+            }
+
+            public function streamName(): ?string
+            {
+                return $this->streamName;
             }
         };
     }
