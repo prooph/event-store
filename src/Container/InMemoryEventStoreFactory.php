@@ -18,7 +18,7 @@ use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
@@ -79,16 +79,16 @@ final class InMemoryEventStoreFactory implements
 
         if (! isset($config['event_emitter'])) {
             $eventEmitter = new ProophActionEventEmitter([
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_APPEND_TO,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_CREATE,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_LOAD,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_LOAD_REVERSE,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_DELETE,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_HAS_STREAM,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_FETCH_STREAM_METADATA,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_BEGIN_TRANSACTION,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_COMMIT,
-                CanControlTransactionActionEventEmitterAwareEventStore::EVENT_ROLLBACK,
+                TransactionalActionEventEmitterEventStore::EVENT_APPEND_TO,
+                TransactionalActionEventEmitterEventStore::EVENT_CREATE,
+                TransactionalActionEventEmitterEventStore::EVENT_LOAD,
+                TransactionalActionEventEmitterEventStore::EVENT_LOAD_REVERSE,
+                TransactionalActionEventEmitterEventStore::EVENT_DELETE,
+                TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
+                TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
+                TransactionalActionEventEmitterEventStore::EVENT_BEGIN_TRANSACTION,
+                TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
+                TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
             ]);
         } else {
             $eventEmitter = $container->get($config['event_emitter']);

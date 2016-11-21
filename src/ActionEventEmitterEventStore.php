@@ -14,7 +14,7 @@ namespace Prooph\EventStore;
 
 use Prooph\Common\Event\ActionEventEmitter;
 
-interface ActionEventEmitterAwareEventStore extends EventStore
+interface ActionEventEmitterEventStore extends EventStore
 {
     const EVENT_APPEND_TO = 'appendTo';
     const EVENT_CREATE = 'create';

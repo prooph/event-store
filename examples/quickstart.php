@@ -18,8 +18,8 @@ require_once __DIR__ . '/event/QuickStartSucceeded.php';
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\ActionEventEmitterAwareEventStore;
-use Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\QuickStart\Event\QuickStartSucceeded;
 use Prooph\EventStore\Stream;
@@ -36,16 +36,16 @@ use Prooph\EventStore\StreamName;
  * by your web framework.
  */
 $eventEmitter = new ProophActionEventEmitter([
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_APPEND_TO,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_CREATE,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_LOAD,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_LOAD_REVERSE,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_DELETE,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_HAS_STREAM,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_FETCH_STREAM_METADATA,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_BEGIN_TRANSACTION,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_COMMIT,
-    CanControlTransactionActionEventEmitterAwareEventStore::EVENT_ROLLBACK,
+    TransactionalActionEventEmitterEventStore::EVENT_APPEND_TO,
+    TransactionalActionEventEmitterEventStore::EVENT_CREATE,
+    TransactionalActionEventEmitterEventStore::EVENT_LOAD,
+    TransactionalActionEventEmitterEventStore::EVENT_LOAD_REVERSE,
+    TransactionalActionEventEmitterEventStore::EVENT_DELETE,
+    TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
+    TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
+    TransactionalActionEventEmitterEventStore::EVENT_BEGIN_TRANSACTION,
+    TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
+    TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
 ]);
 
 $eventStore = new InMemoryEventStore($eventEmitter);
@@ -86,7 +86,7 @@ $eventStore->create($singleStream);
  * Plugins are simple event listeners. See the docs of prooph/common for more details about event listeners.
  */
 $eventStore->getActionEventEmitter()->attachListener(
-    ActionEventEmitterAwareEventStore::EVENT_APPEND_TO, // InMemoryEventStore provides event hooks
+    ActionEventEmitterEventStore::EVENT_APPEND_TO, // InMemoryEventStore provides event hooks
     function (ActionEvent $actionEvent): void {
         /**
          * In the *commit.post* action event a plugin has access to
