@@ -41,13 +41,11 @@
         "malukenho/docheader": "^0.1.4"
     },
     "suggest" : {
+        "prooph/pdo-event-store": "For usage with MySQL or Postgres as event store",
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
         "prooph/service-bus" : "Message bus facade to connect the event store with messaging systems",
         "container-interop/container-interop": "For usage of provided factories",
         "sandrokeil/interop-config": "For usage of provided factories",
-        "prooph/event-store-doctrine-adapter": "For usage with doctrine dbal as event store adapter",
-        "prooph/event-store-flywheel-adapter": "For usage with flywheel as event store adapter",
-        "prooph/event-store-mongodb-adapter": "For usage with mongodb as event store adapter",
         "prooph/snapshot-doctrine-adapter": "For usage with doctrine dbal as snapshot adapter",
         "prooph/snapshot-memcached-adapter": "For usage with memcached as snapshot adapter",
         "prooph/snapshot-mongodb-adapter": "For usage with mongodb as snapshot adapter"
