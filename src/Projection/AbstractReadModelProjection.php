@@ -14,7 +14,6 @@ namespace Prooph\EventStore\Projection;
 
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
-use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\StreamName;
 
 abstract class AbstractReadModelProjection extends AbstractProjection
@@ -60,12 +59,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection
         $singleHandler = null !== $this->handler;
 
         foreach ($this->position->streamPositions() as $streamName => $position) {
-            try {
-                $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
-            } catch (StreamNotFound $e) {
-                // no newer events found
-                continue;
-            }
+            $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
 
             if ($singleHandler) {
                 $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
@@ -84,18 +78,23 @@ abstract class AbstractReadModelProjection extends AbstractProjection
         $this->readModelProjection->resetProjection();
     }
 
-    protected function createHandlerContext()
+    protected function createHandlerContext(?string $streamName)
     {
-        return new class($this) {
-
+        return new class($this, $streamName) {
             /**
              * @var Projection
              */
             private $projection;
 
-            public function __construct(Projection $projection)
+            /**
+             * @var ?string
+             */
+            private $streamName;
+
+            public function __construct(Projection $projection, ?string $streamName)
             {
                 $this->projection = $projection;
+                $this->streamName = $streamName;
             }
 
             public function stop(): void
@@ -106,6 +105,11 @@ abstract class AbstractReadModelProjection extends AbstractProjection
             public function readModelProjection(): ReadModelProjection
             {
                 return $this->projection->readModelProjection();
+            }
+
+            public function streamName(): ?string
+            {
+                return $this->streamName;
             }
         };
     }

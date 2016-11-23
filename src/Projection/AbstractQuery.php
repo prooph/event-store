@@ -68,7 +68,7 @@ abstract class AbstractQuery implements Query
             throw new RuntimeException('Projection already initialized');
         }
 
-        $callback = Closure::bind($callback, $this->createHandlerContext());
+        $callback = Closure::bind($callback, $this->createHandlerContext(null));
 
         $result = $callback();
 
@@ -124,8 +124,6 @@ abstract class AbstractQuery implements Query
                 throw new InvalidArgumentException('Invalid handler given, Closure expected');
             }
 
-            $handler = Closure::bind($handler, $this->createHandlerContext());
-
             $this->handlers[$eventName] = $handler;
         }
 
@@ -137,8 +135,6 @@ abstract class AbstractQuery implements Query
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new RuntimeException('When was already called');
         }
-
-        $handler = Closure::bind($handler, $this->createHandlerContext());
 
         $this->handler = $handler;
 
@@ -202,10 +198,13 @@ abstract class AbstractQuery implements Query
 
     private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
     {
+        $handler = $this->handler;
+        $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
+
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
-            $handler = $this->handler;
+
             $result = $handler($this->state, $event);
 
             if (is_array($result)) {
@@ -229,6 +228,7 @@ abstract class AbstractQuery implements Query
             }
 
             $handler = $this->handlers[$event->messageName()];
+            $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
             $result = $handler($this->state, $event);
 
             if (is_array($result)) {
@@ -241,23 +241,33 @@ abstract class AbstractQuery implements Query
         }
     }
 
-    protected function createHandlerContext()
+    protected function createHandlerContext(?string $streamName)
     {
-        return new class($this) {
-
+        return new class($this, $streamName) {
             /**
              * @var Query
              */
             private $query;
 
-            public function __construct(Query $query)
+            /**
+             * @var ?string
+             */
+            private $streamName;
+
+            public function __construct(Query $query, ?string $streamName)
             {
                 $this->query = $query;
+                $this->streamName = $streamName;
             }
 
             public function stop(): void
             {
                 $this->query->stop();
+            }
+
+            public function streamName(): ?string
+            {
+                return $this->streamName;
             }
         };
     }

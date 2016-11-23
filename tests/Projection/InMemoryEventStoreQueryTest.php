@@ -119,6 +119,8 @@ class InMemoryEventStoreQueryTest extends TestCase
         $this->prepareEventStream('user-234');
         $this->prepareEventStream('$iternal-345');
 
+        $testCase = $this;
+
         $query = new InMemoryEventStoreQuery($this->eventStore);
 
         $query
@@ -127,8 +129,13 @@ class InMemoryEventStoreQueryTest extends TestCase
             })
             ->fromAll()
             ->whenAny(
-                function (array $state, Message $event): array {
+                function (array $state, Message $event) use ($testCase): array {
                     $state['count']++;
+                    if ($state['count'] < 51) {
+                        $testCase->assertEquals('user-123', $this->streamName());
+                    } else {
+                        $testCase->assertEquals('user-234', $this->streamName());
+                    }
                     return $state;
                 }
             )
