@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use ArrayIterator;
-use Closure;
-use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
