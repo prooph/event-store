@@ -109,55 +109,6 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         }
     }
 
-    protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
-    {
-        $handler = $this->handler;
-        $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
-
-        foreach ($events as $event) {
-            /* @var Message $event */
-            $this->position->inc($streamName);
-
-            $result = $handler($this->state, $event);
-
-            if (is_array($result)) {
-                $this->state = $result;
-            }
-
-            $this->persist();
-
-            if ($this->isStopped) {
-                break;
-            }
-        }
-    }
-
-    protected function handleStreamWithHandlers(string $streamName, Iterator $events): void
-    {
-        foreach ($events as $event) {
-            /* @var Message $event */
-            $this->position->inc($streamName);
-
-            if (! isset($this->handlers[$event->messageName()])) {
-                continue;
-            }
-
-            $handler = $this->handlers[$event->messageName()];
-            $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
-            $result = $handler($this->state, $event);
-
-            if (is_array($result)) {
-                $this->state = $result;
-            }
-
-            $this->persist();
-
-            if ($this->isStopped) {
-                break;
-            }
-        }
-    }
-
     protected function createHandlerContext(?string $streamName)
     {
         if ($this->emitEnabled) {
