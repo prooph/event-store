@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use ArrayIterator;
+use Closure;
+use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\RuntimeException;
@@ -100,6 +102,58 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             } else {
                 $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
             }
+
+            if ($this->isStopped) {
+                break;
+            }
+        }
+    }
+
+    protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    {
+        $handler = $this->handler;
+        $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
+
+        foreach ($events as $event) {
+            /* @var Message $event */
+            $this->position->inc($streamName);
+
+            $result = $handler($this->state, $event);
+
+            if (is_array($result)) {
+                $this->state = $result;
+            }
+
+            $this->persist();
+
+            if ($this->isStopped) {
+                break;
+            }
+        }
+    }
+
+    protected function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    {
+        foreach ($this->handlers as $messageName => $handler) {
+            $this->handlers[$messageName] = Closure::bind($handler, $this->createHandlerContext($streamName));
+        }
+
+        foreach ($events as $event) {
+            /* @var Message $event */
+            $this->position->inc($streamName);
+
+            if (! isset($this->handlers[$event->messageName()])) {
+                continue;
+            }
+
+            $handler = $this->handlers[$event->messageName()];
+            $result = $handler($this->state, $event);
+
+            if (is_array($result)) {
+                $this->state = $result;
+            }
+
+            $this->persist();
 
             if ($this->isStopped) {
                 break;

@@ -196,7 +196,7 @@ abstract class AbstractQuery implements Query
         return $this->state;
     }
 
-    protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
     {
         $handler = $this->handler;
         $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
@@ -217,7 +217,7 @@ abstract class AbstractQuery implements Query
         }
     }
 
-    protected function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    private function handleStreamWithHandlers(string $streamName, Iterator $events): void
     {
         foreach ($this->handlers as $messageName => $handler) {
             $this->handlers[$messageName] = Closure::bind($handler, $this->createHandlerContext($streamName));
