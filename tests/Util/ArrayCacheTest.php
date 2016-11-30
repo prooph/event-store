@@ -57,6 +57,9 @@ class ArrayCacheTest extends TestCase
     public function it_gets_checks_for_values(): void
     {
         $cache = new ArrayCache(4);
+
+        $this->assertNull($cache->get(0));
+
         $cache->append(1);
         $cache->append(2);
         $cache->append(3);
