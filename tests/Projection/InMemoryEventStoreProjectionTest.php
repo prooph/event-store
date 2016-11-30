@@ -41,8 +41,14 @@ class InMemoryEventStoreProjectionTest extends TestCase
             ->fromStream('user-123')
             ->whenAny(
                 function (array $state, Message $event) use ($testCase): array {
+                    static $i = 0;
                     $this->linkTo('foo', $event);
                     $testCase->assertEquals('user-123', $this->streamName());
+
+                    if (++$i === 50) {
+                        $this->stop();
+                    }
+
                     return $state;
                 }
             )
@@ -52,35 +58,6 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $events = $streams->streamEvents();
 
         $this->assertCount(50, $events);
-    }
-
-    /**
-     * @test
-     */
-    public function it_links_to_and_stops(): void
-    {
-        $this->prepareEventStream('user-123');
-
-        $testCase = $this;
-
-        $this->eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator()));
-
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
-        $projection
-            ->fromStream('user-123')
-            ->whenAny(
-                function (array $state, Message $event) use ($testCase): void {
-                    $this->linkTo('foo', $event);
-                    $testCase->assertEquals('user-123', $this->streamName());
-                    $this->stop();
-                }
-            )
-            ->run();
-
-        $streams = $this->eventStore->load(new StreamName('foo'));
-        $events = $streams->streamEvents();
-
-        $this->assertCount(1, $events);
     }
 
     /**
@@ -127,6 +104,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
                 UserCreated::class => function (array $state, UserCreated $event) use ($testCase): void {
                     $testCase->assertEquals('user-123', $this->streamName());
                     $this->emit($event);
+                    $this->stop();
                 }
             ])
             ->run();
@@ -157,6 +135,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
             ->when([
                 UserCreated::class => function (array $state, UserCreated $event): array {
                     $this->emit($event);
+                    $this->stop();
                     return $state;
                 }
             ])

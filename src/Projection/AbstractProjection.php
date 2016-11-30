@@ -81,30 +81,32 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             throw new RuntimeException('No handlers configured');
         }
 
-        $this->load();
+        while (! $this->isStopped) {
+            $this->load();
 
-        if ($this->emitEnabled && ! $this->eventStore->hasStream(new StreamName($this->name))) {
-            $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
-        }
-
-        $singleHandler = null !== $this->handler;
-
-        foreach ($this->position->streamPositions() as $streamName => $position) {
-            try {
-                $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
-            } catch (StreamNotFound $e) {
-                // no newer events found
-                continue;
+            if ($this->emitEnabled && ! $this->eventStore->hasStream(new StreamName($this->name))) {
+                $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
             }
 
-            if ($singleHandler) {
-                $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
-            } else {
-                $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
-            }
+            $singleHandler = null !== $this->handler;
 
-            if ($this->isStopped) {
-                break;
+            foreach ($this->position->streamPositions() as $streamName => $position) {
+                try {
+                    $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+                } catch (StreamNotFound $e) {
+                    // no newer events found
+                    continue;
+                }
+
+                if ($singleHandler) {
+                    $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
+                } else {
+                    $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
+                }
+
+                if ($this->isStopped) {
+                    break;
+                }
             }
         }
     }
