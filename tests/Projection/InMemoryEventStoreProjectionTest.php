@@ -41,11 +41,10 @@ class InMemoryEventStoreProjectionTest extends TestCase
             ->fromStream('user-123')
             ->whenAny(
                 function (array $state, Message $event) use ($testCase): array {
-                    static $i = 0;
                     $this->linkTo('foo', $event);
                     $testCase->assertEquals('user-123', $this->streamName());
 
-                    if (++$i === 50) {
+                    if ($event->metadata()['_aggregate_version'] === 50) {
                         $this->stop();
                     }
 
@@ -58,34 +57,6 @@ class InMemoryEventStoreProjectionTest extends TestCase
         $events = $streams->streamEvents();
 
         $this->assertCount(50, $events);
-    }
-
-    /**
-     * @test
-     */
-    public function it_can_be_stopped_while_processing()
-    {
-        $this->prepareEventStream('user-123');
-
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
-
-        $projection
-            ->init(function (): array {
-                return ['count' => 0];
-            })
-            ->fromStream('user-123')
-            ->whenAny(function (array $state, Message $event): array {
-                $state['count']++;
-
-                if ($state['count'] === 10) {
-                    $this->stop();
-                }
-
-                return $state;
-            })
-            ->run();
-
-        $this->assertEquals(10, $projection->getState()['count']);
     }
 
     /**
