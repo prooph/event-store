@@ -18,9 +18,13 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
 {
     use InMemoryEventStoreQueryTrait;
 
-    public function __construct(InMemoryEventStore $eventStore, string $name, ReadModelProjection $readModelProjection)
-    {
-        parent::__construct($eventStore, $name, $readModelProjection);
+    public function __construct(
+        InMemoryEventStore $eventStore,
+        string $name,
+        ReadModelProjection $readModelProjection,
+        int $cacheSize
+    ) {
+        parent::__construct($eventStore, $name, $readModelProjection, $cacheSize);
 
         $this->buildKnownStreams();
     }

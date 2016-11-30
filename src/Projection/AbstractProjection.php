@@ -21,6 +21,7 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use Prooph\EventStore\Util\ArrayCache;
 
 abstract class AbstractProjection extends AbstractQuery implements Projection
 {
@@ -34,12 +35,18 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
      */
     protected $emitEnabled;
 
-    public function __construct(EventStore $eventStore, string $name, bool $emitEnabled)
+    /**
+     * @var
+     */
+    protected $cachedStreamNames;
+
+    public function __construct(EventStore $eventStore, string $name, bool $emitEnabled, int $cacheSize)
     {
         parent::__construct($eventStore);
 
         $this->name = $name;
         $this->emitEnabled = $emitEnabled;
+        $this->cachedStreamNames = new ArrayCache($cacheSize);
     }
 
     abstract protected function load(): void;
@@ -63,7 +70,20 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     public function linkTo(string $streamName, Message $event): void
     {
-        $this->eventStore->appendTo(new StreamName($streamName), new ArrayIterator([$event]));
+        $sn = new StreamName($streamName);
+
+        if ($this->cachedStreamNames->has($streamName)) {
+            $append = true;
+        } else {
+            $this->cachedStreamNames->append($streamName);
+            $append = $this->eventStore->hasStream($sn);
+        }
+
+        if ($append) {
+            $this->eventStore->appendTo($sn, new ArrayIterator([$event]));
+        } else {
+            $this->eventStore->create(new Stream($sn, new ArrayIterator([$event])));
+        }
     }
 
     public function reset(): void

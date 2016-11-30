@@ -18,9 +18,9 @@ final class InMemoryEventStoreProjection extends AbstractProjection
 {
     use InMemoryEventStoreQueryTrait;
 
-    public function __construct(InMemoryEventStore $eventStore, string $name, bool $emitEnabled)
+    public function __construct(InMemoryEventStore $eventStore, string $name, bool $emitEnabled, int $cacheSize)
     {
-        parent::__construct($eventStore, $name, $emitEnabled);
+        parent::__construct($eventStore, $name, $emitEnabled, $cacheSize);
 
         $this->buildKnownStreams();
     }

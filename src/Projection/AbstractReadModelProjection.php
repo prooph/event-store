@@ -24,9 +24,13 @@ abstract class AbstractReadModelProjection extends AbstractProjection
      */
     private $readModelProjection;
 
-    public function __construct(EventStore $eventStore, string $name, ReadModelProjection $readModelProjection)
-    {
-        parent::__construct($eventStore, $name, false);
+    public function __construct(
+        EventStore $eventStore,
+        string $name,
+        ReadModelProjection $readModelProjection,
+        int $cacheSize
+    ) {
+        parent::__construct($eventStore, $name, false, $cacheSize);
 
         $this->readModelProjection = $readModelProjection;
     }
@@ -51,12 +55,12 @@ abstract class AbstractReadModelProjection extends AbstractProjection
             throw new RuntimeException('No handlers configured');
         }
 
+        if (! $this->readModelProjection->projectionIsInitialized()) {
+            $this->readModelProjection->initProjection();
+        }
+
         do {
             $this->load();
-
-            if (! $this->readModelProjection->projectionIsInitialized()) {
-                $this->readModelProjection->initProjection();
-            }
 
             $singleHandler = null !== $this->handler;
 

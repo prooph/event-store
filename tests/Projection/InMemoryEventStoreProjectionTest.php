@@ -34,9 +34,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $this->eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator()));
-
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 100);
         $projection
             ->fromStream('user-123')
             ->whenAny(
@@ -68,7 +66,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 0);
         $projection
             ->fromStream('user-123')
             ->when([
@@ -100,7 +98,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 100);
         $projection
             ->fromStream('user-123')
             ->when([
@@ -134,7 +132,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $this->prepareEventStream('user-123');
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false, 100);
         $projection
             ->fromStream('user-123')
             ->whenAny(function (array $state, Message $event): void {
@@ -150,7 +148,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false, 100);
         $projection->run();
     }
 
