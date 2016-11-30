@@ -17,12 +17,12 @@ cache:
     - $HOME/.local
 
 before_script:
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - phpenv config-rm xdebug.ini
   - composer self-update
   - composer update --prefer-dist $DEPENDENCIES
 
 script:
-  - ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
+  - if [[ $TEST_COVERAGE == 'true' ]]; then php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml; else ./vendor/bin/phpunit; fi
   - ./vendor/bin/php-cs-fixer fix -v --diff --dry-run
   - ./vendor/bin/docheader check examples/ src/ tests/
 
