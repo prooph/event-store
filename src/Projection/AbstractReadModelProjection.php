@@ -78,7 +78,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection
                     break;
                 }
             }
-        } while($keepRunning && ! $this->isStopped);
+        } while ($keepRunning && ! $this->isStopped);
     }
 
     protected function resetProjection(): void
