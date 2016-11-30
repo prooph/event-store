@@ -73,7 +73,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         $this->resetProjection();
     }
 
-    public function run(): void
+    public function run(bool $keepRunning = true): void
     {
         if (null === $this->position
             || (null === $this->handler && empty($this->handlers))
@@ -81,7 +81,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             throw new RuntimeException('No handlers configured');
         }
 
-        while (! $this->isStopped) {
+        while ($keepRunning && ! $this->isStopped) {
             $this->load();
 
             if ($this->emitEnabled && ! $this->eventStore->hasStream(new StreamName($this->name))) {

@@ -43,7 +43,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection
         }
     }
 
-    public function run(): void
+    public function run(bool $keepRunning = true): void
     {
         if (null === $this->position
             || (null === $this->handler && empty($this->handlers))
@@ -51,7 +51,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection
             throw new RuntimeException('No handlers configured');
         }
 
-        while (! $this->isStopped) {
+        while ($keepRunning && ! $this->isStopped) {
             $this->load();
 
             if (! $this->readModelProjection->projectionIsInitialized()) {

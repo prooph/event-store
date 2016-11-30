@@ -23,4 +23,6 @@ interface Projection extends Query
     public function linkTo(string $streamName, Message $event): void;
 
     public function delete(bool $deleteEmittedEvents): void;
+
+    public function run(bool $keepRunning = true): void;
 }
