@@ -27,7 +27,7 @@ class ArrayCache
     /**
      * @var int
      */
-    private $position = 0;
+    private $position = -1;
 
     public function __construct(int $size)
     {
@@ -36,6 +36,7 @@ class ArrayCache
         }
 
         $this->size = $size;
+        $this->container = array_fill(0, $size, null);
     }
 
     /**
@@ -52,8 +53,10 @@ class ArrayCache
      */
     public function get(int $position)
     {
-        if ($position > $this->size()) {
-            throw new \InvalidArgumentException('Position must be between 0 and ' . $this->size);
+        if ($position >= $this->size
+            || $position < 0
+        ) {
+            throw new \InvalidArgumentException('Position must be between 0 and ' . ($this->size - 1));
         }
 
         return $this->container[$position];
@@ -71,12 +74,12 @@ class ArrayCache
 
     private function nextPosition(): int
     {
-        $position = $this->position++;
+        $this->position++;
 
-        if ($position === $this->size()) {
-            $position = 0;
+        if ($this->position === $this->size()) {
+            $this->position = 0;
         }
 
-        return $position;
+        return $this->position;
     }
 }
