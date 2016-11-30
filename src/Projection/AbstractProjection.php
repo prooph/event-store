@@ -81,7 +81,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             throw new RuntimeException('No handlers configured');
         }
 
-        while ($keepRunning && ! $this->isStopped) {
+        do {
             $this->load();
 
             if ($this->emitEnabled && ! $this->eventStore->hasStream(new StreamName($this->name))) {
@@ -108,7 +108,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                     break;
                 }
             }
-        }
+        } while ($keepRunning && ! $this->isStopped);
     }
 
     protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
