@@ -31,7 +31,7 @@ class ArrayCache
 
     public function __construct(int $size)
     {
-        if ($size < 0) {
+        if ($size <= 0) {
             throw new \InvalidArgumentException('Size must be a positive integer');
         }
 
@@ -74,12 +74,6 @@ class ArrayCache
 
     private function nextPosition(): int
     {
-        $this->position++;
-
-        if ($this->position === $this->size()) {
-            $this->position = 0;
-        }
-
-        return $this->position;
+        return $this->position = ++$this->position % $this->size;
     }
 }

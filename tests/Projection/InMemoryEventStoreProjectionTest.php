@@ -66,7 +66,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 0);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 1);
         $projection
             ->fromStream('user-123')
             ->when([

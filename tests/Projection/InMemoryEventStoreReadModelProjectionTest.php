@@ -36,7 +36,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $readModel = new ReadModelProjectionMock();
 
-        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 0);
+        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 1);
 
         $projection
             ->fromAll()
