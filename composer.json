@@ -34,7 +34,7 @@
         "phpunit/phpunit": "^5.6",
         "phpunit/phpunit-mock-objects": "^3.3.1",
         "phpspec/prophecy": "dev-patch-1 as 1.6.1",
-        "friendsofphp/php-cs-fixer": "^2.0.0",
+        "prooph/php-cs-fixer-config": "^0.1.0",
         "satooshi/php-coveralls": "^1.0",
         "zendframework/zend-servicemanager": "~2.6",
         "tobiju/bookdown-bootswatch-templates": "^1.0",
