@@ -75,7 +75,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         if ($this->cachedStreamNames->has($streamName)) {
             $append = true;
         } else {
-            $this->cachedStreamNames->append($streamName);
+            $this->cachedStreamNames->rollingAppend($streamName);
             $append = $this->eventStore->hasStream($sn);
         }
 

@@ -36,6 +36,8 @@ class ArrayCacheTest extends TestCase
 
         $cache = new ArrayCache(100);
 
+        $this->assertEquals(100, $cache->size());
+
         $cache->get(101);
     }
 
@@ -60,17 +62,17 @@ class ArrayCacheTest extends TestCase
 
         $this->assertNull($cache->get(0));
 
-        $cache->append(1);
-        $cache->append(2);
-        $cache->append(3);
-        $cache->append(4);
+        $cache->rollingAppend(1);
+        $cache->rollingAppend(2);
+        $cache->rollingAppend(3);
+        $cache->rollingAppend(4);
 
         $this->assertTrue($cache->has(4));
         $this->assertEquals(3, $cache->get(2));
 
-        $cache->append(5);
-        $cache->append(6);
-        $cache->append(7);
+        $cache->rollingAppend(5);
+        $cache->rollingAppend(6);
+        $cache->rollingAppend(7);
 
         $this->assertTrue($cache->has(7));
         $this->assertEquals(7, $cache->get(2));

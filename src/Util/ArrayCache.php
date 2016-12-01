@@ -42,7 +42,7 @@ class ArrayCache
     /**
      * @param mixed $value
      */
-    public function append($value): void
+    public function rollingAppend($value): void
     {
         $this->container[$this->nextPosition()] = $value;
     }
