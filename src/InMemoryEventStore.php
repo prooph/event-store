@@ -211,8 +211,8 @@ final class InMemoryEventStore extends AbstractTransactionalActionEventEmitterEv
                 if (isset($data['metadata'])) {
                     $this->streams[$streamName] = $data;
                 } else {
-                    foreach ($data['events'] as $event) {
-                        $this->streams[$streamName]['events'][] = $event;
+                    foreach ($data['events'] as $streamEvent) {
+                        $this->streams[$streamName]['events'][] = $streamEvent;
                     }
                 }
             }
