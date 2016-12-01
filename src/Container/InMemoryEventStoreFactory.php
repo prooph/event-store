@@ -151,7 +151,7 @@ final class InMemoryEventStoreFactory implements
     {
         return [
             'metadata_enrichers' => [],
-            'plugins' => []
+            'plugins' => [],
         ];
     }
 }

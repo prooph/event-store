@@ -299,7 +299,7 @@ class InMemoryEventStoreTest extends TestCase
         $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([
             $streamEventVersion2,
             $streamEventVersion3,
-            $streamEventVersion4
+            $streamEventVersion4,
         ]));
 
         $stream = $this->eventStore->load($stream->streamName(), 2, 2);
@@ -359,7 +359,7 @@ class InMemoryEventStoreTest extends TestCase
         $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([
             $streamEventVersion2,
             $streamEventVersion3,
-            $streamEventVersion4
+            $streamEventVersion4,
         ]));
 
         $stream = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
@@ -596,7 +596,7 @@ class InMemoryEventStoreTest extends TestCase
 
         $this->assertEquals(
             [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             $this->eventStore->fetchStreamMetadata($streamName)
         );

@@ -29,7 +29,7 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
     public static function reconstituteFromHistory(\Iterator $historyEvents): DefaultAggregateRootContract
     {
         //faulty method
-        return new class implements DefaultAggregateRootContract {
+        return new class() implements DefaultAggregateRootContract {
             public static function reconstituteFromHistory(\Iterator $historyEvents): DefaultAggregateRootContract
             {
                 return new self();

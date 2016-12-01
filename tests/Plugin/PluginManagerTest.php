@@ -28,9 +28,9 @@ class PluginManagerTest extends TestCase
     public function an_invokable_plugin_is_loaded_by_plugin_manager_and_attached_to_event_store_by_configuration(): void
     {
         $pluginManager = new ServiceManager(new Config([
-            "invokables" => [
-                "eventlogger" => EventLoggerPlugin::class,
-            ]
+            'invokables' => [
+                'eventlogger' => EventLoggerPlugin::class,
+            ],
         ]));
 
         $logger = $pluginManager->get('eventlogger');
@@ -43,15 +43,15 @@ class PluginManagerTest extends TestCase
                     UserCreated::with(
                         [
                             'name' => 'Alex',
-                            'email' => 'contact@prooph.de'
+                            'email' => 'contact@prooph.de',
                         ],
                         1
-                    )
+                    ),
                 ])
             )
         );
 
-        $loggedStreamEvents = $pluginManager->get("eventlogger")->getLoggedStreamEvents();
+        $loggedStreamEvents = $pluginManager->get('eventlogger')->getLoggedStreamEvents();
 
         $this->assertEquals(1, count($loggedStreamEvents));
     }

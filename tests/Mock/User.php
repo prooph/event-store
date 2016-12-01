@@ -97,7 +97,7 @@ class User
         $this->recordThat(UsernameChanged::with(
             [
                 'old_name' => $this->name,
-                'new_name' => $newName
+                'new_name' => $newName,
             ],
             $this->nextVersion()
         ));
