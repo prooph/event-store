@@ -114,7 +114,6 @@ class MetadataEnricherPluginTest extends TestCase
         $this->assertEquals(['foo' => 'bar', '_aggregate_version' => 1], $streamEvents[0]->metadata());
     }
 
-
     /**
      * @test
      */

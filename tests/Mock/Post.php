@@ -107,8 +107,8 @@ class Post
         $payload = $postCreated->payload();
 
         $this->postId = Uuid::fromString($payload['post_id']);
-        $this->name   = $payload['name'];
-        $this->email  = $payload['email'];
+        $this->name = $payload['name'];
+        $this->email = $payload['email'];
     }
 
     public function popRecordedEvents(): array

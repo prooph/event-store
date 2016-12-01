@@ -18,7 +18,6 @@ use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
@@ -26,6 +25,7 @@ use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
 final class InMemoryEventStoreFactory implements
     ProvidesDefaultOptions,
@@ -61,6 +61,7 @@ final class InMemoryEventStoreFactory implements
                 sprintf('The first argument must be of type %s', ContainerInterface::class)
             );
         }
+
         return (new static($name))->__invoke($arguments[0]);
     }
 

@@ -105,6 +105,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
                 UserCreated::class => function (array $state, UserCreated $event): array {
                     $this->emit($event);
                     $this->stop();
+
                     return $state;
                 }
             ])

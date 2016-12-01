@@ -257,7 +257,7 @@ final class InMemoryEventStore extends AbstractTransactionalActionEventEmitterEv
                 case Operator::GREATER_THAN_EQUALS():
                     if (! ($metadata[$field] >= $expected)) {
                         return false;
-                    };
+                    }
                     break;
                 case Operator::LOWER_THAN():
                     if (! ($metadata[$field] < $expected)) {

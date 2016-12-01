@@ -14,19 +14,19 @@ namespace ProophTest\EventStore\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\Common\Event\ActionEventEmitter;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Container\InMemoryEventStoreFactory;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
-use ProophTest\EventStore\Mock\UserCreated;
-use ProophTest\EventStore\Mock\UsernameChanged;
-use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
 
 class InMemoryEventStoreFactoryTest extends TestCase

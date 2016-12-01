@@ -33,6 +33,7 @@ class QuickStartTest extends TestCase
     {
         ob_start();
         include __DIR__ . '/../../examples/quickstart.php';
+
         return ob_get_clean();
     }
 }

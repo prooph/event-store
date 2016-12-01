@@ -126,8 +126,8 @@ class User
         $payload = $userCreated->payload();
 
         $this->userId = Uuid::fromString($payload['user_id']);
-        $this->name   = $payload['name'];
-        $this->email  = $payload['email'];
+        $this->name = $payload['name'];
+        $this->email = $payload['email'];
     }
 
     private function whenUsernameChanged(UsernameChanged $usernameChanged): void

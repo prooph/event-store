@@ -42,6 +42,7 @@ class InMemoryEventStoreQueryTest extends TestCase
             ->when([
                 UsernameChanged::class => function (array $state, UsernameChanged $event): array {
                     $state['count']++;
+
                     return $state;
                 }
             ])
@@ -102,6 +103,7 @@ class InMemoryEventStoreQueryTest extends TestCase
             ->whenAny(
                 function (array $state, Message $event): array {
                     $state['count']++;
+
                     return $state;
                 }
             )
@@ -136,6 +138,7 @@ class InMemoryEventStoreQueryTest extends TestCase
                     } else {
                         $testCase->assertEquals('user-234', $this->streamName());
                     }
+
                     return $state;
                 }
             )
@@ -162,6 +165,7 @@ class InMemoryEventStoreQueryTest extends TestCase
             ->whenAny(
                 function (array $state, Message $event): array {
                     $state['count']++;
+
                     return $state;
                 }
             )
@@ -190,6 +194,7 @@ class InMemoryEventStoreQueryTest extends TestCase
             ->when([
                 UserCreated::class => function (array $state, Message $event): array {
                     $state['count']++;
+
                     return $state;
                 }
             ])
@@ -212,6 +217,7 @@ class InMemoryEventStoreQueryTest extends TestCase
             ->when([
                 UsernameChanged::class => function (array $state, Message $event): array {
                     $state['count']++;
+
                     return $state;
                 }
             ])

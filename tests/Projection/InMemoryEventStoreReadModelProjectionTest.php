@@ -73,6 +73,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
         $projection
             ->init(function (): array {
                 $this->readModelProjection()->insert('count', 0);
+
                 return ['count' => 0];
             })
             ->fromStream('user-123')

@@ -154,6 +154,7 @@ abstract class AbstractQuery implements Query
 
             if (is_array($result)) {
                 $this->state = $result;
+
                 return;
             }
         }

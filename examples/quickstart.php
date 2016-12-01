@@ -19,11 +19,11 @@ use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterEventStore;
-use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\QuickStart\Event\QuickStartSucceeded;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
 /**
  * Here we use the InMemoryEventStore but in a real project

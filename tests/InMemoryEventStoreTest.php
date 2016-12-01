@@ -14,7 +14,6 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
@@ -27,6 +26,7 @@ use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
