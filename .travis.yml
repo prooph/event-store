@@ -14,6 +14,7 @@ matrix:
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.php-cs-fixer
     - $HOME/.local
 
 before_script:
