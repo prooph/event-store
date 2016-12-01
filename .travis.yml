@@ -17,6 +17,7 @@ cache:
     - $HOME/.local
 
 before_script:
+  - mkdir -p "$HOME/.php-cs-fixer"
   - phpenv config-rm xdebug.ini
   - composer self-update
   - composer update --prefer-dist $DEPENDENCIES
