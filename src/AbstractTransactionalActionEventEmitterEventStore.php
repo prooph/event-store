@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotCommitted;
 use Prooph\EventStore\Exception\TransactionNotRolledBack;
@@ -94,5 +95,25 @@ abstract class AbstractTransactionalActionEventEmitterEventStore extends Abstrac
     public function isInTransaction(): bool
     {
         return $this->isInTransaction;
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return mixed
+     */
+    public function transactional(callable $callable)
+    {
+        $this->beginTransaction();
+
+        try {
+            $result = $callable($this);
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw $e;
+        }
+
+        return $result ?: true;
     }
 }
