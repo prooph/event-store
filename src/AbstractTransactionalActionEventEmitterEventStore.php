@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotCommitted;
 use Prooph\EventStore\Exception\TransactionNotRolledBack;

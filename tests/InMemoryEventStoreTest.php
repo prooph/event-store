@@ -14,7 +14,6 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
@@ -24,7 +23,6 @@ use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotCommitted;
 use Prooph\EventStore\Exception\TransactionNotRolledBack;
 use Prooph\EventStore\Exception\TransactionNotStarted;
-use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -944,6 +942,7 @@ class InMemoryEventStoreTest extends TestCase
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
             $this->eventStore->create($this->getTestStream());
             $this->assertSame($this->eventStore, $eventStore);
+
             return 'Result';
         });
 
@@ -957,6 +956,7 @@ class InMemoryEventStoreTest extends TestCase
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent) {
             $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
             $this->assertSame($this->eventStore, $eventStore);
+
             return 'Second Result';
         });
 
