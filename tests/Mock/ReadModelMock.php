@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Mock;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
-use Prooph\EventStore\Projection\ReadModelProjection;
+use Prooph\EventStore\Projection\ReadModel;
 
-class ReadModelProjectionMock implements ReadModelProjection
+class ReadModelMock implements ReadModel
 {
     private $storage;
 
@@ -43,22 +43,22 @@ class ReadModelProjectionMock implements ReadModelProjection
         return $this->storage[$key];
     }
 
-    public function initProjection(): void
+    public function init(): void
     {
         $this->storage = [];
     }
 
-    public function projectionIsInitialized(): bool
+    public function isInitialized(): bool
     {
         return is_array($this->storage);
     }
 
-    public function resetProjection(): void
+    public function reset(): void
     {
         $this->storage = [];
     }
 
-    public function deleteProjection(): void
+    public function delete(): void
     {
         $this->storage = [];
     }

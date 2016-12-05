@@ -18,7 +18,7 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjection;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
-use ProophTest\EventStore\Mock\ReadModelProjectionMock;
+use ProophTest\EventStore\Mock\ReadModelMock;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use ProophTest\EventStore\TestCase;
@@ -34,7 +34,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $readModel = new ReadModelProjectionMock();
+        $readModel = new ReadModelMock();
 
         $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 1);
 
@@ -43,11 +43,11 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
             ->when([
                 UserCreated::class => function ($state, Message $event) use ($testCase): void {
                     $testCase->assertEquals('user-123', $this->streamName());
-                    $this->readModelProjection()->insert('name', $event->payload()['name']);
+                    $this->readModel()->insert('name', $event->payload()['name']);
                 },
                 UsernameChanged::class => function ($state, Message $event) use ($testCase): void {
                     $testCase->assertEquals('user-123', $this->streamName());
-                    $this->readModelProjection()->update('name', $event->payload()['name']);
+                    $this->readModel()->update('name', $event->payload()['name']);
 
                     if ($event->payload()['name'] === 'Sascha') {
                         $this->stop();
@@ -66,13 +66,13 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $readModel = new ReadModelProjectionMock();
+        $readModel = new ReadModelMock();
 
         $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100);
 
         $projection
             ->init(function (): array {
-                $this->readModelProjection()->insert('count', 0);
+                $this->readModel()->insert('count', 0);
 
                 return ['count' => 0];
             })
@@ -84,7 +84,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
                     $this->stop();
                 }
 
-                $this->readModelProjection()->update('count', $state['count']);
+                $this->readModel()->update('count', $state['count']);
 
                 return $state;
             })->run();
@@ -100,17 +100,17 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $readModel = new ReadModelProjectionMock();
+        $readModel = new ReadModelMock();
 
         $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100);
 
         $projection
             ->init(function (): void {
-                $this->readModelProjection()->insert('name', null);
+                $this->readModel()->insert('name', null);
             })
             ->fromStream('user-123')
             ->whenAny(function ($state, Message $event): void {
-                $this->readModelProjection()->update('name', $event->payload()['name']);
+                $this->readModel()->update('name', $event->payload()['name']);
 
                 if ($event->payload()['name'] === 'Sascha') {
                     $this->stop();
@@ -128,7 +128,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $readModel = new ReadModelProjectionMock();
+        $readModel = new ReadModelMock();
 
         $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100);
         $projection->run();

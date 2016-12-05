@@ -12,7 +12,13 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
-interface ReadModelProjection extends Projection
+interface ReadModel
 {
-    public function readModel(): ReadModel;
+    public function init(): void;
+
+    public function isInitialized(): bool;
+
+    public function reset(): void;
+
+    public function delete(): void;
 }

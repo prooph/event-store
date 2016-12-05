@@ -17,33 +17,33 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\StreamName;
 
-abstract class AbstractReadModelProjection extends AbstractProjection
+abstract class AbstractReadModelProjection extends AbstractProjection implements ReadModelProjection
 {
     /**
-     * @var ReadModelProjection
+     * @var ReadModel
      */
-    private $readModelProjection;
+    private $readModel;
 
     public function __construct(
         EventStore $eventStore,
         string $name,
-        ReadModelProjection $readModelProjection,
+        ReadModel $readModel,
         int $cacheSize
     ) {
         parent::__construct($eventStore, $name, false, $cacheSize);
 
-        $this->readModelProjection = $readModelProjection;
+        $this->readModel = $readModel;
     }
 
-    public function readModelProjection(): ReadModelProjection
+    public function readModel(): ReadModel
     {
-        return $this->readModelProjection;
+        return $this->readModel;
     }
 
     public function delete(bool $deleteEmittedEvents): void
     {
         if ($deleteEmittedEvents) {
-            $this->readModelProjection->deleteProjection();
+            $this->readModel->delete();
         }
     }
 
@@ -55,8 +55,8 @@ abstract class AbstractReadModelProjection extends AbstractProjection
             throw new RuntimeException('No handlers configured');
         }
 
-        if (! $this->readModelProjection->projectionIsInitialized()) {
-            $this->readModelProjection->initProjection();
+        if (! $this->readModel->isInitialized()) {
+            $this->readModel->init();
         }
 
         do {
@@ -87,14 +87,14 @@ abstract class AbstractReadModelProjection extends AbstractProjection
 
     protected function resetProjection(): void
     {
-        $this->readModelProjection->resetProjection();
+        $this->readModel->reset();
     }
 
     protected function createHandlerContext(?string $streamName)
     {
         return new class($this, $streamName) {
             /**
-             * @var Projection
+             * @var ReadModelProjection
              */
             private $projection;
 
@@ -103,7 +103,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection
              */
             private $streamName;
 
-            public function __construct(Projection $projection, ?string $streamName)
+            public function __construct(ReadModelProjection $projection, ?string $streamName)
             {
                 $this->projection = $projection;
                 $this->streamName = $streamName;
@@ -114,9 +114,9 @@ abstract class AbstractReadModelProjection extends AbstractProjection
                 $this->projection->stop();
             }
 
-            public function readModelProjection(): ReadModelProjection
+            public function readModel(): ReadModel
             {
-                return $this->projection->readModelProjection();
+                return $this->projection->readModel();
             }
 
             public function streamName(): ?string
