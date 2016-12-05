@@ -38,6 +38,11 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
     /**
      * @var int
      */
+    protected $eventCounter = 0;
+
+    /**
+     * @var int
+     */
     protected $persistBlockSize;
 
     public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $persistBlockSize)
@@ -145,6 +150,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
+            $this->eventCounter++;
 
             $result = $handler($this->state, $event);
 
@@ -167,6 +173,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
+            $this->eventCounter++;
 
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;
