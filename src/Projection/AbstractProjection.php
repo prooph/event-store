@@ -208,7 +208,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 $this->projection->emit($event);
             }
 
-            public function &streamName(): ?string
+            public function streamName(): ?string
             {
                 return $this->streamName;
             }

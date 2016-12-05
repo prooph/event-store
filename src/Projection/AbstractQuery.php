@@ -271,7 +271,7 @@ abstract class AbstractQuery implements Query
                 $this->query->stop();
             }
 
-            public function &streamName(): ?string
+            public function streamName(): ?string
             {
                 return $this->streamName;
             }
