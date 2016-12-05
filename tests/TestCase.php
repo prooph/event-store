@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends PHPUnitTestCase
 {
     /**
      * @var InMemoryEventStore

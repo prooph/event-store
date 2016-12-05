@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Projection\Position;
 

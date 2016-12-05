@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use ProophTest\EventStore\Mock\TestDomainEvent;
-use ProophTest\EventStore\TestCase;
 use Prophecy\Argument;
 
 class MetadataEnricherAggregateTest extends TestCase

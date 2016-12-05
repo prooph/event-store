@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Example;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class QuickStartTest extends TestCase
 {
