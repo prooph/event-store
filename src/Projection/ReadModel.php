@@ -21,4 +21,11 @@ interface ReadModel
     public function reset(): void;
 
     public function delete(): void;
+
+    /**
+     * @param mixed $operation
+     */
+    public function stack($operation): void;
+
+    public function persistStack(): void;
 }

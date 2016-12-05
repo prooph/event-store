@@ -43,11 +43,11 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
             ->when([
                 UserCreated::class => function ($state, Message $event) use ($testCase): void {
                     $testCase->assertEquals('user-123', $this->streamName());
-                    $this->readModel()->insert('name', $event->payload()['name']);
+                    $this->readModel()->stack(['insert', 'name', $event->payload()['name']]);
                 },
                 UsernameChanged::class => function ($state, Message $event) use ($testCase): void {
                     $testCase->assertEquals('user-123', $this->streamName());
-                    $this->readModel()->update('name', $event->payload()['name']);
+                    $this->readModel()->stack(['update', 'name', $event->payload()['name']]);
 
                     if ($event->payload()['name'] === 'Sascha') {
                         $this->stop();
@@ -72,7 +72,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $projection
             ->init(function (): array {
-                $this->readModel()->insert('count', 0);
+                $this->readModel()->stack(['insert', 'count', 0]);
 
                 return ['count' => 0];
             })
@@ -84,7 +84,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
                     $this->stop();
                 }
 
-                $this->readModel()->update('count', $state['count']);
+                $this->readModel()->stack(['update', 'count', $state['count']]);
 
                 return $state;
             })->run();
@@ -106,11 +106,11 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $projection
             ->init(function (): void {
-                $this->readModel()->insert('name', null);
+                $this->readModel()->stack(['insert', 'name', null]);
             })
             ->fromStream('user-123')
             ->whenAny(function ($state, Message $event): void {
-                $this->readModel()->update('name', $event->payload()['name']);
+                $this->readModel()->stack(['update', 'name', $event->payload()['name']]);
 
                 if ($event->payload()['name'] === 'Sascha') {
                     $this->stop();

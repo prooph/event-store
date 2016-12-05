@@ -37,6 +37,8 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
 
     protected function persist(bool $force): void
     {
-        // InMemoryEventStoreReadModelProjection cannot persist
+        if ($force) {
+            $this->readModel()->persistStack();
+        }
     }
 }

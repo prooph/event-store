@@ -83,6 +83,8 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
                     break;
                 }
             }
+
+            $this->persist(true);
         } while ($keepRunning && ! $this->isStopped);
     }
 

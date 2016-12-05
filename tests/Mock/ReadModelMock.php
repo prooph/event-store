@@ -19,6 +19,11 @@ class ReadModelMock implements ReadModel
 {
     private $storage;
 
+    /**
+     * @var array
+     */
+    private $stack = [];
+
     public function insert(string $key, $value): void
     {
         $this->storage[$key] = $value;
@@ -61,5 +66,20 @@ class ReadModelMock implements ReadModel
     public function delete(): void
     {
         $this->storage = [];
+    }
+
+    public function stack($operation): void
+    {
+        $this->stack[] = $operation;
+    }
+
+    public function persistStack(): void
+    {
+        foreach ($this->stack as $operation) {
+            list($operator, $key, $value) = $operation;
+            $this->{$operator}($key, $value);
+        }
+
+        $this->stack = [];
     }
 }
