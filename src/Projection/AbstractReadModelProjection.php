@@ -22,7 +22,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
     /**
      * @var ReadModel
      */
-    private $readModel;
+    protected $readModel;
 
     public function __construct(
         EventStore $eventStore,
