@@ -34,7 +34,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 100);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100);
         $projection
             ->fromStream('user-123')
             ->whenAny(
@@ -66,7 +66,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 1);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1);
         $projection
             ->fromStream('user-123')
             ->when([
@@ -98,7 +98,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', true, 100);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100);
         $projection
             ->fromStream('user-123')
             ->when([
@@ -126,30 +126,11 @@ class InMemoryEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
-    public function it_doesnt_emits_events_when_disabled(): void
-    {
-        $this->expectException(\Error::class);
-        $this->expectExceptionMessage('Call to undefined method class@anonymous::emit()');
-
-        $this->prepareEventStream('user-123');
-
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false, 100);
-        $projection
-            ->fromStream('user-123')
-            ->whenAny(function (array $state, Message $event): void {
-                $this->emit($event);
-            })
-            ->run();
-    }
-
-    /**
-     * @test
-     */
     public function it_throws_exception_on_run_when_nothing_configured(): void
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', false, 100);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100);
         $projection->run();
     }
 

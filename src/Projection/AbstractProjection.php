@@ -31,21 +31,15 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
     protected $name;
 
     /**
-     * @var bool
-     */
-    protected $emitEnabled;
-
-    /**
      * @var
      */
     protected $cachedStreamNames;
 
-    public function __construct(EventStore $eventStore, string $name, bool $emitEnabled, int $cacheSize)
+    public function __construct(EventStore $eventStore, string $name, int $cacheSize)
     {
         parent::__construct($eventStore);
 
         $this->name = $name;
-        $this->emitEnabled = $emitEnabled;
         $this->cachedStreamNames = new ArrayCache($cacheSize);
     }
 
@@ -104,7 +98,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         do {
             $this->load();
 
-            if ($this->emitEnabled && ! $this->eventStore->hasStream(new StreamName($this->name))) {
+            if (! $this->eventStore->hasStream(new StreamName($this->name))) {
                 $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
             }
 
@@ -185,46 +179,6 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     protected function createHandlerContext(?string $streamName)
     {
-        if ($this->emitEnabled) {
-            return new class($this, $streamName) {
-                /**
-                 * @var Projection
-                 */
-                private $projection;
-
-                /**
-                 * @var ?string
-                 */
-                private $streamName;
-
-                public function __construct(Projection $projection, ?string $streamName)
-                {
-                    $this->projection = $projection;
-                    $this->streamName = $streamName;
-                }
-
-                public function stop(): void
-                {
-                    $this->projection->stop();
-                }
-
-                public function linkTo(string $streamName, Message $event): void
-                {
-                    $this->projection->linkTo($streamName, $event);
-                }
-
-                public function emit(Message $event): void
-                {
-                    $this->projection->emit($event);
-                }
-
-                public function streamName(): ?string
-                {
-                    return $this->streamName;
-                }
-            };
-        }
-
         return new class($this, $streamName) {
             /**
              * @var Projection
@@ -250,6 +204,11 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
             public function linkTo(string $streamName, Message $event): void
             {
                 $this->projection->linkTo($streamName, $event);
+            }
+
+            public function emit(Message $event): void
+            {
+                $this->projection->emit($event);
             }
 
             public function streamName(): ?string
