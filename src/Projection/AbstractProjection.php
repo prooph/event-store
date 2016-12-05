@@ -30,7 +30,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
     protected $name;
 
     /**
-     * @var
+     * @var ArrayCache
      */
     protected $cachedStreamNames;
 
