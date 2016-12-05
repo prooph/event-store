@@ -36,7 +36,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 1);
+        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 1, 1);
 
         $projection
             ->fromAll()
@@ -68,7 +68,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100);
+        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100, 1);
 
         $projection
             ->init(function (): array {
@@ -102,7 +102,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100);
+        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100, 1);
 
         $projection
             ->init(function (): void {
@@ -130,7 +130,7 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100);
+        $projection = new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', $readModel, 100, 1);
         $projection->run();
     }
 

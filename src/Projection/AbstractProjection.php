@@ -16,6 +16,7 @@ use ArrayIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Stream;
@@ -34,17 +35,27 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
      */
     protected $cachedStreamNames;
 
-    public function __construct(EventStore $eventStore, string $name, int $cacheSize)
+    /**
+     * @var int
+     */
+    protected $persistBlockSize;
+
+    public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $persistBlockSize)
     {
+        if ($persistBlockSize <= 0) {
+            throw new InvalidArgumentException('PersistBlockSize must be a positive integer');
+        }
+
         parent::__construct($eventStore);
 
         $this->name = $name;
         $this->cachedStreamNames = new ArrayCache($cacheSize);
+        $this->persistBlockSize = $persistBlockSize;
     }
 
     abstract protected function load(): void;
 
-    abstract protected function persist(): void;
+    abstract protected function persist(bool $force): void;
 
     protected function resetProjection(): void
     {
@@ -121,6 +132,8 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                     break;
                 }
             }
+
+            $this->persist(true);
         } while ($keepRunning && ! $this->isStopped);
     }
 
@@ -139,7 +152,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 $this->state = $result;
             }
 
-            $this->persist();
+            $this->persist(false);
 
             if ($this->isStopped) {
                 break;
@@ -166,7 +179,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 $this->state = $result;
             }
 
-            $this->persist();
+            $this->persist(false);
 
             if ($this->isStopped) {
                 break;

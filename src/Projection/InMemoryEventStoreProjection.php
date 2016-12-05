@@ -18,9 +18,9 @@ final class InMemoryEventStoreProjection extends AbstractProjection
 {
     use InMemoryEventStoreQueryTrait;
 
-    public function __construct(InMemoryEventStore $eventStore, string $name, int $cacheSize)
+    public function __construct(InMemoryEventStore $eventStore, string $name, int $cacheSize, int $persistBlockSize)
     {
-        parent::__construct($eventStore, $name, $cacheSize);
+        parent::__construct($eventStore, $name, $cacheSize, $persistBlockSize);
 
         $this->buildKnownStreams();
     }
@@ -37,7 +37,7 @@ final class InMemoryEventStoreProjection extends AbstractProjection
         // InMemoryEventStoreProjection cannot load
     }
 
-    protected function persist(): void
+    protected function persist(bool $force): void
     {
         // InMemoryEventStoreProjection cannot persist
     }

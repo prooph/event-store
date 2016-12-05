@@ -22,9 +22,10 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
         InMemoryEventStore $eventStore,
         string $name,
         ReadModel $readModel,
-        int $cacheSize
+        int $cacheSize,
+        int $persistBlockSize
     ) {
-        parent::__construct($eventStore, $name, $readModel, $cacheSize);
+        parent::__construct($eventStore, $name, $readModel, $cacheSize, $persistBlockSize);
 
         $this->buildKnownStreams();
     }
@@ -34,7 +35,7 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
         // InMemoryEventStoreReadModelProjection cannot load
     }
 
-    protected function persist(): void
+    protected function persist(bool $force): void
     {
         // InMemoryEventStoreReadModelProjection cannot persist
     }

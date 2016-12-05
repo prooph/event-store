@@ -34,7 +34,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100, 1);
         $projection
             ->fromStream('user-123')
             ->whenAny(
@@ -66,7 +66,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1, 1);
         $projection
             ->fromStream('user-123')
             ->when([
@@ -98,7 +98,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100, 1);
         $projection
             ->fromStream('user-123')
             ->when([
@@ -130,7 +130,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100);
+        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100, 1);
         $projection->run();
     }
 

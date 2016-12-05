@@ -28,9 +28,10 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
         EventStore $eventStore,
         string $name,
         ReadModel $readModel,
-        int $cacheSize
+        int $cacheSize,
+        int $persistBlockSize
     ) {
-        parent::__construct($eventStore, $name, $cacheSize);
+        parent::__construct($eventStore, $name, $cacheSize, $persistBlockSize);
 
         $this->readModel = $readModel;
     }
