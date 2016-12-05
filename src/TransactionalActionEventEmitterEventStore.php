@@ -18,6 +18,5 @@ interface TransactionalActionEventEmitterEventStore extends
 {
     const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
     const EVENT_COMMIT = 'commit';
-    const EVENT_IS_IN_TRANSACTION = 'isInTransaction';
     const EVENT_ROLLBACK = 'rollback';
 }

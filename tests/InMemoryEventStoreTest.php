@@ -14,6 +14,7 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
@@ -903,6 +904,67 @@ class InMemoryEventStoreTest extends TestCase
         $streamName->toString()->willReturn('test');
 
         $this->assertNull($this->eventStore->load($streamName->reveal()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Transaction failed');
+
+        $eventStore = $this->eventStore;
+
+        $this->eventStore->transactional(function (EventStore $es) use ($eventStore) {
+            $this->assertSame($es, $eventStore);
+            throw new \Exception('Transaction failed');
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_return_true_by_default_if_transaction_is_used()
+    {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
+            $this->eventStore->create($this->getTestStream());
+            $this->assertSame($this->eventStore, $eventStore);
+        });
+        $this->assertTrue($transactionResult);
+    }
+
+    /**
+     * @test
+     */
+    public function it_wraps_up_code_in_transaction_properly()
+    {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
+            $this->eventStore->create($this->getTestStream());
+            $this->assertSame($this->eventStore, $eventStore);
+
+            return 'Result';
+        });
+
+        self::assertSame('Result', $transactionResult);
+
+        $secondStreamEvent = UsernameChanged::with(
+            ['new_name' => 'John Doe'],
+            2
+        );
+
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent) {
+            $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
+            $this->assertSame($this->eventStore, $eventStore);
+
+            return 'Second Result';
+        });
+
+        $this->assertSame('Second Result', $transactionResult);
+
+        $stream = $this->eventStore->load(new StreamName('user'), 1);
+
+        $this->assertCount(2, $stream->streamEvents());
     }
 
     private function getTestStream(): Stream

@@ -95,4 +95,24 @@ abstract class AbstractTransactionalActionEventEmitterEventStore extends Abstrac
     {
         return $this->isInTransaction;
     }
+
+    /**
+     * @throws \Exception
+     *
+     * @return mixed
+     */
+    public function transactional(callable $callable)
+    {
+        $this->beginTransaction();
+
+        try {
+            $result = $callable($this);
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw $e;
+        }
+
+        return $result ?: true;
+    }
 }
