@@ -57,6 +57,11 @@ abstract class AbstractQuery implements Query
      */
     protected $isStopped = false;
 
+    /**
+     * @var ?string
+     */
+    protected $currentStreamName = null;
+
     public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
@@ -68,7 +73,7 @@ abstract class AbstractQuery implements Query
             throw new RuntimeException('Projection already initialized');
         }
 
-        $callback = Closure::bind($callback, $this->createHandlerContext(null));
+        $callback = Closure::bind($callback, $this->createHandlerContext($this->currentStreamName));
 
         $result = $callback();
 
@@ -124,7 +129,7 @@ abstract class AbstractQuery implements Query
                 throw new InvalidArgumentException('Invalid handler given, Closure expected');
             }
 
-            $this->handlers[$eventName] = $handler;
+            $this->handlers[$eventName] = Closure::bind($handler, $this->createHandlerContext($this->currentStreamName));
         }
 
         return $this;
@@ -136,7 +141,7 @@ abstract class AbstractQuery implements Query
             throw new RuntimeException('When was already called');
         }
 
-        $this->handler = $handler;
+        $this->handler = Closure::bind($handler, $this->createHandlerContext($this->currentStreamName));
 
         return $this;
     }
@@ -199,8 +204,8 @@ abstract class AbstractQuery implements Query
 
     private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
     {
+        $this->currentStreamName = $streamName;
         $handler = $this->handler;
-        $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
 
         foreach ($events as $event) {
             /* @var Message $event */
@@ -220,10 +225,7 @@ abstract class AbstractQuery implements Query
 
     private function handleStreamWithHandlers(string $streamName, Iterator $events): void
     {
-        foreach ($this->handlers as $messageName => $handler) {
-            $this->handlers[$messageName] = Closure::bind($handler, $this->createHandlerContext($streamName));
-        }
-
+        $this->currentStreamName = $streamName;
         foreach ($events as $event) {
             /* @var Message $event */
             $this->position->inc($streamName);
@@ -245,7 +247,7 @@ abstract class AbstractQuery implements Query
         }
     }
 
-    protected function createHandlerContext(?string $streamName)
+    protected function createHandlerContext(?string &$streamName)
     {
         return new class($this, $streamName) {
             /**
@@ -258,10 +260,10 @@ abstract class AbstractQuery implements Query
              */
             private $streamName;
 
-            public function __construct(Query $query, ?string $streamName)
+            public function __construct(Query $query, ?string &$streamName)
             {
                 $this->query = $query;
-                $this->streamName = $streamName;
+                $this->streamName = &$streamName;
             }
 
             public function stop(): void
@@ -269,7 +271,7 @@ abstract class AbstractQuery implements Query
                 $this->query->stop();
             }
 
-            public function streamName(): ?string
+            public function &streamName(): ?string
             {
                 return $this->streamName;
             }

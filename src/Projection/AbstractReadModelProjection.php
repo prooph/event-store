@@ -90,7 +90,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
         $this->readModel->reset();
     }
 
-    protected function createHandlerContext(?string $streamName)
+    protected function createHandlerContext(?string &$streamName)
     {
         return new class($this, $streamName) {
             /**
@@ -103,10 +103,10 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
              */
             private $streamName;
 
-            public function __construct(ReadModelProjection $projection, ?string $streamName)
+            public function __construct(ReadModelProjection $projection, ?string &$streamName)
             {
                 $this->projection = $projection;
-                $this->streamName = $streamName;
+                $this->streamName = &$streamName;
             }
 
             public function stop(): void
@@ -119,7 +119,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
                 return $this->projection->readModel();
             }
 
-            public function streamName(): ?string
+            public function &streamName(): ?string
             {
                 return $this->streamName;
             }

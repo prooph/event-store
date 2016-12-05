@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use ArrayIterator;
-use Closure;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
@@ -127,8 +126,8 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     protected function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
     {
+        $this->currentStreamName = $streamName;
         $handler = $this->handler;
-        $handler = Closure::bind($handler, $this->createHandlerContext($streamName));
 
         foreach ($events as $event) {
             /* @var Message $event */
@@ -150,9 +149,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     protected function handleStreamWithHandlers(string $streamName, Iterator $events): void
     {
-        foreach ($this->handlers as $messageName => $handler) {
-            $this->handlers[$messageName] = Closure::bind($handler, $this->createHandlerContext($streamName));
-        }
+        $this->currentStreamName = $streamName;
 
         foreach ($events as $event) {
             /* @var Message $event */
@@ -177,7 +174,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
         }
     }
 
-    protected function createHandlerContext(?string $streamName)
+    protected function createHandlerContext(?string &$streamName)
     {
         return new class($this, $streamName) {
             /**
@@ -190,10 +187,10 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
              */
             private $streamName;
 
-            public function __construct(Projection $projection, ?string $streamName)
+            public function __construct(Projection $projection, ?string &$streamName)
             {
                 $this->projection = $projection;
-                $this->streamName = $streamName;
+                $this->streamName = &$streamName;
             }
 
             public function stop(): void
@@ -211,7 +208,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 $this->projection->emit($event);
             }
 
-            public function streamName(): ?string
+            public function &streamName(): ?string
             {
                 return $this->streamName;
             }
