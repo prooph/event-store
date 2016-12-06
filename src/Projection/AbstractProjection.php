@@ -160,6 +160,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
             if ($this->eventCounter === $this->persistBlockSize) {
                 $this->persist();
+                $this->eventCounter = 0;
             }
 
             if ($this->isStopped) {
@@ -190,6 +191,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
             if ($this->eventCounter === $this->persistBlockSize) {
                 $this->persist();
+                $this->eventCounter = 0;
             }
 
             if ($this->isStopped) {
