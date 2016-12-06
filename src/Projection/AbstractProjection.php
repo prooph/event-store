@@ -60,7 +60,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     abstract protected function load(): void;
 
-    abstract protected function persist(bool $force): void;
+    abstract protected function persist(): void;
 
     protected function resetProjection(): void
     {
@@ -138,7 +138,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 }
             }
 
-            $this->persist(true);
+            $this->persist();
         } while ($keepRunning && ! $this->isStopped);
     }
 
@@ -158,7 +158,9 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 $this->state = $result;
             }
 
-            $this->persist(false);
+            if ($this->eventCounter === $this->persistBlockSize) {
+                $this->persist();
+            }
 
             if ($this->isStopped) {
                 break;
@@ -186,7 +188,9 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 $this->state = $result;
             }
 
-            $this->persist(false);
+            if ($this->eventCounter === $this->persistBlockSize) {
+                $this->persist();
+            }
 
             if ($this->isStopped) {
                 break;

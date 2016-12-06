@@ -37,7 +37,7 @@ final class InMemoryEventStoreProjection extends AbstractProjection
         // InMemoryEventStoreProjection cannot load
     }
 
-    protected function persist(bool $force): void
+    protected function persist(): void
     {
         // InMemoryEventStoreProjection cannot persist
     }
