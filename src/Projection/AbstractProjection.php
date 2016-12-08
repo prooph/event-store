@@ -138,7 +138,10 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
                 }
             }
 
-            $this->persist();
+            if ($this->eventCounter > 0) {
+                $this->persist();
+                $this->eventCounter = 0;
+            }
         } while ($keepRunning && ! $this->isStopped);
     }
 

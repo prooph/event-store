@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Mock;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
-use Prooph\EventStore\Projection\ReadModel;
+use Prooph\EventStore\Projection\AbstractReadModel;
 
-class ReadModelMock implements ReadModel
+class ReadModelMock extends AbstractReadModel
 {
     private $storage;
 
@@ -66,20 +66,5 @@ class ReadModelMock implements ReadModel
     public function delete(): void
     {
         $this->storage = [];
-    }
-
-    public function stack($operation): void
-    {
-        $this->stack[] = $operation;
-    }
-
-    public function persistStack(): void
-    {
-        foreach ($this->stack as $operation) {
-            list($operator, $key, $value) = $operation;
-            $this->{$operator}($key, $value);
-        }
-
-        $this->stack = [];
     }
 }

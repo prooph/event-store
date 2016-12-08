@@ -12,17 +12,21 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
-interface ReadModel
+abstract class AbstractReadModel implements ReadModel
 {
-    public function init(): void;
+    private $stack = [];
 
-    public function isInitialized(): bool;
+    public function stack(string $operation, ...$args): void
+    {
+        $this->stack[] = [$operation, $args];
+    }
 
-    public function reset(): void;
+    public function persist(): void
+    {
+        foreach ($this->stack as list($operation, $args)) {
+            $this->{$operation}(...$args);
+        }
 
-    public function delete(): void;
-
-    public function stack(string $operation, ...$args): void;
-
-    public function persist(): void;
+        $this->stack = [];
+    }
 }

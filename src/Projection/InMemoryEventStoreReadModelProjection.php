@@ -37,6 +37,6 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
 
     protected function persist(): void
     {
-        $this->readModel()->persistStack();
+        $this->readModel()->persist();
     }
 }
