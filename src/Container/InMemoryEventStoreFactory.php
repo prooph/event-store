@@ -139,7 +139,7 @@ final class InMemoryEventStoreFactory implements
     /**
      * {@inheritdoc}
      */
-    public function dimensions(): array
+    public function dimensions(): iterable
     {
         return ['prooph', 'event_store'];
     }

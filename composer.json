@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
-        "sandrokeil/interop-config": "^1.0",
+        "sandrokeil/interop-config": "^2.0",
         "phpunit/phpunit": "^5.7",
         "phpspec/prophecy": "dev-patch-1 as 1.6.2",
         "prooph/php-cs-fixer-config": "^0.1.1",
@@ -50,7 +50,7 @@
         "prooph/snapshot-mongodb-adapter": "For usage with mongodb as snapshot adapter"
     },
     "conflict": {
-        "sandrokeil/interop-config": "<1.0"
+        "sandrokeil/interop-config": "<2.0"
     },
     "autoload": {
         "psr-4": {
