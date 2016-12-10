@@ -16,7 +16,7 @@ interface TransactionalActionEventEmitterEventStore extends
     ActionEventEmitterEventStore,
     TransactionalEventStore
 {
-    const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
-    const EVENT_COMMIT = 'commit';
-    const EVENT_ROLLBACK = 'rollback';
+    public const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
+    public const EVENT_COMMIT = 'commit';
+    public const EVENT_ROLLBACK = 'rollback';
 }

@@ -24,10 +24,10 @@ use MabeEnum\Enum;
  */
 class Operator extends Enum
 {
-    const EQUALS = '=';
-    const GREATER_THAN = '>';
-    const GREATER_THAN_EQUALS = '>=';
-    const LOWER_THAN = '<';
-    const LOWER_THAN_EQUALS = '<=';
-    const NOT_EQUALS = '!=';
+    public const EQUALS = '=';
+    public const GREATER_THAN = '>';
+    public const GREATER_THAN_EQUALS = '>=';
+    public const LOWER_THAN = '<';
+    public const LOWER_THAN_EQUALS = '<=';
+    public const NOT_EQUALS = '!=';
 }
