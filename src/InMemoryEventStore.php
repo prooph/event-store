@@ -200,6 +200,21 @@ final class InMemoryEventStore extends AbstractTransactionalActionEventEmitterEv
             $event->setParam('metadata', $metadata);
         });
 
+        $actionEventEmitter->attachListener(self::EVENT_UPDATE_STREAM_METADATA, function (ActionEvent $event): void {
+            $streamName = $event->getParam('streamName');
+            $metadata = $event->getParam('metadata');
+
+            if (! isset($this->streams[$streamName->toString()])) {
+                $event->setParam('result', false);
+
+                return;
+            }
+
+            $this->streams[$streamName->toString()]['metadata'] = $metadata;
+
+            $event->setParam('result', true);
+        });
+
         $actionEventEmitter->attachListener(self::EVENT_BEGIN_TRANSACTION, function (ActionEvent $event): void {
             $this->inTransaction = true;
 

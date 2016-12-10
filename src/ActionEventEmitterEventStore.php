@@ -16,13 +16,14 @@ use Prooph\Common\Event\ActionEventEmitter;
 
 interface ActionEventEmitterEventStore extends EventStore
 {
-    const EVENT_APPEND_TO = 'appendTo';
-    const EVENT_CREATE = 'create';
-    const EVENT_LOAD = 'load';
-    const EVENT_LOAD_REVERSE = 'loadReverse';
-    const EVENT_DELETE = 'delete';
-    const EVENT_HAS_STREAM = 'hasStream';
-    const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
+    public const EVENT_APPEND_TO = 'appendTo';
+    public const EVENT_CREATE = 'create';
+    public const EVENT_LOAD = 'load';
+    public const EVENT_LOAD_REVERSE = 'loadReverse';
+    public const EVENT_DELETE = 'delete';
+    public const EVENT_HAS_STREAM = 'hasStream';
+    public const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
+    public const EVENT_UPDATE_STREAM_METADATA = 'updateStreamMetadata';
 
     public function getActionEventEmitter(): ActionEventEmitter;
 }
