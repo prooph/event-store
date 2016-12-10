@@ -147,7 +147,7 @@ final class InMemoryEventStoreFactory implements
     /**
      * {@inheritdoc}
      */
-    public function defaultOptions(): array
+    public function defaultOptions(): iterable
     {
         return [
             'metadata_enrichers' => [],
