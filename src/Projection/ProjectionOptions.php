@@ -36,7 +36,7 @@ class ProjectionOptions
     {
         self::validateData($data);
 
-        return new static($data['cache_size'], $data['persist_block_size']);
+        return new self($data['cache_size'], $data['persist_block_size']);
     }
 
     public function cacheSize(): int
