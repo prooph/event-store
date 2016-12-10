@@ -17,6 +17,14 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
+use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
+use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
+use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjection;
+use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\Query;
+use Prooph\EventStore\Projection\ReadModel;
+use Prooph\EventStore\Projection\ReadModelProjection;
 
 final class InMemoryEventStore extends AbstractTransactionalActionEventEmitterEventStore
 {
@@ -244,6 +252,40 @@ final class InMemoryEventStore extends AbstractTransactionalActionEventEmitterEv
 
             $event->setParam('inTransaction', false);
         });
+    }
+
+    public function createQuery(): Query
+    {
+        return new InMemoryEventStoreQuery($this);
+    }
+
+    public function createProjection(string $name, ProjectionOptions $options = null): Projection
+    {
+        if (null === $options) {
+            $options = new ProjectionOptions();
+        }
+
+        return new InMemoryEventStoreProjection(
+            $this,
+            $name,
+            $options->cacheSize(),
+            $options->persistBlockSize()
+        );
+    }
+
+    public function createReadModelProjection(string $name, ReadModel $readModel, ProjectionOptions $options = null): ReadModelProjection
+    {
+        if (null === $options) {
+            $options = new ProjectionOptions();
+        }
+
+        return new InMemoryEventStoreReadModelProjection(
+            $this,
+            $name,
+            $readModel,
+            $options->cacheSize(),
+            $options->persistBlockSize()
+        );
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool

@@ -65,6 +65,6 @@ class ReadModelMock extends AbstractReadModel
 
     public function delete(): void
     {
-        $this->storage = [];
+        $this->storage = null;
     }
 }

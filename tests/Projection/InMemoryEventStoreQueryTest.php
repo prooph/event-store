@@ -16,7 +16,6 @@ use ArrayIterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
-use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
@@ -32,7 +31,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -64,7 +63,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -93,7 +92,7 @@ class InMemoryEventStoreQueryTest extends TestCase
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -123,7 +122,7 @@ class InMemoryEventStoreQueryTest extends TestCase
 
         $testCase = $this;
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -155,7 +154,7 @@ class InMemoryEventStoreQueryTest extends TestCase
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -184,7 +183,7 @@ class InMemoryEventStoreQueryTest extends TestCase
         $this->prepareEventStream('guest-345');
         $this->prepareEventStream('guest-456');
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -207,7 +206,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query
             ->init(function (): array {
@@ -244,7 +243,7 @@ class InMemoryEventStoreQueryTest extends TestCase
      */
     public function it_resets_to_empty_array(): void
     {
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $state = $query->getState();
 
@@ -264,7 +263,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->init(function (): array {
             return [];
@@ -281,7 +280,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->fromStream('foo');
         $query->fromStream('bar');
@@ -294,7 +293,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->fromStreams('foo');
         $query->fromCategory('bar');
@@ -307,7 +306,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->fromCategory('foo');
         $query->fromStreams('bar');
@@ -320,7 +319,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->fromCategories('foo');
         $query->fromCategories('bar');
@@ -333,7 +332,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->fromCategories('foo');
         $query->fromAll('bar');
@@ -346,7 +345,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->when(['foo' => function (): void {
         }]);
@@ -361,7 +360,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->when(['1' => function (): void {
         }]);
@@ -374,7 +373,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->when(['foo' => 'invalid']);
     }
@@ -386,7 +385,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
 
         $query->whenAny(function (): void {
         });
@@ -401,7 +400,7 @@ class InMemoryEventStoreQueryTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $query = new InMemoryEventStoreQuery($this->eventStore);
+        $query = $this->eventStore->createQuery();
         $query->run();
     }
 
