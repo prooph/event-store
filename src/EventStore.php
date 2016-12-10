@@ -14,6 +14,11 @@ namespace Prooph\EventStore;
 
 use Iterator;
 use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\Query;
+use Prooph\EventStore\Projection\ReadModel;
+use Prooph\EventStore\Projection\ReadModelProjection;
 
 interface EventStore
 {
@@ -40,4 +45,14 @@ interface EventStore
     ): Stream;
 
     public function delete(StreamName $streamName): void;
+
+    public function createQuery(): Query;
+
+    public function createProjection(string $name, ProjectionOptions $options = null): Projection;
+
+    public function createReadModelProjection(
+        string $name,
+        ReadModel $readModel,
+        ProjectionOptions $options = null
+    ): ReadModelProjection;
 }

@@ -16,7 +16,6 @@ use ArrayIterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
-use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
@@ -34,7 +33,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100, 1);
+        $projection = $this->eventStore->createProjection('test_projection');
         $projection
             ->fromStream('user-123')
             ->whenAny(
@@ -66,7 +65,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
 
         $testCase = $this;
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1, 1);
+        $projection = $this->eventStore->createProjection('test_projection');
         $projection
             ->fromStream('user-123')
             ->when([
@@ -98,7 +97,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100, 1);
+        $projection = $this->eventStore->createProjection('test_projection');
         $projection
             ->fromStream('user-123')
             ->when([
@@ -130,7 +129,7 @@ class InMemoryEventStoreProjectionTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 100, 1);
+        $projection = $this->eventStore->createProjection('test_projection');
         $projection->run();
     }
 
