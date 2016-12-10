@@ -23,6 +23,7 @@ interface ActionEventEmitterEventStore extends EventStore
     const EVENT_DELETE = 'delete';
     const EVENT_HAS_STREAM = 'hasStream';
     const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
+    const EVENT_UPDATE_STREAM_METADATA = 'updateStreamMetadata';
 
     public function getActionEventEmitter(): ActionEventEmitter;
 }

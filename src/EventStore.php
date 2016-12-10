@@ -19,6 +19,8 @@ interface EventStore
 {
     public function fetchStreamMetadata(StreamName $streamName): array;
 
+    public function updateStreamMetadata(StreamName $streamName, array $newMetadata): void;
+
     public function hasStream(StreamName $streamName): bool;
 
     public function create(Stream $stream): void;

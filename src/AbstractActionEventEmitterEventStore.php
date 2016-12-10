@@ -159,4 +159,24 @@ abstract class AbstractActionEventEmitterEventStore implements ActionEventEmitte
 
         return $metadata;
     }
+
+    public function updateStreamMetadata(StreamName $streamName, array $newMetadata): void
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_UPDATE_STREAM_METADATA,
+            $this,
+            [
+                'streamName' => $streamName,
+                'metadata' => $newMetadata,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        $resut = $event->getParam('result', false);
+
+        if (false === $resut) {
+            throw StreamNotFound::with($streamName);
+        }
+    }
 }

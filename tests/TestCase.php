@@ -34,6 +34,7 @@ abstract class TestCase extends PHPUnitTestCase
             TransactionalActionEventEmitterEventStore::EVENT_DELETE,
             TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
             TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
+            TransactionalActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
             TransactionalActionEventEmitterEventStore::EVENT_BEGIN_TRANSACTION,
             TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
             TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
