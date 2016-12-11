@@ -17,8 +17,12 @@ use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
+use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\Query;
+use Prooph\EventStore\Projection\ReadModelProjection;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\Mock\ReadModelMock;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
 class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestCase
@@ -288,5 +292,31 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $this->eventStore->delete($streamName);
 
         $this->assertFalse($this->eventStore->hasStream($streamName));
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_quey(): void
+    {
+        $this->assertInstanceOf(Query::class, $this->eventStore->createQuery());
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_projection(): void
+    {
+        $this->assertInstanceOf(Projection::class, $this->eventStore->createProjection('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_read_model_projection(): void
+    {
+        $readModel = new ReadModelMock();
+
+        $this->assertInstanceOf(ReadModelProjection::class, $this->eventStore->createReadModelProjection('foo', $readModel));
     }
 }
