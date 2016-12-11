@@ -63,7 +63,7 @@ class ActionEventEmitterEventStore implements EventStore
         });
 
         $actionEventEmitter->attachListener(self::EVENT_APPEND_TO, function (ActionEvent $event): void {
-            $streamName = $event->getParam('streamName')->toString();
+            $streamName = $event->getParam('streamName');
             $streamEvents = $event->getParam('streamEvents');
 
             try {
@@ -201,7 +201,13 @@ class ActionEventEmitterEventStore implements EventStore
             throw StreamNotFound::with($streamName);
         }
 
-        return $event->getParam('stream');
+        $stream = $event->getParam('stream', false);
+
+        if (! $stream instanceof Stream) {
+            throw StreamNotFound::with($streamName);
+        }
+
+        return $stream;
     }
 
     public function loadReverse(
@@ -228,7 +234,13 @@ class ActionEventEmitterEventStore implements EventStore
             throw StreamNotFound::with($streamName);
         }
 
-        return $event->getParam('stream');
+        $stream = $event->getParam('stream', false);
+
+        if (! $stream instanceof Stream) {
+            throw StreamNotFound::with($streamName);
+        }
+
+        return $stream;
     }
 
     public function delete(StreamName $streamName): void
@@ -252,7 +264,7 @@ class ActionEventEmitterEventStore implements EventStore
 
         $this->actionEventEmitter->dispatch($event);
 
-        return $event->getParam('result');
+        return $event->getParam('result', false);
     }
 
     public function fetchStreamMetadata(StreamName $streamName): array
@@ -269,7 +281,13 @@ class ActionEventEmitterEventStore implements EventStore
             throw StreamNotFound::with($streamName);
         }
 
-        return $event->getParam('metadata');
+        $metadata = $event->getParam('metadata', false);
+
+        if (! is_array($metadata)) {
+            throw StreamNotFound::with($streamName);
+        }
+
+        return $metadata;
     }
 
     public function updateStreamMetadata(StreamName $streamName, array $newMetadata): void

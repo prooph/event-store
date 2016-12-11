@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
-abstract class TestCase extends PHPUnitTestCase
+abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
 {
     /**
-     * @var InMemoryEventStore
+     * @var ActionEventEmitterEventStore
      */
     protected $eventStore;
 
@@ -35,11 +35,8 @@ abstract class TestCase extends PHPUnitTestCase
             TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
             TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
             TransactionalActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
-            TransactionalActionEventEmitterEventStore::EVENT_BEGIN_TRANSACTION,
-            TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
-            TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
         ]);
 
-        $this->eventStore = new InMemoryEventStore($eventEmitter);
+        $this->eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);
     }
 }

@@ -25,6 +25,7 @@ use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
@@ -44,8 +45,24 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
         $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_event_store_without_event_emitter(): void
+    {
+        $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false];
+
+        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
+        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+
+        $factory = new InMemoryEventStoreFactory();
+        $eventStore = $factory($containerMock);
+
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
     }
 
     /**
@@ -61,7 +78,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $type = 'another';
         $eventStore = InMemoryEventStoreFactory::$type($containerMock);
 
-        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
         $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
     }
 
@@ -81,7 +98,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
         $this->assertSame($eventEmitterMock, $eventStore->getActionEventEmitter());
     }
 
@@ -102,7 +119,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
     }
 
     /**
@@ -144,7 +161,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($container->reveal());
 
-        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
 
         // Some events to inject into the event store
         $events = [

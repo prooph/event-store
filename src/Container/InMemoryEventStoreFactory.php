@@ -55,7 +55,7 @@ final class InMemoryEventStoreFactory implements
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): InMemoryEventStore
+    public static function __callStatic(string $name, array $arguments): TransactionalEventStore
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(

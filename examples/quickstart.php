@@ -49,7 +49,7 @@ $eventEmitter = new ProophActionEventEmitter([
     TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
 ]);
 
-$eventStore = new InMemoryEventStore($eventEmitter);
+$eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);
 
 /**
  * We need a test event so let's create one.
