@@ -500,6 +500,42 @@ class InMemoryEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
+    public function it_returns_only_matched_metadata_reverse(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName);
+        $stream->metadata()->willReturn([])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator([$event]));
+
+        $this->eventStore->create($stream->reveal());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar');
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'baz');
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 4);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 4);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 7);
+
+        $stream = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+
+        $this->assertCount(1, $stream->streamEvents());
+    }
+
+    /**
+     * @test
+     */
     public function it_returns_only_matched_metadata_2(): void
     {
         $event = UserCreated::with(['name' => 'John'], 1);
@@ -607,7 +643,114 @@ class InMemoryEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_trying_to_append_on_non_existing_stream(): void
+    public function it_returns_only_matched_metadata_2_reverse(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $streamName = $this->prophesize(StreamName::class);
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName = $streamName->reveal();
+
+        $stream = $this->prophesize(Stream::class);
+        $stream->streamName()->willReturn($streamName)->shouldBeCalled();
+        $stream->metadata()->willReturn([])->shouldBeCalled();
+        $stream->streamEvents()->willReturn(new \ArrayIterator([$event]))->shouldBeCalled();
+
+        $this->eventStore->create($stream->reveal());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'baz');
+
+        $found = true;
+
+        try {
+            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        } catch (StreamNotFound $exception) {
+            $found = false;
+        }
+
+        $this->assertFalse($found);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
+
+        $found = true;
+
+        try {
+            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        } catch (StreamNotFound $exception) {
+            $found = false;
+        }
+
+        $this->assertFalse($found);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
+
+        $found = true;
+
+        try {
+            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        } catch (StreamNotFound $exception) {
+            $found = false;
+        }
+
+        $this->assertFalse($found);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
+
+        $found = true;
+
+        try {
+            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        } catch (StreamNotFound $exception) {
+            $found = false;
+        }
+
+        $this->assertFalse($found);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
+
+        $found = true;
+
+        try {
+            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        } catch (StreamNotFound $exception) {
+            $found = false;
+        }
+
+        $this->assertFalse($found);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
+
+        $found = true;
+
+        try {
+            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        } catch (StreamNotFound $exception) {
+            $found = false;
+        }
+
+        $this->assertFalse($found);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_trying_to_append_to_non_existing_stream(): void
     {
         $this->expectException(StreamNotFound::class);
 
@@ -670,7 +813,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             return 'Result';
         });
 
-        self::assertSame('Result', $transactionResult);
+        $this->assertSame('Result', $transactionResult);
 
         $secondStreamEvent = UsernameChanged::with(
             ['new_name' => 'John Doe'],
