@@ -304,8 +304,7 @@ class ActionEventEmitterEventStore implements EventStore
         string $name,
         ReadModel $readModel,
         ProjectionOptions $options = null
-    ): ReadModelProjection
-    {
+    ): ReadModelProjection {
         return $this->eventStore->createReadModelProjection($name, $readModel, $options);
     }
 }
