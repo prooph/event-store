@@ -14,7 +14,7 @@ namespace ProophTest\EventStore;
 
 use Prooph\EventStore\StreamName;
 
-class StreamNameTest extends TestCase
+class StreamNameTest extends EventStoreTestCase
 {
     /**
      * @test

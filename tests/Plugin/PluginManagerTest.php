@@ -14,13 +14,13 @@ namespace ProophTest\EventStore\Plugin;
 
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
-use ProophTest\EventStore\TestCase;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-class PluginManagerTest extends TestCase
+class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
 {
     /**
      * @test

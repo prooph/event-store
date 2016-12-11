@@ -26,6 +26,7 @@ use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
+use Prooph\EventStore\TransactionalEventStore;
 
 final class InMemoryEventStoreFactory implements
     ProvidesDefaultOptions,
@@ -54,7 +55,7 @@ final class InMemoryEventStoreFactory implements
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): InMemoryEventStore
+    public static function __callStatic(string $name, array $arguments): TransactionalEventStore
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -73,10 +74,16 @@ final class InMemoryEventStoreFactory implements
     /**
      * @throws ConfigurationException
      */
-    public function __invoke(ContainerInterface $container): InMemoryEventStore
+    public function __invoke(ContainerInterface $container): TransactionalEventStore
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
+
+        $eventStore = new InMemoryEventStore();
+
+        if (! $config['wrap_action_event_emitter']) {
+            return $eventStore;
+        }
 
         if (! isset($config['event_emitter'])) {
             $eventEmitter = new ProophActionEventEmitter([
@@ -96,7 +103,7 @@ final class InMemoryEventStoreFactory implements
             $eventEmitter = $container->get($config['event_emitter']);
         }
 
-        $eventStore = new InMemoryEventStore($eventEmitter);
+        $wrapper = new TransactionalActionEventEmitterEventStore($eventStore, $eventEmitter);
 
         foreach ($config['plugins'] as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
@@ -108,7 +115,7 @@ final class InMemoryEventStoreFactory implements
                 ));
             }
 
-            $plugin->setUp($eventStore);
+            $plugin->setUp($wrapper);
         }
 
         if (count($config['metadata_enrichers']) > 0) {
@@ -131,10 +138,10 @@ final class InMemoryEventStoreFactory implements
                 new MetadataEnricherAggregate($metadataEnrichers)
             );
 
-            $plugin->setUp($eventStore);
+            $plugin->setUp($wrapper);
         }
 
-        return $eventStore;
+        return $wrapper;
     }
 
     /**
@@ -153,6 +160,7 @@ final class InMemoryEventStoreFactory implements
         return [
             'metadata_enrichers' => [],
             'plugins' => [],
+            'wrap_action_event_emitter' => true,
         ];
     }
 }

@@ -18,11 +18,11 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\EventStoreTestCase;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
-use ProophTest\EventStore\TestCase;
 
-class InMemoryEventStoreQueryTest extends TestCase
+class InMemoryEventStoreQueryTest extends EventStoreTestCase
 {
     /**
      * @test

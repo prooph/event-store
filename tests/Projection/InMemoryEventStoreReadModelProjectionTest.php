@@ -17,12 +17,12 @@ use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\EventStoreTestCase;
 use ProophTest\EventStore\Mock\ReadModelMock;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
-use ProophTest\EventStore\TestCase;
 
-class InMemoryEventStoreReadModelProjectionTest extends TestCase
+class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 {
     /**
      * @test
@@ -98,6 +98,49 @@ class InMemoryEventStoreReadModelProjectionTest extends TestCase
         $projection->delete(true);
 
         $this->assertFalse($readModel->isInitialized());
+    }
+
+    /**
+     * @test
+     */
+    public function it_resumes_projection_from_position(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $readModel = new ReadModelMock();
+
+        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromCategories('user', 'guest')
+            ->when([
+                UsernameChanged::class => function (array $state, Message $event): array {
+                    $state['count']++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $this->assertEquals(49, $projection->getState()['count']);
+
+        $projection->run(false);
+
+        $events = [];
+        for ($i = 51; $i <= 100; $i++) {
+            $events[] = UsernameChanged::with([
+                'name' => uniqid('name_'),
+            ], $i);
+        }
+
+        $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
+
+        $projection->run(false);
+
+        $this->assertEquals(99, $projection->getState()['count']);
     }
 
     /**

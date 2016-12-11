@@ -19,11 +19,11 @@ use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\UserCreated;
-use ProophTest\EventStore\TestCase;
 use Prophecy\Argument;
 
-class MetadataEnricherPluginTest extends TestCase
+class MetadataEnricherPluginTest extends ActionEventEmitterEventStoreTestCase
 {
     /**
      * @test
@@ -42,7 +42,7 @@ class MetadataEnricherPluginTest extends TestCase
         $property = new \ReflectionProperty(get_class($this->eventStore->getActionEventEmitter()), 'events');
         $property->setAccessible(true);
 
-        $this->assertCount(11, $property->getValue($this->eventStore->getActionEventEmitter()));
+        $this->assertCount(8, $property->getValue($this->eventStore->getActionEventEmitter()));
     }
 
     /**
