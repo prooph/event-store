@@ -88,7 +88,7 @@ class TransactionalActionEventEmitterEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->beginTransaction();
 
-        $this->assertTrue($this->eventStore->isInTransaction());
+        $this->assertTrue($this->eventStore->inTransaction());
 
         $this->eventStore->create($stream->reveal());
 

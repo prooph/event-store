@@ -46,7 +46,7 @@ final class InMemoryEventStore implements TransactionalEventStore
     /**
      * @var bool
      */
-    private $isInTransaction = false;
+    private $inTransaction = false;
 
     public function create(Stream $stream): void
     {
@@ -59,7 +59,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             throw StreamExistsAlready::with($streamName);
         }
 
-        if ($this->isInTransaction) {
+        if ($this->inTransaction) {
             $this->cachedStreams[$streamNameString]['events'] = $stream->streamEvents();
             $this->cachedStreams[$streamNameString]['metadata'] = $stream->metadata();
         } else {
@@ -78,7 +78,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             throw StreamNotFound::with($streamName);
         }
 
-        if ($this->isInTransaction) {
+        if ($this->inTransaction) {
             if (! isset($this->cachedStreams[$streamNameString])) {
                 $this->cachedStreams[$streamNameString]['events'] = [];
             }
@@ -221,16 +221,16 @@ final class InMemoryEventStore implements TransactionalEventStore
 
     public function beginTransaction(): void
     {
-        if ($this->isInTransaction) {
+        if ($this->inTransaction) {
             throw new TransactionAlreadyStarted();
         }
 
-        $this->isInTransaction = true;
+        $this->inTransaction = true;
     }
 
     public function commit(): void
     {
-        if (! $this->isInTransaction) {
+        if (! $this->inTransaction) {
             throw new TransactionNotStarted();
         }
 
@@ -245,22 +245,22 @@ final class InMemoryEventStore implements TransactionalEventStore
         }
 
         $this->cachedStreams = [];
-        $this->isInTransaction = false;
+        $this->inTransaction = false;
     }
 
     public function rollback(): void
     {
-        if (! $this->isInTransaction) {
+        if (! $this->inTransaction) {
             throw new TransactionNotStarted();
         }
 
         $this->cachedStreams = [];
-        $this->isInTransaction = false;
+        $this->inTransaction = false;
     }
 
-    public function isInTransaction(): bool
+    public function inTransaction(): bool
     {
-        return $this->isInTransaction;
+        return $this->inTransaction;
     }
 
     /**

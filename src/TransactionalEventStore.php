@@ -23,7 +23,7 @@ interface TransactionalEventStore extends EventStore
 
     public function rollback(): void;
 
-    public function isInTransaction(): bool;
+    public function inTransaction(): bool;
 
     /**
      * @throws \Exception

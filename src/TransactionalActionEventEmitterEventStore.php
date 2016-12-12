@@ -100,8 +100,8 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
         return $this->eventStore->transactional($callable);
     }
 
-    public function isInTransaction(): bool
+    public function inTransaction(): bool
     {
-        return $this->eventStore->isInTransaction();
+        return $this->eventStore->inTransaction();
     }
 }
