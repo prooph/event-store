@@ -15,8 +15,6 @@ namespace ProophTest\EventStore\Mock;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
-use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Plugin\Plugin;
 
 class EventLoggerPlugin implements Plugin

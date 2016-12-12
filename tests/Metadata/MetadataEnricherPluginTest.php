@@ -14,7 +14,6 @@ namespace ProophTest\EventStore\Metadata;
 
 use Prooph\Common\Event\DefaultActionEvent;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Stream;
