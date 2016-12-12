@@ -31,18 +31,11 @@ class EventLoggerPlugin implements Plugin
         $this->loggedStreamEvents = new \ArrayIterator();
     }
 
-    public function setUp(EventStore $eventStore): void
+    public function setUp(ActionEventEmitterEventStore $eventStore): void
     {
-        if (! $eventStore instanceof ActionEventEmitterEventStore) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'EventStore must implement %s',
-                    ActionEventEmitterEventStore::class
-                )
-            );
-        }
+        $eventEmitter = $eventStore->getActionEventEmitter();
 
-        $eventStore->getActionEventEmitter()->attachListener(
+        $eventEmitter->attachListener(
             ActionEventEmitterEventStore::EVENT_CREATE,
             function (ActionEvent $event): void {
                 $stream = $event->getParam('stream');
@@ -52,7 +45,7 @@ class EventLoggerPlugin implements Plugin
             -10000
         );
 
-        $eventStore->getActionEventEmitter()->attachListener(
+        $eventEmitter->attachListener(
             ActionEventEmitterEventStore::EVENT_APPEND_TO,
             function (ActionEvent $event): void {
                 $this->loggedStreamEvents = $event->getParam('streamEvents', new \ArrayIterator());

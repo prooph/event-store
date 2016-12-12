@@ -127,19 +127,4 @@ class MetadataEnricherPluginTest extends ActionEventEmitterEventStoreTestCase
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
         $plugin->onEventStoreAppendToStream($actionEvent);
     }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_non_action_event_emitter_aware_event_store_used(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
-
-        $eventStore = $this->prophesize(EventStore::class);
-
-        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
-        $plugin->setUp($eventStore->reveal());
-    }
 }

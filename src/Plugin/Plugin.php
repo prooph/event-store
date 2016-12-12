@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Plugin;
 
-use Prooph\EventStore\EventStore;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 
 interface Plugin
 {
-    public function setUp(EventStore $eventStore): void;
+    public function setUp(ActionEventEmitterEventStore $eventStore): void;
 }
