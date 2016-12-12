@@ -14,7 +14,6 @@ namespace ProophTest\EventStore\Metadata;
 
 use Prooph\Common\Event\DefaultActionEvent;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Stream;
@@ -126,20 +125,5 @@ class MetadataEnricherPluginTest extends ActionEventEmitterEventStoreTestCase
 
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
         $plugin->onEventStoreAppendToStream($actionEvent);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_non_action_event_emitter_aware_event_store_used(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
-
-        $eventStore = $this->prophesize(EventStore::class);
-
-        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
-        $plugin->setUp($eventStore->reveal());
     }
 }
