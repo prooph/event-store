@@ -26,7 +26,7 @@
     "require": {
         "php": "^7.1",
         "prooph/common" : "4.0.x-dev",
-        "marc-mabe/php-enum": "^2.2.1"
+        "marc-mabe/php-enum": "^2.3.0-rc"
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
