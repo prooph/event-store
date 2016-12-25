@@ -14,9 +14,16 @@ namespace Prooph\EventStore\Plugin;
 
 use Prooph\EventStore\ActionEventEmitterEventStore;
 
-interface Plugin
+abstract class AbstractPlugin implements Plugin
 {
-    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void;
+    protected $listenerHandlers = [];
 
-    public function detachFromEventStore(ActionEventEmitterEventStore $eventStore): void;
+    public function detachFromEventStore(ActionEventEmitterEventStore $eventStore): void
+    {
+        foreach ($this->listenerHandlers as $listenerHandler) {
+            $eventStore->detach($listenerHandler);
+        }
+
+        $this->listenerHandlers = [];
+    }
 }

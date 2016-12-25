@@ -115,7 +115,7 @@ final class InMemoryEventStoreFactory implements
                 ));
             }
 
-            $plugin->setUp($wrapper);
+            $plugin->attachToEventStore($wrapper);
         }
 
         if (count($config['metadata_enrichers']) > 0) {
@@ -138,7 +138,7 @@ final class InMemoryEventStoreFactory implements
                 new MetadataEnricherAggregate($metadataEnrichers)
             );
 
-            $plugin->setUp($wrapper);
+            $plugin->attachToEventStore($wrapper);
         }
 
         return $wrapper;

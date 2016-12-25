@@ -86,7 +86,7 @@ $eventStore->create($singleStream);
  * But let's attach a plugin first that prints some information about currently added events.
  * Plugins are simple event listeners. See the docs of prooph/common for more details about event listeners.
  */
-$eventStore->getActionEventEmitter()->attachListener(
+$eventStore->attach(
     ActionEventEmitterEventStore::EVENT_APPEND_TO, // InMemoryEventStore provides event hooks
     function (ActionEvent $actionEvent): void {
         /**
