@@ -15,6 +15,7 @@ namespace Prooph\EventStore;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
+use Prooph\Common\Event\ListenerHandler;
 use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
@@ -140,11 +141,6 @@ class ActionEventEmitterEventStore implements EventStore
                 $event->setParam('streamNotFound', true);
             }
         });
-    }
-
-    public function getActionEventEmitter(): ActionEventEmitter
-    {
-        return $this->actionEventEmitter;
     }
 
     public function create(Stream $stream): void
@@ -324,5 +320,15 @@ class ActionEventEmitterEventStore implements EventStore
         ProjectionOptions $options = null
     ): ReadModelProjection {
         return $this->eventStore->createReadModelProjection($name, $readModel, $options);
+    }
+
+    public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler
+    {
+        return $this->actionEventEmitter->attachListener($eventName, $listener, $priority);
+    }
+
+    public function detach(ListenerHandler $handler): void
+    {
+        $this->actionEventEmitter->detachListener($handler);
     }
 }

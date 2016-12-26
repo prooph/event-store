@@ -34,7 +34,7 @@ class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
         ]));
 
         $logger = $pluginManager->get('eventlogger');
-        $logger->setUp($this->eventStore);
+        $logger->attachToEventStore($this->eventStore);
 
         $this->eventStore->create(
             new Stream(

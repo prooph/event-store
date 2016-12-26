@@ -15,8 +15,8 @@ namespace ProophTest\EventStore\Container;
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
-use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\Container\InMemoryEventStoreFactory;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -46,7 +46,6 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
-        $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
     }
 
     /**
@@ -79,7 +78,6 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $eventStore = InMemoryEventStoreFactory::$type($containerMock);
 
         $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
-        $this->assertInstanceOf(ProophActionEventEmitter::class, $eventStore->getActionEventEmitter());
     }
 
     /**
@@ -99,7 +97,6 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
-        $this->assertSame($eventEmitterMock, $eventStore->getActionEventEmitter());
     }
 
     /**
@@ -109,12 +106,12 @@ class InMemoryEventStoreFactoryTest extends TestCase
     {
         $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
-        $featureMock = $this->getMockForAbstractClass(Plugin::class);
-        $featureMock->expects($this->once())->method('setUp');
+        $featureMock = $this->prophesize(Plugin::class);
+        $featureMock->attachToEventStore(Argument::type(ActionEventEmitterEventStore::class))->shouldBeCalled();
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock);
+        $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock->reveal());
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);

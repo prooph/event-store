@@ -12,64 +12,46 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\DefaultActionEvent;
-use Prooph\EventStore\EventStore;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
-use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
-use ProophTest\EventStore\Mock\UserCreated;
+use ProophTest\EventStore\Mock\TestDomainEvent;
 use Prophecy\Argument;
 
-class MetadataEnricherPluginTest extends ActionEventEmitterEventStoreTestCase
+class MetadataEnricherPluginTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_attaches_itself_to_event_store_events(): void
-    {
-        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
-
-        $createStreamListener = null;
-        $appendToStreamListener = null;
-
-        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
-
-        $plugin->setUp($this->eventStore);
-
-        $property = new \ReflectionProperty(get_class($this->eventStore->getActionEventEmitter()), 'events');
-        $property->setAccessible(true);
-
-        $this->assertCount(8, $property->getValue($this->eventStore->getActionEventEmitter()));
-    }
-
     /**
      * @test
      */
     public function it_enrich_metadata_on_stream_create(): void
     {
-        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
-        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
+        $metadataEnricher = new class() implements MetadataEnricher {
+            public function enrich(Message $message): Message
+            {
+                return $message->withAddedMetadata('foo', 'bar');
+            }
+        };
 
-        $messageEvent = UserCreated::with(['name' => 'Test'], 1);
-        $stream = new Stream(new StreamName('test'), new \ArrayIterator([$messageEvent]));
-        $actionEvent = new DefaultActionEvent('create');
-        $actionEvent->setParam('stream', $stream);
+        $eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), new ProophActionEventEmitter());
 
-        $metadataEnricher->enrich($messageEvent)->willReturn(
-            $messageEvent->withAddedMetadata('foo', 'bar')
+        $plugin = new MetadataEnricherPlugin($metadataEnricher);
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
+
+        $stream = $eventStore->load(new StreamName('foo'));
+
+        $this->assertEquals(
+            ['foo' => 'bar'],
+            $stream->streamEvents()->current()->metadata()
         );
-
-        $plugin->onEventStoreCreateStream($actionEvent);
-
-        // Assertion on event in the stream
-        $streamEvents = $actionEvent->getParam('stream')->streamEvents();
-        $this->assertCount(1, $streamEvents);
-        $this->assertEquals($messageEvent->payload(), $streamEvents[0]->payload());
-        $this->assertEquals($messageEvent->version(), $streamEvents[0]->version());
-        $this->assertEquals($messageEvent->createdAt(), $streamEvents[0]->createdAt());
-        $this->assertEquals(['foo' => 'bar', '_aggregate_version' => 1], $streamEvents[0]->metadata());
     }
 
     /**
@@ -91,26 +73,28 @@ class MetadataEnricherPluginTest extends ActionEventEmitterEventStoreTestCase
      */
     public function it_enrich_metadata_on_stream_appendTo(): void
     {
-        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
-        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
+        $metadataEnricher = new class() implements MetadataEnricher {
+            public function enrich(Message $message): Message
+            {
+                return $message->withAddedMetadata('foo', 'bar');
+            }
+        };
 
-        $messageEvent = UserCreated::with(['name' => 'Test'], 1);
-        $actionEvent = new DefaultActionEvent('appendTo');
-        $actionEvent->setParam('streamEvents', new \ArrayIterator([$messageEvent]));
+        $eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), new ProophActionEventEmitter());
 
-        $metadataEnricher->enrich($messageEvent)->willReturn(
-            $messageEvent->withAddedMetadata('foo', 'bar')
+        $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator()));
+
+        $plugin = new MetadataEnricherPlugin($metadataEnricher);
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->appendTo(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]));
+
+        $stream = $eventStore->load(new StreamName('foo'));
+
+        $this->assertEquals(
+            ['foo' => 'bar'],
+            $stream->streamEvents()->current()->metadata()
         );
-
-        $plugin->onEventStoreAppendToStream($actionEvent);
-
-        // Assertion on event in the stream
-        $streamEvents = $actionEvent->getParam('streamEvents');
-        $this->assertCount(1, $streamEvents);
-        $this->assertEquals($messageEvent->payload(), $streamEvents[0]->payload());
-        $this->assertEquals($messageEvent->version(), $streamEvents[0]->version());
-        $this->assertEquals($messageEvent->createdAt(), $streamEvents[0]->createdAt());
-        $this->assertEquals(['foo' => 'bar', '_aggregate_version' => 1], $streamEvents[0]->metadata());
     }
 
     /**
@@ -125,5 +109,26 @@ class MetadataEnricherPluginTest extends ActionEventEmitterEventStoreTestCase
 
         $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
         $plugin->onEventStoreAppendToStream($actionEvent);
+    }
+
+    /**
+     * @test
+     */
+    public function it_detaches_from_event_store(): void
+    {
+        $metadataEnricher = $this->prophesize(MetadataEnricher::class);
+        $metadataEnricher->enrich(Argument::any())->shouldNotBeCalled();
+
+        $eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), new ProophActionEventEmitter());
+
+        $plugin = new MetadataEnricherPlugin($metadataEnricher->reveal());
+        $plugin->attachToEventStore($eventStore);
+        $plugin->detachFromEventStore($eventStore);
+
+        $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
+
+        $stream = $eventStore->load(new StreamName('foo'));
+
+        $this->assertEmpty($stream->streamEvents()->current()->metadata());
     }
 }

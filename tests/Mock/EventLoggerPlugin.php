@@ -15,9 +15,9 @@ namespace ProophTest\EventStore\Mock;
 use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
-use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\Plugin\AbstractPlugin;
 
-class EventLoggerPlugin implements Plugin
+class EventLoggerPlugin extends AbstractPlugin
 {
     /**
      * @var Iterator
@@ -29,11 +29,9 @@ class EventLoggerPlugin implements Plugin
         $this->loggedStreamEvents = new \ArrayIterator();
     }
 
-    public function setUp(ActionEventEmitterEventStore $eventStore): void
+    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void
     {
-        $eventEmitter = $eventStore->getActionEventEmitter();
-
-        $eventEmitter->attachListener(
+        $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_CREATE,
             function (ActionEvent $event): void {
                 $stream = $event->getParam('stream');
@@ -43,7 +41,7 @@ class EventLoggerPlugin implements Plugin
             -10000
         );
 
-        $eventEmitter->attachListener(
+        $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_APPEND_TO,
             function (ActionEvent $event): void {
                 $this->loggedStreamEvents = $event->getParam('streamEvents', new \ArrayIterator());

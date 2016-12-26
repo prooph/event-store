@@ -14,10 +14,10 @@ namespace Prooph\EventStore\Metadata;
 
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
-use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\Plugin\AbstractPlugin;
 use Prooph\EventStore\Stream;
 
-final class MetadataEnricherPlugin implements Plugin
+final class MetadataEnricherPlugin extends AbstractPlugin
 {
     /**
      * @var MetadataEnricher
@@ -29,12 +29,19 @@ final class MetadataEnricherPlugin implements Plugin
         $this->metadataEnricher = $metadataEnricher;
     }
 
-    public function setUp(ActionEventEmitterEventStore $eventStore): void
+    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void
     {
-        $eventEmitter = $eventStore->getActionEventEmitter();
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_CREATE,
+            [$this, 'onEventStoreCreateStream'],
+            1000
+        );
 
-        $eventEmitter->attachListener(ActionEventEmitterEventStore::EVENT_CREATE, [$this, 'onEventStoreCreateStream'], -1000);
-        $eventEmitter->attachListener(ActionEventEmitterEventStore::EVENT_APPEND_TO, [$this, 'onEventStoreAppendToStream'], -1000);
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_APPEND_TO,
+            [$this, 'onEventStoreAppendToStream'],
+            1000
+        );
     }
 
     /**
@@ -51,7 +58,7 @@ final class MetadataEnricherPlugin implements Plugin
         $streamEvents = $stream->streamEvents();
         $streamEvents = $this->handleRecordedEvents($streamEvents);
 
-        $createEvent->setParam('stream', new Stream($stream->streamName(), $streamEvents));
+        $createEvent->setParam('stream', new Stream($stream->streamName(), $streamEvents, $stream->metadata()));
     }
 
     /**

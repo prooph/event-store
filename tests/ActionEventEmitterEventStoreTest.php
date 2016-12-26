@@ -41,7 +41,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($stream);
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'load',
             function (ActionEvent $event): void {
                 $event->stopPropagation(true);
@@ -91,7 +91,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         // does cannot happen at InMemoryEventStore, so we test this with a listener
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             ActionEventEmitterEventStore::EVENT_APPEND_TO,
             function (ActionEvent $event) {
                 $event->setParam('concurrencyException', true);
@@ -187,7 +187,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($stream);
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'load',
             function (ActionEvent $event): void {
                 $event->stopPropagation(true);
@@ -209,7 +209,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($stream);
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'loadReverse',
             function (ActionEvent $event): void {
                 $event->stopPropagation(true);
@@ -240,7 +240,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     {
         $recordedEvents = [];
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'create',
             function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
@@ -250,7 +250,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             -1000
         );
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'appendTo',
             function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('recordedEvents', new \ArrayIterator()) as $recordedEvent) {
@@ -262,7 +262,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($this->getTestStream());
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'appendTo',
             function (ActionEvent $event): void {
                 //$event->setParam('streamNotFound', true);
@@ -290,7 +290,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($stream);
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'load',
             function (ActionEvent $event): void {
                 $event->setParam('stream', new Stream(new StreamName('user'), new ArrayIterator()));
@@ -322,7 +322,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventWithMetadata]));
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'load',
             function (ActionEvent $event): void {
                 $streamEventWithMetadataButOtherUuid = UsernameChanged::with(
@@ -363,7 +363,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     {
         $recordedEvents = [];
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'create',
             function (ActionEvent $event) use (&$recordedEvents): void {
                 $stream = $event->getParam('stream');
@@ -375,7 +375,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             -1000
         );
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'appendTo',
             function (ActionEvent $event) use (&$recordedEvents): void {
                 foreach ($event->getParam('streamEvents', new \ArrayIterator()) as $recordedEvent) {
@@ -406,7 +406,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $streamName = new StreamName('user');
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             'create',
             function (ActionEvent $event) use (&$recordedEvents): void {
                 $stream = $event->getParam('stream');
@@ -467,7 +467,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $streamName = $this->prophesize(StreamName::class);
         $streamName->toString()->willReturn('test')->shouldBeCalled();
 
-        $this->eventStore->getActionEventEmitter()->attachListener(
+        $this->eventStore->attach(
             ActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
             function (ActionEvent $event) {
                 $event->stopPropagation();
