@@ -50,7 +50,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
 
     public function run(bool $keepRunning = true): void
     {
-        if (null === $this->position
+        if (null === $this->streamPositions
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new RuntimeException('No handlers configured');
@@ -65,7 +65,7 @@ abstract class AbstractReadModelProjection extends AbstractProjection implements
 
             $singleHandler = null !== $this->handler;
 
-            foreach ($this->position->streamPositions() as $streamName => $position) {
+            foreach ($this->streamPositions as $streamName => $position) {
                 try {
                     $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
                 } catch (StreamNotFound $e) {

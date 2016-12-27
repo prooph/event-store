@@ -28,9 +28,9 @@ abstract class AbstractQuery implements Query
     protected $eventStore;
 
     /**
-     * @var Position
+     * @var array
      */
-    protected $position;
+    protected $streamPositions;
 
     /**
      * @var array
@@ -88,28 +88,24 @@ abstract class AbstractQuery implements Query
 
     public function fromStream(string $streamName): Query
     {
-        if (null !== $this->position) {
+        if (null !== $this->streamPositions) {
             throw new RuntimeException('From was already called');
         }
 
-        $this->position = new Position([$streamName => 0]);
+        $this->streamPositions = [$streamName => 0];
 
         return $this;
     }
 
     public function fromStreams(string ...$streamNames): Query
     {
-        if (null !== $this->position) {
+        if (null !== $this->streamPositions) {
             throw new RuntimeException('From was already called');
         }
 
-        $streamPositions = [];
-
         foreach ($streamNames as $streamName) {
-            $streamPositions[$streamName] = 0;
+            $this->streamPositions[$streamName] = 0;
         }
-
-        $this->position = new Position($streamPositions);
 
         return $this;
     }
@@ -148,8 +144,13 @@ abstract class AbstractQuery implements Query
 
     public function reset(): void
     {
-        if (null !== $this->position) {
-            $this->position->reset();
+        if (null !== $this->streamPositions) {
+            $this->streamPositions = array_map(
+                function (): int {
+                    return 0;
+                },
+                $this->streamPositions
+            );
         }
 
         $callback = $this->initCallback;
@@ -169,7 +170,7 @@ abstract class AbstractQuery implements Query
 
     public function run(): void
     {
-        if (null === $this->position
+        if (null === $this->streamPositions
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new RuntimeException('No handlers configured');
@@ -177,7 +178,7 @@ abstract class AbstractQuery implements Query
 
         $singleHandler = null !== $this->handler;
 
-        foreach ($this->position->streamPositions() as $streamName => $position) {
+        foreach ($this->streamPositions as $streamName => $position) {
             $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
 
             if ($singleHandler) {
@@ -209,7 +210,7 @@ abstract class AbstractQuery implements Query
 
         foreach ($events as $event) {
             /* @var Message $event */
-            $this->position->inc($streamName);
+            $this->streamPositions[$streamName]++;
 
             $result = $handler($this->state, $event);
 
@@ -228,7 +229,7 @@ abstract class AbstractQuery implements Query
         $this->currentStreamName = $streamName;
         foreach ($events as $event) {
             /* @var Message $event */
-            $this->position->inc($streamName);
+            $this->streamPositions[$streamName]++;
 
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;

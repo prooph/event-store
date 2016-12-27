@@ -31,60 +31,56 @@ trait InMemoryEventStoreQueryTrait
 
     public function fromCategory(string $name): Query
     {
-        if (null !== $this->position) {
+        if (null !== $this->streamPositions) {
             throw new RuntimeException('from was already called');
         }
 
-        $streams = [];
+        $this->streamPositions = [];
 
         foreach ($this->knownStreams as $stream) {
             if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
-                $streams[$stream] = 0;
+                $this->streamPositions[$stream] = 0;
             }
         }
-
-        $this->position = new Position($streams);
 
         return $this;
     }
 
     public function fromCategories(string ...$names): Query
     {
-        if (null !== $this->position) {
+        if (null !== $this->streamPositions) {
             throw new RuntimeException('from was already called');
         }
 
-        $streams = [];
+        $this->streamPositions = [];
+
         foreach ($this->knownStreams as $stream) {
             foreach ($names as $name) {
                 if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
-                    $streams[$stream] = 0;
+                    $this->streamPositions[$stream] = 0;
                     break;
                 }
             }
         }
-
-        $this->position = new Position($streams);
 
         return $this;
     }
 
     public function fromAll(): Query
     {
-        if (null !== $this->position) {
+        if (null !== $this->streamPositions) {
             throw new RuntimeException('from was already called');
         }
 
-        $streams = [];
+        $this->streamPositions = [];
+
         foreach ($this->knownStreams as $stream) {
             if (substr($stream, 0, 1) === '$') {
                 // ignore internal streams
                 continue;
             }
-            $streams[$stream] = 0;
+            $this->streamPositions[$stream] = 0;
         }
-
-        $this->position = new Position($streams);
 
         return $this;
     }

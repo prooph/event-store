@@ -104,7 +104,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
     public function run(bool $keepRunning = true): void
     {
-        if (null === $this->position
+        if (null === $this->streamPositions
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new RuntimeException('No handlers configured');
@@ -119,7 +119,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
             $singleHandler = null !== $this->handler;
 
-            foreach ($this->position->streamPositions() as $streamName => $position) {
+            foreach ($this->streamPositions as $streamName => $position) {
                 try {
                     $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
                 } catch (StreamNotFound $e) {
@@ -152,7 +152,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
         foreach ($events as $event) {
             /* @var Message $event */
-            $this->position->inc($streamName);
+            $this->streamPositions[$streamName]++;
             $this->eventCounter++;
 
             $result = $handler($this->state, $event);
@@ -178,7 +178,7 @@ abstract class AbstractProjection extends AbstractQuery implements Projection
 
         foreach ($events as $event) {
             /* @var Message $event */
-            $this->position->inc($streamName);
+            $this->streamPositions[$streamName]++;
             $this->eventCounter++;
 
             if (! isset($this->handlers[$event->messageName()])) {
