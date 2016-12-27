@@ -12,11 +12,15 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\InMemoryEventStore;
 
 final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProjection
 {
-    use InMemoryEventStoreQueryTrait;
+    /**
+     * @var array
+     */
+    private $knownStreams;
 
     public function __construct(
         InMemoryEventStore $eventStore,
@@ -38,5 +42,69 @@ final class InMemoryEventStoreReadModelProjection extends AbstractReadModelProje
     protected function persist(): void
     {
         $this->readModel()->persist();
+    }
+
+    private function buildKnownStreams(): void
+    {
+        $reflectionProperty = new \ReflectionProperty(get_class($this->eventStore), 'streams');
+        $reflectionProperty->setAccessible(true);
+
+        $this->knownStreams = array_keys($reflectionProperty->getValue($this->eventStore));
+    }
+
+    public function fromCategory(string $name): Query
+    {
+        if (null !== $this->streamPositions) {
+            throw new RuntimeException('from was already called');
+        }
+
+        $this->streamPositions = [];
+
+        foreach ($this->knownStreams as $stream) {
+            if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
+                $this->streamPositions[$stream] = 0;
+            }
+        }
+
+        return $this;
+    }
+
+    public function fromCategories(string ...$names): Query
+    {
+        if (null !== $this->streamPositions) {
+            throw new RuntimeException('from was already called');
+        }
+
+        $this->streamPositions = [];
+
+        foreach ($this->knownStreams as $stream) {
+            foreach ($names as $name) {
+                if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
+                    $this->streamPositions[$stream] = 0;
+                    break;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    public function fromAll(): Query
+    {
+        if (null !== $this->streamPositions) {
+            throw new RuntimeException('from was already called');
+        }
+
+        $this->streamPositions = [];
+
+        foreach ($this->knownStreams as $stream) {
+            if (substr($stream, 0, 1) === '$') {
+                // ignore internal streams
+                continue;
+            }
+            $this->streamPositions[$stream] = 0;
+        }
+
+        return $this;
     }
 }
