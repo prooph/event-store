@@ -10,7 +10,6 @@
 
 namespace Prooph\EventStore\Aggregate;
 
-use Assert\Assertion;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException;
@@ -25,92 +24,16 @@ use Prooph\EventStore\Util\MapIterator;
 class ConfigurableAggregateTranslator implements AggregateTranslator
 {
     /**
-     * @var string
+     * @var AggregateTranslatorConfiguration
      */
-    private $versionMethodName = 'getVersion';
+    private $configuration;
 
     /**
-     * @var string
+     * @param null|AggregateTranslatorConfiguration $configuration
      */
-    private $identifierMethodName = 'getId';
-
-    /**
-     * @var string
-     */
-    private $popRecordedEventsMethodName = 'popRecordedEvents';
-
-    /**
-     * @var string
-     */
-    private $replayEventsMethodName = 'replay';
-
-    /**
-     * @var string
-     */
-    private $staticReconstituteFromHistoryMethodName = 'reconstituteFromHistory';
-
-    /**
-     * @var null|callable
-     */
-    private $eventToMessageCallback = null;
-
-    /**
-     * @var null|callable
-     */
-    private $messageToEventCallback = null;
-
-    /**
-     * @param null|string   $identifierMethodName
-     * @param null|string   $versionMethodName
-     * @param null|string   $popRecordedEventsMethodName
-     * @param null|string   $replayEventsMethodsName
-     * @param null|string   $staticReconstituteFromHistoryMethodName
-     * @param null|callable $eventToMessageCallback
-     * @param null|callable $messageToEventCallback
-     */
-    public function __construct(
-        $identifierMethodName = null,
-        $versionMethodName = null,
-        $popRecordedEventsMethodName = null,
-        $replayEventsMethodsName = null,
-        $staticReconstituteFromHistoryMethodName = null,
-        $eventToMessageCallback = null,
-        $messageToEventCallback = null)
+    public function __construct(AggregateTranslatorConfiguration $configuration = null)
     {
-        if (null !== $identifierMethodName) {
-            Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
-            $this->identifierMethodName = $identifierMethodName;
-        }
-
-        if (null !== $versionMethodName) {
-            Assertion::minLength($versionMethodName, 1, 'Version method name needs to be a non empty string');
-            $this->versionMethodName = $versionMethodName;
-        }
-
-        if (null !== $popRecordedEventsMethodName) {
-            Assertion::minLength($popRecordedEventsMethodName, 1, 'Pop recorded events method name needs to be a non empty string');
-            $this->popRecordedEventsMethodName = $popRecordedEventsMethodName;
-        }
-
-        if (null !== $replayEventsMethodsName) {
-            Assertion::minLength($replayEventsMethodsName, 1, 'Replay events method name needs to be a non empty string');
-            $this->replayEventsMethodName = $replayEventsMethodsName;
-        }
-
-        if (null !== $staticReconstituteFromHistoryMethodName) {
-            Assertion::minLength($staticReconstituteFromHistoryMethodName, 1, 'Method name for static method reconstitute from history needs to be non empty string');
-            $this->staticReconstituteFromHistoryMethodName = $staticReconstituteFromHistoryMethodName;
-        }
-
-        if (null !== $eventToMessageCallback) {
-            Assertion::true(is_callable($eventToMessageCallback), 'EventToMessage callback needs to be a callable');
-            $this->eventToMessageCallback = $eventToMessageCallback;
-        }
-
-        if (null !== $messageToEventCallback) {
-            Assertion::true(is_callable($messageToEventCallback), 'MessageToEvent callback needs to be a callable');
-            $this->messageToEventCallback = $messageToEventCallback;
-        }
+        $this->configuration = $configuration ?: AggregateTranslatorConfiguration::createWithDefaults();
     }
 
     /**
@@ -120,17 +43,19 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      */
     public function extractAggregateId($eventSourcedAggregateRoot)
     {
-        if (! method_exists($eventSourcedAggregateRoot, $this->identifierMethodName)) {
+        $identifierMethodName = $this->configuration->identifierMethodName();
+
+        if (! method_exists($eventSourcedAggregateRoot, $identifierMethodName)) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Required method %s does not exist for aggregate %s',
-                    $this->identifierMethodName,
+                    $identifierMethodName,
                     get_class($eventSourcedAggregateRoot)
                 )
             );
         }
 
-        return (string)$eventSourcedAggregateRoot->{$this->identifierMethodName}();
+        return (string)$eventSourcedAggregateRoot->{$identifierMethodName}();
     }
 
     /**
@@ -139,17 +64,19 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      */
     public function extractAggregateVersion($eventSourcedAggregateRoot)
     {
-        if (! method_exists($eventSourcedAggregateRoot, $this->versionMethodName)) {
+        $versionMethodName = $this->configuration->versionMethodName();
+
+        if (! method_exists($eventSourcedAggregateRoot, $versionMethodName)) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Required method %s does not exist for aggregate %s',
-                    $this->versionMethodName,
+                    $versionMethodName,
                     get_class($eventSourcedAggregateRoot)
                 )
             );
         }
 
-        return (int) $eventSourcedAggregateRoot->{$this->versionMethodName}();
+        return (int) $eventSourcedAggregateRoot->{$versionMethodName}();
     }
 
     /**
@@ -160,8 +87,10 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      */
     public function reconstituteAggregateFromHistory(AggregateType $aggregateType, Iterator $historyEvents)
     {
-        if ($this->messageToEventCallback) {
-            $historyEvents = new MapIterator($historyEvents, $this->messageToEventCallback);
+        $messageToEventCallback = $this->configuration->messageToEventCallback();
+
+        if ($messageToEventCallback) {
+            $historyEvents = new MapIterator($historyEvents, $messageToEventCallback);
         }
 
         $aggregateClass = $aggregateType->toString();
@@ -175,17 +104,19 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             );
         }
 
-        if (! method_exists($aggregateClass, $this->staticReconstituteFromHistoryMethodName)) {
+        $staticReconstituteFromHistoryMethodName = $this->configuration->staticReconstituteFromHistoryMethodName();
+
+        if (! method_exists($aggregateClass, $staticReconstituteFromHistoryMethodName)) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Cannot reconstitute aggregate of type %s. Class is missing a static %s method!',
                     $aggregateClass,
-                    $this->staticReconstituteFromHistoryMethodName
+                    $staticReconstituteFromHistoryMethodName
                 )
             );
         }
 
-        $method = $this->staticReconstituteFromHistoryMethodName;
+        $method = $staticReconstituteFromHistoryMethodName;
 
         $aggregate = $aggregateClass::$method($historyEvents);
 
@@ -194,7 +125,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
                 sprintf(
                     'Failed to reconstitute aggregate of type %s. Static method %s does not return an instance of the aggregate type!',
                     $aggregateClass,
-                    $this->staticReconstituteFromHistoryMethodName
+                    $staticReconstituteFromHistoryMethodName
                 )
             );
         }
@@ -213,29 +144,31 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
         }
 
-        if (! method_exists($eventSourcedAggregateRoot, $this->popRecordedEventsMethodName)) {
+        $popRecordedEventsMethodName = $this->configuration->popRecordedEventsMethodName();
+        
+        if (! method_exists($eventSourcedAggregateRoot, $popRecordedEventsMethodName)) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Can not pop recorded events from aggregate root %s. The AR is missing a method with name %s!',
                     get_class($eventSourcedAggregateRoot),
-                    $this->popRecordedEventsMethodName
+                    $popRecordedEventsMethodName
                 )
             );
         }
 
-        $recordedEvents = $eventSourcedAggregateRoot->{$this->popRecordedEventsMethodName}();
+        $recordedEvents = $eventSourcedAggregateRoot->{$popRecordedEventsMethodName}();
 
         if (! is_array($recordedEvents) && ! $recordedEvents instanceof \Traversable) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Failed to pop recorded events from aggregate root %s. The AR method %s returned a non traversable result!',
                     get_class($eventSourcedAggregateRoot),
-                    $this->popRecordedEventsMethodName
+                    $popRecordedEventsMethodName
                 )
             );
         }
 
-        $callback = $this->eventToMessageCallback;
+        $callback = $this->configuration->eventToMessageCallback();
 
         foreach ($recordedEvents as $i => $recordedEvent) {
             if ($callback) {
@@ -266,17 +199,18 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
         }
 
-        if (! method_exists($eventSourcedAggregateRoot, $this->replayEventsMethodName)) {
+        $replayEventsMethodName = $this->configuration->replayEventsMethodName();
+        if (! method_exists($eventSourcedAggregateRoot, $replayEventsMethodName)) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Can not replay events to aggregate root %s. The AR is missing a method with name %s!',
                     get_class($eventSourcedAggregateRoot),
-                    $this->replayEventsMethodName
+                    $replayEventsMethodName
                 )
             );
         }
 
-        $callback = $this->messageToEventCallback;
+        $callback = $this->configuration->messageToEventCallback();
 
         foreach ($events as $event) {
             if (! $event instanceof Message) {
@@ -290,7 +224,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
                 $event = $callback($event);
             }
 
-            $eventSourcedAggregateRoot->{$this->replayEventsMethodName}($event);
+            $eventSourcedAggregateRoot->{$replayEventsMethodName}($event);
         }
     }
 }
