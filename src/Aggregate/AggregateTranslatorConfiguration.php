@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the prooph/service-bus.
+ * This file is part of the prooph/event-store.
  * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
  * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
@@ -14,6 +14,14 @@ use Assert\Assertion;
 
 class AggregateTranslatorConfiguration
 {
+    const DEFAULT_VERSION_METHOD_NAME = 'getVersion';
+    const DEFAULT_IDENTIFIER_METHOD_NAME = 'getId';
+    const DEFAULT_POP_RECORDED_EVENTS_METHOD_NAME = 'popRecordedEvents';
+    const DEFAULT_REPLAY_EVENTS_METHOD_NAME = 'replay';
+    const DEFAULT_STATIC_RECONSTITUTE_FROM_HISTORY_METHOD_NAME = 'reconstituteFromHistory';
+    const DEFAULT_EVENT_TO_MESSAGE_CALLBACK = null;
+    const DEFAULT_MESSAGE_TO_EVENT_CALLBACK = null;
+
     /**
      * @var string
      */
@@ -49,6 +57,17 @@ class AggregateTranslatorConfiguration
      */
     private $messageToEventCallback;
 
+    /**
+     * AggregateTranslatorConfiguration constructor.
+     *
+     * @param $versionMethodName
+     * @param $identifierMethodName
+     * @param $popRecordedEventsMethodName
+     * @param $replayEventsMethodName
+     * @param $staticReconstituteFromHistoryMethodName
+     * @param null $eventToMessageCallback
+     * @param null $messageToEventCallback
+     */
     public function __construct(
         $versionMethodName,
         $identifierMethodName,
@@ -66,18 +85,29 @@ class AggregateTranslatorConfiguration
         $this->eventToMessageCallback = $eventToMessageCallback;
         $this->messageToEventCallback = $messageToEventCallback;
     }
-    
+
+    /**
+     * Creates a configuration instance with default values
+     *
+     * @return AggregateTranslatorConfiguration
+     */
     public static function createWithDefaults()
     {
         return new self(
-            'getVersion',
-            'getId',
-            'popRecordedEvents',
-            'replay',
-            'reconstituteFromHistory'
+            self::DEFAULT_VERSION_METHOD_NAME,
+            self::DEFAULT_IDENTIFIER_METHOD_NAME,
+            self::DEFAULT_POP_RECORDED_EVENTS_METHOD_NAME,
+            self::DEFAULT_REPLAY_EVENTS_METHOD_NAME,
+            self::DEFAULT_STATIC_RECONSTITUTE_FROM_HISTORY_METHOD_NAME
         );
     }
 
+    /**
+     * Returns a new instance having set the given name of the method which is used to determine the version
+     *
+     * @param string $versionMethodName
+     * @return AggregateTranslatorConfiguration
+     */
     public function withVersionMethodName($versionMethodName)
     {
         Assertion::minLength($versionMethodName, 1, 'Version method name needs to be a non empty string');
@@ -87,6 +117,12 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns a new instance having set the given name of the method which is used to determine the identifier
+     *
+     * @param $identifierMethodName
+     * @return AggregateTranslatorConfiguration
+     */
     public function withIdentifierMethodName($identifierMethodName)
     {
         Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
@@ -96,6 +132,12 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns a new instance having set the given name of the method which is used to pop recorded events
+     *
+     * @param $popRecordedEventsMethodName
+     * @return AggregateTranslatorConfiguration
+     */
     public function withPopRecordedEventsMethodName($popRecordedEventsMethodName)
     {
         Assertion::minLength($popRecordedEventsMethodName, 1, 'Pop recorded events method name needs to be a non empty string');
@@ -105,6 +147,12 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns a new instance having set the given name of the method which is used to replay events
+     *
+     * @param $replayEventsMethodName
+     * @return AggregateTranslatorConfiguration
+     */
     public function withReplayEventsMethodName($replayEventsMethodName)
     {
         Assertion::minLength($replayEventsMethodName, 1, 'Replay events method name needs to be a non empty string');
@@ -114,6 +162,12 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns a new instance having set the given name of the static method which is used reconstitute from history
+     *
+     * @param $staticReconstituteFromHistoryMethodName
+     * @return AggregateTranslatorConfiguration
+     */
     public function withStaticReconstituteFromHistoryMethodName($staticReconstituteFromHistoryMethodName)
     {
         Assertion::minLength($staticReconstituteFromHistoryMethodName, 1, 'Method name for static method reconstitute from history needs to be non empty string');
@@ -123,6 +177,12 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns a new instance having set the given callback which is used to map events to messages
+     *
+     * @param callable $eventToMessageCallback
+     * @return AggregateTranslatorConfiguration
+     */
     public function withEventToMessageCallback($eventToMessageCallback)
     {
         Assertion::true(is_callable($eventToMessageCallback), 'EventToMessage callback needs to be a callable');
@@ -132,6 +192,12 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns a new instance having set the given callback which is used to map messages to events
+     *
+     * @param callable $messageToEventCallback
+     * @return AggregateTranslatorConfiguration
+     */
     public function withMessageToEventCallback($messageToEventCallback)
     {
         Assertion::true(is_callable($messageToEventCallback), 'MessageToEvent callback needs to be a callable');
@@ -141,36 +207,71 @@ class AggregateTranslatorConfiguration
         return $instance;
     }
 
+    /**
+     * Returns the name of the method which is used to determine the version
+     *
+     * @return string
+     */
     public function versionMethodName()
     {
         return $this->versionMethodName;
     }
 
+    /**
+     * Returns the name of the method which is used to determine the identifier
+     *
+     * @return string
+     */
     public function identifierMethodName()
     {
         return $this->identifierMethodName;
     }
 
+    /**
+     * Returns the name of the method which is used to pop recorded events
+     *
+     * @return string
+     */
     public function popRecordedEventsMethodName()
     {
         return $this->popRecordedEventsMethodName;
     }
 
+    /**
+     * Returns the name of the method which is used to replay events
+     *
+     * @return string
+     */
     public function replayEventsMethodName()
     {
         return $this->replayEventsMethodName;
     }
 
+    /**
+     * Returns the name of the static method which is used to reconstitute from history
+     *
+     * @return string
+     */
     public function staticReconstituteFromHistoryMethodName()
     {
         return $this->staticReconstituteFromHistoryMethodName;
     }
 
+    /**
+     * Returns the callback which is used to map events to messages
+     *
+     * @return callable|null
+     */
     public function eventToMessageCallback()
     {
         return $this->eventToMessageCallback;
     }
 
+    /**
+     * Returns the callback which is used to map messages to events
+     *
+     * @return callable|null
+     */
     public function messageToEventCallback()
     {
         return $this->messageToEventCallback;

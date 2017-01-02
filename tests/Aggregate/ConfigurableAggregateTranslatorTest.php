@@ -30,6 +30,48 @@ use ProophTest\EventStore\TestCase;
 final class ConfigurableAggregateTranslatorTest extends TestCase
 {
     /**
+     * @var AggregateTranslatorConfiguration
+     */
+    private $configProphecy;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $config = $this->prophesize(AggregateTranslatorConfiguration::class);
+
+        $config->versionMethodName()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_VERSION_METHOD_NAME
+        );
+
+        $config->identifierMethodName()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_IDENTIFIER_METHOD_NAME
+        );
+
+        $config->popRecordedEventsMethodName()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_POP_RECORDED_EVENTS_METHOD_NAME
+        );
+
+        $config->replayEventsMethodName()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_REPLAY_EVENTS_METHOD_NAME
+        );
+
+        $config->staticReconstituteFromHistoryMethodName()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_STATIC_RECONSTITUTE_FROM_HISTORY_METHOD_NAME
+        );
+
+        $config->eventToMessageCallback()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_EVENT_TO_MESSAGE_CALLBACK
+        );
+        
+        $config->messageToEventCallback()->willReturn(
+            AggregateTranslatorConfiguration::DEFAULT_MESSAGE_TO_EVENT_CALLBACK
+        );
+
+        $this->configProphecy = $config;
+    }
+
+    /**
      * @test
      */
     public function it_uses_default_method_name_to_get_the_version_from_aggregate_root()
@@ -52,11 +94,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $ar->version()->willReturn('123');
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->versionMethodName()->willReturn('version');
 
-        $configuration->versionMethodName()->willReturn('version');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $this->assertEquals('123', $translator->extractAggregateVersion($ar->reveal()));
     }
@@ -70,11 +110,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->versionMethodName()->willReturn('unknownMethodName');
 
-        $configuration->versionMethodName()->willReturn('unknownMethodName');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $translator->extractAggregateVersion($ar->reveal());
     }
@@ -103,11 +141,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $ar->identifier()->willReturn('123');
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->identifierMethodName()->willReturn('identifier');
 
-        $configuration->identifierMethodName()->willReturn('identifier');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $this->assertEquals('123', $translator->extractAggregateId($ar->reveal()));
     }
@@ -121,11 +157,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->identifierMethodName()->willReturn('unknownMethodName');
 
-        $configuration->identifierMethodName()->willReturn('unknownMethodName');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $translator->extractAggregateId($ar->reveal());
     }
@@ -163,11 +197,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $ar->getPendingEvents()->willReturn($domainEvents);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
-        $configuration->eventToMessageCallback()->willReturn();
-        $configuration->popRecordedEventsMethodName()->willReturn('getPendingEvents');
+        $this->configProphecy->popRecordedEventsMethodName()->willReturn('getPendingEvents');
 
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $recordedEvents = $translator->extractPendingStreamEvents($ar->reveal());
 
@@ -184,11 +216,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->popRecordedEventsMethodName()->willReturn('unknownMethod');
 
-        $configuration->popRecordedEventsMethodName()->willReturn('unknownMethod');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $translator->extractPendingStreamEvents($ar->reveal());
     }
@@ -201,11 +231,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->replayEventsMethodName()->willReturn('unknownMethod');
 
-        $configuration->replayEventsMethodName()->willReturn('unknownMethod');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([]));
     }
@@ -251,12 +279,11 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
 
-        $configuration->popRecordedEventsMethodName()->willReturn('popRecordedEvents');
-        $configuration->eventToMessageCallback()->willReturn(function (\stdClass $customEvent) use ($message) {
+        $this->configProphecy->eventToMessageCallback()->willReturn(function (\stdClass $customEvent) use ($message) {
             return $message->reveal();
         });
 
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $recordedEvents = $translator->extractPendingStreamEvents($ar->reveal());
 
@@ -276,15 +303,12 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $ar->replay($dummyEvent)->shouldBeCalled(2);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
-
-        $configuration->replayEventsMethodName()->willReturn('replay');
-        $configuration->messageToEventCallback()->willReturn(function (Message $message) use ($dummyEvent) {
+        $this->configProphecy->messageToEventCallback()->willReturn(function (Message $message) use ($dummyEvent) {
             return $dummyEvent;
         });
 
 
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([$message->reveal(), $message->reveal()]));
     }
@@ -313,13 +337,10 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $historyEvent = $this->prophesize(Message::class);
 
         $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
-        
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
 
-        $configuration->messageToEventCallback()->willReturn();
-        $configuration->staticReconstituteFromHistoryMethodName()->willReturn('buildFromHistoryEvents');
+        $this->configProphecy->staticReconstituteFromHistoryMethodName()->willReturn('buildFromHistoryEvents');
         
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(CustomAggregateRoot::class), $historyEvents);
 
@@ -343,12 +364,9 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_throws_exception_if_reconstitute_form_history_method_name_does_not_exist()
     {
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
+        $this->configProphecy->staticReconstituteFromHistoryMethodName()->willReturn('unknownMethod');
 
-        $configuration->messageToEventCallback()->willReturn();
-        $configuration->staticReconstituteFromHistoryMethodName()->willReturn('unknownMethod');
-
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $translator->reconstituteAggregateFromHistory(AggregateType::fromString(DefaultAggregateRoot::class), new \ArrayIterator([]));
     }
@@ -373,13 +391,11 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
 
-        $configuration = $this->prophesize(AggregateTranslatorConfiguration::class);
-        $configuration->staticReconstituteFromHistoryMethodName()->willReturn('reconstituteFromHistory');
-        $configuration->messageToEventCallback()->willReturn(function (Message $message) {
+        $this->configProphecy->messageToEventCallback()->willReturn(function (Message $message) {
             return ['custom' => 'domainEvent'];
         });
 
-        $translator = new ConfigurableAggregateTranslator($configuration->reveal());
+        $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(DefaultAggregateRoot::class), $historyEvents);
 
