@@ -12,10 +12,6 @@ namespace ProophTest\EventStore\Aggregate;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\EventStore\Aggregate\AggregateTranslatorConfiguration;
-use Prooph\EventStore\Aggregate\AggregateType;
-use Prooph\EventStore\Aggregate\AggregateTypeProvider;
-use ProophTest\EventStore\Mock\Post;
-use ProophTest\EventStore\Mock\User;
 
 /**
  * Class AggregateTypeTest
@@ -160,7 +156,8 @@ class AggregateTranslatorConfigurationTest extends TestCase
      */
     public function it_ensures_setting_event_to_message_callback_is_immutable()
     {
-        $configuration2 = $this->config->withEventToMessageCallback(function () {});
+        $configuration2 = $this->config->withEventToMessageCallback(function () {
+        });
         $this->assertNotSame($this->config, $configuration2);
         $this->assertEquals(
             AggregateTranslatorConfiguration::DEFAULT_EVENT_TO_MESSAGE_CALLBACK,
@@ -173,7 +170,8 @@ class AggregateTranslatorConfigurationTest extends TestCase
      */
     public function it_ensures_setting_message_to_event_callback_is_immutable()
     {
-        $configuration2 = $this->config->withMessageToEventCallback(function () {});
+        $configuration2 = $this->config->withMessageToEventCallback(function () {
+        });
         $this->assertNotSame($this->config, $configuration2);
         $this->assertEquals(
             AggregateTranslatorConfiguration::DEFAULT_MESSAGE_TO_EVENT_CALLBACK,
@@ -231,7 +229,8 @@ class AggregateTranslatorConfigurationTest extends TestCase
      */
     public function it_returns_configured_event_to_message_callback()
     {
-        $callback = function () {};
+        $callback = function () {
+        };
 
         $configuration = $this->config->withEventToMessageCallback($callback);
         $this->assertSame($callback, $configuration->eventToMessageCallback());
@@ -242,7 +241,8 @@ class AggregateTranslatorConfigurationTest extends TestCase
      */
     public function it_returns_configured_message_to_event_callback()
     {
-        $callback = function () {};
+        $callback = function () {
+        };
 
         $configuration = $this->config->withMessageToEventCallback($callback);
         $this->assertSame($callback, $configuration->messageToEventCallback());
@@ -280,7 +280,7 @@ class AggregateTranslatorConfigurationTest extends TestCase
             $this->config->popRecordedEventsMethodName()
         );
     }
-    
+
     /**
      * @test
      */

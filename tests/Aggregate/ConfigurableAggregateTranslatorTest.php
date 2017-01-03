@@ -63,7 +63,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $config->eventToMessageCallback()->willReturn(
             AggregateTranslatorConfiguration::DEFAULT_EVENT_TO_MESSAGE_CALLBACK
         );
-        
+
         $config->messageToEventCallback()->willReturn(
             AggregateTranslatorConfiguration::DEFAULT_MESSAGE_TO_EVENT_CALLBACK
         );
@@ -321,7 +321,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $historyEvent = $this->prophesize(Message::class);
 
         $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
-        
+
         $translator = new ConfigurableAggregateTranslator();
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(DefaultAggregateRoot::class), $historyEvents);
@@ -339,7 +339,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
 
         $this->configProphecy->staticReconstituteFromHistoryMethodName()->willReturn('buildFromHistoryEvents');
-        
+
         $translator = new ConfigurableAggregateTranslator($this->configProphecy->reveal());
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(CustomAggregateRoot::class), $historyEvents);

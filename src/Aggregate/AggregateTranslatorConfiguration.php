@@ -114,6 +114,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->versionMethodName = $versionMethodName;
+
         return $instance;
     }
 
@@ -129,6 +130,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->identifierMethodName = $identifierMethodName;
+
         return $instance;
     }
 
@@ -144,6 +146,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->popRecordedEventsMethodName = $popRecordedEventsMethodName;
+
         return $instance;
     }
 
@@ -159,6 +162,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->replayEventsMethodName = $replayEventsMethodName;
+
         return $instance;
     }
 
@@ -174,6 +178,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->staticReconstituteFromHistoryMethodName = $staticReconstituteFromHistoryMethodName;
+
         return $instance;
     }
 
@@ -189,6 +194,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->eventToMessageCallback = $eventToMessageCallback;
+
         return $instance;
     }
 
@@ -204,6 +210,7 @@ class AggregateTranslatorConfiguration
 
         $instance = clone $this;
         $instance->messageToEventCallback = $messageToEventCallback;
+
         return $instance;
     }
 
