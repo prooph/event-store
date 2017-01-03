@@ -14,6 +14,9 @@ namespace Prooph\EventStore\Projection;
 
 abstract class AbstractReadModel implements ReadModel
 {
+    /**
+     * @var array
+     */
     private $stack = [];
 
     public function stack(string $operation, ...$args): void

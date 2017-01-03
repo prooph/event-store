@@ -14,7 +14,6 @@ namespace ProophTest\EventStore\Projection;
 
 use ArrayIterator;
 use Prooph\Common\Messaging\Message;
-use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Projection\ProjectionOptions;
@@ -193,16 +192,6 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             ->run(false);
 
         $this->assertEquals(50, $projection->getState()['count']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_negative_persist_block_size_given(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100, -10));
     }
 
     /**

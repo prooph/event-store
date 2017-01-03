@@ -297,8 +297,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         return new InMemoryEventStoreProjection(
             $this,
             $name,
-            $options->cacheSize(),
-            $options->persistBlockSize()
+            $options->cacheSize()
         );
     }
 
