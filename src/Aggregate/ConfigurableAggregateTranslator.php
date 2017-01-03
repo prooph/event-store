@@ -59,19 +59,79 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     private $messageToEventCallback;
 
     /**
-     * @param null|AggregateTranslatorConfiguration $configuration
+     * @param null|string   $identifierMethodName
+     * @param null|string   $versionMethodName
+     * @param null|string   $popRecordedEventsMethodName
+     * @param null|string   $replayEventsMethodsName
+     * @param null|string   $staticReconstituteFromHistoryMethodName
+     * @param null|callable $eventToMessageCallback
+     * @param null|callable $messageToEventCallback
      */
-    public function __construct(AggregateTranslatorConfiguration $configuration = null)
+    public function __construct(
+        $identifierMethodName = null,
+        $versionMethodName = null,
+        $popRecordedEventsMethodName = null,
+        $replayEventsMethodsName = null,
+        $staticReconstituteFromHistoryMethodName = null,
+        $eventToMessageCallback = null,
+        $messageToEventCallback = null)
     {
-        $config = $configuration ?: AggregateTranslatorConfiguration::createWithDefaults();
+        $config = AggregateTranslatorConfiguration::createWithDefaults();
 
-        $this->versionMethodName = $config->versionMethodName();
+        if (null !== $identifierMethodName) {
+            $config = $config->withIdentifierMethodName($identifierMethodName);
+        }
+
+        if (null !== $versionMethodName) {
+            $config = $config->withVersionMethodName($versionMethodName);
+        }
+
+        if (null !== $popRecordedEventsMethodName) {
+            $config = $config->withPopRecordedEventsMethodName($popRecordedEventsMethodName);
+        }
+
+        if (null !== $replayEventsMethodsName) {
+            $config = $config->withReplayEventsMethodName($replayEventsMethodsName);
+        }
+
+        if (null !== $staticReconstituteFromHistoryMethodName) {
+            $config = $config->withStaticReconstituteFromHistoryMethodName($staticReconstituteFromHistoryMethodName);
+        }
+
+        if (null !== $eventToMessageCallback) {
+            $config = $config->withEventToMessageCallback($eventToMessageCallback);
+        }
+
+        if (null !== $messageToEventCallback) {
+            $config = $config->withMessageToEventCallback($messageToEventCallback);
+        }
+
         $this->identifierMethodName = $config->identifierMethodName();
+        $this->versionMethodName = $config->versionMethodName();
         $this->popRecordedEventsMethodName = $config->popRecordedEventsMethodName();
         $this->replayEventsMethodName = $config->replayEventsMethodName();
         $this->staticReconstituteFromHistoryMethodName = $config->staticReconstituteFromHistoryMethodName();
         $this->eventToMessageCallback = $config->eventToMessageCallback();
         $this->messageToEventCallback = $config->messageToEventCallback();
+    }
+
+    /**
+     * @param null|AggregateTranslatorConfiguration $configuration
+     * @return ConfigurableAggregateTranslator
+     */
+    public static function fromConfiguration(AggregateTranslatorConfiguration $configuration = null)
+    {
+        $config = $configuration ?: AggregateTranslatorConfiguration::createWithDefaults();
+
+        return new self(
+            $config->versionMethodName(),
+            $config->identifierMethodName(),
+            $config->popRecordedEventsMethodName(),
+            $config->replayEventsMethodName(),
+            $config->staticReconstituteFromHistoryMethodName(),
+            $config->eventToMessageCallback(),
+            $config->messageToEventCallback()
+        );
     }
 
 

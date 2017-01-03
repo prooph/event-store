@@ -68,7 +68,7 @@ class AggregateTranslatorConfiguration
      * @param null $eventToMessageCallback
      * @param null $messageToEventCallback
      */
-    public function __construct(
+    private function __construct(
         $versionMethodName,
         $identifierMethodName,
         $popRecordedEventsMethodName,
