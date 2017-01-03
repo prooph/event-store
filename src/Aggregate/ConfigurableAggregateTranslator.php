@@ -124,8 +124,8 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
         $config = $configuration ?: AggregateTranslatorConfiguration::createWithDefaults();
 
         return new self(
-            $config->versionMethodName(),
             $config->identifierMethodName(),
+            $config->versionMethodName(),
             $config->popRecordedEventsMethodName(),
             $config->replayEventsMethodName(),
             $config->staticReconstituteFromHistoryMethodName(),
