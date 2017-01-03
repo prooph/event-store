@@ -12,10 +12,57 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
+use Closure;
 use Prooph\Common\Messaging\Message;
 
-interface Projection extends Query
+interface Projection
 {
+    /**
+     * The callback has to return an array
+     */
+    public function init(Closure $callback): Projection;
+
+    public function fromStream(string $streamName): Projection;
+
+    public function fromStreams(string ...$streamNames): Projection;
+
+    public function fromCategory(string $name): Projection;
+
+    public function fromCategories(string ...$names): Projection;
+
+    public function fromAll(): Projection;
+
+    /**
+     * For example:
+     *
+     * when([
+     *     'UserCreated' => function (array $state, Message $event) {
+     *         $state->count++;
+     *         return $state;
+     *     },
+     *     'UserDeleted' => function (array $state, Message $event) {
+     *         $state->count--;
+     *         return $state;
+     *     }
+     * ])
+     */
+    public function when(array $handlers): Projection;
+
+    /**
+     * For example:
+     * function(array $state, Message $event) {
+     *     $state->count++;
+     *     return $state;
+     * }
+     */
+    public function whenAny(Closure $closure): Projection;
+
+    public function reset(): void;
+
+    public function stop(): void;
+
+    public function getState(): array;
+
     public function getName(): string;
 
     public function emit(Message $event): void;
