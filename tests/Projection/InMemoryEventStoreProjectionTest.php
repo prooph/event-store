@@ -29,7 +29,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_projection_from_stream_and_reset(): void
+    public function it_can_project_from_stream_and_reset(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -52,6 +52,8 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->assertEquals(49, $projection->getState()['count']);
 
         $projection->reset();
+
+        $projection->run(false);
 
         $projection->run(false);
 
@@ -506,7 +508,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100, 10));
+        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100));
 
         $projection
             ->init(function (): array {
@@ -530,7 +532,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100, 10));
+        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100));
 
         $projection
             ->init(function (): array {

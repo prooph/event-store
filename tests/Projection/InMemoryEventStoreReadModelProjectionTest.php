@@ -16,6 +16,8 @@ use ArrayIterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjection;
+use Prooph\EventStore\Projection\ProjectionOptions;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\EventStoreTestCase;
@@ -28,13 +30,15 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_projection_from_stream_and_reset(): void
+    public function it_can_project_from_stream_and_reset(): void
     {
         $this->prepareEventStream('user-123');
 
         $readModel = new ReadModelMock();
 
         $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+
+        $this->assertEquals('test_projection', $projection->getName());
 
         $projection
             ->init(function (): array {
@@ -56,7 +60,43 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $projection->run(false);
 
+        $projection->run(false);
+
         $this->assertEquals(49, $projection->getState()['count']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_project_from_stream_and_delete(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $readModel = new ReadModelMock();
+
+        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+
+        $this->assertEquals('test_projection', $projection->getName());
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event): array {
+                    $state['count']++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $this->assertEquals(49, $projection->getState()['count']);
+
+        $projection->delete(true);
+
+        $this->assertFalse($readModel->isInitialized());
     }
 
     /**
@@ -507,6 +547,70 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
             ->run();
 
         $this->assertEquals('Sascha', $readModel->read('name'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_persists_in_single_handler(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $readModel = new ReadModelMock();
+
+        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel, new ProjectionOptions(100, 10));
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromCategories('user', 'guest')
+            ->whenAny(function (array $state, Message $event): array {
+                $state['count']++;
+
+                return $state;
+            })
+            ->run(false);
+
+        $this->assertEquals(50, $projection->getState()['count']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_persists_in_handlers(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $readModel = new ReadModelMock();
+
+        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel, new ProjectionOptions(100, 10));
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromCategories('user', 'guest')
+            ->when([
+                UsernameChanged::class => function (array $state, Message $event): array {
+                    $state['count']++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $this->assertEquals(49, $projection->getState()['count']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_persist_block_size_given(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), 1, -1, 25);
     }
 
     private function prepareEventStream(string $name): void
