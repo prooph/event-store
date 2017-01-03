@@ -94,12 +94,18 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
      */
     private $currentStreamName = null;
 
+    /**
+     * @var int
+     */
+    private $sleep;
+
     public function __construct(
         InMemoryEventStore $eventStore,
         string $name,
         ReadModel $readModel,
         int $cacheSize,
-        int $persistBlockSize
+        int $persistBlockSize,
+        int $sleep
     ) {
         if ($persistBlockSize <= 0) {
             throw new Exception\InvalidArgumentException('PersistBlockSize must be a positive integer');
@@ -110,6 +116,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         $this->cachedStreamNames = new ArrayCache($cacheSize);
         $this->persistBlockSize = $persistBlockSize;
         $this->readModel = $readModel;
+        $this->sleep = $sleep;
 
         $reflectionProperty = new \ReflectionProperty(get_class($this->eventStore), 'streams');
         $reflectionProperty->setAccessible(true);
@@ -275,6 +282,8 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         do {
             $singleHandler = null !== $this->handler;
 
+            $eventCounter = 0;
+
             foreach ($this->streamPositions as $streamName => $position) {
                 try {
                     $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
@@ -295,6 +304,10 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
             }
 
             $this->readModel()->persist();
+
+            if (0 === $eventCounter) {
+                usleep($this->sleep);
+            }
         } while ($keepRunning && ! $this->isStopped);
     }
 

@@ -41,14 +41,26 @@ class ProjectionOptionsTest extends TestCase
     /**
      * @test
      */
+    public function it_throws_exception_when_sleep_option_is_missing(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        ProjectionOptions::fromArray(['cache_size' => 1, 'persist_block_size' => 1]);
+    }
+
+    /**
+     * @test
+     */
     public function it_creates_instance(): void
     {
         $options = ProjectionOptions::fromArray([
             'cache_size' => 5,
             'persist_block_size' => 15,
+            'sleep' => 2500000,
         ]);
 
         $this->assertEquals(5, $options->cacheSize());
         $this->assertEquals(15, $options->persistBlockSize());
+        $this->assertEquals(2500000, $options->sleep());
     }
 }
