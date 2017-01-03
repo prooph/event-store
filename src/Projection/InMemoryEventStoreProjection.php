@@ -97,7 +97,7 @@ final class InMemoryEventStoreProjection implements Projection
         $this->knownStreams = array_keys($reflectionProperty->getValue($this->eventStore));
     }
 
-    public function init(Closure $callback): Query
+    public function init(Closure $callback): Projection
     {
         if (null !== $this->initCallback) {
             throw new Exception\RuntimeException('Projection already initialized');
@@ -116,7 +116,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromStream(string $streamName): Query
+    public function fromStream(string $streamName): Projection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -127,7 +127,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): Query
+    public function fromStreams(string ...$streamNames): Projection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -140,7 +140,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromCategory(string $name): Query
+    public function fromCategory(string $name): Projection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -157,7 +157,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromCategories(string ...$names): Query
+    public function fromCategories(string ...$names): Projection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -177,7 +177,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromAll(): Query
+    public function fromAll(): Projection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -196,7 +196,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function when(array $handlers): Query
+    public function when(array $handlers): Projection
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -217,7 +217,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function whenAny(Closure $handler): Query
+    public function whenAny(Closure $handler): Projection
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -291,7 +291,11 @@ final class InMemoryEventStoreProjection implements Projection
 
         $this->state = [];
 
-        $this->eventStore->delete(new StreamName($this->name));
+        try {
+            $this->eventStore->delete(new StreamName($this->name));
+        } catch (Exception\StreamNotFound $exception) {
+            // ignore
+        }
     }
 
     public function run(bool $keepRunning = true): void

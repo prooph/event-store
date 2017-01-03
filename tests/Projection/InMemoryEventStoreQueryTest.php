@@ -27,7 +27,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_query_from_stream_and_reset()
+    public function it_can_query_from_stream_and_reset(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -59,7 +59,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_be_stopped_while_processing()
+    public function it_can_be_stopped_while_processing(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -149,7 +149,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_query_from_category_with_when_all()
+    public function it_can_query_from_category_with_when_all(): void
     {
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
@@ -176,7 +176,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_query_from_categories_with_when()
+    public function it_can_query_from_categories_with_when(): void
     {
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');

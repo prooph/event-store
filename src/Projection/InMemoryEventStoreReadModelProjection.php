@@ -12,13 +12,11 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
-use ArrayIterator;
 use Closure;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
-use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
@@ -124,7 +122,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         $this->knownStreams = array_keys($reflectionProperty->getValue($this->eventStore));
     }
 
-    public function init(Closure $callback): Query
+    public function init(Closure $callback): ReadModelProjection
     {
         if (null !== $this->initCallback) {
             throw new Exception\RuntimeException('Projection already initialized');
@@ -143,7 +141,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromStream(string $streamName): Query
+    public function fromStream(string $streamName): ReadModelProjection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -154,7 +152,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): Query
+    public function fromStreams(string ...$streamNames): ReadModelProjection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -167,7 +165,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromCategory(string $name): Query
+    public function fromCategory(string $name): ReadModelProjection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -184,7 +182,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromCategories(string ...$names): Query
+    public function fromCategories(string ...$names): ReadModelProjection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -204,7 +202,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromAll(): Query
+    public function fromAll(): ReadModelProjection
     {
         if (null !== $this->streamPositions) {
             throw new Exception\RuntimeException('From was already called');
@@ -223,7 +221,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function when(array $handlers): Query
+    public function when(array $handlers): ReadModelProjection
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -244,7 +242,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function whenAny(Closure $handler): Query
+    public function whenAny(Closure $handler): ReadModelProjection
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -260,9 +258,9 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this->readModel;
     }
 
-    public function delete(bool $deleteEmittedEvents): void
+    public function delete(bool $deleteProjection): void
     {
-        if ($deleteEmittedEvents) {
+        if ($deleteProjection) {
             $this->readModel->delete();
         }
     }
@@ -324,29 +322,6 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function emit(Message $event): void
-    {
-        $this->linkTo($this->name, $event);
-    }
-
-    public function linkTo(string $streamName, Message $event): void
-    {
-        $sn = new StreamName($streamName);
-
-        if ($this->cachedStreamNames->has($streamName)) {
-            $append = true;
-        } else {
-            $this->cachedStreamNames->rollingAppend($streamName);
-            $append = $this->eventStore->hasStream($sn);
-        }
-
-        if ($append) {
-            $this->eventStore->appendTo($sn, new ArrayIterator([$event]));
-        } else {
-            $this->eventStore->create(new Stream($sn, new ArrayIterator([$event])));
-        }
     }
 
     public function reset(): void

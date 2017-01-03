@@ -776,7 +776,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail()
+    public function it_should_rollback_and_throw_exception_in_case_of_transaction_fail(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Transaction failed');
@@ -792,7 +792,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_should_return_true_by_default_if_transaction_is_used()
+    public function it_should_return_true_by_default_if_transaction_is_used(): void
     {
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
             $this->eventStore->create($this->getTestStream());
@@ -804,7 +804,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_wraps_up_code_in_transaction_properly()
+    public function it_wraps_up_code_in_transaction_properly(): void
     {
         $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
             $this->eventStore->create($this->getTestStream());

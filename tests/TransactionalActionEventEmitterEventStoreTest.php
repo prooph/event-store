@@ -133,7 +133,7 @@ class TransactionalActionEventEmitterEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_wraps_up_code_in_transaction_properly()
+    public function it_wraps_up_code_in_transaction_properly(): void
     {
         $transactionResult = $this->eventStore->transactional(function () {
             $this->eventStore->create($this->getTestStream());
