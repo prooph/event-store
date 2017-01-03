@@ -10,7 +10,6 @@
 
 namespace Prooph\EventStore\Aggregate;
 
-use Assert\Assertion;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException;
@@ -27,91 +26,54 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
     /**
      * @var string
      */
-    private $versionMethodName = 'getVersion';
+    private $versionMethodName;
 
     /**
      * @var string
      */
-    private $identifierMethodName = 'getId';
+    private $identifierMethodName;
 
     /**
      * @var string
      */
-    private $popRecordedEventsMethodName = 'popRecordedEvents';
+    private $popRecordedEventsMethodName;
 
     /**
      * @var string
      */
-    private $replayEventsMethodName = 'replay';
+    private $replayEventsMethodName;
 
     /**
      * @var string
      */
-    private $staticReconstituteFromHistoryMethodName = 'reconstituteFromHistory';
+    private $staticReconstituteFromHistoryMethodName;
 
     /**
      * @var null|callable
      */
-    private $eventToMessageCallback = null;
+    private $eventToMessageCallback;
 
     /**
      * @var null|callable
      */
-    private $messageToEventCallback = null;
+    private $messageToEventCallback;
 
     /**
-     * @param null|string   $identifierMethodName
-     * @param null|string   $versionMethodName
-     * @param null|string   $popRecordedEventsMethodName
-     * @param null|string   $replayEventsMethodsName
-     * @param null|string   $staticReconstituteFromHistoryMethodName
-     * @param null|callable $eventToMessageCallback
-     * @param null|callable $messageToEventCallback
+     * @param null|AggregateTranslatorConfiguration $configuration
      */
-    public function __construct(
-        $identifierMethodName = null,
-        $versionMethodName = null,
-        $popRecordedEventsMethodName = null,
-        $replayEventsMethodsName = null,
-        $staticReconstituteFromHistoryMethodName = null,
-        $eventToMessageCallback = null,
-        $messageToEventCallback = null)
+    public function __construct(AggregateTranslatorConfiguration $configuration = null)
     {
-        if (null !== $identifierMethodName) {
-            Assertion::minLength($identifierMethodName, 1, 'Identifier method name needs to be a non empty string');
-            $this->identifierMethodName = $identifierMethodName;
-        }
+        $config = $configuration ?: AggregateTranslatorConfiguration::createWithDefaults();
 
-        if (null !== $versionMethodName) {
-            Assertion::minLength($versionMethodName, 1, 'Version method name needs to be a non empty string');
-            $this->versionMethodName = $versionMethodName;
-        }
-
-        if (null !== $popRecordedEventsMethodName) {
-            Assertion::minLength($popRecordedEventsMethodName, 1, 'Pop recorded events method name needs to be a non empty string');
-            $this->popRecordedEventsMethodName = $popRecordedEventsMethodName;
-        }
-
-        if (null !== $replayEventsMethodsName) {
-            Assertion::minLength($replayEventsMethodsName, 1, 'Replay events method name needs to be a non empty string');
-            $this->replayEventsMethodName = $replayEventsMethodsName;
-        }
-
-        if (null !== $staticReconstituteFromHistoryMethodName) {
-            Assertion::minLength($staticReconstituteFromHistoryMethodName, 1, 'Method name for static method reconstitute from history needs to be non empty string');
-            $this->staticReconstituteFromHistoryMethodName = $staticReconstituteFromHistoryMethodName;
-        }
-
-        if (null !== $eventToMessageCallback) {
-            Assertion::true(is_callable($eventToMessageCallback), 'EventToMessage callback needs to be a callable');
-            $this->eventToMessageCallback = $eventToMessageCallback;
-        }
-
-        if (null !== $messageToEventCallback) {
-            Assertion::true(is_callable($messageToEventCallback), 'MessageToEvent callback needs to be a callable');
-            $this->messageToEventCallback = $messageToEventCallback;
-        }
+        $this->versionMethodName = $config->versionMethodName();
+        $this->identifierMethodName = $config->identifierMethodName();
+        $this->popRecordedEventsMethodName = $config->popRecordedEventsMethodName();
+        $this->replayEventsMethodName = $config->replayEventsMethodName();
+        $this->staticReconstituteFromHistoryMethodName = $config->staticReconstituteFromHistoryMethodName();
+        $this->eventToMessageCallback = $config->eventToMessageCallback();
+        $this->messageToEventCallback = $config->messageToEventCallback();
     }
+
 
     /**
      * @param object $eventSourcedAggregateRoot
