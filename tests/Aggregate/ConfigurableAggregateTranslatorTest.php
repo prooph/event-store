@@ -89,7 +89,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_configured_method_name_to_get_the_version_from_aggregate_root_if_injected()
+    public function it_uses_configured_method_name_to_get_the_version_from_aggregate_root()
     {
         $ar = $this->prophesize(CustomAggregateRootContract::class);
 
@@ -99,6 +99,23 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $this->assertEquals('123', $translator->extractAggregateVersion($ar->reveal()));
     }
+
+    /**
+     * @test
+     */
+    public function it_uses_configured_via_config_method_name_to_get_the_version_from_aggregate_root()
+    {
+        $ar = $this->prophesize(CustomAggregateRootContract::class);
+
+        $ar->version()->willReturn('123');
+
+        $this->configProphecy->versionMethodName()->willReturn('version');
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
+
+        $this->assertEquals('123', $translator->extractAggregateVersion($ar->reveal()));
+    }
+
     /**
      * @test
      * @expectedException \InvalidArgumentException
@@ -136,6 +153,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $this->assertEquals('123', $translator->extractAggregateId($ar->reveal()));
     }
 
+
     /**
      * @test
      */
@@ -146,6 +164,22 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $ar->identifier()->willReturn('123');
 
         $translator = new ConfigurableAggregateTranslator('identifier');
+
+        $this->assertEquals('123', $translator->extractAggregateId($ar->reveal()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_configured_via_config_method_name_to_get_the_identifier_from_aggregate_root_if_injected()
+    {
+        $ar = $this->prophesize(CustomAggregateRootContract::class);
+
+        $ar->identifier()->willReturn('123');
+
+        $this->configProphecy->identifierMethodName()->willReturn('identifier');
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
 
         $this->assertEquals('123', $translator->extractAggregateId($ar->reveal()));
     }
@@ -206,6 +240,28 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $ar->getPendingEvents()->willReturn($domainEvents);
 
         $translator = new ConfigurableAggregateTranslator(null, null, 'getPendingEvents');
+
+        $recordedEvents = $translator->extractPendingStreamEvents($ar->reveal());
+
+        $this->assertSame($domainEvents, $recordedEvents);
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_configured_via_config_method_name_to_extract_pending_events()
+    {
+        $ar = $this->prophesize(CustomAggregateRootContract::class);
+
+        $domainEvent = $this->prophesize(Message::class);
+
+        $domainEvents = [$domainEvent->reveal()];
+
+        $ar->getPendingEvents()->willReturn($domainEvents);
+
+        $this->configProphecy->popRecordedEventsMethodName()->willReturn('getPendingEvents');
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
 
         $recordedEvents = $translator->extractPendingStreamEvents($ar->reveal());
 
@@ -278,7 +334,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_invokes_event_to_message_callback_for_each_event_when_extracting()
+    public function it_invokes_configured_event_to_message_callback_for_each_event_when_extracting()
     {
         $message = $this->prophesize(Message::class);
 
@@ -298,7 +354,29 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_invokes_message_to_event_callback_for_each_event_replaying()
+    public function it_invokes_configured_via_config_event_to_message_callback_for_each_event_when_extracting()
+    {
+        $message = $this->prophesize(Message::class);
+
+        $ar = $this->prophesize(DefaultAggregateRootContract::class);
+
+        $ar->popRecordedEvents()->willReturn([new \stdClass(), new \stdClass()]);
+
+        $this->configProphecy->eventToMessageCallback()->willReturn(function (\stdClass $customEvent) use ($message) {
+            return $message->reveal();
+        });
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
+
+        $recordedEvents = $translator->extractPendingStreamEvents($ar->reveal());
+
+        $this->assertSame([$message->reveal(), $message->reveal()], $recordedEvents);
+    }
+
+    /**
+     * @test
+     */
+    public function it_invokes_configured_message_to_event_callback_for_each_event_replaying()
     {
         $message = $this->prophesize(Message::class);
 
@@ -314,6 +392,30 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
         $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([$message->reveal(), $message->reveal()]));
     }
+
+    /**
+     * @test
+     */
+    public function it_invokes_configured_via_config_message_to_event_callback_for_each_event_replaying()
+    {
+        $message = $this->prophesize(Message::class);
+
+        $ar = $this->prophesize(DefaultAggregateRootContract::class);
+
+        $dummyEvent = new \stdClass();
+
+        $ar->replay($dummyEvent)->shouldBeCalled(2);
+
+        $this->configProphecy->messageToEventCallback()->willReturn(function (Message $message) use ($dummyEvent) {
+            return $dummyEvent;
+        });
+
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
+
+        $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([$message->reveal(), $message->reveal()]));
+    }
+
 
     /**
      * @test
@@ -350,6 +452,24 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
 
         $translator = new ConfigurableAggregateTranslator(null, null, null, null, 'buildFromHistoryEvents');
+
+        $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(CustomAggregateRoot::class), $historyEvents);
+
+        $this->assertSame($historyEvents, $ar->getHistoryEvents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_configured_via_config_name_to_reconstitute_an_aggregate_root_from_history()
+    {
+        $historyEvent = $this->prophesize(Message::class);
+
+        $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
+
+        $this->configProphecy->staticReconstituteFromHistoryMethodName()->willReturn('buildFromHistoryEvents');
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(CustomAggregateRoot::class), $historyEvents);
 
@@ -410,6 +530,26 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
         $translator = new ConfigurableAggregateTranslator(null, null, null, null, null, null, function (Message $message) {
             return ['custom' => 'domainEvent'];
         });
+
+        $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(DefaultAggregateRoot::class), $historyEvents);
+
+        $this->assertEquals([['custom' => 'domainEvent']], $ar->getHistoryEvents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_uses_callback_from_config_to_convert_message_into_custom_domain_event()
+    {
+        $historyEvent = $this->prophesize(Message::class);
+
+        $historyEvents = new \ArrayIterator([$historyEvent->reveal()]);
+
+        $this->configProphecy->messageToEventCallback()->willReturn(function (Message $message) {
+            return ['custom' => 'domainEvent'];
+        });
+
+        $translator = ConfigurableAggregateTranslator::fromConfiguration($this->configProphecy->reveal());
 
         $ar = $translator->reconstituteAggregateFromHistory(AggregateType::fromAggregateRootClass(DefaultAggregateRoot::class), $historyEvents);
 
