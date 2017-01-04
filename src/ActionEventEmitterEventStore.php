@@ -21,10 +21,13 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\ProjectionFactory;
 use Prooph\EventStore\Projection\ProjectionOptions;
 use Prooph\EventStore\Projection\Query;
+use Prooph\EventStore\Projection\QueryFactory;
 use Prooph\EventStore\Projection\ReadModel;
 use Prooph\EventStore\Projection\ReadModelProjection;
+use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
 class ActionEventEmitterEventStore implements EventStore
@@ -304,22 +307,62 @@ class ActionEventEmitterEventStore implements EventStore
         }
     }
 
-    public function createQuery(): Query
+    public function createQuery(QueryFactory $factory = null): Query
     {
-        return $this->eventStore->createQuery();
+        if (null === $factory) {
+            $factory = $this->getDefaultQueryFactory();
+        }
+
+        return $factory->factory();
     }
 
-    public function createProjection(string $name, ProjectionOptions $options = null): Projection
-    {
-        return $this->eventStore->createProjection($name, $options);
+    public function createProjection(
+        string $name,
+        ProjectionOptions $options = null,
+        ProjectionFactory $factory = null
+    ): Projection {
+        if (null === $factory) {
+            $factory = $this->getDefaultProjectionFactory();
+        }
+
+        return $factory->factory($name, $options);
     }
 
     public function createReadModelProjection(
         string $name,
         ReadModel $readModel,
-        ProjectionOptions $options = null
+        ProjectionOptions $options = null,
+        ReadModelProjectionFactory $factory = null
     ): ReadModelProjection {
-        return $this->eventStore->createReadModelProjection($name, $readModel, $options);
+        if (null === $factory) {
+            $factory = $this->getDefaultReadModelProjectionFactory();
+        }
+
+        return $factory->factory($name, $readModel, $options);
+    }
+
+    public function getDefaultQueryFactory(): QueryFactory
+    {
+        $factory = $this->eventStore->getDefaultQueryFactory();
+        $factory->setEventStore($this);
+
+        return $factory;
+    }
+
+    public function getDefaultProjectionFactory(): ProjectionFactory
+    {
+        $factory = $this->eventStore->getDefaultProjectionFactory();
+        $factory->setEventStore($this);
+
+        return $factory;
+    }
+
+    public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
+    {
+        $factory = $this->eventStore->getDefaultReadModelProjectionFactory();
+        $factory->setEventStore($this);
+
+        return $factory;
     }
 
     public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler

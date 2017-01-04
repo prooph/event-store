@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Projection;
 
 use ArrayIterator;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream;
@@ -402,6 +403,21 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
 
         $query = $this->eventStore->createQuery();
         $query->run();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_unknown_event_store_instance_passed(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $eventStore = $this->prophesize(EventStore::class);
+
+        $factory = $this->eventStore->getDefaultQueryFactory();
+        $factory->setEventStore($eventStore->reveal());
+
+        $this->eventStore->createQuery($factory);
     }
 
     private function prepareEventStream(string $name): void

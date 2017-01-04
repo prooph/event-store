@@ -21,14 +21,17 @@ use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
-use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
-use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjection;
+use Prooph\EventStore\Projection\InMemoryEventStoreProjectionFactory;
+use Prooph\EventStore\Projection\InMemoryEventStoreQueryFactory;
+use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjectionFactory;
 use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\ProjectionFactory;
 use Prooph\EventStore\Projection\ProjectionOptions;
 use Prooph\EventStore\Projection\Query;
+use Prooph\EventStore\Projection\QueryFactory;
 use Prooph\EventStore\Projection\ReadModel;
 use Prooph\EventStore\Projection\ReadModelProjection;
+use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
 final class InMemoryEventStore implements TransactionalEventStore
@@ -283,39 +286,53 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result ?: true;
     }
 
-    public function createQuery(): Query
+    public function createQuery(QueryFactory $factory = null): Query
     {
-        return new InMemoryEventStoreQuery($this);
-    }
-
-    public function createProjection(string $name, ProjectionOptions $options = null): Projection
-    {
-        if (null === $options) {
-            $options = new ProjectionOptions();
+        if (null === $factory) {
+            $factory = $this->getDefaultQueryFactory();
         }
 
-        return new InMemoryEventStoreProjection(
-            $this,
-            $name,
-            $options->cacheSize(),
-            $options->sleep()
-        );
+        return $factory->factory();
     }
 
-    public function createReadModelProjection(string $name, ReadModel $readModel, ProjectionOptions $options = null): ReadModelProjection
-    {
-        if (null === $options) {
-            $options = new ProjectionOptions();
+    public function createProjection(
+        string $name,
+        ProjectionOptions $options = null,
+        ProjectionFactory $factory = null
+    ): Projection {
+        if (null === $factory) {
+            $factory = $this->getDefaultProjectionFactory();
         }
 
-        return new InMemoryEventStoreReadModelProjection(
-            $this,
-            $name,
-            $readModel,
-            $options->cacheSize(),
-            $options->persistBlockSize(),
-            $options->sleep()
-        );
+        return $factory->factory($name, $options);
+    }
+
+    public function createReadModelProjection(
+        string $name,
+        ReadModel $readModel,
+        ProjectionOptions $options = null,
+        ReadModelProjectionFactory $factory = null
+    ): ReadModelProjection {
+        if (null === $factory) {
+            $factory = $this->getDefaultReadModelProjectionFactory();
+        }
+
+        return $factory->factory($name, $readModel, $options);
+    }
+
+    public function getDefaultQueryFactory(): QueryFactory
+    {
+        return new InMemoryEventStoreQueryFactory($this);
+    }
+
+    public function getDefaultProjectionFactory(): ProjectionFactory
+    {
+        return new InMemoryEventStoreProjectionFactory($this);
+    }
+
+    public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
+    {
+        return new InMemoryEventStoreReadModelProjectionFactory($this);
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool

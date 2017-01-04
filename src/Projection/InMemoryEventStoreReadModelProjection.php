@@ -15,6 +15,8 @@ namespace Prooph\EventStore\Projection;
 use Closure;
 use Iterator;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\StreamName;
@@ -53,7 +55,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
     private $persistBlockSize;
 
     /**
-     * @var InMemoryEventStore
+     * @var EventStore
      */
     private $eventStore;
 
@@ -98,7 +100,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
     private $sleep;
 
     public function __construct(
-        InMemoryEventStore $eventStore,
+        EventStore $eventStore,
         string $name,
         ReadModel $readModel,
         int $cacheSize,
@@ -116,10 +118,23 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         $this->readModel = $readModel;
         $this->sleep = $sleep;
 
-        $reflectionProperty = new \ReflectionProperty(get_class($this->eventStore), 'streams');
-        $reflectionProperty->setAccessible(true);
+        if ($eventStore instanceof ActionEventEmitterEventStore) {
+            $reflectionPropertyEventStore = new \ReflectionProperty(get_class($eventStore), 'eventStore');
+            $reflectionPropertyEventStore->setAccessible(true);
+            $internalEventStore = $reflectionPropertyEventStore->getValue($eventStore);
 
-        $this->knownStreams = array_keys($reflectionProperty->getValue($this->eventStore));
+            $reflectionProperty = new \ReflectionProperty(get_class($internalEventStore), 'streams');
+            $reflectionProperty->setAccessible(true);
+
+            $this->knownStreams = array_keys($reflectionProperty->getValue($internalEventStore));
+        } elseif ($eventStore instanceof InMemoryEventStore) {
+            $reflectionProperty = new \ReflectionProperty(get_class($eventStore), 'streams');
+            $reflectionProperty->setAccessible(true);
+
+            $this->knownStreams = array_keys($reflectionProperty->getValue($eventStore));
+        } else {
+            throw new Exception\InvalidArgumentException('Unknown event store instance given');
+        }
     }
 
     public function init(Closure $callback): ReadModelProjection
