@@ -73,22 +73,17 @@ final class InMemoryEventStoreQuery implements Query
         $this->eventStore = $eventStore;
 
         if ($eventStore instanceof ActionEventEmitterEventStore) {
-            $reflectionPropertyEventStore = new \ReflectionProperty(get_class($eventStore), 'eventStore');
-            $reflectionPropertyEventStore->setAccessible(true);
-            $internalEventStore = $reflectionPropertyEventStore->getValue($eventStore);
+            $eventStore = $eventStore->getInnerEventStore();
+        }
 
-            $reflectionProperty = new \ReflectionProperty(get_class($internalEventStore), 'streams');
-            $reflectionProperty->setAccessible(true);
-
-            $this->knownStreams = array_keys($reflectionProperty->getValue($internalEventStore));
-        } elseif ($eventStore instanceof InMemoryEventStore) {
-            $reflectionProperty = new \ReflectionProperty(get_class($eventStore), 'streams');
-            $reflectionProperty->setAccessible(true);
-
-            $this->knownStreams = array_keys($reflectionProperty->getValue($eventStore));
-        } else {
+        if (! $eventStore instanceof InMemoryEventStore) {
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
+
+        $reflectionProperty = new \ReflectionProperty(get_class($eventStore), 'streams');
+        $reflectionProperty->setAccessible(true);
+
+        $this->knownStreams = array_keys($reflectionProperty->getValue($eventStore));
     }
 
     public function init(Closure $callback): Query
