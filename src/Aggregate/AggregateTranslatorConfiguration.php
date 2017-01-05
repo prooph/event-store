@@ -60,13 +60,13 @@ class AggregateTranslatorConfiguration
     /**
      * AggregateTranslatorConfiguration constructor.
      *
-     * @param $versionMethodName
-     * @param $identifierMethodName
-     * @param $popRecordedEventsMethodName
-     * @param $replayEventsMethodName
-     * @param $staticReconstituteFromHistoryMethodName
-     * @param null $eventToMessageCallback
-     * @param null $messageToEventCallback
+     * @param string $versionMethodName
+     * @param string $identifierMethodName
+     * @param string $popRecordedEventsMethodName
+     * @param string $replayEventsMethodName
+     * @param string $staticReconstituteFromHistoryMethodName
+     * @param null|callable $eventToMessageCallback
+     * @param null|callable $messageToEventCallback
      */
     private function __construct(
         $versionMethodName,
@@ -121,7 +121,7 @@ class AggregateTranslatorConfiguration
     /**
      * Returns a new instance having set the given name of the method which is used to determine the identifier
      *
-     * @param $identifierMethodName
+     * @param string $identifierMethodName
      * @return AggregateTranslatorConfiguration
      */
     public function withIdentifierMethodName($identifierMethodName)
@@ -137,7 +137,7 @@ class AggregateTranslatorConfiguration
     /**
      * Returns a new instance having set the given name of the method which is used to pop recorded events
      *
-     * @param $popRecordedEventsMethodName
+     * @param string $popRecordedEventsMethodName
      * @return AggregateTranslatorConfiguration
      */
     public function withPopRecordedEventsMethodName($popRecordedEventsMethodName)
@@ -153,7 +153,7 @@ class AggregateTranslatorConfiguration
     /**
      * Returns a new instance having set the given name of the method which is used to replay events
      *
-     * @param $replayEventsMethodName
+     * @param string $replayEventsMethodName
      * @return AggregateTranslatorConfiguration
      */
     public function withReplayEventsMethodName($replayEventsMethodName)
@@ -169,7 +169,7 @@ class AggregateTranslatorConfiguration
     /**
      * Returns a new instance having set the given name of the static method which is used reconstitute from history
      *
-     * @param $staticReconstituteFromHistoryMethodName
+     * @param string $staticReconstituteFromHistoryMethodName
      * @return AggregateTranslatorConfiguration
      */
     public function withStaticReconstituteFromHistoryMethodName($staticReconstituteFromHistoryMethodName)
