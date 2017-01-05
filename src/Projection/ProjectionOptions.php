@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of the prooph/event-store.
- * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,17 +26,23 @@ class ProjectionOptions
      */
     protected $persistBlockSize;
 
-    public function __construct(int $cacheSize = 1000, int $persistBlockSize = 1000)
+    /**
+     * @var int
+     */
+    protected $sleep;
+
+    public function __construct(int $cacheSize = 1000, int $persistBlockSize = 1000, int $sleep = 250000)
     {
         $this->cacheSize = $cacheSize;
         $this->persistBlockSize = $persistBlockSize;
+        $this->sleep = $sleep;
     }
 
     public static function fromArray(array $data): ProjectionOptions
     {
         self::validateData($data);
 
-        return new self($data['cache_size'], $data['persist_block_size']);
+        return new self($data['cache_size'], $data['persist_block_size'], $data['sleep']);
     }
 
     public function cacheSize(): int
@@ -47,6 +53,11 @@ class ProjectionOptions
     public function persistBlockSize(): int
     {
         return $this->persistBlockSize;
+    }
+
+    public function sleep(): int
+    {
+        return $this->sleep;
     }
 
     /**
@@ -60,6 +71,10 @@ class ProjectionOptions
 
         if (! isset($data['persist_block_size'])) {
             throw new InvalidArgumentException('persist_block_size option is missing');
+        }
+
+        if (! isset($data['sleep'])) {
+            throw new InvalidArgumentException('sleep option is missing');
         }
     }
 }

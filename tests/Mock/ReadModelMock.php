@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of the prooph/event-store.
- * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -40,7 +40,7 @@ class ReadModelMock extends AbstractReadModel
 
     public function hasKey(string $key): bool
     {
-        return array_key_exists($key, $this->storage);
+        return is_array($this->storage) && array_key_exists($key, $this->storage);
     }
 
     public function read(string $key)

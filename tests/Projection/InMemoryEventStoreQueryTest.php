@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of the prooph/event-store.
- * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Projection;
 
 use ArrayIterator;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Stream;
@@ -27,7 +28,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_query_from_stream_and_reset()
+    public function it_can_query_from_stream_and_reset(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -59,7 +60,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_be_stopped_while_processing()
+    public function it_can_be_stopped_while_processing(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -149,7 +150,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_query_from_category_with_when_all()
+    public function it_can_query_from_category_with_when_all(): void
     {
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
@@ -176,7 +177,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_can_query_from_categories_with_when()
+    public function it_can_query_from_categories_with_when(): void
     {
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
@@ -402,6 +403,21 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
 
         $query = $this->eventStore->createQuery();
         $query->run();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_unknown_event_store_instance_passed(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $eventStore = $this->prophesize(EventStore::class);
+
+        $factory = $this->eventStore->getDefaultQueryFactory();
+        $factory->setEventStore($eventStore->reveal());
+
+        $this->eventStore->createQuery($factory);
     }
 
     private function prepareEventStream(string $name): void

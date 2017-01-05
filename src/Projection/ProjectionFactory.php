@@ -10,18 +10,13 @@
 
 declare(strict_types=1);
 
-namespace ProophTest\EventStore;
+namespace Prooph\EventStore\Projection;
 
-use Prooph\EventStore\StreamName;
+use Prooph\EventStore\EventStore;
 
-class StreamNameTest extends EventStoreTestCase
+interface ProjectionFactory
 {
-    /**
-     * @test
-     */
-    public function it_delegates_to_string(): void
-    {
-        $streamName = new StreamName('foo');
-        $this->assertEquals('foo', (string) $streamName);
-    }
+    public function factory(string $name, ProjectionOptions $options = null): Projection;
+
+    public function setEventStore(EventStore $eventStore): void;
 }

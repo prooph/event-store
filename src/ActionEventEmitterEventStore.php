@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of the prooph/event-store.
- * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,10 +21,13 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\ProjectionFactory;
 use Prooph\EventStore\Projection\ProjectionOptions;
 use Prooph\EventStore\Projection\Query;
+use Prooph\EventStore\Projection\QueryFactory;
 use Prooph\EventStore\Projection\ReadModel;
 use Prooph\EventStore\Projection\ReadModelProjection;
+use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
 class ActionEventEmitterEventStore implements EventStore
@@ -304,22 +307,59 @@ class ActionEventEmitterEventStore implements EventStore
         }
     }
 
-    public function createQuery(): Query
+    public function createQuery(QueryFactory $factory = null): Query
     {
-        return $this->eventStore->createQuery();
+        if (null === $factory) {
+            $factory = $this->getDefaultQueryFactory();
+        }
+
+        $factory->setEventStore($this);
+
+        return $factory->factory();
     }
 
-    public function createProjection(string $name, ProjectionOptions $options = null): Projection
-    {
-        return $this->eventStore->createProjection($name, $options);
+    public function createProjection(
+        string $name,
+        ProjectionOptions $options = null,
+        ProjectionFactory $factory = null
+    ): Projection {
+        if (null === $factory) {
+            $factory = $this->getDefaultProjectionFactory();
+        }
+
+        $factory->setEventStore($this);
+
+        return $factory->factory($name, $options);
     }
 
     public function createReadModelProjection(
         string $name,
         ReadModel $readModel,
-        ProjectionOptions $options = null
+        ProjectionOptions $options = null,
+        ReadModelProjectionFactory $factory = null
     ): ReadModelProjection {
-        return $this->eventStore->createReadModelProjection($name, $readModel, $options);
+        if (null === $factory) {
+            $factory = $this->getDefaultReadModelProjectionFactory();
+        }
+
+        $factory->setEventStore($this);
+
+        return $factory->factory($name, $readModel, $options);
+    }
+
+    public function getDefaultQueryFactory(): QueryFactory
+    {
+        return $this->eventStore->getDefaultQueryFactory();
+    }
+
+    public function getDefaultProjectionFactory(): ProjectionFactory
+    {
+        return $this->eventStore->getDefaultProjectionFactory();
+    }
+
+    public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
+    {
+        return $this->eventStore->getDefaultReadModelProjectionFactory();
     }
 
     public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler
@@ -330,5 +370,10 @@ class ActionEventEmitterEventStore implements EventStore
     public function detach(ListenerHandler $handler): void
     {
         $this->actionEventEmitter->detachListener($handler);
+    }
+
+    public function getInnerEventStore(): EventStore
+    {
+        return $this->eventStore;
     }
 }
