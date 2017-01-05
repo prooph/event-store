@@ -313,6 +313,8 @@ class ActionEventEmitterEventStore implements EventStore
             $factory = $this->getDefaultQueryFactory();
         }
 
+        $factory->setEventStore($this);
+
         return $factory->factory();
     }
 
@@ -324,6 +326,8 @@ class ActionEventEmitterEventStore implements EventStore
         if (null === $factory) {
             $factory = $this->getDefaultProjectionFactory();
         }
+
+        $factory->setEventStore($this);
 
         return $factory->factory($name, $options);
     }
@@ -338,31 +342,24 @@ class ActionEventEmitterEventStore implements EventStore
             $factory = $this->getDefaultReadModelProjectionFactory();
         }
 
+        $factory->setEventStore($this);
+
         return $factory->factory($name, $readModel, $options);
     }
 
     public function getDefaultQueryFactory(): QueryFactory
     {
-        $factory = $this->eventStore->getDefaultQueryFactory();
-        $factory->setEventStore($this);
-
-        return $factory;
+        return $this->eventStore->getDefaultQueryFactory();
     }
 
     public function getDefaultProjectionFactory(): ProjectionFactory
     {
-        $factory = $this->eventStore->getDefaultProjectionFactory();
-        $factory->setEventStore($this);
-
-        return $factory;
+        return $this->eventStore->getDefaultProjectionFactory();
     }
 
     public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
     {
-        $factory = $this->eventStore->getDefaultReadModelProjectionFactory();
-        $factory->setEventStore($this);
-
-        return $factory;
+        return $this->eventStore->getDefaultReadModelProjectionFactory();
     }
 
     public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler
