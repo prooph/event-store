@@ -374,4 +374,9 @@ class ActionEventEmitterEventStore implements EventStore
     {
         $this->actionEventEmitter->detachListener($handler);
     }
+
+    public function getInnerEventStore(): EventStore
+    {
+        return $this->eventStore;
+    }
 }
