@@ -17,6 +17,7 @@ use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\EventStoreTestCase;
@@ -414,10 +415,7 @@ class InMemoryEventStoreQueryTest extends EventStoreTestCase
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        $factory = $this->eventStore->getDefaultQueryFactory();
-        $factory->setEventStore($eventStore->reveal());
-
-        $this->eventStore->createQuery($factory);
+        new InMemoryEventStoreQuery($eventStore->reveal());
     }
 
     private function prepareEventStream(string $name): void

@@ -313,9 +313,7 @@ class ActionEventEmitterEventStore implements EventStore, EventStoreDecorator
             $factory = $this->getDefaultQueryFactory();
         }
 
-        $factory->setEventStore($this);
-
-        return $factory->factory();
+        return $factory($this);
     }
 
     public function createProjection(
@@ -327,9 +325,7 @@ class ActionEventEmitterEventStore implements EventStore, EventStoreDecorator
             $factory = $this->getDefaultProjectionFactory();
         }
 
-        $factory->setEventStore($this);
-
-        return $factory->factory($name, $options);
+        return $factory($this, $name, $options);
     }
 
     public function createReadModelProjection(
@@ -342,9 +338,7 @@ class ActionEventEmitterEventStore implements EventStore, EventStoreDecorator
             $factory = $this->getDefaultReadModelProjectionFactory();
         }
 
-        $factory->setEventStore($this);
-
-        return $factory->factory($name, $readModel, $options);
+        return $factory($this, $name, $readModel, $options);
     }
 
     public function getDefaultQueryFactory(): QueryFactory

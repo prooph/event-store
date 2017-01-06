@@ -16,23 +16,8 @@ use Prooph\EventStore\EventStore;
 
 final class InMemoryEventStoreQueryFactory implements QueryFactory
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    public function __construct(EventStore $eventStore)
+    public function __invoke(EventStore $eventStore, ProjectionOptions $options = null): Query
     {
-        $this->eventStore = $eventStore;
-    }
-
-    public function factory(ProjectionOptions $options = null): Query
-    {
-        return new InMemoryEventStoreQuery($this->eventStore);
-    }
-
-    public function setEventStore(EventStore $eventStore): void
-    {
-        $this->eventStore = $eventStore;
+        return new InMemoryEventStoreQuery($eventStore);
     }
 }

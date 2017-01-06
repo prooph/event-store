@@ -623,10 +623,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        $factory = $this->eventStore->getDefaultReadModelProjectionFactory();
-        $factory->setEventStore($eventStore->reveal());
-
-        $this->eventStore->createReadModelProjection('test_projection', new ReadModelMock(), null, $factory);
+        new InMemoryEventStoreReadModelProjection($eventStore->reveal(), 'test_projection', new ReadModelMock(), 10, 10, 2000);
     }
 
     private function prepareEventStream(string $name): void

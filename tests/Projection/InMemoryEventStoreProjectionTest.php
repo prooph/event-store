@@ -18,6 +18,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
+use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
 use Prooph\EventStore\Projection\ProjectionOptions;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
@@ -561,10 +562,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        $factory = $this->eventStore->getDefaultProjectionFactory();
-        $factory->setEventStore($eventStore->reveal());
-
-        $this->eventStore->createProjection('test_projection', null, $factory);
+        new InMemoryEventStoreProjection($eventStore->reveal(), 'test_projection', 10, 10, 2000);
     }
 
     private function prepareEventStream(string $name): void

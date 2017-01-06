@@ -51,6 +51,27 @@ final class InMemoryEventStore implements TransactionalEventStore
      */
     private $inTransaction = false;
 
+    /**
+     * Will be lazy initialized if needed
+     *
+     * @var QueryFactory
+     */
+    private $defaultQueryFactory;
+
+    /**
+     * Will be lazy initialized if needed
+     *
+     * @var ProjectionFactory
+     */
+    private $defaultProjectionFactory;
+
+    /**
+     * Will be lazy initialized if needed
+     *
+     * @var ReadModelProjectionFactory
+     */
+    private $defaultReadModelProjectionFactory;
+
     public function create(Stream $stream): void
     {
         $streamName = $stream->streamName();
@@ -292,7 +313,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             $factory = $this->getDefaultQueryFactory();
         }
 
-        return $factory->factory();
+        return $factory($this);
     }
 
     public function createProjection(
@@ -304,7 +325,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             $factory = $this->getDefaultProjectionFactory();
         }
 
-        return $factory->factory($name, $options);
+        return $factory($this, $name, $options);
     }
 
     public function createReadModelProjection(
@@ -317,22 +338,34 @@ final class InMemoryEventStore implements TransactionalEventStore
             $factory = $this->getDefaultReadModelProjectionFactory();
         }
 
-        return $factory->factory($name, $readModel, $options);
+        return $factory($this, $name, $readModel, $options);
     }
 
     public function getDefaultQueryFactory(): QueryFactory
     {
-        return new InMemoryEventStoreQueryFactory($this);
+        if (null === $this->defaultQueryFactory) {
+            $this->defaultQueryFactory = new InMemoryEventStoreQueryFactory();
+        }
+
+        return $this->defaultQueryFactory;
     }
 
     public function getDefaultProjectionFactory(): ProjectionFactory
     {
-        return new InMemoryEventStoreProjectionFactory($this);
+        if (null === $this->defaultProjectionFactory) {
+            $this->defaultProjectionFactory = new InMemoryEventStoreProjectionFactory();
+        }
+
+        return $this->defaultProjectionFactory;
     }
 
     public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
     {
-        return new InMemoryEventStoreReadModelProjectionFactory($this);
+        if (null === $this->defaultReadModelProjectionFactory) {
+            $this->defaultReadModelProjectionFactory = new InMemoryEventStoreReadModelProjectionFactory();
+        }
+
+        return $this->defaultReadModelProjectionFactory;
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
