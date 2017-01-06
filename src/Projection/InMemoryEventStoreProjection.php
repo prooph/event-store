@@ -16,7 +16,6 @@ use ArrayIterator;
 use Closure;
 use Iterator;
 use Prooph\Common\Messaging\Message;
-use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception;
