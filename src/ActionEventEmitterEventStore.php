@@ -30,7 +30,7 @@ use Prooph\EventStore\Projection\ReadModelProjection;
 use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
-class ActionEventEmitterEventStore implements EventStore
+class ActionEventEmitterEventStore implements EventStore, EventStoreDecorator
 {
     public const EVENT_APPEND_TO = 'appendTo';
     public const EVENT_CREATE = 'create';
