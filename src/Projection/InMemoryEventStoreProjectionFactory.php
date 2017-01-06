@@ -16,32 +16,20 @@ use Prooph\EventStore\EventStore;
 
 final class InMemoryEventStoreProjectionFactory implements ProjectionFactory
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
-
-    public function __construct(EventStore $eventStore)
-    {
-        $this->eventStore = $eventStore;
-    }
-
-    public function factory(string $name, ProjectionOptions $options = null): Projection
-    {
+    public function __invoke(
+        EventStore $eventStore,
+        string $name,
+        ProjectionOptions $options = null
+    ): Projection {
         if (null === $options) {
             $options = new ProjectionOptions();
         }
 
         return new InMemoryEventStoreProjection(
-            $this->eventStore,
+            $eventStore,
             $name,
             $options->cacheSize(),
             $options->sleep()
         );
-    }
-
-    public function setEventStore(EventStore $eventStore): void
-    {
-        $this->eventStore = $eventStore;
     }
 }

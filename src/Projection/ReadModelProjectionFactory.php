@@ -16,7 +16,10 @@ use Prooph\EventStore\EventStore;
 
 interface ReadModelProjectionFactory
 {
-    public function factory(string $name, ReadModel $readModel, ProjectionOptions $options = null): ReadModelProjection;
-
-    public function setEventStore(EventStore $eventStore): void;
+    public function __invoke(
+        EventStore $eventStore,
+        string $name,
+        ReadModel $readModel,
+        ProjectionOptions $options = null
+    ): ReadModelProjection;
 }

@@ -16,7 +16,9 @@ use Prooph\EventStore\EventStore;
 
 interface ProjectionFactory
 {
-    public function factory(string $name, ProjectionOptions $options = null): Projection;
-
-    public function setEventStore(EventStore $eventStore): void;
+    public function __invoke(
+        EventStore $eventStore,
+        string $name,
+        ProjectionOptions $options = null
+    ): Projection;
 }
