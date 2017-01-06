@@ -104,6 +104,17 @@ We can identify 7 dependencies but all are optional.
   - it is the opposite of `$eventToMessageCallback`
   - when you pass a callable it is invoked for each message (loaded from the event store) before `$staticReconstituteFromHistoryMethodName` or `$applyEventsMethodsName`is called
 
+Alternatively you may use `AggregateTranslatorConfiguration` if you don't like the constructor based configuration.
+`AggregateTranslatorConfiguration` is implemented immutable and has a fluid interface
+
+```php
+$config = AggregateTranslatorConfiguration::createWithDefaults();
+$config = $config
+    ->withIdentifierMethodName('id')
+    ->withVersionMethodName('version'); 
+    
+$translator = ConfigurableAggregateTranslator::fromConfiguration($config);    
+```
 
 *Note: When using the translation callbacks shown above you should consider translating domain events into `Prooph\Common\Messaging\DomainEvent` objects. It is a default implementation of the `Message` interface and all event store adapters can handle it out-of-the-box.
 If you decide to provide your own implementation of `Prooph\Common\Messaging\Message` you should have a look at `Prooph\Common\Messaging\MessageFactory` and `Prooph\Common\Messaging\MessageConverter` because the event store adapters work with these to translate events into PHP arrays and back.*
