@@ -27,7 +27,7 @@ class Assertion extends \Assert\Assertion
         $value,
         $message,
         $code,
-        $propertyPath,
+        $propertyPath = null,
         array $constraints = []
     ): InvalidArgumentException {
         $exceptionClass = static::$exceptionClass;
