@@ -16,5 +16,5 @@ use Prooph\EventStore\EventStore;
 
 interface QueryFactory
 {
-    public function __invoke(EventStore $eventStore, ProjectionOptions $options = null): Query;
+    public function __invoke(EventStore $eventStore): Query;
 }
