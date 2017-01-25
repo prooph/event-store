@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use Iterator;
-use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Projection\Projection;
 use Prooph\EventStore\Projection\ProjectionFactory;
 use Prooph\EventStore\Projection\ProjectionOptions;
@@ -23,31 +22,13 @@ use Prooph\EventStore\Projection\ReadModel;
 use Prooph\EventStore\Projection\ReadModelProjection;
 use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 
-interface EventStore
+interface EventStore extends ReadOnlyEventStore
 {
-    public function fetchStreamMetadata(StreamName $streamName): array;
-
     public function updateStreamMetadata(StreamName $streamName, array $newMetadata): void;
-
-    public function hasStream(StreamName $streamName): bool;
 
     public function create(Stream $stream): void;
 
     public function appendTo(StreamName $streamName, Iterator $streamEvents): void;
-
-    public function load(
-        StreamName $streamName,
-        int $fromNumber = 1,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
-    ): Stream;
-
-    public function loadReverse(
-        StreamName $streamName,
-        int $fromNumber = PHP_INT_MAX,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
-    ): Stream;
 
     public function delete(StreamName $streamName): void;
 
