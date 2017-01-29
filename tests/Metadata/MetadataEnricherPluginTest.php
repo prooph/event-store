@@ -46,11 +46,11 @@ class MetadataEnricherPluginTest extends TestCase
 
         $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
 
-        $stream = $eventStore->load(new StreamName('foo'));
+        $streamEvents = $eventStore->load(new StreamName('foo'));
 
         $this->assertEquals(
             ['foo' => 'bar'],
-            $stream->streamEvents()->current()->metadata()
+            $streamEvents->current()->metadata()
         );
     }
 
@@ -89,11 +89,11 @@ class MetadataEnricherPluginTest extends TestCase
 
         $eventStore->appendTo(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]));
 
-        $stream = $eventStore->load(new StreamName('foo'));
+        $streamEvents = $eventStore->load(new StreamName('foo'));
 
         $this->assertEquals(
             ['foo' => 'bar'],
-            $stream->streamEvents()->current()->metadata()
+            $streamEvents->current()->metadata()
         );
     }
 
@@ -129,6 +129,6 @@ class MetadataEnricherPluginTest extends TestCase
 
         $stream = $eventStore->load(new StreamName('foo'));
 
-        $this->assertEmpty($stream->streamEvents()->current()->metadata());
+        $this->assertEmpty($stream->current()->metadata());
     }
 }

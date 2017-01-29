@@ -164,8 +164,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             $streamEventVersion4,
         ]));
 
-        $stream = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -265,7 +264,6 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $this->eventStore->attach(
             'appendTo',
             function (ActionEvent $event): void {
-                //$event->setParam('streamNotFound', true);
                 $event->stopPropagation(true);
             },
             1000
@@ -278,7 +276,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
-        $this->assertCount(1, $this->eventStore->load(new StreamName('user'))->streamEvents());
+        $this->assertCount(1, $this->eventStore->load(new StreamName('user')));
     }
 
     /**
@@ -293,7 +291,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $this->eventStore->attach(
             'load',
             function (ActionEvent $event): void {
-                $event->setParam('stream', new Stream(new StreamName('user'), new ArrayIterator()));
+                $event->setParam('streamEvents', new ArrayIterator());
                 $event->stopPropagation(true);
             },
             1000
@@ -301,7 +299,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $emptyStream = $this->eventStore->load($stream->streamName());
 
-        $this->assertCount(0, $emptyStream->streamEvents());
+        $this->assertCount(0, $emptyStream);
     }
 
     /**
@@ -332,12 +330,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
                 $streamEventWithMetadataButOtherUuid = $streamEventWithMetadataButOtherUuid->withAddedMetadata('snapshot', true);
 
-                $streamName = $event->getParam('streamName');
-
-                $event->setParam('stream', new Stream(
-                        $streamName,
-                        new ArrayIterator([$streamEventWithMetadataButOtherUuid]))
-                );
+                $event->setParam('streamEvents', new ArrayIterator([$streamEventWithMetadataButOtherUuid]));
                 $event->stopPropagation(true);
             },
             1000
@@ -346,8 +339,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
-        $stream = $this->eventStore->load($stream->streamName(), 1, null, $metadataMatcher);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 1, null, $metadataMatcher);
 
         $this->assertCount(1, $loadedEvents);
 
@@ -422,11 +414,9 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($stream);
 
-        $stream = $this->eventStore->load($streamName);
+        $streamEvents = $this->eventStore->load($streamName);
 
-        $this->assertEquals('user', $stream->streamName()->toString());
-
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $streamEvents);
 
         $this->assertCount(1, $recordedEvents);
 

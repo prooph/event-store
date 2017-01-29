@@ -432,10 +432,9 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             )
             ->run(false);
 
-        $streams = $this->eventStore->load(new StreamName('foo'));
-        $events = $streams->streamEvents();
+        $streamEvents = $this->eventStore->load(new StreamName('foo'));
 
-        $this->assertCount(50, $events);
+        $this->assertCount(50, $streamEvents);
     }
 
     /**
@@ -459,8 +458,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             ])
             ->run();
 
-        $streams = $this->eventStore->load(new StreamName('test_projection'));
-        $events = $streams->streamEvents();
+        $events = $this->eventStore->load(new StreamName('test_projection'));
 
         $this->assertCount(1, $events);
         $this->assertEquals('Alex', $events->current()->payload()['name']);
@@ -491,8 +489,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             ])
             ->run(false);
 
-        $streams = $this->eventStore->load(new StreamName('test_projection'));
-        $events = $streams->streamEvents();
+        $events = $this->eventStore->load(new StreamName('test_projection'));
 
         $this->assertCount(1, $events);
         $this->assertEquals('Alex', $events->current()->payload()['name']);

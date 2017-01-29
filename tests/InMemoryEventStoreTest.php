@@ -40,11 +40,9 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->create($stream);
 
-        $stream = $this->eventStore->load($streamName);
+        $streamEvents = $this->eventStore->load($streamName);
 
-        $this->assertEquals('user', $stream->streamName()->toString());
-
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $streamEvents);
 
         $this->assertEquals(
             [
@@ -116,7 +114,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
-        $this->assertCount(2, $this->eventStore->load(new StreamName('user'))->streamEvents());
+        $this->assertCount(2, $this->eventStore->load(new StreamName('user')));
     }
 
     /**
@@ -140,13 +138,13 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('snapshot', Operator::EQUALS(), true);
 
-        $stream = $this->eventStore->load($stream->streamName(), 1, null, $metadataMatcher);
+        $streamEvents = $this->eventStore->load($stream->streamName(), 1, null, $metadataMatcher);
 
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $streamEvents);
 
-        $stream->streamEvents()->rewind();
+        $streamEvents->rewind();
 
-        $this->assertTrue($stream->streamEvents()->current()->metadata()['snapshot']);
+        $this->assertTrue($streamEvents->current()->metadata()['snapshot']);
     }
 
     /**
@@ -174,8 +172,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventVersion2, $streamEventVersion3]));
 
-        $stream = $this->eventStore->load($stream->streamName(), 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -185,15 +182,15 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $loadedEvents->next();
         $this->assertFalse($loadedEvents->current()->metadata()['snapshot']);
 
-        $stream = $this->eventStore->load($stream->streamName(), 2);
+        $streamEvents = $this->eventStore->load($stream->streamName(), 2);
 
-        $this->assertCount(2, $stream->streamEvents());
+        $this->assertCount(2, $streamEvents);
 
-        $stream->streamEvents()->rewind();
+        $streamEvents->rewind();
 
-        $this->assertTrue($stream->streamEvents()->current()->metadata()['snapshot']);
-        $stream->streamEvents()->next();
-        $this->assertFalse($stream->streamEvents()->current()->metadata()['snapshot']);
+        $this->assertTrue($streamEvents->current()->metadata()['snapshot']);
+        $streamEvents->next();
+        $this->assertFalse($streamEvents->current()->metadata()['snapshot']);
     }
 
     /**
@@ -232,8 +229,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             $streamEventVersion4,
         ]));
 
-        $stream = $this->eventStore->load($stream->streamName(), 2, 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 2, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -243,9 +239,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $loadedEvents->next();
         $this->assertFalse($loadedEvents->current()->metadata()['snapshot']);
 
-        $stream = $this->eventStore->load($stream->streamName(), 2, 2);
-
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 2, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -292,8 +286,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             $streamEventVersion4,
         ]));
 
-        $stream = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -492,9 +485,9 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 7);
 
-        $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+        $streamEvents = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $streamEvents);
     }
 
     /**
@@ -528,9 +521,9 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 7);
 
-        $stream = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $streamEvents = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $streamEvents);
     }
 
     /**
@@ -559,80 +552,44 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'baz');
 
-        $found = true;
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->load($streamName, 1, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
-        $found = true;
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->load($streamName, 1, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
-        $found = true;
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->load($streamName, 1, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
-        $found = true;
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->load($streamName, 1, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
-        $found = true;
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->load($streamName, 1, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
-        $found = true;
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->load($streamName, 1, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -666,80 +623,44 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'baz');
 
-        $found = true;
+        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
-        $found = true;
+        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
-        $found = true;
+        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
-        $found = true;
+        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
-        $found = true;
+        $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
-        $found = true;
+        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        try {
-            $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
-        } catch (StreamNotFound $exception) {
-            $found = false;
-        }
-
-        $this->assertFalse($found);
+        $this->assertEmpty($result);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -829,8 +750,8 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->assertSame('Second Result', $transactionResult);
 
-        $stream = $this->eventStore->load(new StreamName('user'), 1);
+        $streamEvents = $this->eventStore->load(new StreamName('user'), 1);
 
-        $this->assertCount(2, $stream->streamEvents());
+        $this->assertCount(2, $streamEvents);
     }
 }

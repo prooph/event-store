@@ -34,9 +34,7 @@ class EventLoggerPlugin extends AbstractPlugin
         $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_CREATE,
             function (ActionEvent $event): void {
-                $stream = $event->getParam('stream');
-
-                $this->loggedStreamEvents = $stream->streamEvents();
+                $this->loggedStreamEvents = $event->getParam('stream')->streamEvents();
             },
             -10000
         );

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Iterator;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Projection\QueryFactory;
@@ -27,14 +28,14 @@ interface ReadOnlyEventStore
         int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream;
+    ): Iterator;
 
     public function loadReverse(
         StreamName $streamName,
         int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream;
+    ): Iterator;
 
     public function createQuery(QueryFactory $factory = null): Query;
 }

@@ -86,8 +86,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             try {
-                $stream = $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
-                $event->setParam('stream', $stream);
+                $streamEvents = $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
+                $event->setParam('streamEvents', $streamEvents);
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }
@@ -100,8 +100,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             try {
-                $stream = $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
-                $event->setParam('stream', $stream);
+                $streamEvents = $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
+                $event->setParam('streamEvents', $streamEvents);
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }
@@ -181,7 +181,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream {
+    ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
@@ -200,9 +200,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             throw StreamNotFound::with($streamName);
         }
 
-        $stream = $event->getParam('stream', false);
+        $stream = $event->getParam('streamEvents', false);
 
-        if (! $stream instanceof Stream) {
+        if (! $stream instanceof Iterator) {
             throw StreamNotFound::with($streamName);
         }
 
@@ -214,7 +214,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream {
+    ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
@@ -233,9 +233,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             throw StreamNotFound::with($streamName);
         }
 
-        $stream = $event->getParam('stream', false);
+        $stream = $event->getParam('streamEvents', false);
 
-        if (! $stream instanceof Stream) {
+        if (! $stream instanceof Iterator) {
             throw StreamNotFound::with($streamName);
         }
 
