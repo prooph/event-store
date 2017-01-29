@@ -122,7 +122,7 @@ $eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, .
  */
 $persistedEventStream = $eventStore->load($streamName);
 
-foreach ($persistedEventStream->streamEvents() as $event) {
+foreach ($persistedEventStream as $event) {
     if ($event instanceof QuickStartSucceeded) {
         echo $event->getText();
     }

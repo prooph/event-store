@@ -122,7 +122,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream {
+    ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
@@ -151,15 +151,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             }
         }
 
-        if (empty($streamEvents)) {
-            throw StreamNotFound::with($streamName);
-        }
-
-        return new Stream(
-            $streamName,
-            new ArrayIterator($streamEvents),
-            $this->streams[$streamName->toString()]['metadata']
-        );
+        return new ArrayIterator($streamEvents);
     }
 
     public function loadReverse(
@@ -167,7 +159,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream {
+    ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
@@ -196,17 +188,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             }
         }
 
-        if (empty($streamEvents)) {
-            throw StreamNotFound::with($streamName);
-        }
-
-        $streamEvents = array_reverse($streamEvents);
-
-        return new Stream(
-            $streamName,
-            new ArrayIterator($streamEvents),
-            $this->streams[$streamName->toString()]['metadata']
-        );
+        return new ArrayIterator($streamEvents);
     }
 
     public function delete(StreamName $streamName): void

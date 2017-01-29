@@ -181,7 +181,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream {
+    ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
@@ -202,7 +202,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $stream = $event->getParam('stream', false);
 
-        if (! $stream instanceof Stream) {
+        if (! $stream instanceof Iterator) {
             throw StreamNotFound::with($streamName);
         }
 
@@ -214,7 +214,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         int $fromNumber = PHP_INT_MAX,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Stream {
+    ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
@@ -235,7 +235,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $stream = $event->getParam('stream', false);
 
-        if (! $stream instanceof Stream) {
+        if (! $stream instanceof Iterator) {
             throw StreamNotFound::with($streamName);
         }
 
