@@ -188,7 +188,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             }
         }
 
-        return new ArrayIterator($streamEvents);
+        return new ArrayIterator(array_reverse($streamEvents));
     }
 
     public function delete(StreamName $streamName): void
