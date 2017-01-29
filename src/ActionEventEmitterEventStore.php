@@ -87,7 +87,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
             try {
                 $stream = $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
-                $event->setParam('stream', $stream);
+                $event->setParam('streamEvents', $stream);
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }
@@ -101,7 +101,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
             try {
                 $stream = $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
-                $event->setParam('stream', $stream);
+                $event->setParam('streamEvents', $stream);
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }
@@ -200,7 +200,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             throw StreamNotFound::with($streamName);
         }
 
-        $stream = $event->getParam('stream', false);
+        $stream = $event->getParam('streamEvents', false);
 
         if (! $stream instanceof Iterator) {
             throw StreamNotFound::with($streamName);
@@ -233,7 +233,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             throw StreamNotFound::with($streamName);
         }
 
-        $stream = $event->getParam('stream', false);
+        $stream = $event->getParam('streamEvents', false);
 
         if (! $stream instanceof Iterator) {
             throw StreamNotFound::with($streamName);

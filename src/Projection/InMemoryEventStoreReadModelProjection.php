@@ -294,16 +294,16 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
 
             foreach ($this->streamPositions as $streamName => $position) {
                 try {
-                    $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+                    $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
                 } catch (Exception\StreamNotFound $e) {
                     // no newer events found
                     continue;
                 }
 
                 if ($singleHandler) {
-                    $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
+                    $this->handleStreamWithSingleHandler($streamName, $streamEvents);
                 } else {
-                    $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
+                    $this->handleStreamWithHandlers($streamName, $streamEvents);
                 }
 
                 if ($this->isStopped) {

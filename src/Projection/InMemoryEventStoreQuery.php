@@ -254,12 +254,12 @@ final class InMemoryEventStoreQuery implements Query
         $singleHandler = null !== $this->handler;
 
         foreach ($this->streamPositions as $streamName => $position) {
-            $stream = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
 
             if ($singleHandler) {
-                $this->handleStreamWithSingleHandler($streamName, $stream->streamEvents());
+                $this->handleStreamWithSingleHandler($streamName, $streamEvents);
             } else {
-                $this->handleStreamWithHandlers($streamName, $stream->streamEvents());
+                $this->handleStreamWithHandlers($streamName, $streamEvents);
             }
 
             if ($this->isStopped) {

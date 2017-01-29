@@ -40,11 +40,9 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->create($stream);
 
-        $stream = $this->eventStore->load($streamName);
+        $streamEvents = $this->eventStore->load($streamName);
 
-        $this->assertEquals('user', $stream->streamName()->toString());
-
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $streamEvents);
 
         $this->assertEquals(
             [
@@ -116,7 +114,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
 
-        $this->assertCount(2, $this->eventStore->load(new StreamName('user'))->streamEvents());
+        $this->assertCount(2, $this->eventStore->load(new StreamName('user')));
     }
 
     /**
@@ -142,11 +140,11 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $stream = $this->eventStore->load($stream->streamName(), 1, null, $metadataMatcher);
 
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $stream);
 
-        $stream->streamEvents()->rewind();
+        $stream->rewind();
 
-        $this->assertTrue($stream->streamEvents()->current()->metadata()['snapshot']);
+        $this->assertTrue($stream->current()->metadata()['snapshot']);
     }
 
     /**
@@ -174,8 +172,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventVersion2, $streamEventVersion3]));
 
-        $stream = $this->eventStore->load($stream->streamName(), 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -187,13 +184,13 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $stream = $this->eventStore->load($stream->streamName(), 2);
 
-        $this->assertCount(2, $stream->streamEvents());
+        $this->assertCount(2, $stream);
 
-        $stream->streamEvents()->rewind();
+        $stream->rewind();
 
-        $this->assertTrue($stream->streamEvents()->current()->metadata()['snapshot']);
-        $stream->streamEvents()->next();
-        $this->assertFalse($stream->streamEvents()->current()->metadata()['snapshot']);
+        $this->assertTrue($stream->current()->metadata()['snapshot']);
+        $stream->next();
+        $this->assertFalse($stream->current()->metadata()['snapshot']);
     }
 
     /**
@@ -232,8 +229,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             $streamEventVersion4,
         ]));
 
-        $stream = $this->eventStore->load($stream->streamName(), 2, 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 2, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -243,9 +239,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $loadedEvents->next();
         $this->assertFalse($loadedEvents->current()->metadata()['snapshot']);
 
-        $stream = $this->eventStore->load($stream->streamName(), 2, 2);
-
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->load($stream->streamName(), 2, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -292,8 +286,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             $streamEventVersion4,
         ]));
 
-        $stream = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
-        $loadedEvents = $stream->streamEvents();
+        $loadedEvents = $this->eventStore->loadReverse($stream->streamName(), 3, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -494,7 +487,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $stream = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $stream);
     }
 
     /**
@@ -530,7 +523,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $stream = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertCount(1, $stream->streamEvents());
+        $this->assertCount(1, $stream);
     }
 
     /**
@@ -831,6 +824,6 @@ class InMemoryEventStoreTest extends EventStoreTestCase
 
         $stream = $this->eventStore->load(new StreamName('user'), 1);
 
-        $this->assertCount(2, $stream->streamEvents());
+        $this->assertCount(2, $stream);
     }
 }
