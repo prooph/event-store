@@ -432,9 +432,9 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             )
             ->run(false);
 
-        $stream = $this->eventStore->load(new StreamName('foo'));
+        $streamEvents = $this->eventStore->load(new StreamName('foo'));
 
-        $this->assertCount(50, $stream);
+        $this->assertCount(50, $streamEvents);
     }
 
     /**

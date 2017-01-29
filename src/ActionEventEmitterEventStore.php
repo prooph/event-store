@@ -86,8 +86,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             try {
-                $stream = $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
-                $event->setParam('streamEvents', $stream);
+                $streamEvents = $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
+                $event->setParam('streamEvents', $streamEvents);
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }
@@ -100,8 +100,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $metadataMatcher = $event->getParam('metadataMatcher');
 
             try {
-                $stream = $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
-                $event->setParam('streamEvents', $stream);
+                $streamEvents = $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
+                $event->setParam('streamEvents', $streamEvents);
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }

@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Metadata;
 
+use ArrayIterator;
+use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\Plugin\AbstractPlugin;
@@ -68,7 +70,7 @@ final class MetadataEnricherPlugin extends AbstractPlugin
     {
         $streamEvents = $appendToStreamEvent->getParam('streamEvents');
 
-        if (! $streamEvents instanceof \Iterator) {
+        if (! $streamEvents instanceof Iterator) {
             return;
         }
 
@@ -81,7 +83,7 @@ final class MetadataEnricherPlugin extends AbstractPlugin
      * This method takes domain events as argument which are going to be added
      * to the event stream and add the metadata via the MetadataEnricher.
      */
-    private function handleRecordedEvents(\Iterator $events): \Iterator
+    private function handleRecordedEvents(Iterator $events): Iterator
     {
         $enrichedEvents = [];
 
@@ -89,6 +91,6 @@ final class MetadataEnricherPlugin extends AbstractPlugin
             $enrichedEvents[] = $this->metadataEnricher->enrich($event);
         }
 
-        return new \ArrayIterator($enrichedEvents);
+        return new ArrayIterator($enrichedEvents);
     }
 }

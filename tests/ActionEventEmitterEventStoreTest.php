@@ -360,7 +360,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             function (ActionEvent $event) use (&$recordedEvents): void {
                 $stream = $event->getParam('stream');
 
-                foreach ($stream as $recordedEvent) {
+                foreach ($stream->streamEvents() as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
             },
@@ -403,7 +403,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             function (ActionEvent $event) use (&$recordedEvents): void {
                 $stream = $event->getParam('stream');
 
-                foreach ($stream as $recordedEvent) {
+                foreach ($stream->streamEvents() as $recordedEvent) {
                     $recordedEvents[] = $recordedEvent;
                 }
             },
@@ -414,9 +414,9 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $this->eventStore->create($stream);
 
-        $stream = $this->eventStore->load($streamName);
+        $streamEvents = $this->eventStore->load($streamName);
 
-        $this->assertCount(1, $stream);
+        $this->assertCount(1, $streamEvents);
 
         $this->assertCount(1, $recordedEvents);
 
