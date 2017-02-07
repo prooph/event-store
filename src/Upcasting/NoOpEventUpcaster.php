@@ -16,8 +16,8 @@ use Prooph\Common\Messaging\Message;
 
 final class NoOpEventUpcaster implements Upcaster
 {
-    public function upcast(Message $message): Message
+    public function upcast(Message $message): array
     {
-        return $message;
+        return [$message];
     }
 }

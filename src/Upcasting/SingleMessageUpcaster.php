@@ -16,10 +16,10 @@ use Prooph\Common\Messaging\Message;
 
 abstract class SingleMessageUpcaster implements Upcaster
 {
-    public function upcast(Message $message): Message
+    public function upcast(Message $message): array
     {
         if (! $this->canUpcast($message)) {
-            return $message;
+            return [$message];
         }
 
         return $this->doUpcast($message);
@@ -27,5 +27,5 @@ abstract class SingleMessageUpcaster implements Upcaster
 
     abstract protected function canUpcast(Message $message): bool;
 
-    abstract protected function doUpcast(Message $message): Message;
+    abstract protected function doUpcast(Message $message): array;
 }

@@ -16,5 +16,9 @@ use Prooph\Common\Messaging\Message;
 
 interface Upcaster
 {
-    public function upcast(Message $message): Message;
+    /**
+     * @param Message $message
+     * @return array of messages
+     */
+    public function upcast(Message $message): array;
 }

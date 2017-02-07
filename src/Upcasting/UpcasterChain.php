@@ -26,12 +26,21 @@ final class UpcasterChain implements Upcaster
         $this->upcasters = $upcasters;
     }
 
-    public function upcast(Message $message): Message
+    public function upcast(Message $message): array
     {
+        $result = [];
+        $messages = [$message];
+
         foreach ($this->upcasters as $upcaster) {
-            $message = $upcaster->upcast($message);
+            $result = [];
+
+            foreach ($messages as $message) {
+                $result += $upcaster->upcast($message);
+            }
+
+            $messages = $result;
         }
 
-        return $message;
+        return $result;
     }
 }

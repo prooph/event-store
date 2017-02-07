@@ -27,6 +27,11 @@ final class UpcastingIterator implements Iterator
      */
     private $innerIterator;
 
+    /**
+     * @var array
+     */
+    private $cache = [];
+
     public function __construct(Upcaster $upcaster, Iterator $iterator)
     {
         $this->upcaster = $upcaster;
@@ -35,13 +40,35 @@ final class UpcastingIterator implements Iterator
 
     public function current(): ?Message
     {
+        if (! empty($this->cache)) {
+            $message = array_shift($this->cache);
+
+            return $message;
+        }
+
         $message = $this->innerIterator->current();
 
         if (! $message instanceof Message) {
             return $message;
         }
 
-        return $this->upcaster->upcast($message);
+        $messages = $this->upcaster->upcast($message);
+
+        if (empty($messages)) {
+            $this->next();
+
+            if ($this->valid()) {
+                return $this->current();
+            }
+
+            return null;
+        }
+
+        $message = array_shift($messages);
+
+        $this->cache = $message;
+
+        return $message;
     }
 
     public function next(): void
