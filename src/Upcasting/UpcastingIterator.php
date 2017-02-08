@@ -30,7 +30,7 @@ final class UpcastingIterator implements Iterator
     /**
      * @var array
      */
-    private $cache = [];
+    private $storedMessages = [];
 
     public function __construct(Upcaster $upcaster, Iterator $iterator)
     {
@@ -40,19 +40,11 @@ final class UpcastingIterator implements Iterator
 
     public function current(): ?Message
     {
-        if (! empty($this->cache)) {
-            $message = array_shift($this->cache);
-
-            return $message;
+        if (! empty($this->storedMessages)) {
+            return reset($this->storedMessages);
         }
 
-        $message = $this->innerIterator->current();
-
-        if (! $message instanceof Message) {
-            return $message;
-        }
-
-        $messages = $this->upcaster->upcast($message);
+        $messages = $this->upcaster->upcast($this->innerIterator->current());
 
         if (empty($messages)) {
             $this->next();
@@ -60,20 +52,22 @@ final class UpcastingIterator implements Iterator
             if ($this->valid()) {
                 return $this->current();
             }
-
-            return null;
         }
 
-        $message = array_shift($messages);
+        $this->storedMessages = $messages;
 
-        $this->cache = $message;
-
-        return $message;
+        return reset($messages);
     }
 
     public function next(): void
     {
-        $this->innerIterator->next();
+        if (! empty($this->storedMessages)) {
+            array_shift($this->storedMessages);
+        }
+
+        if (empty($this->storedMessages)) {
+            $this->innerIterator->next();
+        }
     }
 
     /**
@@ -91,6 +85,7 @@ final class UpcastingIterator implements Iterator
 
     public function rewind(): void
     {
+        $this->storedMessages = [];
         $this->innerIterator->rewind();
     }
 }

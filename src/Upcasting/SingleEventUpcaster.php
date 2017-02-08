@@ -14,7 +14,7 @@ namespace Prooph\EventStore\Upcasting;
 
 use Prooph\Common\Messaging\Message;
 
-abstract class SingleMessageUpcaster implements Upcaster
+abstract class SingleEventUpcaster implements Upcaster
 {
     public function upcast(Message $message): array
     {
