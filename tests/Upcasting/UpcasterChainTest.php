@@ -56,7 +56,7 @@ class UpcasterChainTest extends TestCase
 
     protected function createUpcasterWhoCanUpcast(): SingleEventUpcaster
     {
-        return new class extends SingleEventUpcaster {
+        return new class() extends SingleEventUpcaster {
             protected function canUpcast(Message $message): bool
             {
                 return true;
@@ -71,7 +71,7 @@ class UpcasterChainTest extends TestCase
 
     protected function createUpcasterWhoCanAlsoUpcast(): SingleEventUpcaster
     {
-        return new class extends SingleEventUpcaster {
+        return new class() extends SingleEventUpcaster {
             protected function canUpcast(Message $message): bool
             {
                 return true;

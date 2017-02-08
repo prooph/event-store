@@ -73,7 +73,7 @@ class UpcastingIteratorTest extends TestCase
 
     protected function createUpcaster(): SingleEventUpcaster
     {
-        return new class extends SingleEventUpcaster {
+        return new class() extends SingleEventUpcaster {
             protected function canUpcast(Message $message): bool
             {
                 return $message->metadata() !== ['foo' => 'bar'];
