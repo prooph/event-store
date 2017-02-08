@@ -20,10 +20,8 @@ use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
 use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
-use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
-use Zend\ServiceManager\ServiceManager;
 
 class UpcastingPluginTest extends ActionEventEmitterEventStoreTestCase
 {
@@ -32,7 +30,7 @@ class UpcastingPluginTest extends ActionEventEmitterEventStoreTestCase
      */
     public function it_attaches_to_event_store(): void
     {
-        $upcaster = new class extends SingleEventUpcaster {
+        $upcaster = new class() extends SingleEventUpcaster {
             protected function canUpcast(Message $message): bool
             {
                 return true;
@@ -42,7 +40,6 @@ class UpcastingPluginTest extends ActionEventEmitterEventStoreTestCase
             {
                 return [$message->withAddedMetadata('key', 'value')];
             }
-
         };
 
         $plugin = new UpcastingPlugin($upcaster);
