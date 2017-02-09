@@ -142,7 +142,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
      */
     public function extractAggregateId($eventSourcedAggregateRoot)
     {
-        if (! method_exists($eventSourcedAggregateRoot, $this->identifierMethodName)) {
+        if (! is_callable([$eventSourcedAggregateRoot, $this->identifierMethodName])) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Required method %s does not exist for aggregate %s',
@@ -157,11 +157,12 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
 
     /**
      * @param object $eventSourcedAggregateRoot
+     * @throws \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      * @return int
      */
     public function extractAggregateVersion($eventSourcedAggregateRoot)
     {
-        if (! method_exists($eventSourcedAggregateRoot, $this->versionMethodName)) {
+        if (! is_callable([$eventSourcedAggregateRoot, $this->versionMethodName])) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Required method %s does not exist for aggregate %s',
@@ -197,7 +198,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             );
         }
 
-        if (! method_exists($aggregateClass, $this->staticReconstituteFromHistoryMethodName)) {
+        if (! is_callable([$aggregateClass, $this->staticReconstituteFromHistoryMethodName])) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Cannot reconstitute aggregate of type %s. Class is missing a static %s method!',
@@ -235,7 +236,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
         }
 
-        if (! method_exists($eventSourcedAggregateRoot, $this->popRecordedEventsMethodName)) {
+        if (! is_callable([$eventSourcedAggregateRoot, $this->popRecordedEventsMethodName])) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Can not pop recorded events from aggregate root %s. The AR is missing a method with name %s!',
@@ -288,7 +289,7 @@ class ConfigurableAggregateTranslator implements AggregateTranslator
             throw new AggregateTranslationFailedException('Event sourced Aggregate Root needs to be an object. Got ' . gettype($eventSourcedAggregateRoot));
         }
 
-        if (! method_exists($eventSourcedAggregateRoot, $this->replayEventsMethodName)) {
+        if (! is_callable([$eventSourcedAggregateRoot, $this->replayEventsMethodName])) {
             throw new AggregateTranslationFailedException(
                 sprintf(
                     'Can not replay events to aggregate root %s. The AR is missing a method with name %s!',

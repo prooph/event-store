@@ -62,4 +62,34 @@ final class FaultyAggregateRoot implements DefaultAggregateRootContract
         // faulty method
         return;
     }
+
+    protected function aggregateId()
+    {
+        //faulty method
+        return;
+    }
+
+    protected function AggregateVersion()
+    {
+        //faulty method
+        return;
+    }
+
+    protected static function inAccessibleReconstituteFromHistory(\Iterator $historyEvents)
+    {
+        //faulty method
+        return;
+    }
+
+    protected function inAccessiblePopRecordedEvents()
+    {
+        //faulty method
+        return;
+    }
+
+    protected function inAccessibleReplay($event)
+    {
+        // faulty method
+        return;
+    }
 }
