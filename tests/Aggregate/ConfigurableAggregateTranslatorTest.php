@@ -131,13 +131,25 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_throws_exception_if_version_method_does_not_exist()
     {
-        $ar = $this->prophesize(CustomAggregateRootContract::class);
+        $ar = new FaultyAggregateRoot();
 
-        $translator = new ConfigurableAggregateTranslator('unknownMethodName');
+        $translator = new ConfigurableAggregateTranslator(null, 'unknownMethodName');
 
-        $translator->extractAggregateVersion($ar->reveal());
+        $translator->extractAggregateVersion($ar);
     }
 
+    /**
+     * @test
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_throws_exception_if_version_method_is_not_accessible()
+    {
+        $ar = new FaultyAggregateRoot();
+
+        $translator = new ConfigurableAggregateTranslator(null, 'aggregateVersion');
+
+        $translator->extractAggregateVersion($ar);
+    }
 
     /**
      * @test
@@ -199,11 +211,22 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_throws_exception_if_identifier_method_does_not_exist()
     {
-        $ar = $this->prophesize(CustomAggregateRootContract::class);
+        $ar = new \stdClass();
 
         $translator = new ConfigurableAggregateTranslator('unknownMethodName');
+        $translator->extractAggregateId($ar);
+    }
 
-        $translator->extractAggregateId($ar->reveal());
+    /**
+     * @test
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_throws_exception_if_identifier_method_is_not_accessible()
+    {
+        $ar = new FaultyAggregateRoot();
+
+        $translator = new ConfigurableAggregateTranslator('aggregateId');
+        $translator->extractAggregateId($ar);
     }
 
     /**
@@ -283,11 +306,24 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_throws_exception_if_pop_recorded_events_method_does_not_exist()
     {
-        $ar = $this->prophesize(CustomAggregateRootContract::class);
+        $ar = new FaultyAggregateRoot();
 
         $translator = new ConfigurableAggregateTranslator(null, null, 'unknownMethod');
 
-        $translator->extractPendingStreamEvents($ar->reveal());
+        $translator->extractPendingStreamEvents($ar);
+    }
+
+    /**
+     * @test
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_throws_exception_if_pop_recorded_events_method_is_not_accessible()
+    {
+        $ar = new FaultyAggregateRoot();
+
+        $translator = new ConfigurableAggregateTranslator(null, null, 'inAccessiblePopRecordedEvents');
+
+        $translator->extractPendingStreamEvents($ar);
     }
 
     /**
@@ -296,11 +332,24 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      */
     public function it_throws_exception_if_apply_recorded_events_method_does_not_exist()
     {
-        $ar = $this->prophesize(CustomAggregateRootContract::class);
+        $ar = new FaultyAggregateRoot();
 
         $translator = new ConfigurableAggregateTranslator(null, null, null, 'unknownMethod');
 
-        $translator->replayStreamEvents($ar->reveal(), new \ArrayIterator([]));
+        $translator->replayStreamEvents($ar, new \ArrayIterator([]));
+    }
+
+    /**
+     * @test
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
+    public function it_throws_exception_if_apply_recorded_events_method_is_not_accessible()
+    {
+        $ar = new FaultyAggregateRoot();
+
+        $translator = new ConfigurableAggregateTranslator(null, null, null, 'inAccessibleReplay');
+
+        $translator->replayStreamEvents($ar, new \ArrayIterator([]));
     }
 
     /**
@@ -511,6 +560,17 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
      * @test
      * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
+    public function it_throws_exception_if_reconstitute_form_history_method_is_not_accessible()
+    {
+        $translator = new ConfigurableAggregateTranslator(null, null, null, null, 'inAccessibleReconstituteFromHistory');
+
+        $translator->reconstituteAggregateFromHistory(AggregateType::fromString(DefaultAggregateRoot::class), new \ArrayIterator([]));
+    }
+
+    /**
+     * @test
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     */
     public function it_throws_exception_if_reconstitute_form_history_method_name_does_not_return_an_instance_of_aggregate_type()
     {
         $translator = new ConfigurableAggregateTranslator();
@@ -567,7 +627,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
     public function it_fails_on_extracting_pending_stream_events_when_event_sourced_aggregate_root_is_not_an_object()
     {
@@ -577,7 +637,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
     public function it_fails_on_applying_pending_stream_events_when_event_sourced_aggregate_root_is_not_an_object()
     {
@@ -587,7 +647,7 @@ final class ConfigurableAggregateTranslatorTest extends TestCase
 
     /**
      * @test
-     * @expectedException Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
+     * @expectedException \Prooph\EventStore\Aggregate\Exception\AggregateTranslationFailedException
      */
     public function it_fails_when_popped_recorded_events_are_not_an_array_or_traversable()
     {
