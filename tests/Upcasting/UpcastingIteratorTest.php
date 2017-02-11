@@ -63,18 +63,23 @@ class UpcastingIteratorTest extends TestCase
         $this->assertTrue($upcastingIterator->valid());
         $this->assertSame($upcastedMessage1, $upcastingIterator->current());
         $upcastingIterator->next();
+        $this->assertEquals(1, $upcastingIterator->key());
         $this->assertSame($upcastedMessage2, $upcastingIterator->current());
         $upcastingIterator->next();
+        $this->assertEquals(2, $upcastingIterator->key());
         $this->assertSame($message3, $upcastingIterator->current());
         $upcastingIterator->rewind();
         $this->assertEquals(0, $upcastingIterator->key());
         $this->assertTrue($upcastingIterator->valid());
         $this->assertSame($upcastedMessage1, $upcastingIterator->current());
         $upcastingIterator->next();
+        $this->assertEquals(1, $upcastingIterator->key());
         $this->assertSame($upcastedMessage2, $upcastingIterator->current());
         $upcastingIterator->next();
+        $this->assertEquals(2, $upcastingIterator->key());
         $this->assertSame($message3, $upcastingIterator->current());
         $upcastingIterator->next();
+        $this->assertEquals(3, $upcastingIterator->key());
         $this->assertFalse($upcastingIterator->valid());
         $this->assertNull($upcastingIterator->current());
     }
