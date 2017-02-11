@@ -31,13 +31,13 @@ class UpcastingIteratorTest extends TestCase
         $upcastedMessage2 = $upcastedMessage2->reveal();
 
         $message1 = $this->prophesize(Message::class);
-        $message1->metadata()->willReturn([])->shouldBeCalled();
-        $message1->withAddedMetadata('key', 'value')->willReturn($upcastedMessage1)->shouldBeCalled();
-        $message1->withAddedMetadata('key', 'another_value')->willReturn($upcastedMessage2)->shouldBeCalled();
+        $message1->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
         $message1 = $message1->reveal();
 
         $message2 = $this->prophesize(Message::class);
-        $message2->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
+        $message2->metadata()->willReturn([])->shouldBeCalled();
+        $message2->withAddedMetadata('key', 'value')->willReturn($upcastedMessage1)->shouldBeCalled();
+        $message2->withAddedMetadata('key', 'another_value')->willReturn($upcastedMessage2)->shouldBeCalled();
         $message2 = $message2->reveal();
 
         $message3 = $this->prophesize(Message::class);
@@ -46,10 +46,15 @@ class UpcastingIteratorTest extends TestCase
         $message3->withAddedMetadata('key', 'another_value')->shouldNotBeCalled();
         $message3 = $message3->reveal();
 
+        $message4 = $this->prophesize(Message::class);
+        $message4->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
+        $message4 = $message4->reveal();
+
         $iterator = new \ArrayIterator([
             $message1,
             $message2,
             $message3,
+            $message4,
         ]);
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
@@ -69,6 +74,41 @@ class UpcastingIteratorTest extends TestCase
         $this->assertSame($upcastedMessage2, $upcastingIterator->current());
         $upcastingIterator->next();
         $this->assertSame($message3, $upcastingIterator->current());
+        $upcastingIterator->next();
+        $this->assertFalse($upcastingIterator->valid());
+        $this->assertNull($upcastingIterator->current());
+    }
+
+    /**
+     * @test
+     */
+    public function it_iterates_on_iterator_with_removed_messages_only(): void
+    {
+        $message = $this->prophesize(Message::class);
+        $message->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
+        $message = $message->reveal();
+
+        $iterator = new \ArrayIterator([$message]);
+
+        $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
+
+        $this->assertEquals(0, $upcastingIterator->key());
+        $this->assertFalse($upcastingIterator->valid());
+        $this->assertNull($upcastingIterator->current());
+    }
+
+    /**
+     * @test
+     */
+    public function it_iterates_over_empty_iterator(): void
+    {
+        $iterator = new \ArrayIterator();
+
+        $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
+
+        $this->assertEquals(0, $upcastingIterator->key());
+        $this->assertFalse($upcastingIterator->valid());
+        $this->assertNull($upcastingIterator->current());
     }
 
     protected function createUpcaster(): SingleEventUpcaster

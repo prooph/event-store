@@ -32,6 +32,8 @@ final class UpcastingIterator implements Iterator
      */
     private $storedMessages = [];
 
+    private $position = 0;
+
     public function __construct(Upcaster $upcaster, Iterator $iterator)
     {
         $this->upcaster = $upcaster;
@@ -44,29 +46,47 @@ final class UpcastingIterator implements Iterator
             return reset($this->storedMessages);
         }
 
-        $messages = $this->upcaster->upcast($this->innerIterator->current());
+        $current = $this->innerIterator->current();
 
-        if (empty($messages)) {
-            $this->next();
-
-            if ($this->valid()) {
-                return $this->current();
-            }
+        if (null === $current) {
+            return null;
         }
 
-        $this->storedMessages = $messages;
+        $this->storedMessages = $this->upcaster->upcast($current);
 
-        return reset($messages);
+        while (empty($this->storedMessages)) {
+            $this->innerIterator->next();
+
+            if (! $this->innerIterator->valid()) {
+                return null;
+            }
+
+            $this->storedMessages = $this->upcaster->upcast($this->innerIterator->current());
+        }
+
+        return reset($this->storedMessages);
     }
 
     public function next(): void
     {
+        ++$this->position;
+
         if (! empty($this->storedMessages)) {
             array_shift($this->storedMessages);
         }
 
-        if (empty($this->storedMessages)) {
+        if (! empty($this->storedMessages)) {
+            return;
+        }
+
+        while (empty($this->storedMessages)) {
             $this->innerIterator->next();
+
+            if (! $this->innerIterator->valid()) {
+                return;
+            }
+
+            $this->storedMessages = $this->upcaster->upcast($this->innerIterator->current());
         }
     }
 
@@ -75,17 +95,18 @@ final class UpcastingIterator implements Iterator
      */
     public function key()
     {
-        return $this->innerIterator->key();
+        return $this->position;
     }
 
     public function valid(): bool
     {
-        return $this->innerIterator->valid();
+        return null !== $this->current();
     }
 
     public function rewind(): void
     {
         $this->storedMessages = [];
         $this->innerIterator->rewind();
+        $this->position = 0;
     }
 }
