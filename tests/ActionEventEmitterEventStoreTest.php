@@ -14,7 +14,9 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\Common\Event\ActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
@@ -23,6 +25,7 @@ use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Projection\Projection;
 use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Projection\ReadModelProjection;
+use Prooph\EventStore\ReadOnlyEventStore;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\ReadModelMock;
@@ -521,5 +524,44 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $readModel = new ReadModelMock();
 
         $this->assertInstanceOf(ReadModelProjection::class, $this->eventStore->createReadModelProjection('foo', $readModel));
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_projections(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->deleteProjection('foo', true)->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->deleteProjection('foo', true);
+    }
+
+    /**
+     * @test
+     */
+    public function it_resets_projections(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->resetProjection('foo')->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->resetProjection('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function it_stops_projections(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->stopProjection('foo')->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->stopProjection('foo');
     }
 }
