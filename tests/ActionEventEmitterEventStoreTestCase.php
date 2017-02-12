@@ -27,14 +27,17 @@ abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
     protected function setUp(): void
     {
         $eventEmitter = new ProophActionEventEmitter([
-            TransactionalActionEventEmitterEventStore::EVENT_APPEND_TO,
-            TransactionalActionEventEmitterEventStore::EVENT_CREATE,
-            TransactionalActionEventEmitterEventStore::EVENT_LOAD,
-            TransactionalActionEventEmitterEventStore::EVENT_LOAD_REVERSE,
-            TransactionalActionEventEmitterEventStore::EVENT_DELETE,
-            TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
-            TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
-            TransactionalActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
+            ActionEventEmitterEventStore::EVENT_APPEND_TO,
+            ActionEventEmitterEventStore::EVENT_CREATE,
+            ActionEventEmitterEventStore::EVENT_LOAD,
+            ActionEventEmitterEventStore::EVENT_LOAD_REVERSE,
+            ActionEventEmitterEventStore::EVENT_DELETE,
+            ActionEventEmitterEventStore::EVENT_HAS_STREAM,
+            ActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
+            ActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
+            ActionEventEmitterEventStore::EVENT_DELETE_PROJECTION,
+            ActionEventEmitterEventStore::EVENT_RESET_PROJECTION,
+            ActionEventEmitterEventStore::EVENT_STOP_PROJECTION,
         ]);
 
         $this->eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);

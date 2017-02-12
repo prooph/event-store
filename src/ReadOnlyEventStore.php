@@ -38,4 +38,10 @@ interface ReadOnlyEventStore
     ): Iterator;
 
     public function createQuery(QueryFactory $factory = null): Query;
+
+    public function deleteProjection(string $name, bool $deleteEmittedEvents): void;
+
+    public function resetProjection(string $name): void;
+
+    public function stopProjection(string $name): void;
 }

@@ -40,6 +40,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public const EVENT_HAS_STREAM = 'hasStream';
     public const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
     public const EVENT_UPDATE_STREAM_METADATA = 'updateStreamMetadata';
+    public const EVENT_DELETE_PROJECTION = 'deleteProjection';
+    public const EVENT_RESET_PROJECTION = 'resetProjection';
+    public const EVENT_STOP_PROJECTION = 'stopProjection';
 
     /**
      * @var ActionEventEmitter
@@ -143,6 +146,25 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             } catch (StreamNotFound $exception) {
                 $event->setParam('streamNotFound', true);
             }
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_DELETE_PROJECTION, function (ActionEvent $event): void {
+            $name = $event->getParam('name');
+            $deleteEmittedEvents = $event->getParam('deleteEmittedEvents');
+
+            $this->eventStore->deleteProjection($name, $deleteEmittedEvents);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_RESET_PROJECTION, function (ActionEvent $event): void {
+            $name = $event->getParam('name');
+
+            $this->eventStore->resetProjection($name);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_STOP_PROJECTION, function (ActionEvent $event): void {
+            $name = $event->getParam('name');
+
+            $this->eventStore->stopProjection($name);
         });
     }
 
@@ -354,6 +376,42 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
     {
         return $this->eventStore->getDefaultReadModelProjectionFactory();
+    }
+
+    public function deleteProjection(string $name, bool $deleteEmittedEvents): void
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_DELETE_PROJECTION,
+            $this,
+            [
+                'name' => $name,
+                'deleteEmittedEvents' => $deleteEmittedEvents
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+    }
+
+    public function resetProjection(string $name): void
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_RESET_PROJECTION,
+            $this,
+            ['name' => $name]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+    }
+
+    public function stopProjection(string $name): void
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_STOP_PROJECTION,
+            $this,
+            ['name' => $name]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
     }
 
     public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler
