@@ -385,7 +385,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $this,
             [
                 'name' => $name,
-                'deleteEmittedEvents' => $deleteEmittedEvents
+                'deleteEmittedEvents' => $deleteEmittedEvents,
             ]
         );
 

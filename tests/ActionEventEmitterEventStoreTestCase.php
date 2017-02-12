@@ -15,7 +15,6 @@ namespace ProophTest\EventStore;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\InMemoryEventStore;
-use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
 abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
 {
