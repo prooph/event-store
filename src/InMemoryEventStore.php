@@ -350,6 +350,21 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $this->defaultReadModelProjectionFactory;
     }
 
+    public function deleteProjection(string $name, bool $deleteEmittedEvents): void
+    {
+        throw new Exception\RuntimeException('Deleting a projection is not supported in ' . get_class($this));
+    }
+
+    public function resetProjection(string $name): void
+    {
+        throw new Exception\RuntimeException('Resetting a projection is not supported in ' . get_class($this));
+    }
+
+    public function stopProjection(string $name): void
+    {
+        throw new Exception\RuntimeException('Stopping a projection is not supported in ' . get_class($this));
+    }
+
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
     {
         foreach ($metadataMatcher->data() as $match) {

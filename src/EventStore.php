@@ -52,4 +52,10 @@ interface EventStore extends ReadOnlyEventStore
     public function getDefaultProjectionFactory(): ProjectionFactory;
 
     public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory;
+
+    public function deleteProjection(string $name, bool $deleteEmittedEvents): void;
+
+    public function resetProjection(string $name): void;
+
+    public function stopProjection(string $name): void;
 }

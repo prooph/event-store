@@ -15,6 +15,7 @@ namespace ProophTest\EventStore;
 use ArrayIterator;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -753,5 +754,35 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $streamEvents = $this->eventStore->load(new StreamName('user'), 1);
 
         $this->assertCount(2, $streamEvents);
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_delete_projections(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventStore->deleteProjection('foo', true);
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_reset_projections(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventStore->resetProjection('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_stop_projections(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventStore->stopProjection('foo');
     }
 }
