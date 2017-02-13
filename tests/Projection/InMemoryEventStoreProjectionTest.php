@@ -208,6 +208,9 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->assertEquals(4, $projection->getState()['count']);
     }
 
+    /**
+     * @test
+     */
     public function it_resumes_projection_from_position(): void
     {
         $this->prepareEventStream('user-123');
@@ -239,7 +242,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
 
-        $projection->run();
+        $projection->run(false);
 
         $this->assertEquals(99, $projection->getState()['count']);
     }
