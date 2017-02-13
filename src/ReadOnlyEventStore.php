@@ -38,4 +38,25 @@ interface ReadOnlyEventStore
     ): Iterator;
 
     public function createQuery(QueryFactory $factory = null): Query;
+
+    /**
+     * @return StreamName[]
+     */
+    public function fetchStreamNames(
+        ?string $filter,
+        bool $regex,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit,
+        int $offset
+    ): array;
+
+    /**
+     * @return string[]
+     */
+    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array;
+
+    /**
+     * @return string[]
+     */
+    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array;
 }

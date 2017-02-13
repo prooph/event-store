@@ -72,6 +72,11 @@ final class InMemoryEventStore implements TransactionalEventStore
      */
     private $defaultReadModelProjectionFactory;
 
+    /**
+     * @var string[]
+     */
+    private $projectionNames = [];
+
     public function create(Stream $stream): void
     {
         $streamName = $stream->streamName();
@@ -307,7 +312,13 @@ final class InMemoryEventStore implements TransactionalEventStore
             $factory = $this->getDefaultProjectionFactory();
         }
 
-        return $factory($this, $name, $options);
+        $projection = $factory($this, $name, $options);
+
+        if (! in_array($name, $this->projectionNames)) {
+            $this->projectionNames[] = $name;
+        }
+
+        return $projection;
     }
 
     public function createReadModelProjection(
@@ -320,7 +331,13 @@ final class InMemoryEventStore implements TransactionalEventStore
             $factory = $this->getDefaultReadModelProjectionFactory();
         }
 
-        return $factory($this, $name, $readModel, $options);
+        $projection = $factory($this, $name, $readModel, $options);
+
+        if (! in_array($name, $this->projectionNames)) {
+            $this->projectionNames[] = $name;
+        }
+
+        return $projection;
     }
 
     public function getDefaultQueryFactory(): QueryFactory
@@ -363,6 +380,154 @@ final class InMemoryEventStore implements TransactionalEventStore
     public function stopProjection(string $name): void
     {
         throw new Exception\RuntimeException('Stopping a projection is not supported in ' . get_class($this));
+    }
+
+    public function fetchStreamNames(
+        ?string $filter,
+        bool $regex,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit,
+        int $offset
+    ): array {
+        if (null === $filter && $regex) {
+            throw new Exception\InvalidArgumentException('No regex pattern given');
+        }
+
+        if ($regex && false === @preg_match($filter, '')) {
+            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
+        }
+
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
+        foreach ($this->streams as $streamName => $data) {
+            if ($regex) {
+                if (! preg_match($filter, $streamName)) {
+                    continue;
+                }
+
+                if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
+                    continue;
+                }
+
+                $result[] = new StreamName($streamName);
+                ++$found;
+            } elseif (null === $filter || $filter === $streamName) {
+                if ($offset > $skipped) {
+                    ++$skipped;
+                    continue;
+                }
+
+                if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
+                    continue;
+                }
+
+                $result[] = new StreamName($streamName);
+                ++$found;
+            }
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array
+    {
+        if (null === $filter && $regex) {
+            throw new Exception\InvalidArgumentException('No regex pattern given');
+        }
+
+        if ($regex && false === @preg_match($filter, '')) {
+            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
+        }
+
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
+        $categories = array_unique(array_reduce(
+            array_keys($this->streams),
+            function (array $result, string $streamName): array {
+                if (preg_match('/(.+)-.+/', $streamName, $matches)) {
+                    $result[] = $matches[1];
+                }
+
+                return $result;
+            },
+            []
+        ));
+
+        foreach ($categories as $category) {
+            if ($regex) {
+                if (! preg_match($filter, $category)) {
+                    continue;
+                }
+
+                $result[] = $category;
+                ++$found;
+            } elseif (null === $filter || $filter === $category) {
+                if ($offset > $skipped) {
+                    ++$skipped;
+                    continue;
+                }
+
+                $result[] = $category;
+                ++$found;
+            }
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array
+    {
+        if (null === $filter && $regex) {
+            throw new Exception\InvalidArgumentException('No regex pattern given');
+        }
+
+        if ($regex && false === @preg_match($filter, '')) {
+            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
+        }
+
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
+        foreach ($this->projectionNames as $projectionName) {
+            if ($regex) {
+                if (! preg_match($filter, $projectionName)) {
+                    continue;
+                }
+
+                $result[] = $projectionName;
+                ++$found;
+            } elseif (null === $filter || $filter === $projectionName) {
+                if ($offset > $skipped) {
+                    ++$skipped;
+                    continue;
+                }
+
+                $result[] = $projectionName;
+                ++$found;
+            }
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
