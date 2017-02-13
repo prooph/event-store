@@ -328,8 +328,7 @@ final class InMemoryEventStoreProjection implements Projection
             foreach ($this->streamPositions as $streamName => $position) {
                 try {
                     $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
-                } catch (Exception\StreamNotFound $e) {
-                    // no newer events found
+                } catch (Exception\NoNewerEventsFound $e) {
                     continue;
                 }
 
