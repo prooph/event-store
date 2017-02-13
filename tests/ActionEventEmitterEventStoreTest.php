@@ -563,4 +563,43 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
 
         $wrapper->stopProjection('foo');
     }
+
+    /**
+     * @test
+     */
+    public function it_fetches_stream_names(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchStreamNames('foo', false, null, 10, 20)->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchStreamNames('foo', false, null, 10, 20);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_category_names(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchCategoryNames('foo', false, 10, 20)->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchCategoryNames('foo', false, 10, 20);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_names(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchProjectionNames('foo', false, 10, 20)->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchProjectionNames('foo', false, 10, 20);
+    }
 }
