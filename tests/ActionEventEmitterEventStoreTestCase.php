@@ -37,6 +37,9 @@ abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
             ActionEventEmitterEventStore::EVENT_DELETE_PROJECTION,
             ActionEventEmitterEventStore::EVENT_RESET_PROJECTION,
             ActionEventEmitterEventStore::EVENT_STOP_PROJECTION,
+            ActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES,
+            ActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES,
+            ActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_NAMES,
         ]);
 
         $this->eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);
