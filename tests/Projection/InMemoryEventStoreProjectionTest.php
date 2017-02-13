@@ -208,6 +208,9 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->assertEquals(4, $projection->getState()['count']);
     }
 
+    /**
+     * @test
+     */
     public function it_resumes_projection_from_position(): void
     {
         $this->prepareEventStream('user-123');
@@ -239,10 +242,36 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
 
-        $projection->run();
-
+        $projection->run(false);
         $this->assertEquals(99, $projection->getState()['count']);
     }
+
+    /**
+     * @test
+     */
+    public function it_does_not_handle_stream_when_no_newer_events_were_found(): void
+    {
+        $this->prepareEventStream('user-123');
+        $projection = $this->eventStore->createProjection('test_projection');
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, Message $event): array {
+                    $state['count']++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $streamEvents = $this->eventStore->load(new StreamName('user-123'));
+        $this->assertCount(50, $streamEvents);
+        $projection->run(false);
+    }
+
 
     /**
      * @test

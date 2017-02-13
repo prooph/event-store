@@ -15,6 +15,7 @@ namespace Prooph\EventStore;
 use ArrayIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\Exception\NoNewerEventsFound;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -149,6 +150,10 @@ final class InMemoryEventStore implements TransactionalEventStore
             ) {
                 $streamEvents[] = $streamEvent;
             }
+        }
+
+        if (count($streamEvents) == 0) {
+            throw NoNewerEventsFound::with($streamName);
         }
 
         return new ArrayIterator($streamEvents);
