@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
@@ -29,6 +28,7 @@ use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
+use Psr\Container\ContainerInterface;
 
 class InMemoryEventStoreFactoryTest extends TestCase
 {
