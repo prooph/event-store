@@ -393,7 +393,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             throw new Exception\InvalidArgumentException('No regex pattern given');
         }
 
-        if ($regex && false === @preg_match($filter, '')) {
+        if ($regex && false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
         }
 
@@ -404,7 +404,7 @@ final class InMemoryEventStore implements TransactionalEventStore
 
         foreach ($this->streams as $streamName => $data) {
             if ($regex) {
-                if (! preg_match($filter, $streamName)) {
+                if (! preg_match("/$filter/", $streamName)) {
                     continue;
                 }
 
@@ -442,7 +442,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             throw new Exception\InvalidArgumentException('No regex pattern given');
         }
 
-        if ($regex && false === @preg_match($filter, '')) {
+        if ($regex && false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
         }
 
@@ -465,7 +465,7 @@ final class InMemoryEventStore implements TransactionalEventStore
 
         foreach ($categories as $category) {
             if ($regex) {
-                if (! preg_match($filter, $category)) {
+                if (! preg_match("/$filter/", $category)) {
                     continue;
                 }
 
@@ -495,7 +495,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             throw new Exception\InvalidArgumentException('No regex pattern given');
         }
 
-        if ($regex && false === @preg_match($filter, '')) {
+        if ($regex && false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
         }
 
@@ -506,7 +506,7 @@ final class InMemoryEventStore implements TransactionalEventStore
 
         foreach ($this->projectionNames as $projectionName) {
             if ($regex) {
-                if (! preg_match($filter, $projectionName)) {
+                if (! preg_match("/$filter/", $projectionName)) {
                     continue;
                 }
 

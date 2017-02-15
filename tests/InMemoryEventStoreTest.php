@@ -815,9 +815,9 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             $this->assertStringStartsWith('rand', $this->eventStore->fetchStreamNames(null, false, null, 1, $i)[0]->toString());
         }
 
-        $this->assertCount(30, $this->eventStore->fetchStreamNames('/ser-/', true, null, 30, 0));
-        $this->assertCount(30, $this->eventStore->fetchStreamNames('/n-/', true, (new MetadataMatcher())->withMetadataMatch('foo', Operator::EQUALS(), 'bar'), 30, 0));
-        $this->assertCount(0, $this->eventStore->fetchStreamNames('/n-/', true, (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
+        $this->assertCount(30, $this->eventStore->fetchStreamNames('ser-', true, null, 30, 0));
+        $this->assertCount(30, $this->eventStore->fetchStreamNames('n-', true, (new MetadataMatcher())->withMetadataMatch('foo', Operator::EQUALS(), 'bar'), 30, 0));
+        $this->assertCount(0, $this->eventStore->fetchStreamNames('n-', true, (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
         $this->assertCount(0, $this->eventStore->fetchStreamNames(null, false, (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
     }
 
@@ -869,7 +869,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $this->assertCount(5, $this->eventStore->fetchCategoryNames(null, false, 10, 2));
 
         $this->assertCount(1, $this->eventStore->fetchCategoryNames('foo', false, 20, 0));
-        $this->assertCount(4, $this->eventStore->fetchCategoryNames('/foo/', true, 20, 0));
+        $this->assertCount(4, $this->eventStore->fetchCategoryNames('foo', true, 20, 0));
     }
 
     /**
@@ -891,7 +891,7 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid regex pattern given');
 
-        $this->eventStore->fetchCategoryNames('/invalid)/', true, 10, 0);
+        $this->eventStore->fetchCategoryNames('invalid)', true, 10, 0);
     }
 
     /**
@@ -917,8 +917,8 @@ class InMemoryEventStoreTest extends EventStoreTestCase
             $this->assertStringStartsWith('rand', $this->eventStore->fetchProjectionNames(null, false, 1, $i)[0]);
         }
 
-        $this->assertCount(30, $this->eventStore->fetchProjectionNames('/ser-/', true, 30, 0));
-        $this->assertCount(0, $this->eventStore->fetchProjectionNames('/n-/', true, 30, 0));
+        $this->assertCount(30, $this->eventStore->fetchProjectionNames('ser-', true, 30, 0));
+        $this->assertCount(0, $this->eventStore->fetchProjectionNames('n-', true, 30, 0));
     }
 
     /**
@@ -940,6 +940,6 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid regex pattern given');
 
-        $this->eventStore->fetchProjectionNames('/invalid)/', true, 10, 0);
+        $this->eventStore->fetchProjectionNames('invalid)', true, 10, 0);
     }
 }
