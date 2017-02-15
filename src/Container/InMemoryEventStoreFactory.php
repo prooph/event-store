@@ -16,7 +16,6 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
-use Interop\Container\ContainerInterface;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -27,6 +26,7 @@ use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\EventStore\TransactionalEventStore;
+use Psr\Container\ContainerInterface;
 
 final class InMemoryEventStoreFactory implements
     ProvidesDefaultOptions,
