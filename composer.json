@@ -29,11 +29,11 @@
         "marc-mabe/php-enum": "^2.3.1"
     },
     "require-dev": {
-        "container-interop/container-interop": "^1.1",
         "sandrokeil/interop-config": "^2.0.1",
         "phpunit/phpunit": "^6.0",
         "phpspec/prophecy": "dev-patch-1 as 1.6.2",
         "prooph/php-cs-fixer-config": "^0.1.1",
+        "psr/container": "^1.0",
         "satooshi/php-coveralls": "^1.0",
         "zendframework/zend-servicemanager": "^3.1",
         "tobiju/bookdown-bootswatch-templates": "^1.0",
@@ -43,7 +43,7 @@
         "prooph/pdo-event-store": "For usage with MySQL or Postgres as event store",
         "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
         "prooph/service-bus" : "Message bus facade to connect the event store with messaging systems",
-        "container-interop/container-interop": "For usage of provided factories",
+        "psr/container": "^1.0 for usage of provided factories",
         "sandrokeil/interop-config": "For usage of provided factories"
     },
     "conflict": {
