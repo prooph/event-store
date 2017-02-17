@@ -402,7 +402,10 @@ final class InMemoryEventStore implements TransactionalEventStore
         $skipped = 0;
         $found = 0;
 
-        foreach ($this->streams as $streamName => $data) {
+        $streams = $this->streams;
+        ksort($streams);
+
+        foreach ($streams as $streamName => $data) {
             if ($regex) {
                 if (! preg_match("/$filter/", $streamName)) {
                     continue;
@@ -463,6 +466,8 @@ final class InMemoryEventStore implements TransactionalEventStore
             []
         ));
 
+        ksort($categories);
+
         foreach ($categories as $category) {
             if ($regex) {
                 if (! preg_match("/$filter/", $category)) {
@@ -504,7 +509,10 @@ final class InMemoryEventStore implements TransactionalEventStore
         $skipped = 0;
         $found = 0;
 
-        foreach ($this->projectionNames as $projectionName) {
+        $projectionNames = $this->projectionNames;
+        ksort($projectionNames);
+
+        foreach ($projectionNames as $projectionName) {
             if ($regex) {
                 if (! preg_match("/$filter/", $projectionName)) {
                     continue;

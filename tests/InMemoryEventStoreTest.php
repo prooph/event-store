@@ -807,12 +807,15 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $this->assertCount(5, $this->eventStore->fetchStreamNames(null, false, null, 10, 115));
 
         for ($i = 0; $i < 50; $i++) {
-            $this->assertEquals('user-' . $i, $this->eventStore->fetchStreamNames(null, false, null, 1, $i * 2)[0]->toString());
-            $this->assertEquals('admin-' . $i, $this->eventStore->fetchStreamNames(null, false, null, 1, $i * 2 + 1)[0]->toString());
+            $this->assertStringStartsWith('admin-', $this->eventStore->fetchStreamNames(null, false, null, 1, $i)[0]->toString());
         }
 
-        for ($i = 100; $i < 120; $i++) {
+        for ($i = 50; $i < 70; $i++) {
             $this->assertStringStartsWith('rand', $this->eventStore->fetchStreamNames(null, false, null, 1, $i)[0]->toString());
+        }
+
+        for ($i = 0; $i < 50; $i++) {
+            $this->assertStringStartsWith('user-', $this->eventStore->fetchStreamNames(null, false, null, 1, $i + 70)[0]->toString());
         }
 
         $this->assertCount(30, $this->eventStore->fetchStreamNames('ser-', true, null, 30, 0));
