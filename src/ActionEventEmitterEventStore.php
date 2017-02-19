@@ -23,6 +23,7 @@ use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Projection\Projection;
 use Prooph\EventStore\Projection\ProjectionFactory;
 use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Projection\QueryFactory;
 use Prooph\EventStore\Projection\ReadModel;
@@ -46,6 +47,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public const EVENT_FETCH_STREAM_NAMES = 'fetchStreamNames';
     public const EVENT_FETCH_CATEGORY_NAMES = 'fetchCategoryNames';
     public const EVENT_FETCH_PROJECTION_NAMES = 'fetchProjectionNames';
+    public const EVENT_FETCH_PROJECTION_STATUS = 'fetchProjectionStatus';
+    public const EVENT_FETCH_PROJECTION_STREAM_POSITIONS = 'fetchProjectionStreamPositions';
+    public const EVENT_FETCH_PROJECTION_STATE = 'fetchProjectionState';
 
     /**
      * @var ActionEventEmitter
@@ -202,6 +206,30 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $streamNames = $this->eventStore->fetchProjectionNames($filter, $regex, $limit, $offset);
 
             $event->setParam('projectionNames', $streamNames);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_PROJECTION_STATUS, function (ActionEvent $event): void {
+            $name = $event->getParam('name');
+
+            $status = $this->eventStore->fetchProjectionStatus($name);
+
+            $event->setParam('status', $status);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_PROJECTION_STREAM_POSITIONS, function (ActionEvent $event): void {
+            $name = $event->getParam('name');
+
+            $streamPositions = $this->eventStore->fetchProjectionStreamPositions($name);
+
+            $event->setParam('streamPositions', $streamPositions);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_PROJECTION_STATE, function (ActionEvent $event): void {
+            $name = $event->getParam('name');
+
+            $state = $this->eventStore->fetchProjectionState($name);
+
+            $event->setParam('state', $state);
         });
     }
 
@@ -509,6 +537,51 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         $this->actionEventEmitter->dispatch($event);
 
         return $event->getParam('projectionNames', []);
+    }
+
+    public function fetchProjectionStatus(string $name): ProjectionStatus
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_PROJECTION_STATUS,
+            $this,
+            [
+                'name' => $name,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('status');
+    }
+
+    public function fetchProjectionStreamPositions(string $name): ?array
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_PROJECTION_STREAM_POSITIONS,
+            $this,
+            [
+                'name' => $name,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('streamPositions');
+    }
+
+    public function fetchProjectionState(string $name): array
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_PROJECTION_STATE,
+            $this,
+            [
+                'name' => $name,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('state', []);
     }
 
     public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler

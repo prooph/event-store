@@ -86,12 +86,18 @@ final class InMemoryEventStoreProjection implements Projection
      */
     private $sleep;
 
+    /**
+     * @var ProjectionStatus
+     */
+    private $status;
+
     public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $sleep)
     {
         $this->eventStore = $eventStore;
         $this->name = $name;
         $this->cachedStreamNames = new ArrayCache($cacheSize);
         $this->sleep = $sleep;
+        $this->status = ProjectionStatus::IDLE();
 
         while ($eventStore instanceof EventStoreDecorator) {
             $eventStore = $eventStore->getInnerEventStore();
@@ -316,6 +322,8 @@ final class InMemoryEventStoreProjection implements Projection
             throw new Exception\RuntimeException('No handlers configured');
         }
 
+        $this->status = ProjectionStatus::RUNNING();
+
         do {
             if (! $this->eventStore->hasStream(new StreamName($this->name))) {
                 $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
@@ -343,6 +351,8 @@ final class InMemoryEventStoreProjection implements Projection
                 usleep($this->sleep);
             }
         } while ($keepRunning && ! $this->isStopped);
+
+        $this->status = ProjectionStatus::IDLE();
     }
 
     public function delete(bool $deleteEmittedEvents): void

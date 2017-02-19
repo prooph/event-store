@@ -99,6 +99,11 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
      */
     private $sleep;
 
+    /**
+     * @var ProjectionStatus
+     */
+    private $status;
+
     public function __construct(
         EventStore $eventStore,
         string $name,
@@ -117,6 +122,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         $this->persistBlockSize = $persistBlockSize;
         $this->readModel = $readModel;
         $this->sleep = $sleep;
+        $this->status = ProjectionStatus::IDLE();
 
         while ($eventStore instanceof EventStoreDecorator) {
             $eventStore = $eventStore->getInnerEventStore();
@@ -283,6 +289,8 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
             throw new Exception\RuntimeException('No handlers configured');
         }
 
+        $this->status = ProjectionStatus::RUNNING();
+
         if (! $this->readModel->isInitialized()) {
             $this->readModel->init();
         }
@@ -312,6 +320,8 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
                 usleep($this->sleep);
             }
         } while ($keepRunning && ! $this->isStopped);
+
+        $this->status = ProjectionStatus::IDLE();
     }
 
     public function stop(): void

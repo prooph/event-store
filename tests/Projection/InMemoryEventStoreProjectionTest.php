@@ -20,6 +20,7 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
 use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\EventStoreTestCase;
@@ -35,7 +36,9 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $testCase = $this;
+        $eventStore = $this->eventStore;
+        $projection = $eventStore->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -43,7 +46,8 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             })
             ->fromStream('user-123')
             ->when([
-                UsernameChanged::class => function (array $state, UsernameChanged $event): array {
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use ($eventStore, $testCase): array {
+                    $testCase->assertSame(ProjectionStatus::RUNNING(), $eventStore->fetchProjectionStatus('test_projection'));
                     $state['count']++;
 
                     return $state;
@@ -60,6 +64,15 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $projection->run(false);
 
         $this->assertEquals(49, $projection->getState()['count']);
+
+        $this->assertEquals($projection->getState(), $eventStore->fetchProjectionState('test_projection'));
+
+        $this->assertEquals(
+            [
+                'user-123' => 50,
+            ],
+            $eventStore->fetchProjectionStreamPositions('test_projection')
+        );
     }
 
     /**
