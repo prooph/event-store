@@ -15,6 +15,7 @@ namespace Prooph\EventStore;
 use ArrayIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -27,6 +28,7 @@ use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjectionFactory;
 use Prooph\EventStore\Projection\Projection;
 use Prooph\EventStore\Projection\ProjectionFactory;
 use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Projection\QueryFactory;
 use Prooph\EventStore\Projection\ReadModel;
@@ -73,9 +75,12 @@ final class InMemoryEventStore implements TransactionalEventStore
     private $defaultReadModelProjectionFactory;
 
     /**
-     * @var string[]
+     * @var array
+     *
+     * key = projection name
+     * value = projection instance
      */
-    private $projectionNames = [];
+    private $projections = [];
 
     public function create(Stream $stream): void
     {
@@ -314,8 +319,8 @@ final class InMemoryEventStore implements TransactionalEventStore
 
         $projection = $factory($this, $name, $options);
 
-        if (! in_array($name, $this->projectionNames)) {
-            $this->projectionNames[] = $name;
+        if (! isset($this->projections[$name])) {
+            $this->projections[$name] = $projection;
         }
 
         return $projection;
@@ -333,8 +338,8 @@ final class InMemoryEventStore implements TransactionalEventStore
 
         $projection = $factory($this, $name, $readModel, $options);
 
-        if (! in_array($name, $this->projectionNames)) {
-            $this->projectionNames[] = $name;
+        if (! isset($this->projections[$name])) {
+            $this->projections[$name] = $projection;
         }
 
         return $projection;
@@ -509,7 +514,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         $skipped = 0;
         $found = 0;
 
-        $projectionNames = $this->projectionNames;
+        $projectionNames = array_keys($this->projections);
         ksort($projectionNames);
 
         foreach ($projectionNames as $projectionName) {
@@ -536,6 +541,43 @@ final class InMemoryEventStore implements TransactionalEventStore
         }
 
         return $result;
+    }
+
+    public function fetchProjectionStatus(string $name): ProjectionStatus
+    {
+        if (! isset($this->projections[$name])) {
+            throw new RuntimeException('A projection with name "' . $name . '" could not be found.');
+        }
+
+        $projection = $this->projections[$name];
+
+        $ref = new \ReflectionProperty(get_class($projection), 'status');
+        $ref->setAccessible(true);
+
+        return $ref->getValue($projection);
+    }
+
+    public function fetchProjectionStreamPositions(string $name): ?array
+    {
+        if (! isset($this->projections[$name])) {
+            throw new RuntimeException('A projection with name "' . $name . '" could not be found.');
+        }
+
+        $projection = $this->projections[$name];
+
+        $ref = new \ReflectionProperty(get_class($projection), 'streamPositions');
+        $ref->setAccessible(true);
+
+        return $ref->getValue($projection);
+    }
+
+    public function fetchProjectionState(string $name): array
+    {
+        if (! isset($this->projections[$name])) {
+            throw new RuntimeException('A projection with name "' . $name . '" could not be found.');
+        }
+
+        return $this->projections[$name]->getState();
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool

@@ -23,6 +23,7 @@ use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Projection\Projection;
+use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Projection\ReadModelProjection;
 use Prooph\EventStore\Stream;
@@ -601,5 +602,46 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
         $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
 
         $wrapper->fetchProjectionNames('foo', false, 10, 20);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_status(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchProjectionStatus('foo')->willReturn(ProjectionStatus::RUNNING())->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchProjectionStatus('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_stream_positions(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchProjectionStreamPositions('foo')->willReturn([
+            'bar' => 100,
+        ])->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchProjectionStreamPositions('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_state(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchProjectionState('foo')->willReturn(['bar' => 'baz'])->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchProjectionState('foo');
     }
 }

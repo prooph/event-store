@@ -14,6 +14,7 @@ namespace Prooph\EventStore;
 
 use Iterator;
 use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Projection\QueryFactory;
 
@@ -59,4 +60,10 @@ interface ReadOnlyEventStore
      * @return string[]
      */
     public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array;
+
+    public function fetchProjectionStatus(string $name): ProjectionStatus;
+
+    public function fetchProjectionStreamPositions(string $name): ?array;
+
+    public function fetchProjectionState(string $name): array;
 }

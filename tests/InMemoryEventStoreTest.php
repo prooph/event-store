@@ -22,6 +22,7 @@ use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
+use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\TestDomainEvent;
@@ -944,5 +945,65 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $this->expectExceptionMessage('Invalid regex pattern given');
 
         $this->eventStore->fetchProjectionNames('invalid)', true, 10, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_asked_for_unknown_projection_status(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventStore->fetchProjectionStatus('unkown');
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_asked_for_unknown_projection_stream_positions(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventStore->fetchProjectionStreamPositions('unkown');
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_asked_for_unknown_projection_state(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventStore->fetchProjectionState('unkown');
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_status(): void
+    {
+        $projection = $this->eventStore->createProjection('test-projection');
+
+        $this->assertSame(ProjectionStatus::IDLE(), $this->eventStore->fetchProjectionStatus('test-projection'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_stream_positions(): void
+    {
+        $projection = $this->eventStore->createProjection('test-projection');
+
+        $this->assertSame(null, $this->eventStore->fetchProjectionStreamPositions('test-projection'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_state(): void
+    {
+        $projection = $this->eventStore->createProjection('test-projection');
+
+        $this->assertSame([], $this->eventStore->fetchProjectionState('test-projection'));
     }
 }
