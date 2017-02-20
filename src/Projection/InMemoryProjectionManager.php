@@ -114,46 +114,19 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array
     {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
+        if ($regex) {
+            return $this->fetchProjectionNamesRegex($filter, $limit);
         }
 
-        if ($regex && false === @preg_match("/$filter/", '')) {
-            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
+        if (null === $filter) {
+            return array_slice(array_keys($this->projections), $offset, $limit);
         }
 
-        $result = [];
-
-        $skipped = 0;
-        $found = 0;
-
-        $projectionNames = array_keys($this->projections);
-        ksort($projectionNames);
-
-        foreach ($projectionNames as $projectionName) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $projectionName)) {
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            } elseif (null === $filter || $filter === $projectionName) {
-                if ($offset > $skipped) {
-                    ++$skipped;
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            }
-
-            if ($found === $limit) {
-                break;
-            }
+        if (isset($this->projections[$filter])) {
+            return [$filter];
         }
 
-        return $result;
+        return [];
     }
 
     public function fetchProjectionStatus(string $name): ProjectionStatus
@@ -191,5 +164,27 @@ final class InMemoryProjectionManager implements ProjectionManager
         }
 
         return $this->projections[$name]->getState();
+    }
+
+    private function fetchProjectionNamesRegex(?string $filter, int $limit): array
+    {
+        if (null === $filter) {
+            throw new Exception\InvalidArgumentException('No regex pattern given');
+        }
+
+        set_error_handler(function($errorNo, $errorMsg): void {
+            throw new Exception\RuntimeException($errorMsg);
+        });
+
+        try {
+            $result = preg_grep("/$filter/", array_keys($this->projections));
+
+            return array_slice($result, 0, $limit);
+
+        } catch (Exception\RuntimeException $e) {
+            throw new Exception\InvalidArgumentException('Invalid regex pattern given', 0, $e);
+        } finally {
+            restore_error_handler();
+        }
     }
 }
