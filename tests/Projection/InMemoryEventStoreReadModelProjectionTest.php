@@ -15,10 +15,11 @@ namespace ProophTest\EventStore\Projection;
 use ArrayIterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjection;
-use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\EventStoreTestCase;
@@ -29,6 +30,18 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 {
     /**
+     * @var InMemoryProjectionManager
+     */
+    private $projectionManager;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->projectionManager = new InMemoryProjectionManager($this->eventStore);
+    }
+
+    /**
      * @test
      */
     public function it_can_project_from_stream_and_reset(): void
@@ -37,7 +50,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $this->assertEquals('test_projection', $projection->getName());
 
@@ -75,7 +88,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $this->assertEquals('test_projection', $projection->getName());
 
@@ -109,7 +122,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): array {
@@ -140,7 +153,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): array {
@@ -172,7 +185,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): array {
@@ -206,7 +219,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): array {
@@ -237,7 +250,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): array {
@@ -262,7 +275,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): array {
@@ -301,7 +314,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
     {
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $state = $projection->getState();
 
@@ -323,7 +336,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->init(function (): array {
             return [];
@@ -342,7 +355,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->fromStream('foo');
         $projection->fromStream('bar');
@@ -357,7 +370,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->fromStreams('foo');
         $projection->fromCategory('bar');
@@ -372,7 +385,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->fromCategory('foo');
         $projection->fromStreams('bar');
@@ -387,7 +400,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->fromCategories('foo');
         $projection->fromCategories('bar');
@@ -402,7 +415,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->fromCategories('foo');
         $projection->fromAll('bar');
@@ -417,7 +430,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->when(['foo' => function (): void {
         }]);
@@ -434,7 +447,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->when(['1' => function (): void {
         }]);
@@ -449,7 +462,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->when(['foo' => 'invalid']);
     }
@@ -463,7 +476,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection->whenAny(function (): void {
         });
@@ -480,7 +493,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
         $projection->run();
     }
 
@@ -495,7 +508,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->fromAll()
@@ -531,7 +544,7 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel);
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
 
         $projection
             ->init(function (): void {
@@ -559,7 +572,9 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel, new ProjectionOptions(100, 10));
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel, [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
 
         $projection
             ->init(function (): array {
@@ -585,7 +600,9 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $readModel = new ReadModelMock();
 
-        $projection = $this->eventStore->createReadModelProjection('test_projection', $readModel, new ProjectionOptions(100, 10));
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel, [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
 
         $projection
             ->init(function (): array {
@@ -607,11 +624,31 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
     /**
      * @test
      */
+    public function it_throws_exception_when_invalid_cache_size_given(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), -1, 1, 1);
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_exception_when_invalid_persist_block_size_given(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), 1, -1, 25);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_sleep_given(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), 1, 1, -1);
     }
 
     /**
@@ -623,7 +660,21 @@ class InMemoryEventStoreReadModelProjectionTest extends EventStoreTestCase
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        new InMemoryEventStoreReadModelProjection($eventStore->reveal(), 'test_projection', new ReadModelMock(), 10, 10, 2000);
+        new InMemoryEventStoreReadModelProjection($eventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $eventStore = $this->prophesize(EventStore::class);
+        $wrappedEventStore = $this->prophesize(EventStoreDecorator::class);
+        $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
+
+        new InMemoryEventStoreReadModelProjection($wrappedEventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
     }
 
     private function prepareEventStream(string $name): void

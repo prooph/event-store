@@ -15,25 +15,12 @@ namespace Prooph\EventStore;
 use ArrayIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
-use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Projection\InMemoryEventStoreProjectionFactory;
-use Prooph\EventStore\Projection\InMemoryEventStoreQueryFactory;
-use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjectionFactory;
-use Prooph\EventStore\Projection\Projection;
-use Prooph\EventStore\Projection\ProjectionFactory;
-use Prooph\EventStore\Projection\ProjectionOptions;
-use Prooph\EventStore\Projection\ProjectionStatus;
-use Prooph\EventStore\Projection\Query;
-use Prooph\EventStore\Projection\QueryFactory;
-use Prooph\EventStore\Projection\ReadModel;
-use Prooph\EventStore\Projection\ReadModelProjection;
-use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
 final class InMemoryEventStore implements TransactionalEventStore
@@ -52,35 +39,6 @@ final class InMemoryEventStore implements TransactionalEventStore
      * @var bool
      */
     private $inTransaction = false;
-
-    /**
-     * Will be lazy initialized if needed
-     *
-     * @var QueryFactory
-     */
-    private $defaultQueryFactory;
-
-    /**
-     * Will be lazy initialized if needed
-     *
-     * @var ProjectionFactory
-     */
-    private $defaultProjectionFactory;
-
-    /**
-     * Will be lazy initialized if needed
-     *
-     * @var ReadModelProjectionFactory
-     */
-    private $defaultReadModelProjectionFactory;
-
-    /**
-     * @var array
-     *
-     * key = projection name
-     * value = projection instance
-     */
-    private $projections = [];
 
     public function create(Stream $stream): void
     {
@@ -299,94 +257,6 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result ?: true;
     }
 
-    public function createQuery(QueryFactory $factory = null): Query
-    {
-        if (null === $factory) {
-            $factory = $this->getDefaultQueryFactory();
-        }
-
-        return $factory($this);
-    }
-
-    public function createProjection(
-        string $name,
-        ProjectionOptions $options = null,
-        ProjectionFactory $factory = null
-    ): Projection {
-        if (null === $factory) {
-            $factory = $this->getDefaultProjectionFactory();
-        }
-
-        $projection = $factory($this, $name, $options);
-
-        if (! isset($this->projections[$name])) {
-            $this->projections[$name] = $projection;
-        }
-
-        return $projection;
-    }
-
-    public function createReadModelProjection(
-        string $name,
-        ReadModel $readModel,
-        ProjectionOptions $options = null,
-        ReadModelProjectionFactory $factory = null
-    ): ReadModelProjection {
-        if (null === $factory) {
-            $factory = $this->getDefaultReadModelProjectionFactory();
-        }
-
-        $projection = $factory($this, $name, $readModel, $options);
-
-        if (! isset($this->projections[$name])) {
-            $this->projections[$name] = $projection;
-        }
-
-        return $projection;
-    }
-
-    public function getDefaultQueryFactory(): QueryFactory
-    {
-        if (null === $this->defaultQueryFactory) {
-            $this->defaultQueryFactory = new InMemoryEventStoreQueryFactory();
-        }
-
-        return $this->defaultQueryFactory;
-    }
-
-    public function getDefaultProjectionFactory(): ProjectionFactory
-    {
-        if (null === $this->defaultProjectionFactory) {
-            $this->defaultProjectionFactory = new InMemoryEventStoreProjectionFactory();
-        }
-
-        return $this->defaultProjectionFactory;
-    }
-
-    public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
-    {
-        if (null === $this->defaultReadModelProjectionFactory) {
-            $this->defaultReadModelProjectionFactory = new InMemoryEventStoreReadModelProjectionFactory();
-        }
-
-        return $this->defaultReadModelProjectionFactory;
-    }
-
-    public function deleteProjection(string $name, bool $deleteEmittedEvents): void
-    {
-        throw new Exception\RuntimeException('Deleting a projection is not supported in ' . get_class($this));
-    }
-
-    public function resetProjection(string $name): void
-    {
-        throw new Exception\RuntimeException('Resetting a projection is not supported in ' . get_class($this));
-    }
-
-    public function stopProjection(string $name): void
-    {
-        throw new Exception\RuntimeException('Stopping a projection is not supported in ' . get_class($this));
-    }
-
     public function fetchStreamNames(
         ?string $filter,
         bool $regex,
@@ -497,87 +367,6 @@ final class InMemoryEventStore implements TransactionalEventStore
         }
 
         return $result;
-    }
-
-    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array
-    {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
-        }
-
-        if ($regex && false === @preg_match("/$filter/", '')) {
-            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
-        }
-
-        $result = [];
-
-        $skipped = 0;
-        $found = 0;
-
-        $projectionNames = array_keys($this->projections);
-        ksort($projectionNames);
-
-        foreach ($projectionNames as $projectionName) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $projectionName)) {
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            } elseif (null === $filter || $filter === $projectionName) {
-                if ($offset > $skipped) {
-                    ++$skipped;
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            }
-
-            if ($found === $limit) {
-                break;
-            }
-        }
-
-        return $result;
-    }
-
-    public function fetchProjectionStatus(string $name): ProjectionStatus
-    {
-        if (! isset($this->projections[$name])) {
-            throw new RuntimeException('A projection with name "' . $name . '" could not be found.');
-        }
-
-        $projection = $this->projections[$name];
-
-        $ref = new \ReflectionProperty(get_class($projection), 'status');
-        $ref->setAccessible(true);
-
-        return $ref->getValue($projection);
-    }
-
-    public function fetchProjectionStreamPositions(string $name): ?array
-    {
-        if (! isset($this->projections[$name])) {
-            throw new RuntimeException('A projection with name "' . $name . '" could not be found.');
-        }
-
-        $projection = $this->projections[$name];
-
-        $ref = new \ReflectionProperty(get_class($projection), 'streamPositions');
-        $ref->setAccessible(true);
-
-        return $ref->getValue($projection);
-    }
-
-    public function fetchProjectionState(string $name): array
-    {
-        if (! isset($this->projections[$name])) {
-            throw new RuntimeException('A projection with name "' . $name . '" could not be found.');
-        }
-
-        return $this->projections[$name]->getState();
     }
 
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool

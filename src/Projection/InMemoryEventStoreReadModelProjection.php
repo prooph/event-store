@@ -112,8 +112,16 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         int $persistBlockSize,
         int $sleep
     ) {
-        if ($persistBlockSize <= 0) {
-            throw new Exception\InvalidArgumentException('PersistBlockSize must be a positive integer');
+        if ($cacheSize < 1) {
+            throw new Exception\InvalidArgumentException('cache size must be a positive integer');
+        }
+
+        if ($persistBlockSize < 1) {
+            throw new Exception\InvalidArgumentException('persist block size must be a positive integer');
+        }
+
+        if ($sleep < 1) {
+            throw new Exception\InvalidArgumentException('sleep must be a positive integer');
         }
 
         $this->eventStore = $eventStore;

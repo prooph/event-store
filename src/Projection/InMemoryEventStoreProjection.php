@@ -93,6 +93,14 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $sleep)
     {
+        if ($cacheSize < 1) {
+            throw new Exception\InvalidArgumentException('cache size must be a positive integer');
+        }
+
+        if ($sleep < 1) {
+            throw new Exception\InvalidArgumentException('sleep must be a positive integer');
+        }
+
         $this->eventStore = $eventStore;
         $this->name = $name;
         $this->cachedStreamNames = new ArrayCache($cacheSize);

@@ -15,11 +15,12 @@ namespace ProophTest\EventStore\Projection;
 use ArrayIterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
-use Prooph\EventStore\Projection\ProjectionOptions;
+use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
@@ -30,6 +31,18 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 {
     /**
+     * @var InMemoryProjectionManager
+     */
+    private $projectionManager;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->projectionManager = new InMemoryProjectionManager($this->eventStore);
+    }
+
+    /**
      * @test
      */
     public function it_can_project_from_stream_and_reset(): void
@@ -37,8 +50,8 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->prepareEventStream('user-123');
 
         $testCase = $this;
-        $eventStore = $this->eventStore;
-        $projection = $eventStore->createProjection('test_projection');
+        $projectionManager = $this->projectionManager;
+        $projection = $projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -46,8 +59,8 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
             })
             ->fromStream('user-123')
             ->when([
-                UsernameChanged::class => function (array $state, UsernameChanged $event) use ($eventStore, $testCase): array {
-                    $testCase->assertSame(ProjectionStatus::RUNNING(), $eventStore->fetchProjectionStatus('test_projection'));
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use ($projectionManager, $testCase): array {
+                    $testCase->assertSame(ProjectionStatus::RUNNING(), $projectionManager->fetchProjectionStatus('test_projection'));
                     $state['count']++;
 
                     return $state;
@@ -65,13 +78,13 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $this->assertEquals(49, $projection->getState()['count']);
 
-        $this->assertEquals($projection->getState(), $eventStore->fetchProjectionState('test_projection'));
+        $this->assertEquals($projection->getState(), $projectionManager->fetchProjectionState('test_projection'));
 
         $this->assertEquals(
             [
                 'user-123' => 50,
             ],
-            $eventStore->fetchProjectionStreamPositions('test_projection')
+            $projectionManager->fetchProjectionStreamPositions('test_projection')
         );
     }
 
@@ -82,7 +95,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -111,7 +124,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -141,7 +154,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $testCase = $this;
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -173,7 +186,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -202,7 +215,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $this->prepareEventStream('guest-345');
         $this->prepareEventStream('guest-456');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -228,7 +241,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -265,7 +278,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
      */
     public function it_resets_to_empty_array(): void
     {
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $state = $projection->getState();
 
@@ -285,7 +298,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->init(function (): array {
             return [];
@@ -302,7 +315,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->fromStream('foo');
         $projection->fromStream('bar');
@@ -315,7 +328,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->fromStreams('foo');
         $projection->fromCategory('bar');
@@ -328,7 +341,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->fromCategory('foo');
         $projection->fromStreams('bar');
@@ -341,7 +354,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->fromCategories('foo');
         $projection->fromCategories('bar');
@@ -354,7 +367,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->fromCategories('foo');
         $projection->fromAll('bar');
@@ -367,7 +380,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->when(['foo' => function (): void {
         }]);
@@ -382,7 +395,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->when(['1' => function (): void {
         }]);
@@ -395,7 +408,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->when(['foo' => 'invalid']);
     }
@@ -407,7 +420,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection->whenAny(function (): void {
         });
@@ -422,7 +435,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
         $projection->run();
     }
 
@@ -435,7 +448,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $testCase = $this;
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
         $projection
             ->fromStream('user-123')
             ->whenAny(
@@ -462,7 +475,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
 
         $testCase = $this;
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
         $projection
             ->fromStream('user-123')
             ->when([
@@ -493,7 +506,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection');
         $projection
             ->fromStream('user-123')
             ->when([
@@ -523,7 +536,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100));
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -547,7 +560,7 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->eventStore->createProjection('test_projection', new ProjectionOptions(100));
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -576,6 +589,40 @@ class InMemoryEventStoreProjectionTest extends EventStoreTestCase
         $eventStore = $this->prophesize(EventStore::class);
 
         new InMemoryEventStoreProjection($eventStore->reveal(), 'test_projection', 10, 10, 2000);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $eventStore = $this->prophesize(EventStore::class);
+        $wrappedEventStore = $this->prophesize(EventStoreDecorator::class);
+        $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
+
+        new InMemoryEventStoreProjection($wrappedEventStore->reveal(), 'test_projection', 1, 1);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_cache_size_given(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new InMemoryEventStoreProjection($this->eventStore, 'test_projection', -1, 1);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_invalid_sleep_given(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1, -1);
     }
 
     private function prepareEventStream(string $name): void

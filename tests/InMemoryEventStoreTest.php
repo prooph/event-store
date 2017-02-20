@@ -15,14 +15,12 @@ namespace ProophTest\EventStore;
 use ArrayIterator;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
-use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\TestDomainEvent;
@@ -760,36 +758,6 @@ class InMemoryEventStoreTest extends EventStoreTestCase
     /**
      * @test
      */
-    public function it_cannot_delete_projections(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->eventStore->deleteProjection('foo', true);
-    }
-
-    /**
-     * @test
-     */
-    public function it_cannot_reset_projections(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->eventStore->resetProjection('foo');
-    }
-
-    /**
-     * @test
-     */
-    public function it_cannot_stop_projections(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->eventStore->stopProjection('foo');
-    }
-
-    /**
-     * @test
-     */
     public function it_fetches_stream_names(): void
     {
         for ($i = 0; $i < 50; $i++) {
@@ -896,114 +864,5 @@ class InMemoryEventStoreTest extends EventStoreTestCase
         $this->expectExceptionMessage('Invalid regex pattern given');
 
         $this->eventStore->fetchCategoryNames('invalid)', true, 10, 0);
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_names(): void
-    {
-        for ($i = 0; $i < 50; $i++) {
-            $this->eventStore->createProjection('user-' . $i);
-        }
-
-        for ($i = 0; $i < 20; $i++) {
-            $this->eventStore->createProjection(uniqid('rand'));
-        }
-
-        $this->assertCount(70, $this->eventStore->fetchProjectionNames(null, false, 200, 0));
-        $this->assertCount(0, $this->eventStore->fetchProjectionNames(null, false, 200, 100));
-        $this->assertCount(10, $this->eventStore->fetchProjectionNames(null, false, 10, 0));
-        $this->assertCount(10, $this->eventStore->fetchProjectionNames(null, false, 10, 10));
-        $this->assertCount(5, $this->eventStore->fetchProjectionNames(null, false, 10, 65));
-
-        for ($i = 50; $i < 70; $i++) {
-            $this->assertStringStartsWith('rand', $this->eventStore->fetchProjectionNames(null, false, 1, $i)[0]);
-        }
-
-        $this->assertCount(30, $this->eventStore->fetchProjectionNames('ser-', true, 30, 0));
-        $this->assertCount(0, $this->eventStore->fetchProjectionNames('n-', true, 30, 0));
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_fetching_projection_names_using_regex_and_no_filter(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No regex pattern given');
-
-        $this->eventStore->fetchProjectionNames(null, true, 10, 0);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_fetching_projection_names_using_invalid_regex(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid regex pattern given');
-
-        $this->eventStore->fetchProjectionNames('invalid)', true, 10, 0);
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_asked_for_unknown_projection_status(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->eventStore->fetchProjectionStatus('unkown');
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_asked_for_unknown_projection_stream_positions(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->eventStore->fetchProjectionStreamPositions('unkown');
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_asked_for_unknown_projection_state(): void
-    {
-        $this->expectException(RuntimeException::class);
-
-        $this->eventStore->fetchProjectionState('unkown');
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_status(): void
-    {
-        $projection = $this->eventStore->createProjection('test-projection');
-
-        $this->assertSame(ProjectionStatus::IDLE(), $this->eventStore->fetchProjectionStatus('test-projection'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_stream_positions(): void
-    {
-        $projection = $this->eventStore->createProjection('test-projection');
-
-        $this->assertSame(null, $this->eventStore->fetchProjectionStreamPositions('test-projection'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_state(): void
-    {
-        $projection = $this->eventStore->createProjection('test-projection');
-
-        $this->assertSame([], $this->eventStore->fetchProjectionState('test-projection'));
     }
 }

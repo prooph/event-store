@@ -34,15 +34,8 @@ abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
             ActionEventEmitterEventStore::EVENT_HAS_STREAM,
             ActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
             ActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
-            ActionEventEmitterEventStore::EVENT_DELETE_PROJECTION,
-            ActionEventEmitterEventStore::EVENT_RESET_PROJECTION,
-            ActionEventEmitterEventStore::EVENT_STOP_PROJECTION,
             ActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES,
             ActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES,
-            ActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_NAMES,
-            ActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_STATUS,
-            ActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_STREAM_POSITIONS,
-            ActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_STATE,
         ]);
 
         $this->eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);

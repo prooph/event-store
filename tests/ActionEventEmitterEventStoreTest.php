@@ -22,13 +22,8 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Projection\Projection;
-use Prooph\EventStore\Projection\ProjectionStatus;
-use Prooph\EventStore\Projection\Query;
-use Prooph\EventStore\Projection\ReadModelProjection;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
-use ProophTest\EventStore\Mock\ReadModelMock;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
 class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestCase
@@ -503,71 +498,6 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     /**
      * @test
      */
-    public function it_creates_quey(): void
-    {
-        $this->assertInstanceOf(Query::class, $this->eventStore->createQuery());
-    }
-
-    /**
-     * @test
-     */
-    public function it_creates_projection(): void
-    {
-        $this->assertInstanceOf(Projection::class, $this->eventStore->createProjection('foo'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_creates_read_model_projection(): void
-    {
-        $readModel = new ReadModelMock();
-
-        $this->assertInstanceOf(ReadModelProjection::class, $this->eventStore->createReadModelProjection('foo', $readModel));
-    }
-
-    /**
-     * @test
-     */
-    public function it_deletes_projections(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->deleteProjection('foo', true)->shouldBeCalled();
-
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
-
-        $wrapper->deleteProjection('foo', true);
-    }
-
-    /**
-     * @test
-     */
-    public function it_resets_projections(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->resetProjection('foo')->shouldBeCalled();
-
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
-
-        $wrapper->resetProjection('foo');
-    }
-
-    /**
-     * @test
-     */
-    public function it_stops_projections(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->stopProjection('foo')->shouldBeCalled();
-
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
-
-        $wrapper->stopProjection('foo');
-    }
-
-    /**
-     * @test
-     */
     public function it_fetches_stream_names(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
@@ -594,54 +524,13 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     /**
      * @test
      */
-    public function it_fetches_projection_names(): void
+    public function it_returns_inner_event_store(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchProjectionNames('foo', false, 10, 20)->shouldBeCalled();
+        $eventStore = $eventStore->reveal();
 
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+        $wrapper = new ActionEventEmitterEventStore($eventStore, new ProophActionEventEmitter());
 
-        $wrapper->fetchProjectionNames('foo', false, 10, 20);
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_status(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchProjectionStatus('foo')->willReturn(ProjectionStatus::RUNNING())->shouldBeCalled();
-
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
-
-        $wrapper->fetchProjectionStatus('foo');
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_stream_positions(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchProjectionStreamPositions('foo')->willReturn([
-            'bar' => 100,
-        ])->shouldBeCalled();
-
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
-
-        $wrapper->fetchProjectionStreamPositions('foo');
-    }
-
-    /**
-     * @test
-     */
-    public function it_fetches_projection_state(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchProjectionState('foo')->willReturn(['bar' => 'baz'])->shouldBeCalled();
-
-        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
-
-        $wrapper->fetchProjectionState('foo');
+        $this->assertSame($eventStore, $wrapper->getInnerEventStore());
     }
 }
