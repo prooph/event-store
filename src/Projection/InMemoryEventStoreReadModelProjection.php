@@ -409,11 +409,12 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         foreach ($events as $event) {
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
-            $this->eventCounter++;
 
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;
             }
+
+            $this->eventCounter++;
 
             $handler = $this->handlers[$event->messageName()];
             $result = $handler($this->state, $event);
