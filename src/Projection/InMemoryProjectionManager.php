@@ -114,7 +114,7 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function fetchProjectionNames(?string $filter, int $limit = 20, int $offset = 0): array
     {
-        if (0 >= $limit) {
+        if (1 > $limit) {
             throw new Exception\OutOfRangeException(
                 'Invalid limit "'.$limit.'" given. Must be greater than 0.'
             );
@@ -128,10 +128,9 @@ final class InMemoryProjectionManager implements ProjectionManager
 
         if (null === $filter) {
             $result = array_keys($this->projections);
-            $result = array_slice($result, $offset, $limit);
-            sort($result, \SORT_NATURAL);
+            sort($result, \SORT_STRING);
 
-            return $result;
+            return array_slice($result, $offset, $limit);
         }
 
         if (isset($this->projections[$filter])) {
@@ -143,7 +142,7 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function fetchProjectionNamesRegex(string $regex, int $limit = 20, int $offset = 0): array
     {
-        if (0 >= $limit) {
+        if (1 > $limit) {
             throw new Exception\OutOfRangeException(
                 'Invalid limit "'.$limit.'" given. Must be greater than 0.'
             );
@@ -161,7 +160,7 @@ final class InMemoryProjectionManager implements ProjectionManager
 
         try {
             $result = preg_grep("/$regex/", array_keys($this->projections));
-            sort($result, \SORT_NATURAL);
+            sort($result, \SORT_STRING);
 
             return array_slice($result, $offset, $limit);
         } catch (Exception\RuntimeException $e) {

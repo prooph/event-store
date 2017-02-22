@@ -111,7 +111,7 @@ class InMemoryProjectionManagerTest extends TestCase
         $this->assertCount(10, $this->projectionManager->fetchProjectionNames(null, 10, 10));
         $this->assertCount(5, $this->projectionManager->fetchProjectionNames(null, 10, 65));
 
-        for ($i = 50; $i < 70; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $this->assertStringStartsWith('rand', $this->projectionManager->fetchProjectionNames(null, 1, $i)[0]);
         }
     }
@@ -119,7 +119,26 @@ class InMemoryProjectionManagerTest extends TestCase
     /**
      * @test
      */
-    public function it_fetches_projection_names_in_natural_order(): void
+    public function it_fetches_projection_names_with_filter(): void
+    {
+        $this->projectionManager->createProjection('user-1');
+        $this->projectionManager->createProjection('user-2');
+        $this->projectionManager->createProjection('rand-1');
+        $this->projectionManager->createProjection('user-3');
+
+        $this->assertSame(['user-1'], $this->projectionManager->fetchProjectionNames('user-1'));
+        $this->assertSame(['user-2'], $this->projectionManager->fetchProjectionNames('user-2', 2));
+        $this->assertSame(['rand-1'], $this->projectionManager->fetchProjectionNames('rand-1', 5, 100));
+
+        $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo'));
+        $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo', 5));
+        $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo', 10, 100));
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_names_sorted(): void
     {
         $this->projectionManager->createProjection('user-100');
         $this->projectionManager->createProjection('user-21');
@@ -128,7 +147,7 @@ class InMemoryProjectionManagerTest extends TestCase
         $this->projectionManager->createProjection('user-1');
 
         $this->assertEquals(
-            json_encode(['rand-5', 'user-1', 'user-10', 'user-21', 'user-100']),
+            json_encode(['rand-5', 'user-1', 'user-10', 'user-100', 'user-21']),
             json_encode($this->projectionManager->fetchProjectionNames(null))
         );
     }
@@ -178,7 +197,7 @@ class InMemoryProjectionManagerTest extends TestCase
     /**
      * @test
      */
-    public function it_fetches_projection_names_in_natural_order_using_regex(): void
+    public function it_fetches_projection_names_sorted_using_regex(): void
     {
         $this->projectionManager->createProjection('user-100');
         $this->projectionManager->createProjection('user-21');
@@ -187,7 +206,7 @@ class InMemoryProjectionManagerTest extends TestCase
         $this->projectionManager->createProjection('user-1');
 
         $this->assertEquals(
-            json_encode(['user-1', 'user-10', 'user-21', 'user-100']),
+            json_encode(['user-1', 'user-10', 'user-100', 'user-21']),
             json_encode($this->projectionManager->fetchProjectionNamesRegex('ser-'))
         );
     }
