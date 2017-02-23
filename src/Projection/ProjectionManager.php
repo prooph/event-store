@@ -36,7 +36,12 @@ interface ProjectionManager
     /**
      * @return string[]
      */
-    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array;
+    public function fetchProjectionNames(?string $filter, int $limit = 20, int $offset = 0): array;
+
+    /**
+     * @return string[]
+     */
+    public function fetchProjectionNamesRegex(string $regex, int $limit = 20, int $offset = 0): array;
 
     public function fetchProjectionStatus(string $name): ProjectionStatus;
 

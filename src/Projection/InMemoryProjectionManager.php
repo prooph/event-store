@@ -112,48 +112,62 @@ final class InMemoryProjectionManager implements ProjectionManager
         throw new Exception\RuntimeException('Stopping a projection is not supported in ' . get_class($this));
     }
 
-    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array
+    public function fetchProjectionNames(?string $filter, int $limit = 20, int $offset = 0): array
     {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
+        if (1 > $limit) {
+            throw new Exception\OutOfRangeException(
+                'Invalid limit "'.$limit.'" given. Must be greater than 0.'
+            );
         }
 
-        if ($regex && false === @preg_match("/$filter/", '')) {
-            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
+        if (0 > $offset) {
+            throw new Exception\OutOfRangeException(
+                'Invalid offset "'.$offset.'" given. Must be greater or equal than 0.'
+            );
         }
 
-        $result = [];
+        if (null === $filter) {
+            $result = array_keys($this->projections);
+            sort($result, \SORT_STRING);
 
-        $skipped = 0;
-        $found = 0;
-
-        $projectionNames = array_keys($this->projections);
-        ksort($projectionNames);
-
-        foreach ($projectionNames as $projectionName) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $projectionName)) {
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            } elseif (null === $filter || $filter === $projectionName) {
-                if ($offset > $skipped) {
-                    ++$skipped;
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            }
-
-            if ($found === $limit) {
-                break;
-            }
+            return array_slice($result, $offset, $limit);
         }
 
-        return $result;
+        if (isset($this->projections[$filter])) {
+            return [$filter];
+        }
+
+        return [];
+    }
+
+    public function fetchProjectionNamesRegex(string $regex, int $limit = 20, int $offset = 0): array
+    {
+        if (1 > $limit) {
+            throw new Exception\OutOfRangeException(
+                'Invalid limit "'.$limit.'" given. Must be greater than 0.'
+            );
+        }
+
+        if (0 > $offset) {
+            throw new Exception\OutOfRangeException(
+                'Invalid offset "'.$offset.'" given. Must be greater or equal than 0.'
+            );
+        }
+
+        set_error_handler(function ($errorNo, $errorMsg): void {
+            throw new Exception\RuntimeException($errorMsg);
+        });
+
+        try {
+            $result = preg_grep("/$regex/", array_keys($this->projections));
+            sort($result, \SORT_STRING);
+
+            return array_slice($result, $offset, $limit);
+        } catch (Exception\RuntimeException $e) {
+            throw new Exception\InvalidArgumentException('Invalid regex pattern given', 0, $e);
+        } finally {
+            restore_error_handler();
+        }
     }
 
     public function fetchProjectionStatus(string $name): ProjectionStatus

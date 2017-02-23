@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Exception\OutOfRangeException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
@@ -102,29 +103,134 @@ class InMemoryProjectionManagerTest extends TestCase
             $this->projectionManager->createProjection(uniqid('rand'));
         }
 
-        $this->assertCount(70, $this->projectionManager->fetchProjectionNames(null, false, 200, 0));
-        $this->assertCount(0, $this->projectionManager->fetchProjectionNames(null, false, 200, 100));
-        $this->assertCount(10, $this->projectionManager->fetchProjectionNames(null, false, 10, 0));
-        $this->assertCount(10, $this->projectionManager->fetchProjectionNames(null, false, 10, 10));
-        $this->assertCount(5, $this->projectionManager->fetchProjectionNames(null, false, 10, 65));
+        $this->assertCount(20, $this->projectionManager->fetchProjectionNames(null));
+        $this->assertCount(70, $this->projectionManager->fetchProjectionNames(null, 200));
+        $this->assertCount(70, $this->projectionManager->fetchProjectionNames(null, 200, 0));
+        $this->assertCount(0, $this->projectionManager->fetchProjectionNames(null, 200, 100));
+        $this->assertCount(10, $this->projectionManager->fetchProjectionNames(null, 10, 0));
+        $this->assertCount(10, $this->projectionManager->fetchProjectionNames(null, 10, 10));
+        $this->assertCount(5, $this->projectionManager->fetchProjectionNames(null, 10, 65));
 
-        for ($i = 50; $i < 70; $i++) {
-            $this->assertStringStartsWith('rand', $this->projectionManager->fetchProjectionNames(null, false, 1, $i)[0]);
+        for ($i = 0; $i < 20; $i++) {
+            $this->assertStringStartsWith('rand', $this->projectionManager->fetchProjectionNames(null, 1, $i)[0]);
         }
-
-        $this->assertCount(30, $this->projectionManager->fetchProjectionNames('ser-', true, 30, 0));
-        $this->assertCount(0, $this->projectionManager->fetchProjectionNames('n-', true, 30, 0));
     }
 
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_projection_names_using_regex_and_no_filter(): void
+    public function it_fetches_projection_names_with_filter(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No regex pattern given');
+        $this->projectionManager->createProjection('user-1');
+        $this->projectionManager->createProjection('user-2');
+        $this->projectionManager->createProjection('rand-1');
+        $this->projectionManager->createProjection('user-3');
 
-        $this->projectionManager->fetchProjectionNames(null, true, 10, 0);
+        $this->assertSame(['user-1'], $this->projectionManager->fetchProjectionNames('user-1'));
+        $this->assertSame(['user-2'], $this->projectionManager->fetchProjectionNames('user-2', 2));
+        $this->assertSame(['rand-1'], $this->projectionManager->fetchProjectionNames('rand-1', 5, 100));
+
+        $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo'));
+        $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo', 5));
+        $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo', 10, 100));
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_names_sorted(): void
+    {
+        $this->projectionManager->createProjection('user-100');
+        $this->projectionManager->createProjection('user-21');
+        $this->projectionManager->createProjection('rand-5');
+        $this->projectionManager->createProjection('user-10');
+        $this->projectionManager->createProjection('user-1');
+
+        $this->assertEquals(
+            json_encode(['rand-5', 'user-1', 'user-10', 'user-100', 'user-21']),
+            json_encode($this->projectionManager->fetchProjectionNames(null))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_fetching_projection_names_using_invalid_limit(): void
+    {
+        $this->expectException(OutOfRangeException::class);
+        $this->expectExceptionMessage('Invalid limit "-1" given. Must be greater than 0.');
+
+        $this->projectionManager->fetchProjectionNames(null, -1, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_fetching_projection_names_using_invalid_offset(): void
+    {
+        $this->expectException(OutOfRangeException::class);
+        $this->expectExceptionMessage('Invalid offset "-1" given. Must be greater or equal than 0.');
+
+        $this->projectionManager->fetchProjectionNames(null, 1, -1);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_names_using_regex(): void
+    {
+        for ($i = 0; $i < 50; $i++) {
+            $this->projectionManager->createProjection('user-' . $i);
+        }
+
+        for ($i = 0; $i < 20; $i++) {
+            $this->projectionManager->createProjection(uniqid('rand'));
+        }
+
+        $this->assertCount(20, $this->projectionManager->fetchProjectionNamesRegex('user'));
+        $this->assertCount(50, $this->projectionManager->fetchProjectionNamesRegex('user', 100));
+        $this->assertCount(30, $this->projectionManager->fetchProjectionNamesRegex('ser-', 30, 0));
+        $this->assertCount(0, $this->projectionManager->fetchProjectionNamesRegex('n-', 30, 0));
+        $this->assertCount(5, $this->projectionManager->fetchProjectionNamesRegex('rand', 100, 15));
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_projection_names_sorted_using_regex(): void
+    {
+        $this->projectionManager->createProjection('user-100');
+        $this->projectionManager->createProjection('user-21');
+        $this->projectionManager->createProjection('rand-5');
+        $this->projectionManager->createProjection('user-10');
+        $this->projectionManager->createProjection('user-1');
+
+        $this->assertEquals(
+            json_encode(['user-1', 'user-10', 'user-100', 'user-21']),
+            json_encode($this->projectionManager->fetchProjectionNamesRegex('ser-'))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_fetching_projection_names_using_regex_with_invalid_limit(): void
+    {
+        $this->expectException(OutOfRangeException::class);
+        $this->expectExceptionMessage('Invalid limit "-1" given. Must be greater than 0.');
+
+        $this->projectionManager->fetchProjectionNamesRegex('foo', -1, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_fetching_projection_names_using_regex_with_invalid_offset(): void
+    {
+        $this->expectException(OutOfRangeException::class);
+        $this->expectExceptionMessage('Invalid offset "-1" given. Must be greater or equal than 0.');
+
+        $this->projectionManager->fetchProjectionNamesRegex('bar', 1, -1);
     }
 
     /**
@@ -135,7 +241,7 @@ class InMemoryProjectionManagerTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid regex pattern given');
 
-        $this->projectionManager->fetchProjectionNames('invalid)', true, 10, 0);
+        $this->projectionManager->fetchProjectionNamesRegex('invalid)', 10, 0);
     }
 
     /**
