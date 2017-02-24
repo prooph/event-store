@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ProophTest\EventStore;
 
 use ArrayIterator;
+use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
@@ -27,8 +28,10 @@ use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
-class InMemoryEventStoreTest extends EventStoreTestCase
+class InMemoryEventStoreTest extends TestCase
 {
+    use EventStoreTestStreamTrait;
+
     /**
      * @test
      */

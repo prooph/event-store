@@ -13,32 +13,37 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Projection;
 
 use ArrayIterator;
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
+use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prooph\EventStore\Projection\ProjectionStatus;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
-use ProophTest\EventStore\EventStoreTestCase;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
-class InMemoryEventStoreProjectionTest extends EventStoreTestCase
+class InMemoryEventStoreProjectionTest extends TestCase
 {
     /**
      * @var InMemoryProjectionManager
      */
     private $projectionManager;
 
+    /**
+     * @var InMemoryEventStore
+     */
+    private $eventStore;
+
     protected function setUp(): void
     {
-        parent::setUp();
-
+        $this->eventStore = new InMemoryEventStore();
         $this->projectionManager = new InMemoryProjectionManager($this->eventStore);
     }
 

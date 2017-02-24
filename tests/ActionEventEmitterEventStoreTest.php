@@ -22,12 +22,13 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
 class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestCase
 {
+    use EventStoreTestStreamTrait;
+
     /**
      * @test
      */
