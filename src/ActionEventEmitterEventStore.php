@@ -33,7 +33,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
     public const EVENT_UPDATE_STREAM_METADATA = 'updateStreamMetadata';
     public const EVENT_FETCH_STREAM_NAMES = 'fetchStreamNames';
+    public const EVENT_FETCH_STREAM_NAMES_REGEX = 'fetchStreamNamesRegex';
     public const EVENT_FETCH_CATEGORY_NAMES = 'fetchCategoryNames';
+    public const EVENT_FETCH_CATEGORY_NAMES_REGEX = 'fetchCategoryNamesRegex';
 
     /**
      * @var ActionEventEmitter
@@ -141,23 +143,42 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $actionEventEmitter->attachListener(self::EVENT_FETCH_STREAM_NAMES, function (ActionEvent $event): void {
             $filter = $event->getParam('filter');
-            $regex = $event->getParam('regex');
             $metadataMatcher = $event->getParam('metadataMatcher');
             $limit = $event->getParam('limit');
             $offset = $event->getParam('offset');
 
-            $streamNames = $this->eventStore->fetchStreamNames($filter, $regex, $metadataMatcher, $limit, $offset);
+            $streamNames = $this->eventStore->fetchStreamNames($filter, $metadataMatcher, $limit, $offset);
+
+            $event->setParam('streamNames', $streamNames);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_STREAM_NAMES_REGEX, function (ActionEvent $event): void {
+            $filter = $event->getParam('filter');
+            $metadataMatcher = $event->getParam('metadataMatcher');
+            $limit = $event->getParam('limit');
+            $offset = $event->getParam('offset');
+
+            $streamNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
 
             $event->setParam('streamNames', $streamNames);
         });
 
         $actionEventEmitter->attachListener(self::EVENT_FETCH_CATEGORY_NAMES, function (ActionEvent $event): void {
             $filter = $event->getParam('filter');
-            $regex = $event->getParam('regex');
             $limit = $event->getParam('limit');
             $offset = $event->getParam('offset');
 
-            $streamNames = $this->eventStore->fetchCategoryNames($filter, $regex, $limit, $offset);
+            $streamNames = $this->eventStore->fetchCategoryNames($filter, $limit, $offset);
+
+            $event->setParam('categoryNames', $streamNames);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_CATEGORY_NAMES_REGEX, function (ActionEvent $event): void {
+            $filter = $event->getParam('filter');
+            $limit = $event->getParam('limit');
+            $offset = $event->getParam('offset');
+
+            $streamNames = $this->eventStore->fetchCategoryNamesRegex($filter, $limit, $offset);
 
             $event->setParam('categoryNames', $streamNames);
         });
@@ -326,7 +347,6 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
     public function fetchStreamNames(
         ?string $filter,
-        bool $regex,
         ?MetadataMatcher $metadataMatcher,
         int $limit,
         int $offset
@@ -336,7 +356,6 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             $this,
             [
                 'filter' => $filter,
-                'regex' => $regex,
                 'metadataMatcher' => $metadataMatcher,
                 'limit' => $limit,
                 'offset' => $offset,
@@ -348,14 +367,52 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         return $event->getParam('streamNames', []);
     }
 
-    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array
+    public function fetchStreamNamesRegex(
+        string $filter,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit,
+        int $offset
+    ): array {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_STREAM_NAMES_REGEX,
+            $this,
+            [
+                'filter' => $filter,
+                'metadataMatcher' => $metadataMatcher,
+                'limit' => $limit,
+                'offset' => $offset,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('streamNames', []);
+    }
+
+    public function fetchCategoryNames(?string $filter, int $limit, int $offset): array
     {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_CATEGORY_NAMES,
             $this,
             [
                 'filter' => $filter,
-                'regex' => $regex,
+                'limit' => $limit,
+                'offset' => $offset,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('categoryNames', []);
+    }
+
+    public function fetchCategoryNamesRegex(string $filter, int $limit, int $offset): array
+    {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_CATEGORY_NAMES_REGEX,
+            $this,
+            [
+                'filter' => $filter,
                 'limit' => $limit,
                 'offset' => $offset,
             ]

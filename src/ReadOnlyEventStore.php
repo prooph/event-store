@@ -40,7 +40,16 @@ interface ReadOnlyEventStore
      */
     public function fetchStreamNames(
         ?string $filter,
-        bool $regex,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit,
+        int $offset
+    ): array;
+
+    /**
+     * @return StreamName[]
+     */
+    public function fetchStreamNamesRegex(
+        string $filter,
         ?MetadataMatcher $metadataMatcher,
         int $limit,
         int $offset
@@ -49,5 +58,10 @@ interface ReadOnlyEventStore
     /**
      * @return string[]
      */
-    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array;
+    public function fetchCategoryNames(?string $filter, int $limit, int $offset): array;
+
+    /**
+     * @return string[]
+     */
+    public function fetchCategoryNamesRegex(string $filter, int $limit, int $offset): array;
 }

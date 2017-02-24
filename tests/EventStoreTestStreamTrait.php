@@ -26,6 +26,6 @@ trait EventStoreTestStreamTrait
             1
         );
 
-        return new Stream(new StreamName('user'), new ArrayIterator([$streamEvent]), ['foo' => 'bar']);
+        return new Stream(new StreamName('Prooph\Model\User'), new ArrayIterator([$streamEvent]), ['foo' => 'bar']);
     }
 }

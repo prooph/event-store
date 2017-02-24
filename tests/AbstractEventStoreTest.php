@@ -22,6 +22,7 @@ use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
@@ -42,7 +43,7 @@ abstract class AbstractEventStoreTest extends TestCase
      */
     public function it_creates_a_new_stream_and_records_the_stream_events_and_deletes(): void
     {
-        $streamName = new StreamName('user');
+        $streamName = new StreamName('Prooph\Model\User');
 
         $stream = $this->getTestStream();
 
@@ -99,16 +100,6 @@ abstract class AbstractEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_stream_not_found_exception_when_trying_to_update_metadata_on_unknown_stream(): void
-    {
-        $this->expectException(StreamNotFound::class);
-
-        $this->eventStore->updateStreamMetadata(new StreamName('unknown'), []);
-    }
-
-    /**
-     * @test
-     */
     public function it_updates_stream_metadata(): void
     {
         $stream = $this->getTestStream();
@@ -123,6 +114,16 @@ abstract class AbstractEventStoreTest extends TestCase
             ],
             $this->eventStore->fetchStreamMetadata($stream->streamName())
         );
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_stream_not_found_exception_when_trying_to_update_metadata_on_unknown_stream(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $this->eventStore->updateStreamMetadata(new StreamName('unknown'), []);
     }
 
     /**
@@ -414,62 +415,6 @@ abstract class AbstractEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_stream_not_found_exception_if_it_loads_nothing(): void
-    {
-        $this->expectException(StreamNotFound::class);
-
-        $stream = $this->getTestStream();
-
-        $this->eventStore->load($stream->streamName());
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_stream_not_found_exception_if_it_loads_nothing_reverse(): void
-    {
-        $this->expectException(StreamNotFound::class);
-
-        $stream = $this->getTestStream();
-
-        $this->eventStore->loadReverse($stream->streamName());
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_asked_for_unknown_stream_metadata(): void
-    {
-        $this->expectException(StreamNotFound::class);
-
-        $this->eventStore->fetchStreamMetadata(new StreamName('unknown'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_returns_metadata_when_asked_for_stream_metadata(): void
-    {
-        $stream = new Stream(new StreamName('Prooph\Model\User'), new ArrayIterator(), ['foo' => 'bar']);
-
-        $this->eventStore->create($stream);
-
-        $this->assertEquals(['foo' => 'bar'], $this->eventStore->fetchStreamMetadata($stream->streamName()));
-    }
-
-    /**
-     * @test
-     */
-    public function it_throws_exception_when_trying_to_delete_unknown_stream(): void
-    {
-        $this->expectException(StreamNotFound::class);
-
-        $this->eventStore->delete(new StreamName('unknown'));
-    }
-
-    /**
-     * @test
-     */
     public function it_returns_only_matched_metadata(): void
     {
         $event = UserCreated::with(['name' => 'John'], 1);
@@ -524,42 +469,42 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -624,42 +569,42 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
         $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertEmpty($result);
+        $this->assertInstanceOf(\EmptyIterator::class, $result);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -698,6 +643,62 @@ abstract class AbstractEventStoreTest extends TestCase
     /**
      * @test
      */
+    public function it_throws_stream_not_found_exception_if_it_loads_nothing(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->load($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_stream_not_found_exception_if_it_loads_nothing_reverse(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $stream = $this->getTestStream();
+
+        $this->eventStore->loadReverse($stream->streamName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_asked_for_unknown_stream_metadata(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $this->eventStore->fetchStreamMetadata(new StreamName('unknown'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_metadata_when_asked_for_stream_metadata(): void
+    {
+        $stream = new Stream(new StreamName('Prooph\Model\User'), new ArrayIterator(), ['foo' => 'bar']);
+
+        $this->eventStore->create($stream);
+
+        $this->assertEquals(['foo' => 'bar'], $this->eventStore->fetchStreamMetadata($stream->streamName()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_trying_to_delete_unknown_stream(): void
+    {
+        $this->expectException(StreamNotFound::class);
+
+        $this->eventStore->delete(new StreamName('unknown'));
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_exception_when_trying_to_append_on_non_existing_stream(): void
     {
         $this->expectException(StreamNotFound::class);
@@ -705,16 +706,6 @@ abstract class AbstractEventStoreTest extends TestCase
         $event = UserCreated::with(['name' => 'Alex'], 1);
 
         $this->eventStore->appendTo(new StreamName('unknown'), new ArrayIterator([$event]));
-    }
-
-    /**
-     * @test
-     */
-    public function it_appends_an_empty_stream(): void
-    {
-        $this->eventStore->appendTo(new StreamName('something'), new ArrayIterator());
-
-        $this->assertFalse($this->eventStore->hasStream(new StreamName('something')));
     }
 
     /**
@@ -779,29 +770,30 @@ abstract class AbstractEventStoreTest extends TestCase
                 $this->eventStore->create(new Stream(new StreamName($streamName), new \EmptyIterator()));
             }
 
-            $this->assertCount(1, $this->eventStore->fetchStreamNames('user-0', false, null, 200, 0));
-            $this->assertCount(120, $this->eventStore->fetchStreamNames(null, false, null, 200, 0));
-            $this->assertCount(0, $this->eventStore->fetchStreamNames(null, false, null, 200, 200));
-            $this->assertCount(10, $this->eventStore->fetchStreamNames(null, false, null, 10, 0));
-            $this->assertCount(10, $this->eventStore->fetchStreamNames(null, false, null, 10, 10));
-            $this->assertCount(5, $this->eventStore->fetchStreamNames(null, false, null, 10, 115));
+            $this->assertCount(1, $this->eventStore->fetchStreamNames('user-0', null, 200, 0));
+            $this->assertCount(120, $this->eventStore->fetchStreamNames(null, null, 200, 0));
+            $this->assertCount(0, $this->eventStore->fetchStreamNames(null, null, 200, 200));
+            $this->assertCount(10, $this->eventStore->fetchStreamNames(null, null, 10, 0));
+            $this->assertCount(10, $this->eventStore->fetchStreamNames(null, null, 10, 10));
+            $this->assertCount(5, $this->eventStore->fetchStreamNames(null, null, 10, 115));
 
             for ($i = 0; $i < 50; $i++) {
-                $this->assertStringStartsWith('admin-', $this->eventStore->fetchStreamNames(null, false, null, 1, $i)[0]->toString());
+                $this->assertStringStartsWith('admin-', $this->eventStore->fetchStreamNames(null, null, 1, $i)[0]->toString());
             }
 
             for ($i = 50; $i < 70; $i++) {
-                $this->assertStringStartsWith('rand', $this->eventStore->fetchStreamNames(null, false, null, 1, $i)[0]->toString());
+                $this->assertStringStartsWith('rand', $this->eventStore->fetchStreamNames(null, null, 1, $i)[0]->toString());
             }
 
             for ($i = 0; $i < 50; $i++) {
-                $this->assertStringStartsWith('user-', $this->eventStore->fetchStreamNames(null, false, null, 1, $i + 70)[0]->toString());
+                $this->assertStringStartsWith('user-', $this->eventStore->fetchStreamNames(null, null, 1, $i + 70)[0]->toString());
             }
 
-            $this->assertCount(30, $this->eventStore->fetchStreamNames('s.*er-', true, null, 30, 0));
-            $this->assertCount(30, $this->eventStore->fetchStreamNames('n.*-', true, (new MetadataMatcher())->withMetadataMatch('foo', Operator::EQUALS(), 'bar'), 30, 0));
-            $this->assertCount(0, $this->eventStore->fetchStreamNames('n.*-', true, (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
-            $this->assertCount(0, $this->eventStore->fetchStreamNames(null, false, (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
+            $this->assertCount(30, $this->eventStore->fetchStreamNamesRegex('s.*er-', null, 30, 0));
+            $this->assertCount(20, $this->eventStore->fetchStreamNamesRegex('s.*er-', null, 20, 10));
+            $this->assertCount(30, $this->eventStore->fetchStreamNamesRegex('n.*-', (new MetadataMatcher())->withMetadataMatch('foo', Operator::EQUALS(), 'bar'), 30, 0));
+            $this->assertCount(0, $this->eventStore->fetchStreamNamesRegex('n.*-', (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
+            $this->assertCount(0, $this->eventStore->fetchStreamNames(null, (new MetadataMatcher())->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar'), 30, 0));
         } finally {
             foreach ($streamNames as $streamName) {
                 $this->eventStore->delete(new StreamName($streamName));
@@ -812,23 +804,12 @@ abstract class AbstractEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_stream_names_using_regex_and_no_filter(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No regex pattern given');
-
-        $this->eventStore->fetchStreamNames(null, true, null, 10, 0);
-    }
-
-    /**
-     * @test
-     */
     public function it_throws_exception_when_fetching_stream_names_using_invalid_regex(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid regex pattern given');
 
-        $this->eventStore->fetchStreamNames('/invalid)/', true, null, 10, 0);
+        $this->eventStore->fetchStreamNamesRegex('/invalid)/', null, 10, 0);
     }
 
     /**
@@ -862,14 +843,15 @@ abstract class AbstractEventStoreTest extends TestCase
                 $this->eventStore->create(new Stream(new StreamName($streamName), new \EmptyIterator()));
             }
 
-            $this->assertCount(7, $this->eventStore->fetchCategoryNames(null, false, 20, 0));
-            $this->assertCount(0, $this->eventStore->fetchCategoryNames(null, false, 20, 20));
-            $this->assertCount(3, $this->eventStore->fetchCategoryNames(null, false, 3, 0));
-            $this->assertCount(3, $this->eventStore->fetchCategoryNames(null, false, 3, 3));
-            $this->assertCount(5, $this->eventStore->fetchCategoryNames(null, false, 10, 2));
+            $this->assertCount(7, $this->eventStore->fetchCategoryNames(null, 20, 0));
+            $this->assertCount(0, $this->eventStore->fetchCategoryNames(null, 20, 20));
+            $this->assertCount(3, $this->eventStore->fetchCategoryNames(null, 3, 0));
+            $this->assertCount(3, $this->eventStore->fetchCategoryNames(null, 3, 3));
+            $this->assertCount(5, $this->eventStore->fetchCategoryNames(null, 10, 2));
 
-            $this->assertCount(1, $this->eventStore->fetchCategoryNames('foo', false, 20, 0));
-            $this->assertCount(4, $this->eventStore->fetchCategoryNames('foo', true, 20, 0));
+            $this->assertCount(1, $this->eventStore->fetchCategoryNames('foo', 20, 0));
+            $this->assertCount(4, $this->eventStore->fetchCategoryNamesRegex('^foo', 20, 0));
+            $this->assertCount(2, $this->eventStore->fetchCategoryNamesRegex('^foo', 2, 2));
         } finally {
             foreach ($streamNames as $streamName) {
                 $this->eventStore->delete(new StreamName($streamName));
@@ -880,22 +862,32 @@ abstract class AbstractEventStoreTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_fetching_stream_categories_using_regex_and_no_filter(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No regex pattern given');
-
-        $this->eventStore->fetchCategoryNames(null, true, 10, 0);
-    }
-
-    /**
-     * @test
-     */
     public function it_throws_exception_when_fetching_stream_categories_using_invalid_regex(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid regex pattern given');
 
-        $this->eventStore->fetchCategoryNames('invalid)', true, 10, 0);
+        $this->eventStore->fetchCategoryNamesRegex('invalid)', 10, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_given_invalid_metadata_value(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('key', Operator::EQUALS(), ['foo' => 'bar']);
+    }
+
+    public function getMatchingMetadata(): array
+    {
+        return [
+            [['snapshot' => true]],
+            [['some_id' => 123]],
+            [['fuu' => 'bar']],
+            [['snapshot' => true, 'some_id' => 123, 'fuu' => 'bar']],
+        ];
     }
 }

@@ -48,7 +48,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             1000
         );
 
-        $this->eventStore->load(new StreamName('user'));
+        $this->eventStore->load(new StreamName('Prooph\Model\User'));
     }
 
     /**
@@ -273,9 +273,9 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             2
         );
 
-        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
+        $this->eventStore->appendTo(new StreamName('Prooph\Model\User'), new ArrayIterator([$secondStreamEvent]));
 
-        $this->assertCount(1, $this->eventStore->load(new StreamName('user')));
+        $this->assertCount(1, $this->eventStore->load(new StreamName('Prooph\Model\User')));
     }
 
     /**
@@ -383,7 +383,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
             2
         );
 
-        $this->eventStore->appendTo(new StreamName('user'), new ArrayIterator([$secondStreamEvent]));
+        $this->eventStore->appendTo(new StreamName('Prooph\Model\User'), new ArrayIterator([$secondStreamEvent]));
 
         $this->assertCount(2, $recordedEvents);
     }
@@ -395,7 +395,7 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     {
         $recordedEvents = [];
 
-        $streamName = new StreamName('user');
+        $streamName = new StreamName('Prooph\Model\User');
 
         $this->eventStore->attach(
             'create',
@@ -502,11 +502,24 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     public function it_fetches_stream_names(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNames('foo', false, null, 10, 20)->shouldBeCalled();
+        $eventStore->fetchStreamNames('foo', null, 10, 20)->shouldBeCalled();
 
         $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
 
-        $wrapper->fetchStreamNames('foo', false, null, 10, 20);
+        $wrapper->fetchStreamNames('foo', null, 10, 20);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_stream_names_regex(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchStreamNamesRegex('foo', null, 10, 20)->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchStreamNamesRegex('foo', null, 10, 20);
     }
 
     /**
@@ -515,11 +528,24 @@ class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestC
     public function it_fetches_category_names(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchCategoryNames('foo', false, 10, 20)->shouldBeCalled();
+        $eventStore->fetchCategoryNames('foo', 10, 20)->shouldBeCalled();
 
         $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
 
-        $wrapper->fetchCategoryNames('foo', false, 10, 20);
+        $wrapper->fetchCategoryNames('foo', 10, 20);
+    }
+
+    /**
+     * @test
+     */
+    public function it_fetches_category_names_regex(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->fetchCategoryNamesRegex('foo', 10, 20)->shouldBeCalled();
+
+        $wrapper = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $wrapper->fetchCategoryNamesRegex('foo', 10, 20);
     }
 
     /**

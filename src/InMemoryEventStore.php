@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use ArrayIterator;
+use EmptyIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamExistsAlready;
@@ -102,21 +103,25 @@ final class InMemoryEventStore implements TransactionalEventStore
             $metadataMatcher = new MetadataMatcher();
         }
 
+        $found = 0;
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $key => $streamEvent) {
             /* @var Message $streamEvent */
-            if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
-                && ((null === $count
-                        && ($key + 1) >= $fromNumber
-                    ) || (null !== $count
-                        && ($key + 1) >= $fromNumber
-                        && ($key + 1) <= ($fromNumber + $count - 1)
-                    )
-                )
+            if (($key + 1) >= $fromNumber
+                && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
             ) {
+                ++$found;
                 $streamEvents[] = $streamEvent;
+
+                if ($found === $count) {
+                    break;
+                }
             }
+        }
+
+        if (0 === $found) {
+            return new EmptyIterator();
         }
 
         return new ArrayIterator($streamEvents);
@@ -139,24 +144,28 @@ final class InMemoryEventStore implements TransactionalEventStore
             $metadataMatcher = new MetadataMatcher();
         }
 
+        $found = 0;
         $streamEvents = [];
 
-        foreach ($this->streams[$streamName->toString()]['events'] as $key => $streamEvent) {
+        foreach (array_reverse(iterator_to_array($this->streams[$streamName->toString()]['events']), true) as $key => $streamEvent) {
             /* @var Message $streamEvent */
-            if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
-                && ((null === $count
-                        && ($key + 1) <= $fromNumber
-                    ) || (null !== $count
-                        && ($key + 1) <= $fromNumber
-                        && ($key + 1) >= ($fromNumber - $count + 1)
-                    )
-                )
+            if (($key + 1) <= $fromNumber
+                && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
             ) {
                 $streamEvents[] = $streamEvent;
+                ++$found;
+
+                if ($found === $count) {
+                    break;
+                }
             }
         }
 
-        return new ArrayIterator(array_reverse($streamEvents));
+        if (0 === $found) {
+            return new EmptyIterator();
+        }
+
+        return new ArrayIterator($streamEvents);
     }
 
     public function delete(StreamName $streamName): void
@@ -259,19 +268,10 @@ final class InMemoryEventStore implements TransactionalEventStore
 
     public function fetchStreamNames(
         ?string $filter,
-        bool $regex,
         ?MetadataMatcher $metadataMatcher,
         int $limit,
         int $offset
     ): array {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
-        }
-
-        if ($regex && false === @preg_match("/$filter/", '')) {
-            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
-        }
-
         $result = [];
 
         $skipped = 0;
@@ -281,18 +281,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         ksort($streams);
 
         foreach ($streams as $streamName => $data) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $streamName)) {
-                    continue;
-                }
-
-                if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
-                    continue;
-                }
-
-                $result[] = new StreamName($streamName);
-                ++$found;
-            } elseif (null === $filter || $filter === $streamName) {
+            if (null === $filter || $filter === $streamName) {
                 if ($offset > $skipped) {
                     ++$skipped;
                     continue;
@@ -314,13 +303,13 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result;
     }
 
-    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array
-    {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
-        }
-
-        if ($regex && false === @preg_match("/$filter/", '')) {
+    public function fetchStreamNamesRegex(
+        string $filter,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit,
+        int $offset
+    ): array {
+        if (false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
         }
 
@@ -329,10 +318,40 @@ final class InMemoryEventStore implements TransactionalEventStore
         $skipped = 0;
         $found = 0;
 
+        $streams = $this->streams;
+        ksort($streams);
+
+        foreach ($streams as $streamName => $data) {
+            if (! preg_match("/$filter/", $streamName)) {
+                continue;
+            }
+
+            if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
+                continue;
+            }
+
+            $result[] = new StreamName($streamName);
+            ++$found;
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    public function fetchCategoryNames(?string $filter, int $limit, int $offset): array
+    {
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
         $categories = array_unique(array_reduce(
             array_keys($this->streams),
             function (array $result, string $streamName): array {
-                if (preg_match('/(.+)-.+/', $streamName, $matches)) {
+                if (preg_match('/^(.+)-.+$/', $streamName, $matches)) {
                     $result[] = $matches[1];
                 }
 
@@ -344,14 +363,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         ksort($categories);
 
         foreach ($categories as $category) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $category)) {
-                    continue;
-                }
-
-                $result[] = $category;
-                ++$found;
-            } elseif (null === $filter || $filter === $category) {
+            if (null === $filter || $filter === $category) {
                 if ($offset > $skipped) {
                     ++$skipped;
                     continue;
@@ -360,6 +372,52 @@ final class InMemoryEventStore implements TransactionalEventStore
                 $result[] = $category;
                 ++$found;
             }
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    public function fetchCategoryNamesRegex(string $filter, int $limit, int $offset): array
+    {
+        if (false === @preg_match("/$filter/", '')) {
+            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
+        }
+
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
+        $categories = array_unique(array_reduce(
+            array_keys($this->streams),
+            function (array $result, string $streamName): array {
+                if (preg_match('/^(.+)-.+$/', $streamName, $matches)) {
+                    $result[] = $matches[1];
+                }
+
+                return $result;
+            },
+            []
+        ));
+
+        ksort($categories);
+
+        foreach ($categories as $category) {
+            if (! preg_match("/$filter/", $category)) {
+                continue;
+            }
+
+            if ($offset > $skipped) {
+                ++$skipped;
+                continue;
+            }
+
+            $result[] = $category;
+            ++$found;
 
             if ($found === $limit) {
                 break;
