@@ -17,7 +17,7 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
 
-trait EventStoreTestCase
+trait EventStoreTestStreamTrait
 {
     protected function getTestStream(): Stream
     {
