@@ -454,7 +454,7 @@ abstract class AbstractEventStoreTest extends TestCase
         $event = $event->withAddedMetadata('int4', 7);
 
         $streamName = $this->prophesize(StreamName::class);
-        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName->toString()->willReturn('Prooph\Model\User')->shouldBeCalled();
         $streamName = $streamName->reveal();
 
         $stream = $this->prophesize(Stream::class);
@@ -554,7 +554,7 @@ abstract class AbstractEventStoreTest extends TestCase
         $event = $event->withAddedMetadata('int4', 7);
 
         $streamName = $this->prophesize(StreamName::class);
-        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName->toString()->willReturn('Prooph\Model\User')->shouldBeCalled();
         $streamName = $streamName->reveal();
 
         $stream = $this->prophesize(Stream::class);
