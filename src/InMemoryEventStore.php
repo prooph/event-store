@@ -269,8 +269,8 @@ final class InMemoryEventStore implements TransactionalEventStore
     public function fetchStreamNames(
         ?string $filter,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
     ): array {
         $result = [];
 
@@ -306,8 +306,8 @@ final class InMemoryEventStore implements TransactionalEventStore
     public function fetchStreamNamesRegex(
         string $filter,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
     ): array {
         if (false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
@@ -341,7 +341,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result;
     }
 
-    public function fetchCategoryNames(?string $filter, int $limit, int $offset): array
+    public function fetchCategoryNames(?string $filter, int $limit = 20, int $offset = 0): array
     {
         $result = [];
 
@@ -381,7 +381,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result;
     }
 
-    public function fetchCategoryNamesRegex(string $filter, int $limit, int $offset): array
+    public function fetchCategoryNamesRegex(string $filter, int $limit = 20, int $offset = 0): array
     {
         if (false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');

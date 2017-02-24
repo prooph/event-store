@@ -348,8 +348,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public function fetchStreamNames(
         ?string $filter,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
     ): array {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_STREAM_NAMES,
@@ -370,8 +370,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public function fetchStreamNamesRegex(
         string $filter,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
     ): array {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_STREAM_NAMES_REGEX,
@@ -389,7 +389,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         return $event->getParam('streamNames', []);
     }
 
-    public function fetchCategoryNames(?string $filter, int $limit, int $offset): array
+    public function fetchCategoryNames(?string $filter, int $limit = 20, int $offset = 0): array
     {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_CATEGORY_NAMES,
@@ -406,7 +406,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         return $event->getParam('categoryNames', []);
     }
 
-    public function fetchCategoryNamesRegex(string $filter, int $limit, int $offset): array
+    public function fetchCategoryNamesRegex(string $filter, int $limit = 20, int $offset = 0): array
     {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_CATEGORY_NAMES_REGEX,
