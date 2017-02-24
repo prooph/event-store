@@ -20,6 +20,7 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
+use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -31,6 +32,16 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 class InMemoryEventStoreTest extends TestCase
 {
     use EventStoreTestStreamTrait;
+
+    /**
+     * @var InMemoryEventStore
+     */
+    private $eventStore;
+
+    protected function setUp(): void
+    {
+        $this->eventStore = new InMemoryEventStore();
+    }
 
     /**
      * @test
