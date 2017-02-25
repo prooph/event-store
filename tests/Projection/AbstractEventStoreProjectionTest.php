@@ -26,6 +26,9 @@ use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
+/**
+ * Common tests for all event store projection implementations
+ */
 abstract class AbstractEventStoreProjectionTest extends TestCase
 {
     /**
@@ -913,7 +916,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
         $this->assertEquals(49, $projection->getState()['count']);
     }
 
-    private function prepareEventStream(string $name): void
+    protected function prepareEventStream(string $name): void
     {
         $events = [];
         $events[] = UserCreated::with([

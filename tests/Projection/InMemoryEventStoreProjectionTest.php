@@ -12,17 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
-use ArrayIterator;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
-use Prooph\EventStore\Stream;
-use Prooph\EventStore\StreamName;
-use ProophTest\EventStore\Mock\UserCreated;
-use ProophTest\EventStore\Mock\UsernameChanged;
 
 class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
 {
@@ -142,23 +137,5 @@ class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
         $this->expectException(InvalidArgumentException::class);
 
         new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1, -1);
-    }
-
-    private function prepareEventStream(string $name): void
-    {
-        $events = [];
-        $events[] = UserCreated::with([
-            'name' => 'Alex',
-        ], 1);
-        for ($i = 2; $i < 50; $i++) {
-            $events[] = UsernameChanged::with([
-                'name' => uniqid('name_'),
-            ], $i);
-        }
-        $events[] = UsernameChanged::with([
-            'name' => 'Sascha',
-        ], 50);
-
-        $this->eventStore->create(new Stream(new StreamName($name), new ArrayIterator($events)));
     }
 }
