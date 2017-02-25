@@ -380,6 +380,51 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
+    public function it_deletes_incl_emitting_events_when_projection_before_start_when_it_was_deleted_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projection = $this->projectionManager->createProjection('test_projection', [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes): array {
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $events = [];
+        for ($i = 51; $i <= 100; $i++) {
+            $events[] = UsernameChanged::with([
+                'name' => uniqid('name_'),
+            ], $i);
+        }
+
+        $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
+
+        $this->projectionManager->deleteProjection('test_projection', true);
+
+        $projection->run(false);
+
+        $this->assertEquals(0, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
     public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
