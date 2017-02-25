@@ -180,7 +180,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
-    public function it_can_query_from_category_with_when_all(): void
+    public function it_can_query_from_category_with_when_any(): void
     {
         $this->prepareEventStream('user-123');
         $this->prepareEventStream('user-234');
