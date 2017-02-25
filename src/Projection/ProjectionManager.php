@@ -45,7 +45,7 @@ interface ProjectionManager
 
     public function fetchProjectionStatus(string $name): ProjectionStatus;
 
-    public function fetchProjectionStreamPositions(string $name): ?array;
+    public function fetchProjectionStreamPositions(string $name): array;
 
     public function fetchProjectionState(string $name): array;
 }

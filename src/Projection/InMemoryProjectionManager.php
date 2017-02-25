@@ -184,7 +184,7 @@ final class InMemoryProjectionManager implements ProjectionManager
         return $ref->getValue($projection);
     }
 
-    public function fetchProjectionStreamPositions(string $name): ?array
+    public function fetchProjectionStreamPositions(string $name): array
     {
         if (! isset($this->projections[$name])) {
             throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
@@ -194,8 +194,9 @@ final class InMemoryProjectionManager implements ProjectionManager
 
         $ref = new \ReflectionProperty(get_class($projection), 'streamPositions');
         $ref->setAccessible(true);
+        $value = $ref->getValue($projection);
 
-        return $ref->getValue($projection);
+        return (null === $value) ? [] : $value;
     }
 
     public function fetchProjectionState(string $name): array
