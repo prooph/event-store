@@ -91,6 +91,11 @@ final class InMemoryEventStoreProjection implements Projection
      */
     private $status;
 
+    /**
+     * @var bool
+     */
+    private $streamCreated = false;
+
     public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $sleep)
     {
         if ($cacheSize < 1) {
@@ -269,6 +274,11 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function emit(Message $event): void
     {
+        if (! $this->streamCreated || ! $this->eventStore->hasStream(new StreamName($this->name))) {
+            $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
+            $this->streamCreated = true;
+        }
+
         $this->linkTo($this->name, $event);
     }
 
@@ -330,13 +340,10 @@ final class InMemoryEventStoreProjection implements Projection
             throw new Exception\RuntimeException('No handlers configured');
         }
 
+        $this->isStopped = false;
         $this->status = ProjectionStatus::RUNNING();
 
         do {
-            if (! $this->eventStore->hasStream(new StreamName($this->name))) {
-                $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
-            }
-
             $singleHandler = null !== $this->handler;
 
             $eventCounter = 0;

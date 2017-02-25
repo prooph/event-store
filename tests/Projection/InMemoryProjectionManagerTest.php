@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
-use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -20,12 +19,12 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 
-class InMemoryProjectionManagerTest extends TestCase
+class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
 {
     /**
      * @var InMemoryProjectionManager
      */
-    private $projectionManager;
+    protected $projectionManager;
 
     protected function setUp()
     {
