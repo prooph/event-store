@@ -45,6 +45,62 @@ class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
     /**
      * @test
      */
+    public function it_throws_exception_when_trying_to_run_two_projections_at_the_same_time(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot guard agains concurrent projections');
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_when_projection_before_start_when_it_was_deleted_from_outside(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
+    }
+
+    /**
+     * @test
+     */
+    public function it_resets_projection_before_start_when_it_was_reset_from_outside(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot reset projections');
+    }
+
+    /**
+     * @test
+     */
+    public function it_resets_projection_during_run_when_it_was_reset_from_outside(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot reset projections');
+    }
+
+    /**
+     * @test
+     */
+    public function it_stops_when_projection_before_start_when_it_was_stopped_from_outside(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot stop projections');
+    }
+
+    /**
+     * @test
+     */
+    public function it_stops_projection_during_run_when_it_was_stopped_from_outside(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager cannot stop projections');
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_exception_when_unknown_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);

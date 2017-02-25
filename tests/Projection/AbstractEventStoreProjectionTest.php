@@ -272,6 +272,322 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
+    public function it_ignores_error_on_delete_of_not_created_stream_projections(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $projection = $this->projectionManager->createProjection('test_projection');
+
+        $projection
+            ->fromStream('user-123')
+            ->when([
+                UserCreated::class => function (array $state, UserCreated $event): array {
+                    $this->stop();
+
+                    return $state;
+                },
+            ])
+            ->run();
+
+        $projection->delete(true);
+
+        $this->assertEmpty($this->projectionManager->fetchProjectionNames('test-projection'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_trying_to_run_two_projections_at_the_same_time(): void
+    {
+        $this->expectException(\Prooph\EventStore\Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Another projection process is already running');
+
+        $this->prepareEventStream('user-123');
+
+        $projection = $this->projectionManager->createProjection('test_projection');
+
+        $projectionManager = $this->projectionManager;
+
+        $projection
+            ->fromStream('user-123')
+            ->whenAny(
+                function (array $state, Message $event) use ($projectionManager): array {
+                    $projection = $projectionManager->createProjection('test_projection');
+
+                    $projection
+                        ->fromStream('user-123')
+                        ->whenAny(
+                            function (array $state, Message $event): array {
+                                $this->linkTo('foo', $event);
+
+                                return $state;
+                            }
+                        )
+                        ->run();
+                }
+            )
+            ->run();
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_when_projection_before_start_when_it_was_deleted_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projection = $this->projectionManager->createProjection('test_projection', [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes): array {
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $events = [];
+        for ($i = 51; $i <= 100; $i++) {
+            $events[] = UsernameChanged::with([
+                'name' => uniqid('name_'),
+            ], $i);
+        }
+
+        $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
+
+        $this->projectionManager->deleteProjection('test_projection', false);
+
+        $projection->run(false);
+
+        $this->assertEquals(0, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projectionManager = $this->projectionManager;
+
+        $projection = $this->projectionManager->createProjection('test_projection', [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 5,
+        ]);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes, $projectionManager): array {
+                    static $wasReset = false;
+
+                    if (! $wasReset) {
+                        $projectionManager->deleteProjection('test_projection', false);
+                        $wasReset = true;
+                    }
+
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $projection->run(false);
+
+        $this->assertEquals(0, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
+    public function it_resets_projection_before_start_when_it_was_reset_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projection = $this->projectionManager->createProjection('test_projection');
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes): array {
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $events = [];
+        for ($i = 51; $i <= 100; $i++) {
+            $events[] = UsernameChanged::with([
+                'name' => uniqid('name_'),
+            ], $i);
+        }
+
+        $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
+
+        $this->projectionManager->resetProjection('test_projection');
+
+        $projection->run(false);
+
+        $this->assertEquals(99, $projection->getState()['count']);
+        $this->assertEquals(148, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
+    public function it_resets_projection_during_run_when_it_was_reset_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projectionManager = $this->projectionManager;
+
+        $projection = $this->projectionManager->createProjection('test_projection');
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes, $projectionManager): array {
+                    static $wasReset = false;
+
+                    if (! $wasReset) {
+                        $projectionManager->resetProjection('test_projection');
+                        $wasReset = true;
+                    }
+
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $projection->run(false);
+
+        $this->assertEquals(49, $projection->getState()['count']);
+        $this->assertEquals(98, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
+    public function it_stops_when_projection_before_start_when_it_was_stopped_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projection = $this->projectionManager->createProjection('test_projection');
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes): array {
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $events = [];
+        for ($i = 51; $i <= 100; $i++) {
+            $events[] = UsernameChanged::with([
+                'name' => uniqid('name_'),
+            ], $i);
+        }
+
+        $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
+
+        $this->projectionManager->stopProjection('test_projection');
+
+        $projection->run(false);
+
+        $this->assertEquals(49, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
+    public function it_stops_projection_during_run_when_it_was_stopped_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projectionManager = $this->projectionManager;
+
+        $projection = $this->projectionManager->createProjection('test_projection');
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes, $projectionManager): array {
+                    static $wasReset = false;
+
+                    if (! $wasReset) {
+                        $projectionManager->stopProjection('test_projection');
+                        $wasReset = true;
+                    }
+
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $projection->run(false);
+
+        $this->assertEquals(49, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
     public function it_resets_to_empty_array(): void
     {
         $projection = $this->projectionManager->createProjection('test_projection');

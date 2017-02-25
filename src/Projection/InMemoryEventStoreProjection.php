@@ -373,7 +373,11 @@ final class InMemoryEventStoreProjection implements Projection
     public function delete(bool $deleteEmittedEvents): void
     {
         if ($deleteEmittedEvents) {
-            $this->eventStore->delete(new StreamName($this->name));
+            try {
+                $this->eventStore->delete(new StreamName($this->name));
+            } catch (Exception\StreamNotFound $e) {
+                // ignore
+            }
         }
     }
 
