@@ -468,6 +468,7 @@ final class InMemoryEventStoreProjection implements Projection
             }
 
             $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
             return;
         }
 
@@ -482,6 +483,7 @@ final class InMemoryEventStoreProjection implements Projection
             }
 
             $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
             return;
         }
 
@@ -491,6 +493,5 @@ final class InMemoryEventStoreProjection implements Projection
         }
 
         $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
-        return;
     }
 }

@@ -353,6 +353,7 @@ final class InMemoryEventStoreQuery implements Query
             }
 
             $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
             return;
         }
 
@@ -367,6 +368,7 @@ final class InMemoryEventStoreQuery implements Query
             }
 
             $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
             return;
         }
 
@@ -376,6 +378,5 @@ final class InMemoryEventStoreQuery implements Query
         }
 
         $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
-        return;
     }
 }

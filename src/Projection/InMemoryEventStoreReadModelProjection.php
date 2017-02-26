@@ -471,6 +471,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
             }
 
             $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
             return;
         }
 
@@ -485,6 +486,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
             }
 
             $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
             return;
         }
 
@@ -494,6 +496,5 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         }
 
         $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
-        return;
     }
 }
