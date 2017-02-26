@@ -278,6 +278,17 @@ final class InMemoryEventStore implements TransactionalEventStore
         $found = 0;
 
         $streams = $this->streams;
+
+        if ($filter
+            && array_key_exists($filter, $streams)
+            && (
+                ! $metadataMatcher
+                || $metadataMatcher && $this->matchesMetadata($metadataMatcher, $streams[$filter]['metadata'])
+            )
+        ) {
+            return [$filter];
+        }
+
         ksort($streams);
 
         foreach ($streams as $streamName => $data) {
@@ -359,6 +370,10 @@ final class InMemoryEventStore implements TransactionalEventStore
             },
             []
         ));
+
+        if ($filter && in_array($filter, $categories, true)) {
+            return [$filter];
+        }
 
         ksort($categories);
 
