@@ -37,7 +37,7 @@ trait TransactionalEventStoreTestTrait
     public function it_works_transactional(): void
     {
         $streamName = $this->prophesize(StreamName::class);
-        $streamName->toString()->willReturn('test')->shouldBeCalled();
+        $streamName->toString()->willReturn('Prooph\Model\User')->shouldBeCalled();
         $streamName = $streamName->reveal();
 
         $stream = $this->prophesize(Stream::class);
@@ -106,8 +106,6 @@ trait TransactionalEventStoreTestTrait
         $this->assertTrue($this->eventStore->inTransaction());
 
         $this->eventStore->create($stream->reveal());
-
-        $this->assertFalse($this->eventStore->hasStream($streamName));
 
         $this->eventStore->rollback();
 

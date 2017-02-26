@@ -716,9 +716,9 @@ abstract class AbstractEventStoreTest extends TestCase
         $this->expectException(StreamNotFound::class);
 
         $streamName = $this->prophesize(StreamName::class);
-        $streamName->toString()->willReturn('test');
+        $streamName->toString()->willReturn('test')->shouldBeCalled();
 
-        $this->assertNull($this->eventStore->load($streamName->reveal()));
+        $this->eventStore->load($streamName->reveal());
     }
 
     /**
