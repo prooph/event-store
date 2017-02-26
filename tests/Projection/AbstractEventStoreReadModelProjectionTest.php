@@ -268,6 +268,10 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
         $this->assertEquals(4, $projection->getState()['count']);
     }
 
+    /**
+     * @test
+     * @group by
+     */
     public function it_resumes_projection_from_position(): void
     {
         $this->prepareEventStream('user-123');
@@ -280,7 +284,7 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
             ->init(function (): array {
                 return ['count' => 0];
             })
-            ->fromCategories('user', 'guest')
+            ->fromStreams('user-123', 'user-234')
             ->when([
                 UsernameChanged::class => function (array $state, Message $event): array {
                     $state['count']++;
@@ -301,9 +305,11 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
 
         $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
 
-        $projection->run();
+        $this->prepareEventStream('user-234');
 
-        $this->assertEquals(99, $projection->getState()['count']);
+        $projection->run(false);
+
+        $this->assertEquals(148, $projection->getState()['count']);
     }
 
     /**

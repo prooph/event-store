@@ -24,19 +24,19 @@ use Prooph\EventStore\StreamName;
 final class InMemoryEventStoreQuery implements Query
 {
     /**
-     * @var array
-     */
-    private $knownStreams;
-
-    /**
      * @var EventStore
      */
     private $eventStore;
 
     /**
+     * @var EventStore
+     */
+    private $innerEventStore;
+
+    /**
      * @var array
      */
-    private $streamPositions;
+    private $streamPositions = [];
 
     /**
      * @var array
@@ -68,6 +68,11 @@ final class InMemoryEventStoreQuery implements Query
      */
     private $currentStreamName = null;
 
+    /**
+     * @var array|null
+     */
+    private $query;
+
     public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
@@ -80,10 +85,7 @@ final class InMemoryEventStoreQuery implements Query
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
 
-        $reflectionProperty = new \ReflectionProperty(get_class($eventStore), 'streams');
-        $reflectionProperty->setAccessible(true);
-
-        $this->knownStreams = array_keys($reflectionProperty->getValue($eventStore));
+        $this->innerEventStore = $eventStore;
     }
 
     public function init(Closure $callback): Query
@@ -107,23 +109,23 @@ final class InMemoryEventStoreQuery implements Query
 
     public function fromStream(string $streamName): Query
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [$streamName => 0];
+        $this->query['streams'][] = $streamName;
 
         return $this;
     }
 
     public function fromStreams(string ...$streamNames): Query
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
         foreach ($streamNames as $streamName) {
-            $this->streamPositions[$streamName] = 0;
+            $this->query['streams'][] = $streamName;
         }
 
         return $this;
@@ -131,36 +133,23 @@ final class InMemoryEventStoreQuery implements Query
 
     public function fromCategory(string $name): Query
     {
-        if (null !== $this->streamPositions) {
-            throw new Exception\RuntimeException('from was already called');
+        if (null !== $this->query) {
+            throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [];
-
-        foreach ($this->knownStreams as $stream) {
-            if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
-                $this->streamPositions[$stream] = 0;
-            }
-        }
+        $this->query['categories'][] = $name;
 
         return $this;
     }
 
     public function fromCategories(string ...$names): Query
     {
-        if (null !== $this->streamPositions) {
-            throw new Exception\RuntimeException('from was already called');
+        if (null !== $this->query) {
+            throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [];
-
-        foreach ($this->knownStreams as $stream) {
-            foreach ($names as $name) {
-                if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
-                    $this->streamPositions[$stream] = 0;
-                    break;
-                }
-            }
+        foreach ($names as $name) {
+            $this->query['categories'][] = $name;
         }
 
         return $this;
@@ -168,19 +157,11 @@ final class InMemoryEventStoreQuery implements Query
 
     public function fromAll(): Query
     {
-        if (null !== $this->streamPositions) {
-            throw new Exception\RuntimeException('from was already called');
+        if (null !== $this->query) {
+            throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [];
-
-        foreach ($this->knownStreams as $stream) {
-            if (substr($stream, 0, 1) === '$') {
-                // ignore internal streams
-                continue;
-            }
-            $this->streamPositions[$stream] = 0;
-        }
+        $this->query['all'] = true;
 
         return $this;
     }
@@ -219,14 +200,7 @@ final class InMemoryEventStoreQuery implements Query
 
     public function reset(): void
     {
-        if (null !== $this->streamPositions) {
-            $this->streamPositions = array_map(
-                function (): int {
-                    return 0;
-                },
-                $this->streamPositions
-            );
-        }
+        $this->streamPositions = [];
 
         $callback = $this->initCallback;
 
@@ -245,16 +219,22 @@ final class InMemoryEventStoreQuery implements Query
 
     public function run(): void
     {
-        if (null === $this->streamPositions
+        if (null === $this->query
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new Exception\RuntimeException('No handlers configured');
         }
 
+        $this->prepareStreamPositions();
         $singleHandler = null !== $this->handler;
 
         foreach ($this->streamPositions as $streamName => $position) {
-            $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            try {
+                $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
+            } catch (Exception\StreamNotFound $e) {
+                // ignore
+                continue;
+            }
 
             if ($singleHandler) {
                 $this->handleStreamWithSingleHandler($streamName, $streamEvents);
@@ -302,6 +282,7 @@ final class InMemoryEventStoreQuery implements Query
     private function handleStreamWithHandlers(string $streamName, Iterator $events): void
     {
         $this->currentStreamName = $streamName;
+
         foreach ($events as $event) {
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
@@ -352,5 +333,49 @@ final class InMemoryEventStoreQuery implements Query
                 return $this->streamName;
             }
         };
+    }
+
+    private function prepareStreamPositions(): void
+    {
+        $reflectionProperty = new \ReflectionProperty(get_class($this->innerEventStore), 'streams');
+        $reflectionProperty->setAccessible(true);
+
+        $streamPositions = [];
+        $streams = array_keys($reflectionProperty->getValue($this->eventStore));
+
+        if (isset($this->query['all'])) {
+            foreach ($streams as $stream) {
+                if (substr($stream, 0, 1) === '$') {
+                    // ignore internal streams
+                    continue;
+                }
+                $streamPositions[$stream] = 0;
+            }
+
+            $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+            return;
+        }
+
+        if (isset($this->query['categories'])) {
+            foreach ($streams as $stream) {
+                foreach ($this->query['categories'] as $category) {
+                    if (substr($stream, 0, strlen($category) + 1) === $category . '-') {
+                        $streamPositions[$stream] = 0;
+                        break;
+                    }
+                }
+            }
+
+            $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+            return;
+        }
+
+        // stream names given
+        foreach ($this->query['streams'] as $stream) {
+            $streamPositions[$stream] = 0;
+        }
+
+        $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+        return;
     }
 }

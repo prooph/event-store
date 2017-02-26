@@ -217,6 +217,9 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(4, $query->getState()['count']);
     }
 
+    /**
+     * @test
+     */
     public function it_resumes_query_from_position(): void
     {
         $this->prepareEventStream('user-123');
@@ -227,7 +230,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
             ->init(function (): array {
                 return ['count' => 0];
             })
-            ->fromCategories('user', 'guest')
+            ->fromStreams('user-123', 'user-234')
             ->when([
                 UsernameChanged::class => function (array $state, Message $event): array {
                     $state['count']++;
@@ -248,9 +251,11 @@ abstract class AbstractEventStoreQueryTest extends TestCase
 
         $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
 
+        $this->prepareEventStream('user-234');
+
         $query->run();
 
-        $this->assertEquals(99, $query->getState()['count']);
+        $this->assertEquals(148, $query->getState()['count']);
     }
 
     /**

@@ -246,7 +246,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
             ->init(function (): array {
                 return ['count' => 0];
             })
-            ->fromCategories('user', 'guest')
+            ->fromStreams('user-123', 'user-234')
             ->when([
                 UsernameChanged::class => function (array $state, Message $event): array {
                     $state['count']++;
@@ -267,9 +267,11 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
 
         $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
 
+        $this->prepareEventStream('user-234');
+
         $projection->run(false);
 
-        $this->assertEquals(99, $projection->getState()['count']);
+        $this->assertEquals(148, $projection->getState()['count']);
     }
 
     /**
