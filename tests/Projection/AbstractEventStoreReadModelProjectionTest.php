@@ -270,7 +270,6 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
 
     /**
      * @test
-     * @group by
      */
     public function it_resumes_projection_from_position(): void
     {
