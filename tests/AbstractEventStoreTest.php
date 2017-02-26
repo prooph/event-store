@@ -469,42 +469,42 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -569,42 +569,42 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
         $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
         $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $result);
+        $this->assertFalse($result->valid());
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -623,7 +623,7 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $it = $this->eventStore->load($streamName);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $it);
+        $this->assertFalse($it->valid());
     }
 
     /**
@@ -637,7 +637,7 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $it = $this->eventStore->loadReverse($streamName);
 
-        $this->assertInstanceOf(\EmptyIterator::class, $it);
+        $this->assertFalse($it->valid());
     }
 
     /**

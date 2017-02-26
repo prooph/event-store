@@ -49,8 +49,6 @@ trait TransactionalEventStoreTestTrait
 
         $this->eventStore->create($stream->reveal());
 
-        $this->assertFalse($this->eventStore->hasStream($streamName));
-
         $this->eventStore->commit();
 
         $this->assertTrue($this->eventStore->hasStream($streamName));

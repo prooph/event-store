@@ -341,6 +341,10 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
     {
         $this->streamPositions = [];
 
+        $this->state = [];
+
+        $this->readModel->reset();
+
         $callback = $this->initCallback;
 
         if (is_callable($callback)) {
@@ -348,14 +352,8 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
 
             if (is_array($result)) {
                 $this->state = $result;
-
-                return;
             }
         }
-
-        $this->state = [];
-
-        $this->readModel->delete();
     }
 
     private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void

@@ -19,6 +19,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Projection\ProjectionManager;
+use Prooph\EventStore\Projection\ReadModel;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\ReadModelMock;
@@ -689,7 +690,7 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
     /**
      * @test
      */
-    public function it_deletes_when_projection_before_start_when_it_was_deleted_from_outside(): void
+    public function it_deletes_projection_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -732,6 +733,49 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
     /**
      * @test
      */
+    public function it_deletes_projection_incl_emitted_events_before_start_when_it_was_deleted_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', new ReadModelMock());
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes): array {
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $events = [];
+        for ($i = 51; $i <= 100; $i++) {
+            $events[] = UsernameChanged::with([
+                'name' => uniqid('name_'),
+            ], $i);
+        }
+
+        $this->eventStore->appendTo(new StreamName('user-123'), new ArrayIterator($events));
+
+        $this->projectionManager->deleteProjection('test_projection', true);
+
+        $projection->run(false);
+
+        $this->assertEquals(0, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
     public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -752,6 +796,45 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
 
                     if (! $wasReset) {
                         $projectionManager->deleteProjection('test_projection', false);
+                        $wasReset = true;
+                    }
+
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $this->assertEquals(0, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+        $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_projection_incl_emitted_events_during_run_when_it_was_deleted_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projectionManager = $this->projectionManager;
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', new ReadModelMock());
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes, $projectionManager): array {
+                    static $wasReset = false;
+
+                    if (! $wasReset) {
+                        $projectionManager->deleteProjection('test_projection', true);
                         $wasReset = true;
                     }
 
@@ -932,6 +1015,23 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
 
         $this->assertEquals(49, $projection->getState()['count']);
         $this->assertEquals(49, $calledTimes);
+    }
+
+    /**
+     * @test
+     */
+    public function it_calls_reset_projection_also_if_init_callback_returns_state()
+    {
+        $readModel = $this->prophesize(ReadModel::class);
+        $readModel->reset()->shouldBeCalled();
+
+        $readModelProjection = $this->projectionManager->createReadModelProjection('test-projection', $readModel->reveal());
+
+        $readModelProjection->init(function () {
+            return ['state' => 'some value'];
+        });
+
+        $readModelProjection->reset();
     }
 
     protected function prepareEventStream(string $name): void

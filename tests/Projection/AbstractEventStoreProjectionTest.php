@@ -337,7 +337,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
-    public function it_deletes_when_projection_before_start_when_it_was_deleted_from_outside(): void
+    public function it_deletes_projection_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -382,7 +382,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     /**
      * @test
      */
-    public function it_deletes_incl_emitting_events_when_projection_before_start_when_it_was_deleted_from_outside(): void
+    public function it_deletes_projection_incl_emitting_events_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
 
@@ -450,6 +450,48 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
 
                     if (! $wasReset) {
                         $projectionManager->deleteProjection('test_projection', false);
+                        $wasReset = true;
+                    }
+
+                    $state['count']++;
+                    $calledTimes++;
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $this->assertEquals(0, $projection->getState()['count']);
+        $this->assertEquals(49, $calledTimes);
+        $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_projection_incl_emitted_events_during_run_when_it_was_deleted_from_outside(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $calledTimes = 0;
+
+        $projectionManager = $this->projectionManager;
+
+        $projection = $this->projectionManager->createProjection('test_projection', [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 5,
+        ]);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use (&$calledTimes, $projectionManager): array {
+                    static $wasReset = false;
+
+                    if (! $wasReset) {
+                        $projectionManager->deleteProjection('test_projection', true);
                         $wasReset = true;
                     }
 
