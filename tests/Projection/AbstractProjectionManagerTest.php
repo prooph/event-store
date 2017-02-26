@@ -119,8 +119,8 @@ abstract class AbstractProjectionManagerTest extends TestCase
         })->run(false);
 
         $this->assertEquals(
-            json_encode(['rand-5', 'user-1', 'user-10', 'user-100', 'user-21']),
-            json_encode($this->projectionManager->fetchProjectionNames(null))
+            ['rand-5', 'user-1', 'user-10', 'user-100', 'user-21'],
+            $this->projectionManager->fetchProjectionNames(null)
         );
     }
 
