@@ -463,6 +463,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
 
         $this->assertEquals(0, $projection->getState()['count']);
         $this->assertEquals(49, $calledTimes);
+        $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
     }
 
     /**
@@ -918,7 +919,9 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->projectionManager->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection', [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
 
         $projection
             ->init(function (): array {
@@ -942,7 +945,9 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->projectionManager->createProjection('test_projection');
+        $projection = $this->projectionManager->createProjection('test_projection', [
+            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
 
         $projection
             ->init(function (): array {

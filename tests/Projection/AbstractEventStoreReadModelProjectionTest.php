@@ -763,10 +763,9 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
             ])
             ->run(false);
 
-        $projection->run(false);
-
         $this->assertEquals(0, $projection->getState()['count']);
         $this->assertEquals(49, $calledTimes);
+        $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
     }
 
     /**
