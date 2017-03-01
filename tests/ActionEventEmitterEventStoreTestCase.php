@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\InMemoryEventStore;
 
-abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
+abstract class ActionEventEmitterEventStoreTestCase extends TestCase
 {
     /**
      * @var ActionEventEmitterEventStore
@@ -34,12 +35,10 @@ abstract class ActionEventEmitterEventStoreTestCase extends EventStoreTestCase
             ActionEventEmitterEventStore::EVENT_HAS_STREAM,
             ActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
             ActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
-            ActionEventEmitterEventStore::EVENT_DELETE_PROJECTION,
-            ActionEventEmitterEventStore::EVENT_RESET_PROJECTION,
-            ActionEventEmitterEventStore::EVENT_STOP_PROJECTION,
             ActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES,
+            ActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES_REGEX,
             ActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES,
-            ActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_NAMES,
+            ActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES_REGEX,
         ]);
 
         $this->eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);

@@ -14,8 +14,6 @@ namespace Prooph\EventStore;
 
 use Iterator;
 use Prooph\EventStore\Metadata\MetadataMatcher;
-use Prooph\EventStore\Projection\Query;
-use Prooph\EventStore\Projection\QueryFactory;
 
 interface ReadOnlyEventStore
 {
@@ -37,26 +35,33 @@ interface ReadOnlyEventStore
         MetadataMatcher $metadataMatcher = null
     ): Iterator;
 
-    public function createQuery(QueryFactory $factory = null): Query;
-
     /**
      * @return StreamName[]
      */
     public function fetchStreamNames(
         ?string $filter,
-        bool $regex,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
+    ): array;
+
+    /**
+     * @return StreamName[]
+     */
+    public function fetchStreamNamesRegex(
+        string $filter,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit = 20,
+        int $offset = 0
     ): array;
 
     /**
      * @return string[]
      */
-    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array;
+    public function fetchCategoryNames(?string $filter, int $limit = 20, int $offset = 0): array;
 
     /**
      * @return string[]
      */
-    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array;
+    public function fetchCategoryNamesRegex(string $filter, int $limit = 20, int $offset = 0): array;
 }

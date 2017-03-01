@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -21,8 +22,10 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 
-class TransactionalActionEventEmitterEventStoreTest extends EventStoreTestCase
+class TransactionalActionEventEmitterEventStoreTest extends TestCase
 {
+    use EventStoreTestStreamTrait;
+
     /**
      * @var TransactionalActionEventEmitterEventStore
      */
@@ -39,12 +42,10 @@ class TransactionalActionEventEmitterEventStoreTest extends EventStoreTestCase
             TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
             TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
             TransactionalActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
-            TransactionalActionEventEmitterEventStore::EVENT_DELETE_PROJECTION,
-            TransactionalActionEventEmitterEventStore::EVENT_RESET_PROJECTION,
-            TransactionalActionEventEmitterEventStore::EVENT_STOP_PROJECTION,
             TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES,
+            TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES_REGEX,
             TransactionalActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES,
-            TransactionalActionEventEmitterEventStore::EVENT_FETCH_PROJECTION_NAMES,
+            TransactionalActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES_REGEX,
             TransactionalActionEventEmitterEventStore::EVENT_BEGIN_TRANSACTION,
             TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
             TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,

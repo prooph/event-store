@@ -15,38 +15,32 @@ namespace ProophTest\EventStore\Projection;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\InMemoryEventStore;
-use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 
-class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
+class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
 {
     /**
      * @var InMemoryProjectionManager
      */
     protected $projectionManager;
 
-    /**
-     * @var InMemoryEventStore
-     */
-    protected $eventStore;
-
-    protected function setUp(): void
+    protected function setUp()
     {
-        $this->eventStore = new InMemoryEventStore();
-        $this->projectionManager = new InMemoryProjectionManager($this->eventStore);
+        $this->projectionManager = new InMemoryProjectionManager(new InMemoryEventStore());
     }
 
     /**
      * @test
      */
-    public function it_throws_exception_when_unknown_event_store_instance_passed(): void
+    public function it_throws_exception_when_invalid_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        new InMemoryEventStoreQuery($eventStore->reveal());
+        new InMemoryProjectionManager($eventStore->reveal());
     }
 
     /**
@@ -60,6 +54,36 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
         $wrappedEventStore = $this->prophesize(EventStoreDecorator::class);
         $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
 
-        new InMemoryEventStoreQuery($wrappedEventStore->reveal());
+        new InMemoryProjectionManager($wrappedEventStore->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_delete_projections(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->projectionManager->deleteProjection('foo', true);
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_reset_projections(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->projectionManager->resetProjection('foo');
+    }
+
+    /**
+     * @test
+     */
+    public function it_cannot_stop_projections(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->projectionManager->stopProjection('foo');
     }
 }

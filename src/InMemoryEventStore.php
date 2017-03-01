@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use ArrayIterator;
+use EmptyIterator;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamExistsAlready;
@@ -21,17 +22,6 @@ use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
-use Prooph\EventStore\Projection\InMemoryEventStoreProjectionFactory;
-use Prooph\EventStore\Projection\InMemoryEventStoreQueryFactory;
-use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjectionFactory;
-use Prooph\EventStore\Projection\Projection;
-use Prooph\EventStore\Projection\ProjectionFactory;
-use Prooph\EventStore\Projection\ProjectionOptions;
-use Prooph\EventStore\Projection\Query;
-use Prooph\EventStore\Projection\QueryFactory;
-use Prooph\EventStore\Projection\ReadModel;
-use Prooph\EventStore\Projection\ReadModelProjection;
-use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
 final class InMemoryEventStore implements TransactionalEventStore
@@ -50,32 +40,6 @@ final class InMemoryEventStore implements TransactionalEventStore
      * @var bool
      */
     private $inTransaction = false;
-
-    /**
-     * Will be lazy initialized if needed
-     *
-     * @var QueryFactory
-     */
-    private $defaultQueryFactory;
-
-    /**
-     * Will be lazy initialized if needed
-     *
-     * @var ProjectionFactory
-     */
-    private $defaultProjectionFactory;
-
-    /**
-     * Will be lazy initialized if needed
-     *
-     * @var ReadModelProjectionFactory
-     */
-    private $defaultReadModelProjectionFactory;
-
-    /**
-     * @var string[]
-     */
-    private $projectionNames = [];
 
     public function create(Stream $stream): void
     {
@@ -139,21 +103,25 @@ final class InMemoryEventStore implements TransactionalEventStore
             $metadataMatcher = new MetadataMatcher();
         }
 
+        $found = 0;
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $key => $streamEvent) {
             /* @var Message $streamEvent */
-            if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
-                && ((null === $count
-                        && ($key + 1) >= $fromNumber
-                    ) || (null !== $count
-                        && ($key + 1) >= $fromNumber
-                        && ($key + 1) <= ($fromNumber + $count - 1)
-                    )
-                )
+            if (($key + 1) >= $fromNumber
+                && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
             ) {
+                ++$found;
                 $streamEvents[] = $streamEvent;
+
+                if ($found === $count) {
+                    break;
+                }
             }
+        }
+
+        if (0 === $found) {
+            return new EmptyIterator();
         }
 
         return new ArrayIterator($streamEvents);
@@ -176,24 +144,28 @@ final class InMemoryEventStore implements TransactionalEventStore
             $metadataMatcher = new MetadataMatcher();
         }
 
+        $found = 0;
         $streamEvents = [];
 
-        foreach ($this->streams[$streamName->toString()]['events'] as $key => $streamEvent) {
+        foreach (array_reverse(iterator_to_array($this->streams[$streamName->toString()]['events']), true) as $key => $streamEvent) {
             /* @var Message $streamEvent */
-            if ($this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
-                && ((null === $count
-                        && ($key + 1) <= $fromNumber
-                    ) || (null !== $count
-                        && ($key + 1) <= $fromNumber
-                        && ($key + 1) >= ($fromNumber - $count + 1)
-                    )
-                )
+            if (($key + 1) <= $fromNumber
+                && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
             ) {
                 $streamEvents[] = $streamEvent;
+                ++$found;
+
+                if ($found === $count) {
+                    break;
+                }
             }
         }
 
-        return new ArrayIterator(array_reverse($streamEvents));
+        if (0 === $found) {
+            return new EmptyIterator();
+        }
+
+        return new ArrayIterator($streamEvents);
     }
 
     public function delete(StreamName $streamName): void
@@ -294,106 +266,61 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result ?: true;
     }
 
-    public function createQuery(QueryFactory $factory = null): Query
-    {
-        if (null === $factory) {
-            $factory = $this->getDefaultQueryFactory();
-        }
-
-        return $factory($this);
-    }
-
-    public function createProjection(
-        string $name,
-        ProjectionOptions $options = null,
-        ProjectionFactory $factory = null
-    ): Projection {
-        if (null === $factory) {
-            $factory = $this->getDefaultProjectionFactory();
-        }
-
-        $projection = $factory($this, $name, $options);
-
-        if (! in_array($name, $this->projectionNames)) {
-            $this->projectionNames[] = $name;
-        }
-
-        return $projection;
-    }
-
-    public function createReadModelProjection(
-        string $name,
-        ReadModel $readModel,
-        ProjectionOptions $options = null,
-        ReadModelProjectionFactory $factory = null
-    ): ReadModelProjection {
-        if (null === $factory) {
-            $factory = $this->getDefaultReadModelProjectionFactory();
-        }
-
-        $projection = $factory($this, $name, $readModel, $options);
-
-        if (! in_array($name, $this->projectionNames)) {
-            $this->projectionNames[] = $name;
-        }
-
-        return $projection;
-    }
-
-    public function getDefaultQueryFactory(): QueryFactory
-    {
-        if (null === $this->defaultQueryFactory) {
-            $this->defaultQueryFactory = new InMemoryEventStoreQueryFactory();
-        }
-
-        return $this->defaultQueryFactory;
-    }
-
-    public function getDefaultProjectionFactory(): ProjectionFactory
-    {
-        if (null === $this->defaultProjectionFactory) {
-            $this->defaultProjectionFactory = new InMemoryEventStoreProjectionFactory();
-        }
-
-        return $this->defaultProjectionFactory;
-    }
-
-    public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
-    {
-        if (null === $this->defaultReadModelProjectionFactory) {
-            $this->defaultReadModelProjectionFactory = new InMemoryEventStoreReadModelProjectionFactory();
-        }
-
-        return $this->defaultReadModelProjectionFactory;
-    }
-
-    public function deleteProjection(string $name, bool $deleteEmittedEvents): void
-    {
-        throw new Exception\RuntimeException('Deleting a projection is not supported in ' . get_class($this));
-    }
-
-    public function resetProjection(string $name): void
-    {
-        throw new Exception\RuntimeException('Resetting a projection is not supported in ' . get_class($this));
-    }
-
-    public function stopProjection(string $name): void
-    {
-        throw new Exception\RuntimeException('Stopping a projection is not supported in ' . get_class($this));
-    }
-
     public function fetchStreamNames(
         ?string $filter,
-        bool $regex,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
     ): array {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
+        $streams = $this->streams;
+
+        if ($filter
+            && array_key_exists($filter, $streams)
+            && (
+                ! $metadataMatcher
+                || $metadataMatcher && $this->matchesMetadata($metadataMatcher, $streams[$filter]['metadata'])
+            )
+        ) {
+            return [$filter];
         }
 
-        if ($regex && false === @preg_match("/$filter/", '')) {
+        ksort($streams);
+
+        foreach ($streams as $streamName => $data) {
+            if (null === $filter || $filter === $streamName) {
+                if ($offset > $skipped) {
+                    ++$skipped;
+                    continue;
+                }
+
+                if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
+                    continue;
+                }
+
+                $result[] = new StreamName($streamName);
+                ++$found;
+            }
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    public function fetchStreamNamesRegex(
+        string $filter,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit = 20,
+        int $offset = 0
+    ): array {
+        if (false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
         }
 
@@ -406,28 +333,58 @@ final class InMemoryEventStore implements TransactionalEventStore
         ksort($streams);
 
         foreach ($streams as $streamName => $data) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $streamName)) {
-                    continue;
+            if (! preg_match("/$filter/", $streamName)) {
+                continue;
+            }
+
+            if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
+                continue;
+            }
+
+            $result[] = new StreamName($streamName);
+            ++$found;
+
+            if ($found === $limit) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    public function fetchCategoryNames(?string $filter, int $limit = 20, int $offset = 0): array
+    {
+        $result = [];
+
+        $skipped = 0;
+        $found = 0;
+
+        $categories = array_unique(array_reduce(
+            array_keys($this->streams),
+            function (array $result, string $streamName): array {
+                if (preg_match('/^(.+)-.+$/', $streamName, $matches)) {
+                    $result[] = $matches[1];
                 }
 
-                if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
-                    continue;
-                }
+                return $result;
+            },
+            []
+        ));
 
-                $result[] = new StreamName($streamName);
-                ++$found;
-            } elseif (null === $filter || $filter === $streamName) {
+        if ($filter && in_array($filter, $categories, true)) {
+            return [$filter];
+        }
+
+        ksort($categories);
+
+        foreach ($categories as $category) {
+            if (null === $filter || $filter === $category) {
                 if ($offset > $skipped) {
                     ++$skipped;
                     continue;
                 }
 
-                if ($metadataMatcher && ! $this->matchesMetadata($metadataMatcher, $data['metadata'])) {
-                    continue;
-                }
-
-                $result[] = new StreamName($streamName);
+                $result[] = $category;
                 ++$found;
             }
 
@@ -439,13 +396,9 @@ final class InMemoryEventStore implements TransactionalEventStore
         return $result;
     }
 
-    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array
+    public function fetchCategoryNamesRegex(string $filter, int $limit = 20, int $offset = 0): array
     {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
-        }
-
-        if ($regex && false === @preg_match("/$filter/", '')) {
+        if (false === @preg_match("/$filter/", '')) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given');
         }
 
@@ -457,7 +410,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         $categories = array_unique(array_reduce(
             array_keys($this->streams),
             function (array $result, string $streamName): array {
-                if (preg_match('/(.+)-.+/', $streamName, $matches)) {
+                if (preg_match('/^(.+)-.+$/', $streamName, $matches)) {
                     $result[] = $matches[1];
                 }
 
@@ -469,66 +422,17 @@ final class InMemoryEventStore implements TransactionalEventStore
         ksort($categories);
 
         foreach ($categories as $category) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $category)) {
-                    continue;
-                }
-
-                $result[] = $category;
-                ++$found;
-            } elseif (null === $filter || $filter === $category) {
-                if ($offset > $skipped) {
-                    ++$skipped;
-                    continue;
-                }
-
-                $result[] = $category;
-                ++$found;
+            if (! preg_match("/$filter/", $category)) {
+                continue;
             }
 
-            if ($found === $limit) {
-                break;
+            if ($offset > $skipped) {
+                ++$skipped;
+                continue;
             }
-        }
 
-        return $result;
-    }
-
-    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array
-    {
-        if (null === $filter && $regex) {
-            throw new Exception\InvalidArgumentException('No regex pattern given');
-        }
-
-        if ($regex && false === @preg_match("/$filter/", '')) {
-            throw new Exception\InvalidArgumentException('Invalid regex pattern given');
-        }
-
-        $result = [];
-
-        $skipped = 0;
-        $found = 0;
-
-        $projectionNames = $this->projectionNames;
-        ksort($projectionNames);
-
-        foreach ($projectionNames as $projectionName) {
-            if ($regex) {
-                if (! preg_match("/$filter/", $projectionName)) {
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            } elseif (null === $filter || $filter === $projectionName) {
-                if ($offset > $skipped) {
-                    ++$skipped;
-                    continue;
-                }
-
-                $result[] = $projectionName;
-                ++$found;
-            }
+            $result[] = $category;
+            ++$found;
 
             if ($found === $limit) {
                 break;

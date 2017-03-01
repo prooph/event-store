@@ -27,19 +27,14 @@ use Prooph\EventStore\Util\ArrayCache;
 final class InMemoryEventStoreProjection implements Projection
 {
     /**
-     * @var array
-     */
-    private $knownStreams;
-
-    /**
      * @var string
      */
     private $name;
 
     /**
-     * @var ArrayCache
+     * @var ProjectionStatus
      */
-    private $cachedStreamNames;
+    private $status;
 
     /**
      * @var EventStore
@@ -47,9 +42,14 @@ final class InMemoryEventStoreProjection implements Projection
     private $eventStore;
 
     /**
+     * @var EventStore
+     */
+    private $innerEventStore;
+
+    /**
      * @var array
      */
-    private $streamPositions;
+    private $streamPositions = [];
 
     /**
      * @var array
@@ -72,6 +72,11 @@ final class InMemoryEventStoreProjection implements Projection
     private $handlers = [];
 
     /**
+     * @var ArrayCache
+     */
+    private $cachedStreamNames;
+
+    /**
      * @var boolean
      */
     private $isStopped = false;
@@ -86,12 +91,31 @@ final class InMemoryEventStoreProjection implements Projection
      */
     private $sleep;
 
+    /**
+     * @var array|null
+     */
+    private $query;
+
+    /**
+     * @var bool
+     */
+    private $streamCreated = false;
+
     public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $sleep)
     {
+        if ($cacheSize < 1) {
+            throw new Exception\InvalidArgumentException('cache size must be a positive integer');
+        }
+
+        if ($sleep < 1) {
+            throw new Exception\InvalidArgumentException('sleep must be a positive integer');
+        }
+
         $this->eventStore = $eventStore;
         $this->name = $name;
         $this->cachedStreamNames = new ArrayCache($cacheSize);
         $this->sleep = $sleep;
+        $this->status = ProjectionStatus::IDLE();
 
         while ($eventStore instanceof EventStoreDecorator) {
             $eventStore = $eventStore->getInnerEventStore();
@@ -101,10 +125,7 @@ final class InMemoryEventStoreProjection implements Projection
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
 
-        $reflectionProperty = new \ReflectionProperty(get_class($eventStore), 'streams');
-        $reflectionProperty->setAccessible(true);
-
-        $this->knownStreams = array_keys($reflectionProperty->getValue($eventStore));
+        $this->innerEventStore = $eventStore;
     }
 
     public function init(Closure $callback): Projection
@@ -128,23 +149,23 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function fromStream(string $streamName): Projection
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [$streamName => 0];
+        $this->query['streams'][] = $streamName;
 
         return $this;
     }
 
     public function fromStreams(string ...$streamNames): Projection
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
         foreach ($streamNames as $streamName) {
-            $this->streamPositions[$streamName] = 0;
+            $this->query['streams'][] = $streamName;
         }
 
         return $this;
@@ -152,36 +173,23 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function fromCategory(string $name): Projection
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [];
-
-        foreach ($this->knownStreams as $stream) {
-            if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
-                $this->streamPositions[$stream] = 0;
-            }
-        }
+        $this->query['categories'][] = $name;
 
         return $this;
     }
 
     public function fromCategories(string ...$names): Projection
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [];
-
-        foreach ($this->knownStreams as $stream) {
-            foreach ($names as $name) {
-                if (substr($stream, 0, strlen($name) + 1) === $name . '-') {
-                    $this->streamPositions[$stream] = 0;
-                    break;
-                }
-            }
+        foreach ($names as $name) {
+            $this->query['categories'][] = $name;
         }
 
         return $this;
@@ -189,19 +197,11 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function fromAll(): Projection
     {
-        if (null !== $this->streamPositions) {
+        if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
-        $this->streamPositions = [];
-
-        foreach ($this->knownStreams as $stream) {
-            if (substr($stream, 0, 1) === '$') {
-                // ignore internal streams
-                continue;
-            }
-            $this->streamPositions[$stream] = 0;
-        }
+        $this->query['all'] = true;
 
         return $this;
     }
@@ -255,6 +255,11 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function emit(Message $event): void
     {
+        if (! $this->streamCreated || ! $this->eventStore->hasStream(new StreamName($this->name))) {
+            $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
+            $this->streamCreated = true;
+        }
+
         $this->linkTo($this->name, $event);
     }
 
@@ -278,16 +283,15 @@ final class InMemoryEventStoreProjection implements Projection
 
     public function reset(): void
     {
-        if (null !== $this->streamPositions) {
-            $this->streamPositions = array_map(
-                function (): int {
-                    return 0;
-                },
-                $this->streamPositions
-            );
-        }
+        $this->streamPositions = [];
 
         $callback = $this->initCallback;
+
+        try {
+            $this->eventStore->delete(new StreamName($this->name));
+        } catch (Exception\StreamNotFound $exception) {
+            // ignore
+        }
 
         if (is_callable($callback)) {
             $result = $callback();
@@ -300,33 +304,32 @@ final class InMemoryEventStoreProjection implements Projection
         }
 
         $this->state = [];
-
-        try {
-            $this->eventStore->delete(new StreamName($this->name));
-        } catch (Exception\StreamNotFound $exception) {
-            // ignore
-        }
     }
 
     public function run(bool $keepRunning = true): void
     {
-        if (null === $this->streamPositions
+        if (null === $this->query
             || (null === $this->handler && empty($this->handlers))
         ) {
             throw new Exception\RuntimeException('No handlers configured');
         }
 
-        do {
-            if (! $this->eventStore->hasStream(new StreamName($this->name))) {
-                $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
-            }
+        $this->prepareStreamPositions();
+        $this->isStopped = false;
+        $this->status = ProjectionStatus::RUNNING();
 
+        do {
             $singleHandler = null !== $this->handler;
 
             $eventCounter = 0;
 
             foreach ($this->streamPositions as $streamName => $position) {
-                $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
+                try {
+                    $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
+                } catch (Exception\StreamNotFound $e) {
+                    // ignore
+                    continue;
+                }
 
                 if ($singleHandler) {
                     $this->handleStreamWithSingleHandler($streamName, $streamEvents);
@@ -343,13 +346,21 @@ final class InMemoryEventStoreProjection implements Projection
                 usleep($this->sleep);
             }
         } while ($keepRunning && ! $this->isStopped);
+
+        $this->status = ProjectionStatus::IDLE();
     }
 
     public function delete(bool $deleteEmittedEvents): void
     {
         if ($deleteEmittedEvents) {
-            $this->eventStore->delete(new StreamName($this->name));
+            try {
+                $this->eventStore->delete(new StreamName($this->name));
+            } catch (Exception\StreamNotFound $e) {
+                // ignore
+            }
         }
+
+        $this->streamPositions = [];
     }
 
     private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
@@ -437,5 +448,50 @@ final class InMemoryEventStoreProjection implements Projection
                 return $this->streamName;
             }
         };
+    }
+
+    private function prepareStreamPositions(): void
+    {
+        $reflectionProperty = new \ReflectionProperty(get_class($this->innerEventStore), 'streams');
+        $reflectionProperty->setAccessible(true);
+
+        $streamPositions = [];
+        $streams = array_keys($reflectionProperty->getValue($this->eventStore));
+
+        if (isset($this->query['all'])) {
+            foreach ($streams as $stream) {
+                if (substr($stream, 0, 1) === '$') {
+                    // ignore internal streams
+                    continue;
+                }
+                $streamPositions[$stream] = 0;
+            }
+
+            $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
+            return;
+        }
+
+        if (isset($this->query['categories'])) {
+            foreach ($streams as $stream) {
+                foreach ($this->query['categories'] as $category) {
+                    if (substr($stream, 0, strlen($category) + 1) === $category . '-') {
+                        $streamPositions[$stream] = 0;
+                        break;
+                    }
+                }
+            }
+
+            $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+
+            return;
+        }
+
+        // stream names given
+        foreach ($this->query['streams'] as $stream) {
+            $streamPositions[$stream] = 0;
+        }
+
+        $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
     }
 }

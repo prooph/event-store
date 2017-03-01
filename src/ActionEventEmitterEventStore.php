@@ -20,14 +20,6 @@ use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Metadata\MetadataMatcher;
-use Prooph\EventStore\Projection\Projection;
-use Prooph\EventStore\Projection\ProjectionFactory;
-use Prooph\EventStore\Projection\ProjectionOptions;
-use Prooph\EventStore\Projection\Query;
-use Prooph\EventStore\Projection\QueryFactory;
-use Prooph\EventStore\Projection\ReadModel;
-use Prooph\EventStore\Projection\ReadModelProjection;
-use Prooph\EventStore\Projection\ReadModelProjectionFactory;
 use Prooph\EventStore\Util\Assertion;
 
 class ActionEventEmitterEventStore implements EventStoreDecorator
@@ -40,12 +32,10 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public const EVENT_HAS_STREAM = 'hasStream';
     public const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
     public const EVENT_UPDATE_STREAM_METADATA = 'updateStreamMetadata';
-    public const EVENT_DELETE_PROJECTION = 'deleteProjection';
-    public const EVENT_RESET_PROJECTION = 'resetProjection';
-    public const EVENT_STOP_PROJECTION = 'stopProjection';
     public const EVENT_FETCH_STREAM_NAMES = 'fetchStreamNames';
+    public const EVENT_FETCH_STREAM_NAMES_REGEX = 'fetchStreamNamesRegex';
     public const EVENT_FETCH_CATEGORY_NAMES = 'fetchCategoryNames';
-    public const EVENT_FETCH_PROJECTION_NAMES = 'fetchProjectionNames';
+    public const EVENT_FETCH_CATEGORY_NAMES_REGEX = 'fetchCategoryNamesRegex';
 
     /**
      * @var ActionEventEmitter
@@ -151,57 +141,46 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             }
         });
 
-        $actionEventEmitter->attachListener(self::EVENT_DELETE_PROJECTION, function (ActionEvent $event): void {
-            $name = $event->getParam('name');
-            $deleteEmittedEvents = $event->getParam('deleteEmittedEvents');
-
-            $this->eventStore->deleteProjection($name, $deleteEmittedEvents);
-        });
-
-        $actionEventEmitter->attachListener(self::EVENT_RESET_PROJECTION, function (ActionEvent $event): void {
-            $name = $event->getParam('name');
-
-            $this->eventStore->resetProjection($name);
-        });
-
-        $actionEventEmitter->attachListener(self::EVENT_STOP_PROJECTION, function (ActionEvent $event): void {
-            $name = $event->getParam('name');
-
-            $this->eventStore->stopProjection($name);
-        });
-
         $actionEventEmitter->attachListener(self::EVENT_FETCH_STREAM_NAMES, function (ActionEvent $event): void {
             $filter = $event->getParam('filter');
-            $regex = $event->getParam('regex');
             $metadataMatcher = $event->getParam('metadataMatcher');
             $limit = $event->getParam('limit');
             $offset = $event->getParam('offset');
 
-            $streamNames = $this->eventStore->fetchStreamNames($filter, $regex, $metadataMatcher, $limit, $offset);
+            $streamNames = $this->eventStore->fetchStreamNames($filter, $metadataMatcher, $limit, $offset);
+
+            $event->setParam('streamNames', $streamNames);
+        });
+
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_STREAM_NAMES_REGEX, function (ActionEvent $event): void {
+            $filter = $event->getParam('filter');
+            $metadataMatcher = $event->getParam('metadataMatcher');
+            $limit = $event->getParam('limit');
+            $offset = $event->getParam('offset');
+
+            $streamNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
 
             $event->setParam('streamNames', $streamNames);
         });
 
         $actionEventEmitter->attachListener(self::EVENT_FETCH_CATEGORY_NAMES, function (ActionEvent $event): void {
             $filter = $event->getParam('filter');
-            $regex = $event->getParam('regex');
             $limit = $event->getParam('limit');
             $offset = $event->getParam('offset');
 
-            $streamNames = $this->eventStore->fetchCategoryNames($filter, $regex, $limit, $offset);
+            $streamNames = $this->eventStore->fetchCategoryNames($filter, $limit, $offset);
 
             $event->setParam('categoryNames', $streamNames);
         });
 
-        $actionEventEmitter->attachListener(self::EVENT_FETCH_PROJECTION_NAMES, function (ActionEvent $event): void {
+        $actionEventEmitter->attachListener(self::EVENT_FETCH_CATEGORY_NAMES_REGEX, function (ActionEvent $event): void {
             $filter = $event->getParam('filter');
-            $regex = $event->getParam('regex');
             $limit = $event->getParam('limit');
             $offset = $event->getParam('offset');
 
-            $streamNames = $this->eventStore->fetchProjectionNames($filter, $regex, $limit, $offset);
+            $streamNames = $this->eventStore->fetchCategoryNamesRegex($filter, $limit, $offset);
 
-            $event->setParam('projectionNames', $streamNames);
+            $event->setParam('categoryNames', $streamNames);
         });
     }
 
@@ -366,104 +345,17 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         }
     }
 
-    public function createQuery(QueryFactory $factory = null): Query
-    {
-        if (null === $factory) {
-            $factory = $this->getDefaultQueryFactory();
-        }
-
-        return $factory($this);
-    }
-
-    public function createProjection(
-        string $name,
-        ProjectionOptions $options = null,
-        ProjectionFactory $factory = null
-    ): Projection {
-        if (null === $factory) {
-            $factory = $this->getDefaultProjectionFactory();
-        }
-
-        return $factory($this, $name, $options);
-    }
-
-    public function createReadModelProjection(
-        string $name,
-        ReadModel $readModel,
-        ProjectionOptions $options = null,
-        ReadModelProjectionFactory $factory = null
-    ): ReadModelProjection {
-        if (null === $factory) {
-            $factory = $this->getDefaultReadModelProjectionFactory();
-        }
-
-        return $factory($this, $name, $readModel, $options);
-    }
-
-    public function getDefaultQueryFactory(): QueryFactory
-    {
-        return $this->eventStore->getDefaultQueryFactory();
-    }
-
-    public function getDefaultProjectionFactory(): ProjectionFactory
-    {
-        return $this->eventStore->getDefaultProjectionFactory();
-    }
-
-    public function getDefaultReadModelProjectionFactory(): ReadModelProjectionFactory
-    {
-        return $this->eventStore->getDefaultReadModelProjectionFactory();
-    }
-
-    public function deleteProjection(string $name, bool $deleteEmittedEvents): void
-    {
-        $event = $this->actionEventEmitter->getNewActionEvent(
-            self::EVENT_DELETE_PROJECTION,
-            $this,
-            [
-                'name' => $name,
-                'deleteEmittedEvents' => $deleteEmittedEvents,
-            ]
-        );
-
-        $this->actionEventEmitter->dispatch($event);
-    }
-
-    public function resetProjection(string $name): void
-    {
-        $event = $this->actionEventEmitter->getNewActionEvent(
-            self::EVENT_RESET_PROJECTION,
-            $this,
-            ['name' => $name]
-        );
-
-        $this->actionEventEmitter->dispatch($event);
-    }
-
-    public function stopProjection(string $name): void
-    {
-        $event = $this->actionEventEmitter->getNewActionEvent(
-            self::EVENT_STOP_PROJECTION,
-            $this,
-            ['name' => $name]
-        );
-
-        $this->actionEventEmitter->dispatch($event);
-    }
-
     public function fetchStreamNames(
         ?string $filter,
-        bool $regex,
         ?MetadataMatcher $metadataMatcher,
-        int $limit,
-        int $offset
+        int $limit = 20,
+        int $offset = 0
     ): array {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_STREAM_NAMES,
             $this,
             [
                 'filter' => $filter,
-                'regex' => $regex,
                 'metadataMatcher' => $metadataMatcher,
                 'limit' => $limit,
                 'offset' => $offset,
@@ -475,14 +367,35 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         return $event->getParam('streamNames', []);
     }
 
-    public function fetchCategoryNames(?string $filter, bool $regex, int $limit, int $offset): array
+    public function fetchStreamNamesRegex(
+        string $filter,
+        ?MetadataMatcher $metadataMatcher,
+        int $limit = 20,
+        int $offset = 0
+    ): array {
+        $event = $this->actionEventEmitter->getNewActionEvent(
+            self::EVENT_FETCH_STREAM_NAMES_REGEX,
+            $this,
+            [
+                'filter' => $filter,
+                'metadataMatcher' => $metadataMatcher,
+                'limit' => $limit,
+                'offset' => $offset,
+            ]
+        );
+
+        $this->actionEventEmitter->dispatch($event);
+
+        return $event->getParam('streamNames', []);
+    }
+
+    public function fetchCategoryNames(?string $filter, int $limit = 20, int $offset = 0): array
     {
         $event = $this->actionEventEmitter->getNewActionEvent(
             self::EVENT_FETCH_CATEGORY_NAMES,
             $this,
             [
                 'filter' => $filter,
-                'regex' => $regex,
                 'limit' => $limit,
                 'offset' => $offset,
             ]
@@ -493,14 +406,13 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
         return $event->getParam('categoryNames', []);
     }
 
-    public function fetchProjectionNames(?string $filter, bool $regex, int $limit, int $offset): array
+    public function fetchCategoryNamesRegex(string $filter, int $limit = 20, int $offset = 0): array
     {
         $event = $this->actionEventEmitter->getNewActionEvent(
-            self::EVENT_FETCH_PROJECTION_NAMES,
+            self::EVENT_FETCH_CATEGORY_NAMES_REGEX,
             $this,
             [
                 'filter' => $filter,
-                'regex' => $regex,
                 'limit' => $limit,
                 'offset' => $offset,
             ]
@@ -508,7 +420,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        return $event->getParam('projectionNames', []);
+        return $event->getParam('categoryNames', []);
     }
 
     public function attach(string $eventName, callable $listener, int $priority = 0): ListenerHandler

@@ -10,15 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Projection;
+namespace Prooph\EventStore\Exception;
 
-use Prooph\EventStore\EventStore;
-
-interface ProjectionFactory
+class OutOfRangeException extends InvalidArgumentException implements EventStoreException
 {
-    public function __invoke(
-        EventStore $eventStore,
-        string $name,
-        ProjectionOptions $options = null
-    ): Projection;
 }
