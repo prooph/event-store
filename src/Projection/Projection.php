@@ -37,11 +37,11 @@ interface Projection
      *
      * when([
      *     'UserCreated' => function (array $state, Message $event) {
-     *         $state->count++;
+     *         $state['count']++;
      *         return $state;
      *     },
      *     'UserDeleted' => function (array $state, Message $event) {
-     *         $state->count--;
+     *         $state['count']--;
      *         return $state;
      *     }
      * ])
@@ -51,7 +51,7 @@ interface Projection
     /**
      * For example:
      * function(array $state, Message $event) {
-     *     $state->count++;
+     *     $state['count']++;
      *     return $state;
      * }
      */
