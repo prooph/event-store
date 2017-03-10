@@ -49,14 +49,6 @@ class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadMo
     /**
      * @test
      */
-    public function it_deletes_when_projection_before_start_when_it_was_deleted_from_outside(): void
-    {
-        $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
-    }
-
-    /**
-     * @test
-     */
     public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
