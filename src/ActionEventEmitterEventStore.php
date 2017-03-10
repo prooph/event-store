@@ -249,11 +249,11 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = PHP_INT_MAX,
+        int $fromNumber = null,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
     ): Iterator {
-        Assertion::greaterOrEqualThan($fromNumber, 1);
+        Assertion::nullOrGreaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
 
         $argv = [
