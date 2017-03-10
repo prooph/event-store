@@ -151,7 +151,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
     public function init(Closure $callback): ReadModelProjector
     {
         if (null !== $this->initCallback) {
-            throw new Exception\RuntimeException('Projector already initialized');
+            throw new Exception\RuntimeException('Projection already initialized');
         }
 
         $callback = Closure::bind($callback, $this->createHandlerContext($this->currentStreamName));
