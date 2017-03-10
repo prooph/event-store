@@ -16,11 +16,11 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
-use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjection;
+use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjector;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use ProophTest\EventStore\Mock\ReadModelMock;
 
-class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadModelProjectionTest
+class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadModelProjectorTest
 {
     /**
      * @var InMemoryProjectionManager
@@ -117,7 +117,7 @@ class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadMo
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), -1, 1, 1);
+        new InMemoryEventStoreReadModelProjector($this->eventStore, 'test_projection', new ReadModelMock(), -1, 1, 1);
     }
 
     /**
@@ -127,7 +127,7 @@ class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadMo
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), 1, -1, 25);
+        new InMemoryEventStoreReadModelProjector($this->eventStore, 'test_projection', new ReadModelMock(), 1, -1, 25);
     }
 
     /**
@@ -137,7 +137,7 @@ class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadMo
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new InMemoryEventStoreReadModelProjection($this->eventStore, 'test_projection', new ReadModelMock(), 1, 1, -1);
+        new InMemoryEventStoreReadModelProjector($this->eventStore, 'test_projection', new ReadModelMock(), 1, 1, -1);
     }
 
     /**
@@ -149,7 +149,7 @@ class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadMo
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        new InMemoryEventStoreReadModelProjection($eventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
+        new InMemoryEventStoreReadModelProjector($eventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
     }
 
     /**
@@ -163,6 +163,6 @@ class InMemoryEventStoreReadModelProjectionTest extends AbstractEventStoreReadMo
         $wrappedEventStore = $this->prophesize(EventStoreDecorator::class);
         $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
 
-        new InMemoryEventStoreReadModelProjection($wrappedEventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
+        new InMemoryEventStoreReadModelProjector($wrappedEventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
     }
 }

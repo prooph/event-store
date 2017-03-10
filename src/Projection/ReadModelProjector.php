@@ -13,49 +13,56 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use Closure;
-use Prooph\Common\Messaging\Message;
 
-interface Projection
+interface ReadModelProjector
 {
+    public const OPTION_CACHE_SIZE = 'cache_size';
+    public const OPTION_SLEEP = 'sleep';
+    public const OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
+
+    public const DEFAULT_CACHE_SIZE = 1000;
+    public const DEFAULT_SLEEP = 100000;
+    public const DEFAULT_PERSIST_BLOCK_SIZE = 1000;
+
     /**
      * The callback has to return an array
      */
-    public function init(Closure $callback): Projection;
+    public function init(Closure $callback): ReadModelProjector;
 
-    public function fromStream(string $streamName): Projection;
+    public function fromStream(string $streamName): ReadModelProjector;
 
-    public function fromStreams(string ...$streamNames): Projection;
+    public function fromStreams(string ...$streamNames): ReadModelProjector;
 
-    public function fromCategory(string $name): Projection;
+    public function fromCategory(string $name): ReadModelProjector;
 
-    public function fromCategories(string ...$names): Projection;
+    public function fromCategories(string ...$names): ReadModelProjector;
 
-    public function fromAll(): Projection;
+    public function fromAll(): ReadModelProjector;
 
     /**
      * For example:
      *
      * when([
      *     'UserCreated' => function (array $state, Message $event) {
-     *         $state['count']++;
+     *         $state->count++;
      *         return $state;
      *     },
      *     'UserDeleted' => function (array $state, Message $event) {
-     *         $state['count']--;
+     *         $state->count--;
      *         return $state;
      *     }
      * ])
      */
-    public function when(array $handlers): Projection;
+    public function when(array $handlers): ReadModelProjector;
 
     /**
      * For example:
      * function(array $state, Message $event) {
-     *     $state['count']++;
+     *     $state->count++;
      *     return $state;
      * }
      */
-    public function whenAny(Closure $closure): Projection;
+    public function whenAny(Closure $closure): ReadModelProjector;
 
     public function reset(): void;
 
@@ -65,11 +72,9 @@ interface Projection
 
     public function getName(): string;
 
-    public function emit(Message $event): void;
-
-    public function linkTo(string $streamName, Message $event): void;
-
-    public function delete(bool $deleteEmittedEvents): void;
+    public function delete(bool $deleteProjection): void;
 
     public function run(bool $keepRunning = true): void;
+
+    public function readModel(): ReadModel;
 }

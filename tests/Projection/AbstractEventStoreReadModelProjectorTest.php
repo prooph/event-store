@@ -20,6 +20,7 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\Projection\ReadModel;
+use Prooph\EventStore\Projection\ReadModelProjector;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\ReadModelMock;
@@ -27,9 +28,9 @@ use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
 /**
- * Common tests for all event store read model projection implementations
+ * Common tests for all event store read model projector implementations
  */
-abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
+abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
 {
     /**
      * @var ProjectionManager
@@ -639,7 +640,7 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
         $readModel = new ReadModelMock();
 
         $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel, [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+            ReadModelProjector::OPTION_PERSIST_BLOCK_SIZE => 10,
         ]);
 
         $projection
@@ -667,7 +668,7 @@ abstract class AbstractEventStoreReadModelProjectionTest extends TestCase
         $readModel = new ReadModelMock();
 
         $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel, [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+            ReadModelProjector::OPTION_PERSIST_BLOCK_SIZE => 10,
         ]);
 
         $projection

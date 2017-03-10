@@ -24,7 +24,7 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
-final class InMemoryEventStoreProjection implements Projection
+final class InMemoryEventStoreProjector implements Projector
 {
     /**
      * @var string
@@ -128,10 +128,10 @@ final class InMemoryEventStoreProjection implements Projection
         $this->innerEventStore = $eventStore;
     }
 
-    public function init(Closure $callback): Projection
+    public function init(Closure $callback): Projector
     {
         if (null !== $this->initCallback) {
-            throw new Exception\RuntimeException('Projection already initialized');
+            throw new Exception\RuntimeException('Projector already initialized');
         }
 
         $callback = Closure::bind($callback, $this->createHandlerContext($this->currentStreamName));
@@ -147,7 +147,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromStream(string $streamName): Projection
+    public function fromStream(string $streamName): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -158,7 +158,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): Projection
+    public function fromStreams(string ...$streamNames): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -171,7 +171,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromCategory(string $name): Projection
+    public function fromCategory(string $name): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -182,7 +182,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromCategories(string ...$names): Projection
+    public function fromCategories(string ...$names): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -195,7 +195,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromAll(): Projection
+    public function fromAll(): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -206,7 +206,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function when(array $handlers): Projection
+    public function when(array $handlers): Projector
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -227,7 +227,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function whenAny(Closure $handler): Projection
+    public function whenAny(Closure $handler): Projector
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -413,7 +413,7 @@ final class InMemoryEventStoreProjection implements Projection
     {
         return new class($this, $streamName) {
             /**
-             * @var Projection
+             * @var Projector
              */
             private $projection;
 
@@ -422,7 +422,7 @@ final class InMemoryEventStoreProjection implements Projection
              */
             private $streamName;
 
-            public function __construct(Projection $projection, ?string &$streamName)
+            public function __construct(Projector $projection, ?string &$streamName)
             {
                 $this->projection = $projection;
                 $this->streamName = &$streamName;
