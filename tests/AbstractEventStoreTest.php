@@ -197,7 +197,7 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $this->eventStore->appendTo($stream->streamName(), new ArrayIterator([$streamEventVersion2, $streamEventVersion3]));
 
-        $loadedEvents = $this->eventStore->loadReverse($stream->streamName(), PHP_INT_MAX, 2);
+        $loadedEvents = $this->eventStore->loadReverse($stream->streamName(), null, 2);
 
         $this->assertCount(2, $loadedEvents);
 
@@ -207,7 +207,7 @@ abstract class AbstractEventStoreTest extends TestCase
         $loadedEvents->next();
         $this->assertTrue($loadedEvents->current()->metadata()['snapshot']);
 
-        $streamEvents = $this->eventStore->loadReverse($stream->streamName(), PHP_INT_MAX, 2);
+        $streamEvents = $this->eventStore->loadReverse($stream->streamName(), null, 2);
 
         $this->assertCount(2, $streamEvents);
 
@@ -567,42 +567,42 @@ abstract class AbstractEventStoreTest extends TestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'baz');
 
-        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $result = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'bar');
 
-        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $result = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 9);
 
-        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $result = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 10);
 
-        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $result = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 1);
 
-        $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 1);
 
-        $result = $this->eventStore->loadReverse($streamName, PHP_INT_MAX, null, $metadataMatcher);
+        $result = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
 
