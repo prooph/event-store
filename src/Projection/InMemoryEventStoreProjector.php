@@ -415,32 +415,32 @@ final class InMemoryEventStoreProjector implements Projector
             /**
              * @var Projector
              */
-            private $projection;
+            private $projector;
 
             /**
              * @var ?string
              */
             private $streamName;
 
-            public function __construct(Projector $projection, ?string &$streamName)
+            public function __construct(Projector $projector, ?string &$streamName)
             {
-                $this->projection = $projection;
+                $this->projector = $projector;
                 $this->streamName = &$streamName;
             }
 
             public function stop(): void
             {
-                $this->projection->stop();
+                $this->projector->stop();
             }
 
             public function linkTo(string $streamName, Message $event): void
             {
-                $this->projection->linkTo($streamName, $event);
+                $this->projector->linkTo($streamName, $event);
             }
 
             public function emit(Message $event): void
             {
-                $this->projection->emit($event);
+                $this->projector->emit($event);
             }
 
             public function streamName(): ?string

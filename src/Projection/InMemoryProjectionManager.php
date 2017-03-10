@@ -27,10 +27,10 @@ final class InMemoryProjectionManager implements ProjectionManager
     /**
      * @var array
      *
-     * key = projection name
-     * value = projection instance
+     * key = projector name
+     * value = projector instance
      */
-    private $projections = [];
+    private $projectors = [];
 
     public function __construct(EventStore $eventStore)
     {
@@ -54,18 +54,18 @@ final class InMemoryProjectionManager implements ProjectionManager
         string $name,
         array $options = null
     ): Projector {
-        $projection = new InMemoryEventStoreProjector(
+        $projector = new InMemoryEventStoreProjector(
             $this->eventStore,
             $name,
             $options[Projector::OPTION_CACHE_SIZE] ?? Projector::DEFAULT_CACHE_SIZE,
             $options[Projector::OPTION_SLEEP] ?? Projector::DEFAULT_SLEEP
         );
 
-        if (! isset($this->projections[$name])) {
-            $this->projections[$name] = $projection;
+        if (! isset($this->projectors[$name])) {
+            $this->projectors[$name] = $projector;
         }
 
-        return $projection;
+        return $projector;
     }
 
     public function createReadModelProjection(
@@ -73,7 +73,7 @@ final class InMemoryProjectionManager implements ProjectionManager
         ReadModel $readModel,
         array $options = null
     ): ReadModelProjector {
-        $projection = new InMemoryEventStoreReadModelProjector(
+        $projector = new InMemoryEventStoreReadModelProjector(
             $this->eventStore,
             $name,
             $readModel,
@@ -82,11 +82,11 @@ final class InMemoryProjectionManager implements ProjectionManager
             $options[ReadModelProjector::OPTION_SLEEP] ?? ReadModelProjector::DEFAULT_SLEEP
         );
 
-        if (! isset($this->projections[$name])) {
-            $this->projections[$name] = $projection;
+        if (! isset($this->projectors[$name])) {
+            $this->projectors[$name] = $projector;
         }
 
-        return $projection;
+        return $projector;
     }
 
     public function deleteProjection(string $name, bool $deleteEmittedEvents): void
@@ -119,13 +119,13 @@ final class InMemoryProjectionManager implements ProjectionManager
         }
 
         if (null === $filter) {
-            $result = array_keys($this->projections);
+            $result = array_keys($this->projectors);
             sort($result, \SORT_STRING);
 
             return array_slice($result, $offset, $limit);
         }
 
-        if (isset($this->projections[$filter])) {
+        if (isset($this->projectors[$filter])) {
             return [$filter];
         }
 
@@ -151,7 +151,7 @@ final class InMemoryProjectionManager implements ProjectionManager
         });
 
         try {
-            $result = preg_grep("/$regex/", array_keys($this->projections));
+            $result = preg_grep("/$regex/", array_keys($this->projectors));
             sort($result, \SORT_STRING);
 
             return array_slice($result, $offset, $limit);
@@ -164,11 +164,11 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function fetchProjectionStatus(string $name): ProjectionStatus
     {
-        if (! isset($this->projections[$name])) {
+        if (! isset($this->projectors[$name])) {
             throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
         }
 
-        $projection = $this->projections[$name];
+        $projection = $this->projectors[$name];
 
         $ref = new \ReflectionProperty(get_class($projection), 'status');
         $ref->setAccessible(true);
@@ -178,11 +178,11 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function fetchProjectionStreamPositions(string $name): array
     {
-        if (! isset($this->projections[$name])) {
+        if (! isset($this->projectors[$name])) {
             throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
         }
 
-        $projection = $this->projections[$name];
+        $projection = $this->projectors[$name];
 
         $ref = new \ReflectionProperty(get_class($projection), 'streamPositions');
         $ref->setAccessible(true);
@@ -193,10 +193,10 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function fetchProjectionState(string $name): array
     {
-        if (! isset($this->projections[$name])) {
+        if (! isset($this->projectors[$name])) {
             throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
         }
 
-        return $this->projections[$name]->getState();
+        return $this->projectors[$name]->getState();
     }
 }
