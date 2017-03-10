@@ -15,47 +15,53 @@ namespace Prooph\EventStore\Projection;
 use Closure;
 use Prooph\Common\Messaging\Message;
 
-interface ReadModelProjection
+interface Projector
 {
+    public const OPTION_CACHE_SIZE = 'cache_size';
+    public const OPTION_SLEEP = 'sleep';
+
+    public const DEFAULT_CACHE_SIZE = 1000;
+    public const DEFAULT_SLEEP = 100000;
+
     /**
      * The callback has to return an array
      */
-    public function init(Closure $callback): ReadModelProjection;
+    public function init(Closure $callback): Projector;
 
-    public function fromStream(string $streamName): ReadModelProjection;
+    public function fromStream(string $streamName): Projector;
 
-    public function fromStreams(string ...$streamNames): ReadModelProjection;
+    public function fromStreams(string ...$streamNames): Projector;
 
-    public function fromCategory(string $name): ReadModelProjection;
+    public function fromCategory(string $name): Projector;
 
-    public function fromCategories(string ...$names): ReadModelProjection;
+    public function fromCategories(string ...$names): Projector;
 
-    public function fromAll(): ReadModelProjection;
+    public function fromAll(): Projector;
 
     /**
      * For example:
      *
      * when([
      *     'UserCreated' => function (array $state, Message $event) {
-     *         $state->count++;
+     *         $state['count']++;
      *         return $state;
      *     },
      *     'UserDeleted' => function (array $state, Message $event) {
-     *         $state->count--;
+     *         $state['count']--;
      *         return $state;
      *     }
      * ])
      */
-    public function when(array $handlers): ReadModelProjection;
+    public function when(array $handlers): Projector;
 
     /**
      * For example:
      * function(array $state, Message $event) {
-     *     $state->count++;
+     *     $state['count']++;
      *     return $state;
      * }
      */
-    public function whenAny(Closure $closure): ReadModelProjection;
+    public function whenAny(Closure $closure): Projector;
 
     public function reset(): void;
 
@@ -65,9 +71,11 @@ interface ReadModelProjection
 
     public function getName(): string;
 
-    public function delete(bool $deleteProjection): void;
+    public function emit(Message $event): void;
+
+    public function linkTo(string $streamName, Message $event): void;
+
+    public function delete(bool $deleteEmittedEvents): void;
 
     public function run(bool $keepRunning = true): void;
-
-    public function readModel(): ReadModel;
 }

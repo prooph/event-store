@@ -53,12 +53,12 @@ final class InMemoryProjectionManager implements ProjectionManager
     public function createProjection(
         string $name,
         array $options = null
-    ): Projection {
-        $projection = new InMemoryEventStoreProjection(
+    ): Projector {
+        $projection = new InMemoryEventStoreProjector(
             $this->eventStore,
             $name,
-            $options[self::OPTION_CACHE_SIZE] ?? self::DEFAULT_CACHE_SIZE,
-            $options[self::OPTION_SLEEP] ?? self::DEFAULT_SLEEP
+            $options[Projector::OPTION_CACHE_SIZE] ?? Projector::DEFAULT_CACHE_SIZE,
+            $options[Projector::OPTION_SLEEP] ?? Projector::DEFAULT_SLEEP
         );
 
         if (! isset($this->projections[$name])) {
@@ -72,14 +72,14 @@ final class InMemoryProjectionManager implements ProjectionManager
         string $name,
         ReadModel $readModel,
         array $options = null
-    ): ReadModelProjection {
-        $projection = new InMemoryEventStoreReadModelProjection(
+    ): ReadModelProjector {
+        $projection = new InMemoryEventStoreReadModelProjector(
             $this->eventStore,
             $name,
             $readModel,
-            $options[self::OPTION_CACHE_SIZE] ?? self::DEFAULT_CACHE_SIZE,
-            $options[self::OPTION_PERSIST_BLOCK_SIZE] ?? self::DEFAULT_PERSIST_BLOCK_SIZE,
-            $options[self::OPTION_SLEEP] ?? self::DEFAULT_SLEEP
+            $options[ReadModelProjector::OPTION_CACHE_SIZE] ?? ReadModelProjector::DEFAULT_CACHE_SIZE,
+            $options[ReadModelProjector::OPTION_PERSIST_BLOCK_SIZE] ?? ReadModelProjector::DEFAULT_PERSIST_BLOCK_SIZE,
+            $options[ReadModelProjector::OPTION_SLEEP] ?? ReadModelProjector::DEFAULT_SLEEP
         );
 
         if (! isset($this->projections[$name])) {

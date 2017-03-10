@@ -91,7 +91,7 @@ final class InMemoryEventStoreQuery implements Query
     public function init(Closure $callback): Query
     {
         if (null !== $this->initCallback) {
-            throw new Exception\RuntimeException('Projection already initialized');
+            throw new Exception\RuntimeException('Projector already initialized');
         }
 
         $callback = Closure::bind($callback, $this->createHandlerContext($this->currentStreamName));

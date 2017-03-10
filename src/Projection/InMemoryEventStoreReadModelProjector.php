@@ -22,7 +22,7 @@ use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
-final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
+final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
 {
     /**
      * @var string
@@ -148,10 +148,10 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         $this->innerEventStore = $eventStore;
     }
 
-    public function init(Closure $callback): ReadModelProjection
+    public function init(Closure $callback): ReadModelProjector
     {
         if (null !== $this->initCallback) {
-            throw new Exception\RuntimeException('Projection already initialized');
+            throw new Exception\RuntimeException('Projector already initialized');
         }
 
         $callback = Closure::bind($callback, $this->createHandlerContext($this->currentStreamName));
@@ -167,7 +167,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromStream(string $streamName): ReadModelProjection
+    public function fromStream(string $streamName): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -178,7 +178,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): ReadModelProjection
+    public function fromStreams(string ...$streamNames): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -191,7 +191,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromCategory(string $name): ReadModelProjection
+    public function fromCategory(string $name): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -202,7 +202,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromCategories(string ...$names): ReadModelProjection
+    public function fromCategories(string ...$names): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -215,7 +215,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function fromAll(): ReadModelProjection
+    public function fromAll(): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -226,7 +226,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function when(array $handlers): ReadModelProjection
+    public function when(array $handlers): ReadModelProjector
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -247,7 +247,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
         return $this;
     }
 
-    public function whenAny(Closure $handler): ReadModelProjection
+    public function whenAny(Closure $handler): ReadModelProjector
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -419,7 +419,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
     {
         return new class($this, $streamName) {
             /**
-             * @var ReadModelProjection
+             * @var ReadModelProjector
              */
             private $projection;
 
@@ -428,7 +428,7 @@ final class InMemoryEventStoreReadModelProjection implements ReadModelProjection
              */
             private $streamName;
 
-            public function __construct(ReadModelProjection $projection, ?string &$streamName)
+            public function __construct(ReadModelProjector $projection, ?string &$streamName)
             {
                 $this->projection = $projection;
                 $this->streamName = &$streamName;
