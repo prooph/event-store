@@ -168,12 +168,12 @@ final class InMemoryProjectionManager implements ProjectionManager
             throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
         }
 
-        $projection = $this->projectors[$name];
+        $projector = $this->projectors[$name];
 
-        $ref = new \ReflectionProperty(get_class($projection), 'status');
+        $ref = new \ReflectionProperty(get_class($projector), 'status');
         $ref->setAccessible(true);
 
-        return $ref->getValue($projection);
+        return $ref->getValue($projector);
     }
 
     public function fetchProjectionStreamPositions(string $name): array
@@ -182,11 +182,11 @@ final class InMemoryProjectionManager implements ProjectionManager
             throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
         }
 
-        $projection = $this->projectors[$name];
+        $projector = $this->projectors[$name];
 
-        $ref = new \ReflectionProperty(get_class($projection), 'streamPositions');
+        $ref = new \ReflectionProperty(get_class($projector), 'streamPositions');
         $ref->setAccessible(true);
-        $value = $ref->getValue($projection);
+        $value = $ref->getValue($projector);
 
         return (null === $value) ? [] : $value;
     }
