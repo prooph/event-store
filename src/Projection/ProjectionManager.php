@@ -14,26 +14,18 @@ namespace Prooph\EventStore\Projection;
 
 interface ProjectionManager
 {
-    public const OPTION_CACHE_SIZE = 'cache_size';
-    public const OPTION_SLEEP = 'sleep';
-    public const OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
-
-    public const DEFAULT_CACHE_SIZE = 1000;
-    public const DEFAULT_SLEEP = 100000;
-    public const DEFAULT_PERSIST_BLOCK_SIZE = 1000;
-
     public function createQuery(): Query;
 
     public function createProjection(
         string $name,
         array $options = []
-    ): Projection;
+    ): Projector;
 
     public function createReadModelProjection(
         string $name,
         ReadModel $readModel,
         array $options = []
-    ): ReadModelProjection;
+    ): ReadModelProjector;
 
     public function deleteProjection(string $name, bool $deleteEmittedEvents): void;
 

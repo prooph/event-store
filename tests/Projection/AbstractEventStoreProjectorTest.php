@@ -21,15 +21,16 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\Projection\ProjectionStatus;
+use Prooph\EventStore\Projection\Projector;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
 /**
- * Common tests for all event store projection implementations
+ * Common tests for all event store projector implementations
  */
-abstract class AbstractEventStoreProjectionTest extends TestCase
+abstract class AbstractEventStoreProjectorTest extends TestCase
 {
     /**
      * @var ProjectionManager
@@ -344,7 +345,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
         $calledTimes = 0;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 10,
         ]);
 
         $projection
@@ -389,7 +390,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
         $calledTimes = 0;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 10,
         ]);
 
         $projection
@@ -436,7 +437,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
         $projectionManager = $this->projectionManager;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 5,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 5,
         ]);
 
         $projection
@@ -478,7 +479,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
         $projectionManager = $this->projectionManager;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 5,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 5,
         ]);
 
         $projection
@@ -961,9 +962,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
-        ]);
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {
@@ -987,9 +986,7 @@ abstract class AbstractEventStoreProjectionTest extends TestCase
     {
         $this->prepareEventStream('user-123');
 
-        $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
-        ]);
+        $projection = $this->projectionManager->createProjection('test_projection');
 
         $projection
             ->init(function (): array {

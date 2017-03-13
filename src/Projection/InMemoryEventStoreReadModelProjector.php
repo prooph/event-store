@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
-use ArrayIterator;
 use Closure;
 use Iterator;
 use Prooph\Common\Messaging\Message;
@@ -20,11 +19,10 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
-use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
-final class InMemoryEventStoreProjection implements Projection
+final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
 {
     /**
      * @var string
@@ -45,6 +43,26 @@ final class InMemoryEventStoreProjection implements Projection
      * @var EventStore
      */
     private $innerEventStore;
+
+    /**
+     * @var ReadModel
+     */
+    private $readModel;
+
+    /**
+     * @var ArrayCache
+     */
+    private $cachedStreamNames;
+
+    /**
+     * @var int
+     */
+    private $eventCounter = 0;
+
+    /**
+     * @var int
+     */
+    private $persistBlockSize;
 
     /**
      * @var array
@@ -72,11 +90,6 @@ final class InMemoryEventStoreProjection implements Projection
     private $handlers = [];
 
     /**
-     * @var ArrayCache
-     */
-    private $cachedStreamNames;
-
-    /**
      * @var boolean
      */
     private $isStopped = false;
@@ -96,15 +109,20 @@ final class InMemoryEventStoreProjection implements Projection
      */
     private $query;
 
-    /**
-     * @var bool
-     */
-    private $streamCreated = false;
-
-    public function __construct(EventStore $eventStore, string $name, int $cacheSize, int $sleep)
-    {
+    public function __construct(
+        EventStore $eventStore,
+        string $name,
+        ReadModel $readModel,
+        int $cacheSize,
+        int $persistBlockSize,
+        int $sleep
+    ) {
         if ($cacheSize < 1) {
             throw new Exception\InvalidArgumentException('cache size must be a positive integer');
+        }
+
+        if ($persistBlockSize < 1) {
+            throw new Exception\InvalidArgumentException('persist block size must be a positive integer');
         }
 
         if ($sleep < 1) {
@@ -114,6 +132,8 @@ final class InMemoryEventStoreProjection implements Projection
         $this->eventStore = $eventStore;
         $this->name = $name;
         $this->cachedStreamNames = new ArrayCache($cacheSize);
+        $this->persistBlockSize = $persistBlockSize;
+        $this->readModel = $readModel;
         $this->sleep = $sleep;
         $this->status = ProjectionStatus::IDLE();
 
@@ -128,10 +148,10 @@ final class InMemoryEventStoreProjection implements Projection
         $this->innerEventStore = $eventStore;
     }
 
-    public function init(Closure $callback): Projection
+    public function init(Closure $callback): ReadModelProjector
     {
         if (null !== $this->initCallback) {
-            throw new Exception\RuntimeException('Projection already initialized');
+            throw new Exception\RuntimeException('Projector is already initialized');
         }
 
         $callback = Closure::bind($callback, $this->createHandlerContext($this->currentStreamName));
@@ -147,7 +167,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromStream(string $streamName): Projection
+    public function fromStream(string $streamName): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -158,7 +178,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): Projection
+    public function fromStreams(string ...$streamNames): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -171,7 +191,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromCategory(string $name): Projection
+    public function fromCategory(string $name): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -182,7 +202,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromCategories(string ...$names): Projection
+    public function fromCategories(string ...$names): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -195,7 +215,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function fromAll(): Projection
+    public function fromAll(): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -206,7 +226,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function when(array $handlers): Projection
+    public function when(array $handlers): ReadModelProjector
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -227,7 +247,7 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function whenAny(Closure $handler): Projection
+    public function whenAny(Closure $handler): ReadModelProjector
     {
         if (null !== $this->handler || ! empty($this->handlers)) {
             throw new Exception\RuntimeException('When was already called');
@@ -238,72 +258,18 @@ final class InMemoryEventStoreProjection implements Projection
         return $this;
     }
 
-    public function stop(): void
+    public function readModel(): ReadModel
     {
-        $this->isStopped = true;
+        return $this->readModel;
     }
 
-    public function getState(): array
+    public function delete(bool $deleteProjection): void
     {
-        return $this->state;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function emit(Message $event): void
-    {
-        if (! $this->streamCreated || ! $this->eventStore->hasStream(new StreamName($this->name))) {
-            $this->eventStore->create(new Stream(new StreamName($this->name), new ArrayIterator()));
-            $this->streamCreated = true;
+        if ($deleteProjection) {
+            $this->readModel->delete();
         }
 
-        $this->linkTo($this->name, $event);
-    }
-
-    public function linkTo(string $streamName, Message $event): void
-    {
-        $sn = new StreamName($streamName);
-
-        if ($this->cachedStreamNames->has($streamName)) {
-            $append = true;
-        } else {
-            $this->cachedStreamNames->rollingAppend($streamName);
-            $append = $this->eventStore->hasStream($sn);
-        }
-
-        if ($append) {
-            $this->eventStore->appendTo($sn, new ArrayIterator([$event]));
-        } else {
-            $this->eventStore->create(new Stream($sn, new ArrayIterator([$event])));
-        }
-    }
-
-    public function reset(): void
-    {
         $this->streamPositions = [];
-
-        $callback = $this->initCallback;
-
-        try {
-            $this->eventStore->delete(new StreamName($this->name));
-        } catch (Exception\StreamNotFound $exception) {
-            // ignore
-        }
-
-        if (is_callable($callback)) {
-            $result = $callback();
-
-            if (is_array($result)) {
-                $this->state = $result;
-
-                return;
-            }
-        }
-
-        $this->state = [];
     }
 
     public function run(bool $keepRunning = true): void
@@ -317,6 +283,10 @@ final class InMemoryEventStoreProjection implements Projection
         $this->prepareStreamPositions();
         $this->isStopped = false;
         $this->status = ProjectionStatus::RUNNING();
+
+        if (! $this->readModel->isInitialized()) {
+            $this->readModel->init();
+        }
 
         do {
             $singleHandler = null !== $this->handler;
@@ -342,6 +312,8 @@ final class InMemoryEventStoreProjection implements Projection
                 }
             }
 
+            $this->readModel()->persist();
+
             if (0 === $eventCounter) {
                 usleep($this->sleep);
             }
@@ -350,17 +322,38 @@ final class InMemoryEventStoreProjection implements Projection
         $this->status = ProjectionStatus::IDLE();
     }
 
-    public function delete(bool $deleteEmittedEvents): void
+    public function stop(): void
     {
-        if ($deleteEmittedEvents) {
-            try {
-                $this->eventStore->delete(new StreamName($this->name));
-            } catch (Exception\StreamNotFound $e) {
-                // ignore
+        $this->isStopped = true;
+    }
+
+    public function getState(): array
+    {
+        return $this->state;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function reset(): void
+    {
+        $this->streamPositions = [];
+
+        $this->state = [];
+
+        $this->readModel->reset();
+
+        $callback = $this->initCallback;
+
+        if (is_callable($callback)) {
+            $result = $callback();
+
+            if (is_array($result)) {
+                $this->state = $result;
             }
         }
-
-        $this->streamPositions = [];
     }
 
     private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
@@ -371,11 +364,17 @@ final class InMemoryEventStoreProjection implements Projection
         foreach ($events as $event) {
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
+            $this->eventCounter++;
 
             $result = $handler($this->state, $event);
 
             if (is_array($result)) {
                 $this->state = $result;
+            }
+
+            if ($this->eventCounter === $this->persistBlockSize) {
+                $this->readModel()->persist();
+                $this->eventCounter = 0;
             }
 
             if ($this->isStopped) {
@@ -396,11 +395,18 @@ final class InMemoryEventStoreProjection implements Projection
                 continue;
             }
 
+            $this->eventCounter++;
+
             $handler = $this->handlers[$event->messageName()];
             $result = $handler($this->state, $event);
 
             if (is_array($result)) {
                 $this->state = $result;
+            }
+
+            if ($this->eventCounter === $this->persistBlockSize) {
+                $this->readModel()->persist();
+                $this->eventCounter = 0;
             }
 
             if ($this->isStopped) {
@@ -413,34 +419,29 @@ final class InMemoryEventStoreProjection implements Projection
     {
         return new class($this, $streamName) {
             /**
-             * @var Projection
+             * @var ReadModelProjector
              */
-            private $projection;
+            private $projector;
 
             /**
              * @var ?string
              */
             private $streamName;
 
-            public function __construct(Projection $projection, ?string &$streamName)
+            public function __construct(ReadModelProjector $projector, ?string &$streamName)
             {
-                $this->projection = $projection;
+                $this->projector = $projector;
                 $this->streamName = &$streamName;
             }
 
             public function stop(): void
             {
-                $this->projection->stop();
+                $this->projector->stop();
             }
 
-            public function linkTo(string $streamName, Message $event): void
+            public function readModel(): ReadModel
             {
-                $this->projection->linkTo($streamName, $event);
-            }
-
-            public function emit(Message $event): void
-            {
-                $this->projection->emit($event);
+                return $this->projector->readModel();
             }
 
             public function streamName(): ?string

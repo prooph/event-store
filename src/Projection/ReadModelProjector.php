@@ -13,24 +13,31 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use Closure;
-use Prooph\Common\Messaging\Message;
 
-interface ReadModelProjection
+interface ReadModelProjector
 {
+    public const OPTION_CACHE_SIZE = 'cache_size';
+    public const OPTION_SLEEP = 'sleep';
+    public const OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
+
+    public const DEFAULT_CACHE_SIZE = 1000;
+    public const DEFAULT_SLEEP = 100000;
+    public const DEFAULT_PERSIST_BLOCK_SIZE = 1000;
+
     /**
      * The callback has to return an array
      */
-    public function init(Closure $callback): ReadModelProjection;
+    public function init(Closure $callback): ReadModelProjector;
 
-    public function fromStream(string $streamName): ReadModelProjection;
+    public function fromStream(string $streamName): ReadModelProjector;
 
-    public function fromStreams(string ...$streamNames): ReadModelProjection;
+    public function fromStreams(string ...$streamNames): ReadModelProjector;
 
-    public function fromCategory(string $name): ReadModelProjection;
+    public function fromCategory(string $name): ReadModelProjector;
 
-    public function fromCategories(string ...$names): ReadModelProjection;
+    public function fromCategories(string ...$names): ReadModelProjector;
 
-    public function fromAll(): ReadModelProjection;
+    public function fromAll(): ReadModelProjector;
 
     /**
      * For example:
@@ -46,7 +53,7 @@ interface ReadModelProjection
      *     }
      * ])
      */
-    public function when(array $handlers): ReadModelProjection;
+    public function when(array $handlers): ReadModelProjector;
 
     /**
      * For example:
@@ -55,7 +62,7 @@ interface ReadModelProjection
      *     return $state;
      * }
      */
-    public function whenAny(Closure $closure): ReadModelProjection;
+    public function whenAny(Closure $closure): ReadModelProjector;
 
     public function reset(): void;
 

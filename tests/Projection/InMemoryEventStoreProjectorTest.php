@@ -16,10 +16,10 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
-use Prooph\EventStore\Projection\InMemoryEventStoreProjection;
+use Prooph\EventStore\Projection\InMemoryEventStoreProjector;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 
-class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
+class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
 {
     /**
      * @var InMemoryProjectionManager
@@ -118,7 +118,7 @@ class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        new InMemoryEventStoreProjection($eventStore->reveal(), 'test_projection', 10, 10, 2000);
+        new InMemoryEventStoreProjector($eventStore->reveal(), 'test_projection', 10, 10, 2000);
     }
 
     /**
@@ -132,7 +132,7 @@ class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
         $wrappedEventStore = $this->prophesize(EventStoreDecorator::class);
         $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
 
-        new InMemoryEventStoreProjection($wrappedEventStore->reveal(), 'test_projection', 1, 1);
+        new InMemoryEventStoreProjector($wrappedEventStore->reveal(), 'test_projection', 1, 1);
     }
 
     /**
@@ -142,7 +142,7 @@ class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new InMemoryEventStoreProjection($this->eventStore, 'test_projection', -1, 1);
+        new InMemoryEventStoreProjector($this->eventStore, 'test_projection', -1, 1);
     }
 
     /**
@@ -152,6 +152,6 @@ class InMemoryEventStoreProjectionTest extends AbstractEventStoreProjectionTest
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new InMemoryEventStoreProjection($this->eventStore, 'test_projection', 1, -1);
+        new InMemoryEventStoreProjector($this->eventStore, 'test_projection', 1, -1);
     }
 }
