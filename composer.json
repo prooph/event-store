@@ -22,10 +22,10 @@
   ],
   "require": {
     "php": ">=5.6",
-    "treehouselabs/serialization": "1.0.x-dev"
+    "treehouselabs/serialization": "^1.0|^2.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "*",
+    "phpunit/phpunit": "^5.0",
     "doctrine/dbal": "~2.5"
   },
   "autoload": {
