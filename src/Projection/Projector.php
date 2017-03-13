@@ -19,9 +19,11 @@ interface Projector
 {
     public const OPTION_CACHE_SIZE = 'cache_size';
     public const OPTION_SLEEP = 'sleep';
+    public const OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
 
     public const DEFAULT_CACHE_SIZE = 1000;
     public const DEFAULT_SLEEP = 100000;
+    public const DEFAULT_PERSIST_BLOCK_SIZE = 1000;
 
     /**
      * The callback has to return an array
