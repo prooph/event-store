@@ -345,7 +345,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $calledTimes = 0;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 10,
         ]);
 
         $projection
@@ -390,7 +390,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $calledTimes = 0;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 10,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 10,
         ]);
 
         $projection
@@ -437,7 +437,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projectionManager = $this->projectionManager;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 5,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 5,
         ]);
 
         $projection
@@ -479,7 +479,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projectionManager = $this->projectionManager;
 
         $projection = $this->projectionManager->createProjection('test_projection', [
-            $this->projectionManager::OPTION_PERSIST_BLOCK_SIZE => 5,
+            Projector::OPTION_PERSIST_BLOCK_SIZE => 5,
         ]);
 
         $projection
