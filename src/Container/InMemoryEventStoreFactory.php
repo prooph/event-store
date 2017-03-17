@@ -86,23 +86,7 @@ final class InMemoryEventStoreFactory implements
         }
 
         if (! isset($config['event_emitter'])) {
-            $eventEmitter = new ProophActionEventEmitter([
-                TransactionalActionEventEmitterEventStore::EVENT_APPEND_TO,
-                TransactionalActionEventEmitterEventStore::EVENT_CREATE,
-                TransactionalActionEventEmitterEventStore::EVENT_LOAD,
-                TransactionalActionEventEmitterEventStore::EVENT_LOAD_REVERSE,
-                TransactionalActionEventEmitterEventStore::EVENT_DELETE,
-                TransactionalActionEventEmitterEventStore::EVENT_HAS_STREAM,
-                TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_METADATA,
-                TransactionalActionEventEmitterEventStore::EVENT_UPDATE_STREAM_METADATA,
-                TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES,
-                TransactionalActionEventEmitterEventStore::EVENT_FETCH_STREAM_NAMES_REGEX,
-                TransactionalActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES,
-                TransactionalActionEventEmitterEventStore::EVENT_FETCH_CATEGORY_NAMES_REGEX,
-                TransactionalActionEventEmitterEventStore::EVENT_BEGIN_TRANSACTION,
-                TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
-                TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
-            ]);
+            $eventEmitter = new ProophActionEventEmitter(TransactionalActionEventEmitterEventStore::ALL_EVENTS);
         } else {
             $eventEmitter = $container->get($config['event_emitter']);
         }

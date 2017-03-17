@@ -23,6 +23,24 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
     public const EVENT_COMMIT = 'commit';
     public const EVENT_ROLLBACK = 'rollback';
 
+    public const ALL_EVENTS = [
+        self::EVENT_APPEND_TO,
+        self::EVENT_CREATE,
+        self::EVENT_LOAD,
+        self::EVENT_LOAD_REVERSE,
+        self::EVENT_DELETE,
+        self::EVENT_HAS_STREAM,
+        self::EVENT_FETCH_STREAM_METADATA,
+        self::EVENT_UPDATE_STREAM_METADATA,
+        self::EVENT_FETCH_STREAM_NAMES,
+        self::EVENT_FETCH_STREAM_NAMES_REGEX,
+        self::EVENT_FETCH_CATEGORY_NAMES,
+        self::EVENT_FETCH_CATEGORY_NAMES_REGEX,
+        self::EVENT_BEGIN_TRANSACTION,
+        self::EVENT_COMMIT,
+        self::EVENT_ROLLBACK,
+    ];
+
     /**
      * @var TransactionalEventStore
      */
