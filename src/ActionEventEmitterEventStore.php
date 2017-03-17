@@ -37,6 +37,21 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public const EVENT_FETCH_CATEGORY_NAMES = 'fetchCategoryNames';
     public const EVENT_FETCH_CATEGORY_NAMES_REGEX = 'fetchCategoryNamesRegex';
 
+    public const ALL_EVENTS = [
+        self::EVENT_APPEND_TO,
+        self::EVENT_CREATE,
+        self::EVENT_LOAD,
+        self::EVENT_LOAD_REVERSE,
+        self::EVENT_DELETE,
+        self::EVENT_HAS_STREAM,
+        self::EVENT_FETCH_STREAM_METADATA,
+        self::EVENT_UPDATE_STREAM_METADATA,
+        self::EVENT_FETCH_STREAM_NAMES,
+        self::EVENT_FETCH_STREAM_NAMES_REGEX,
+        self::EVENT_FETCH_CATEGORY_NAMES,
+        self::EVENT_FETCH_CATEGORY_NAMES_REGEX,
+    ];
+
     /**
      * @var ActionEventEmitter
      */
