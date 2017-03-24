@@ -4,6 +4,10 @@ New in v7 are queries and projectons.
 
 ## Queries
 
+We are talking here about event store queries, not queries on your read model. An event store query reads one or
+multiple event stream, aggregates some state from it and makes it accessible. A query is non-persistent, will only
+get executed once, return a result, and that's it.
+
 To get started, let's take a simple example where we want to query the
 event-store, how often a given user has changed his username.
 
@@ -54,6 +58,10 @@ $query
     ])
     ->run();
 ```
+
+Queries can be used to answer a given question easily, because you don't need to figure out in which read model the
+data is present (maybe it's not?) and how to query it there (maybe a lot of joins are needed in RDBMS).
+Also you can do temporal queries very easy, which is hard until impossible to do with any other database system.
 
 ## Projections
 

@@ -52,9 +52,16 @@ If you are making calls to the event store yourself, take a look at the event_st
 ## DB migrations
 
 If you are using v6 with MySQL (using doctrine adpater) and you want to switch to v7 with MySQL (using pdo-event-store),
-you need to upgrade your database before you do this. The way events are persisted have changed and you cannot simply
-update your source code to make this change. You need to write a migration script, take the database offline,
-perform the migration and go back online.
+you need to upgrade your database before you do this (same for other db vendors of course). The way events are
+persisted have changed and you cannot simply update your source code to make this change. You need to write a migration
+script, take the database offline, perform the migration and go back online.
+
+Things to do to migrate:
+- Read all events
+- Update event metadata
+- Persist the event back to a new stream created with v7
+
+This would need to be done for all event streams.
 
 As this is a very tough job, we don't provide any migration script currently and for some applications a downtime is not
 acceptable, then v7 might not be the right choice for you, use it when you can take the application offline for a while
