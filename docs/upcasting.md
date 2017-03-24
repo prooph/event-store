@@ -27,3 +27,41 @@ Perform the "upcasting" script in the background and once it has replaced all ol
 from the factory again and exchange it with the simple factory you used before.
 
 *Note: Each event store adapter allows you to set it up with a custom message factory. Please refer to the adapter documentation of your choice to get more information.*
+
+## Upasting on the fly
+
+Starting in v7 prooph offers an upcasting plugin for the event store. Setup is very easy:
+
+```php
+$upcaster = new MyUpcaster();
+$plugin = new UpcastingPlugin($upcaster);
+$plugin->attachToEventStore($eventStore);
+```
+
+So next time you `load` your events, they will get upcasted automatically (but not persisted back to the database).
+
+The upcaster interface is very easy:
+
+```php
+interface Upcaster
+{
+    /**
+     * @param Message $message
+     * @return array of messages
+     */
+    public function upcast(Message $message): array;
+}
+```
+
+Prooph also ships with a `SingleEventUpcaster`, an abstract class to help you create upcaster easily.
+Additionally an `UpcasterChain` is provided, so you can combine upcaster easily:
+
+```php
+$upcaster1 = new MyUpcaster1();
+$upcaster2 = new MyUpcaster2();
+$upcaster3 = new MyUpcaster3();
+
+$chain = new UpcasterChain($upcaster1, $upcaster2, $upcaster3);
+$plugin = new UpcastingPlugin($chain);
+$plugin->attachToEventStore($eventStore);
+```
