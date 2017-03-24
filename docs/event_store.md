@@ -103,3 +103,8 @@ $plugin = new MetadataEnricherPlugin(new MetadataEnricherAggregate([
 
 $plugin->attachToEventStore($eventStore);
 ```
+
+## Internal metadata
+
+All internal metadata is prefixed with `_` (underscore), f.e. `_causation_id`. Do not use metadata keys starting with an
+underscore, as this is reserved for prooph internals.

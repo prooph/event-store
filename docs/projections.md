@@ -163,3 +163,8 @@ explanation:
 When you call stopProjection($name) (or delete or reset) a message is send to the projection. This will notify the
 running projection, that it should act accordingly. This means, that once you call `stopProjection` the projection
 might not be stopped immediately, but it could take a few seconds until the projection is finally stopped.
+
+## Internal projection mames
+
+All internal projetion names are prefixed with `$` (dollar-sign), f.e. `$ct-`. Do not use projection names starting
+with a dollar-sign, as this is reserved for prooph internals.
