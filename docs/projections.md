@@ -118,6 +118,28 @@ $projector
 
 This would count all registered users.
 
+### Options
+
+There are three options common to all projectors:
+
+OPTION_CACHE_SIZE = 'cache_size';
+
+The cache size is how many stream names are cached in memory, the higher the number to less queries are executed and therefor
+makes the projections run faster, but it consumes more memory.
+
+OPTION_SLEEP = 'sleep';
+
+The sleep options tells the projection to sleep that many microseconds, before querying the event store again, when no events
+were found in the last trip. This reduces having lots of cpu cycles without the projection doing anything really.
+
+OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
+
+The persist block size tells the projector, to persist its changes after a given amount of operations. This increases the speed
+of the projection a lot. When you persist only every 1000 events compared to persist on every event, then 999 write operations
+are saved. The higher the number, the less write operations are made to your system, making the projections run faster.
+On the other side, in case of an error, you need to redo the last operations again. If you are publishing events to the outside
+world within a projection, you may think of a persist block size of 1 only.
+
 ## Read Model Projections
 
 Projections can also be used to create read models. A read model has to implement `Prooph\EventStore\Projection\ReadModel`.
@@ -126,6 +148,10 @@ Prooph also ships with an `Prooph\EventStore\Projection\AbstractReadModel` that 
 One nice thing about read model projections is, that you don't need a migration script for your read models at all.
 When you need to make a change to your read model, you simply alter your read model implementation, stop your
 current running projections, reset it and run it again.
+
+### Options
+
+The read model projectors have the same options as the normal projectors, see above for more explanations.
 
 ### Example
 
