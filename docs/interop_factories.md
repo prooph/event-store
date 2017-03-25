@@ -13,7 +13,7 @@ without the need to rely on a specific framework. However, the factories have th
 2. [interop-config](https://github.com/sandrokeil/interop-config) must be installed
 3. The application configuration should be registered with the service id `config` in the container.
 
-*Note: Don't worry, if your environment doesn't provide the requirements. You can
+*Note: Don't worry, if your environment doesn't provide these requirements, you can
 always bootstrap the components by hand. Just look at the factories for inspiration in this case.*
 
 ### InMemoryEventStoreFactory
