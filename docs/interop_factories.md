@@ -9,7 +9,7 @@ without the need to rely on a specific framework. However, the factories have th
 
 ### Requirements
 
-1. Your Inversion of Control container must implement the [interop-container interface](https://github.com/container-interop/container-interop).
+1. Your Inversion of Control container must implement the [PSR Container interface](https://github.com/php-fig/container).
 2. [interop-config](https://github.com/sandrokeil/interop-config) must be installed
 3. The application configuration should be registered with the service id `config` in the container.
 
