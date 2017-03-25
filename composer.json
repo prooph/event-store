@@ -33,10 +33,10 @@
         "phpunit/phpunit": "^6.0",
         "phpspec/prophecy": "^1.7",
         "prooph/php-cs-fixer-config": "^0.1.1",
+        "prooph/bookdown-template": "^0.2.3",
         "psr/container": "^1.0",
         "satooshi/php-coveralls": "^1.0",
         "zendframework/zend-servicemanager": "^3.1",
-        "tobiju/bookdown-bootswatch-templates": "^1.0",
         "malukenho/docheader": "^0.1.4"
     },
     "suggest" : {
