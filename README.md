@@ -12,6 +12,8 @@ Prooph Event Store is capable of persisting event messages that are organized in
 itself is a facade for different persistence adapters (see the list below) and adds event-driven hook points for `Prooph\EventStore\Plugin\Plugin`s
 which make the Event Store highly customizable.
 
+Due to a bug in PHP 7.1.3 this library is not compatible with that specific php version.
+
 ## Installation
 
 You can install prooph/event-store via composer by adding `"prooph/event-store": "^7.0"` as requirement to your composer.json.
