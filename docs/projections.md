@@ -140,6 +140,11 @@ are saved. The higher the number, the less write operations are made to your sys
 On the other side, in case of an error, you need to redo the last operations again. If you are publishing events to the outside
 world within a projection, you may think of a persist block size of 1 only.
 
+OPTION_LOCK_TIMEOUT_MS = 'lock_timeout_ms'
+
+Indicates the time (in microseconds) the projector is locked. During this time no other projector with the same name can
+be started. A running projector will update the lock timeout on every loop.
+
 ## Read Model Projections
 
 Projections can also be used to create read models. A read model has to implement `Prooph\EventStore\Projection\ReadModel`.
