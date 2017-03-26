@@ -3,8 +3,10 @@
   "content": [
     {"intro": "../README.md"},
     {"event_store": "event_store.md"},
+    {"projections": "projections.md"},
     {"upcasting": "upcasting.md"},
-    {"interop_factories": "interop_factories.md"}
+    {"interop_factories": "interop_factories.md"},
+    {"migration": "migration.md"}
   ],
   "target": "./html",
   "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"

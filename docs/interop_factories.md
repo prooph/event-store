@@ -9,11 +9,11 @@ without the need to rely on a specific framework. However, the factories have th
 
 ### Requirements
 
-1. Your Inversion of Control container must implement the [interop-container interface](https://github.com/container-interop/container-interop).
+1. Your Inversion of Control container must implement the [PSR Container interface](https://github.com/php-fig/container).
 2. [interop-config](https://github.com/sandrokeil/interop-config) must be installed
 3. The application configuration should be registered with the service id `config` in the container.
 
-*Note: Don't worry, if your environment doesn't provide the requirements. You can
+*Note: Don't worry, if your environment doesn't provide these requirements, you can
 always bootstrap the components by hand. Just look at the factories for inspiration in this case.*
 
 ### InMemoryEventStoreFactory
@@ -25,7 +25,7 @@ If the requirements are met you just need to add a new section in your applicati
     'prooph' => [
         'event_store' => [
             'default' => [
-                'event_emitter' => 'emitter_service_id' //The factory will use this id to get the event emitter from the container
+                'wrap_action_event_emitter' => true,
                 'metadata_enrichers' => [
                     // The factory will get the metadata enrichers and inject them in the MetadataEnricherPlugin.
                     // Note: you can obtain the same result by instanciating the plugin yourself
@@ -36,7 +36,8 @@ If the requirements are met you just need to add a new section in your applicati
                 ],
                 'plugins' => [
                     //And again the factory will use each service id to get the plugin from the container
-                    //Plugin::setUp($eventStore) is then invoked by the factory so your plugins get attached automatically
+                    //Plugin::attachToEventStore($eventStore) is then invoked by the factory so your plugins
+                    // get attached automatically
                     //Awesome, isn't it?
                     'plugin_1_service_id',
                     'plugin_2_service_id',
@@ -47,7 +48,10 @@ If the requirements are met you just need to add a new section in your applicati
     ],
     'dependencies' => [
         'factories' => [
-            'inmemoryeventstore' => [\Prooph\EventStore\Container\InMemoryEventStoreFactory::class, 'default'],
+            'inmemoryeventstore' => [
+                \Prooph\EventStore\Container\InMemoryEventStoreFactory::class,
+                'default',
+            ],
         ],
     ],
     //... other application config here
@@ -55,3 +59,28 @@ If the requirements are met you just need to add a new section in your applicati
 ```
 
 $eventStore = $container->get('inmemoryeventstore');
+
+### InMemoryProjectionManagerFactory
+
+```php
+[
+    'prooph' => [
+        'projection_manager' => [
+            'default' => [
+                'event_store' => 'inmemoryeventstore',
+            ],
+        ],
+    ],
+    'dependencies' => [
+        'factories' => [
+            'inmemoryeventstoreprojectionmanager' => [
+                \Prooph\EventStore\Container\InMemoryProjectionManagerFactory::class,
+                'default',
+            ],
+        ],
+    ],
+    //... other application config here
+]
+```
+
+$projectionManager = $container->get('inmemoryeventstoreprojectionmanager');
