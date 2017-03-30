@@ -25,7 +25,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.1",
-        "prooph/common" : "^4.0.0",
+        "prooph/common" : "^4.1.0",
         "marc-mabe/php-enum": "^2.3.1"
     },
     "require-dev": {
@@ -36,7 +36,6 @@
         "prooph/bookdown-template": "^0.2.3",
         "psr/container": "^1.0",
         "satooshi/php-coveralls": "^1.0",
-        "zendframework/zend-servicemanager": "^3.1",
         "malukenho/docheader": "^0.1.4"
     },
     "suggest" : {

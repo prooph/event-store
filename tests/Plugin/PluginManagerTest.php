@@ -17,6 +17,7 @@ use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
+use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\ServiceManager;
 
 class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
@@ -26,13 +27,11 @@ class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
      */
     public function an_invokable_plugin_is_loaded_by_plugin_manager_and_attached_to_event_store_by_configuration(): void
     {
-        $pluginManager = new ServiceManager([
-            'invokables' => [
-                'eventlogger' => EventLoggerPlugin::class,
-            ],
-        ]);
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->get('eventlogger')->willReturn(new EventLoggerPlugin())->shouldBeCalled();
+        $container = $container->reveal();
 
-        $logger = $pluginManager->get('eventlogger');
+        $logger = $container->get('eventlogger');
         $logger->attachToEventStore($this->eventStore);
 
         $this->eventStore->create(
@@ -50,7 +49,7 @@ class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
             )
         );
 
-        $loggedStreamEvents = $pluginManager->get('eventlogger')->getLoggedStreamEvents();
+        $loggedStreamEvents = $container->get('eventlogger')->getLoggedStreamEvents();
 
         $this->assertEquals(1, count($loggedStreamEvents));
     }
