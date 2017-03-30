@@ -9,5 +9,5 @@
     {"migration": "migration.md"}
   ],
   "target": "./html",
-  "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"
+  "template": "../vendor/prooph/bookdown-template/templates/main.php"
 }
