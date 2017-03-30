@@ -8,14 +8,10 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ProophTest\EventStore\Mock;
 
-/**
- * Class UsernameChanged
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class UsernameChanged extends TestDomainEvent
 {
 }

@@ -8,10 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Example\Event;
+declare(strict_types=1);
 
-use Assert\Assertion;
+namespace Prooph\EventStore\QuickStart\Event;
+
 use Prooph\Common\Messaging\DomainEvent;
+use Prooph\EventStore\Util\Assertion;
 
 /**
  * Class QuickStartSucceeded
@@ -25,41 +27,30 @@ final class QuickStartSucceeded extends DomainEvent
      */
     private $text;
 
-    public static function withSuccessMessage($text)
+    public static function withSuccessMessage(string $text): QuickStartSucceeded
     {
         return new self($text);
     }
 
-    /**
-     * @param string $text
-     */
-    private function __construct($text)
+    private function __construct(string $text)
     {
         Assertion::minLength($text, 1, 'Success message must be at least 1 char long');
         $this->text = $text;
+        $this->metadata['_aggregate_version'] = 1;
         $this->init();
     }
 
-    /**
-     * @return string
-     */
-    public function getText()
+    public function getText(): string
     {
         return $this->text;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function payload()
+    public function payload(): array
     {
         return ['text' => $this->text];
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function setPayload(array $payload)
+    protected function setPayload(array $payload): void
     {
         $this->text = $payload['text'];
     }

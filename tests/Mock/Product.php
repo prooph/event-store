@@ -8,16 +8,10 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ProophTest\EventStore\Mock;
 
-/**
- * Class Product
- *
- * Empty Mock
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
 final class Product
 {
 }

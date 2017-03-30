@@ -8,10 +8,12 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Prooph\EventStore\Metadata;
 
-use Assert\Assertion;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\Util\Assertion;
 
 final class MetadataEnricherAggregate implements MetadataEnricher
 {
@@ -30,12 +32,7 @@ final class MetadataEnricherAggregate implements MetadataEnricher
         $this->metadataEnrichers = $metadataEnrichers;
     }
 
-    /**
-     * @param Message $message
-     *
-     * @return Message
-     */
-    public function enrich(Message $message)
+    public function enrich(Message $message): Message
     {
         foreach ($this->metadataEnrichers as $metadataEnricher) {
             $message = $metadataEnricher->enrich($message);

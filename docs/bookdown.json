@@ -1,14 +1,12 @@
 {
-  "title": "PHP EventStore Implementation",
+  "title": "Prooph EventStore",
   "content": [
     {"intro": "../README.md"},
-    {"repositories": "repositories.md"},
     {"event_store": "event_store.md"},
-    {"snapshots": "snapshots.md"},
-    {"replay_history": "replay_history.md"},
+    {"projections": "projections.md"},
     {"upcasting": "upcasting.md"},
-    {"inheritance": "inheritance.md"},
-    {"interop_factories": "interop_factories.md"}
+    {"interop_factories": "interop_factories.md"},
+    {"migration": "migration.md"}
   ],
   "target": "./html",
   "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"

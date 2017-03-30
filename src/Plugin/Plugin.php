@@ -8,21 +8,15 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Prooph\EventStore\Plugin;
 
-use Prooph\EventStore\EventStore;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 
-/**
- * Class FeatureInterface
- *
- * @package Prooph\EventStore\Plugin
- * @author Alexander Miertsch <contact@prooph.de>
- */
 interface Plugin
 {
-    /**
-     * @param EventStore $eventStore
-     * @return void
-     */
-    public function setUp(EventStore $eventStore);
+    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void;
+
+    public function detachFromEventStore(ActionEventEmitterEventStore $eventStore): void;
 }

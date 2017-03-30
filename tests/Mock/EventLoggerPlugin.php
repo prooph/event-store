@@ -8,54 +8,47 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ProophTest\EventStore\Mock;
 
+use Iterator;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\Plugin\AbstractPlugin;
 
-/**
- * Class EventLoggerFeature
- *
- * @package ProophTest\EventStore\Mock
- * @author Alexander Miertsch <contact@prooph.de>
- */
-class EventLoggerPlugin implements Plugin
+class EventLoggerPlugin extends AbstractPlugin
 {
     /**
-     * @var \Iterator
+     * @var Iterator
      */
     protected $loggedStreamEvents;
 
-    /**
-     * EventLoggerPlugin constructor.
-     */
     public function __construct()
     {
         $this->loggedStreamEvents = new \ArrayIterator();
     }
 
-    /**
-     * @param EventStore $eventStore
-     * @return void
-     */
-    public function setUp(EventStore $eventStore)
+    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void
     {
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, "onPostCommit"]);
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_CREATE,
+            function (ActionEvent $event): void {
+                $this->loggedStreamEvents = $event->getParam('stream')->streamEvents();
+            },
+            -10000
+        );
+
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_APPEND_TO,
+            function (ActionEvent $event): void {
+                $this->loggedStreamEvents = $event->getParam('streamEvents', new \ArrayIterator());
+            },
+            -10000
+        );
     }
 
-    /**
-     * @param ActionEvent $e
-     */
-    public function onPostCommit(ActionEvent $e)
-    {
-        $this->loggedStreamEvents = $e->getParam('recordedEvents', new \ArrayIterator());
-    }
-
-    /**
-     * @return \Iterator
-     */
-    public function getLoggedStreamEvents()
+    public function getLoggedStreamEvents(): Iterator
     {
         return $this->loggedStreamEvents;
     }

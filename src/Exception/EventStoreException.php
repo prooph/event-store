@@ -8,14 +8,10 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Prooph\EventStore\Exception;
 
-/**
- * Marker Interface EventStoreException
- *
- * @package Prooph\EventStore\Exception
- * @author Alexander Miertsch <contact@prooph.de>
- */
 interface EventStoreException
 {
 }

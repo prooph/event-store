@@ -8,21 +8,24 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ProophTest\EventStore\Metadata;
 
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use ProophTest\EventStore\Mock\TestDomainEvent;
-use ProophTest\EventStore\TestCase;
 use Prophecy\Argument;
 
-final class MetadataEnricherAggregateTest extends TestCase
+class MetadataEnricherAggregateTest extends TestCase
 {
     /**
      * @test
      */
-    public function it_aggregates_metadata_enrichers()
+    public function it_aggregates_metadata_enrichers(): void
     {
         // Mocks
         $metadataEnricher1 = $this->prophesize(MetadataEnricher::class);
@@ -58,17 +61,18 @@ final class MetadataEnricherAggregateTest extends TestCase
         $this->assertEquals($originalEvent->version(), $enrichedEvent->version());
         $this->assertEquals($originalEvent->createdAt(), $enrichedEvent->createdAt());
 
-        $expectedMetadata = ['meta1' => 'data1', 'meta2' => 'data2'];
+        $expectedMetadata = ['meta1' => 'data1', 'meta2' => 'data2', '_aggregate_version' => 1];
         $this->assertEquals($expectedMetadata, $enrichedEvent->metadata());
     }
 
     /**
      * @test
-     * @expectedException \Assert\InvalidArgumentException
      */
-    public function it_only_accept_correct_instances()
+    public function it_only_accept_correct_instances(): void
     {
-        $metadataEnricherAgg = new MetadataEnricherAggregate([
+        $this->expectException(InvalidArgumentException::class);
+
+        new MetadataEnricherAggregate([
             $this->prophesize(MetadataEnricher::class)->reveal(),
             new \stdClass(),
             $this->prophesize(MetadataEnricher::class)->reveal(),

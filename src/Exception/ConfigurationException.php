@@ -8,20 +8,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Prooph\EventStore\Exception;
 
-/**
- * ConfigurationException
- *
- * @author Alexander Miertsch <contact@prooph.de>
- */
 class ConfigurationException extends RuntimeException implements EventStoreException
 {
-    /**
-     * @param string $msg
-     * @return ConfigurationException
-     */
-    public static function configurationError($msg)
+    public static function configurationError(string $msg): ConfigurationException
     {
         return new self('[Configuration Error] ' . $msg . "\n");
     }

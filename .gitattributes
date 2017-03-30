@@ -2,6 +2,7 @@
 /examples         export-ignore
 /tests            export-ignore
 .coveralls.yml    export-ignore
+.docheader        export-ignore
 .gitignore        export-ignore
 .php_cs           export-ignore
 .travis.yml       export-ignore

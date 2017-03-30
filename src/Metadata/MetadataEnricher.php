@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Prooph\EventStore\Metadata;
 
 use Prooph\Common\Messaging\Message;
@@ -16,10 +18,6 @@ interface MetadataEnricher
 {
     /**
      * Return the given message with added metadata.
-     *
-     * @param Message $message
-     *
-     * @return Message
      */
-    public function enrich(Message $message);
+    public function enrich(Message $message): Message;
 }
