@@ -1,5 +1,5 @@
 {
-  "title": "Prooph EventStore",
+  "title": "Event Store",
   "content": [
     {"intro": "../README.md"},
     {"event_store": "event_store.md"},
