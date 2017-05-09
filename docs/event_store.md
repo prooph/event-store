@@ -7,6 +7,15 @@ of different low level event stream persistence adapters (f.e. MySQL or Postgres
 The event-driven store is the unique selling point of prooph/event-store compared to other libraries.
 So let's directly jump into it and see what you can do with it.
 
+## ReadOnlyEventStoreWrapper
+
+In case you need a read only event store, you can wrap your existing event store implementation with the
+ReadOnlyEventStoreWrapper.
+
+```php
+$readOnlyEventStore = new ReadOnlyEventStoreWrapper($eventStore);
+```
+
 ## Event Hooks
 
 Requirements: an event store wrapped with `Prooph\EventStore\ActionEventEmitterEventStore`.

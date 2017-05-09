@@ -16,14 +16,14 @@ which make the Event Store highly customizable.
 
 You can install prooph/event-store via composer by adding `"prooph/event-store": "^7.0"` as requirement to your composer.json.
 
-## Available Persistence Adapters
-- [Mongo DB](https://github.com/prooph/event-store-mongodb-adapter) - stable
-- [Doctrine DBAL](https://github.com/prooph/event-store-doctrine-adapter) - stable
+## Available persistent implementations
+- [PDO](https://github.com/prooph/pdo-event-store) - stable
 
-## Available Snapshot Adapters
-- [Mongo DB](https://github.com/prooph/snapshot-mongodb-adapter) - stable
-- [Doctrine DBAL](https://github.com/prooph/snapshot-doctrine-adapter) - stable
-- [Memcached](https://github.com/prooph/snapshot-memcached-adapter) - stable
+## Available snapshot store implementations
+- [Mongo DB](https://github.com/prooph/mongodb-snapshot-store) - stable
+- [PDO](https://github.com/prooph/pdo-snapshot-store) - stable
+- [Memcached](https://github.com/prooph/memcached-snapshot-store) - stable
+- [ArangoDB](https://github.com/prooph/arangodb-snapshot-store) - under development
 
 ## Quick Start
 
