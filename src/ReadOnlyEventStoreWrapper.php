@@ -42,8 +42,7 @@ final class ReadOnlyEventStoreWrapper implements ReadOnlyEventStore
         int $fromNumber = 1,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Iterator
-    {
+    ): Iterator {
         return $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
     }
 
@@ -52,8 +51,7 @@ final class ReadOnlyEventStoreWrapper implements ReadOnlyEventStore
         int $fromNumber = null,
         int $count = null,
         MetadataMatcher $metadataMatcher = null
-    ): Iterator
-    {
+    ): Iterator {
         return $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
     }
 
@@ -62,8 +60,7 @@ final class ReadOnlyEventStoreWrapper implements ReadOnlyEventStore
         ?MetadataMatcher $metadataMatcher,
         int $limit = 20,
         int $offset = 0
-    ): array
-    {
+    ): array {
         return $this->eventStore->fetchStreamNames($filter, $metadataMatcher, $limit, $offset);
     }
 
@@ -72,8 +69,7 @@ final class ReadOnlyEventStoreWrapper implements ReadOnlyEventStore
         ?MetadataMatcher $metadataMatcher,
         int $limit = 20,
         int $offset = 0
-    ): array
-    {
+    ): array {
         return $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
     }
 
