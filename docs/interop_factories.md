@@ -60,6 +60,10 @@ If the requirements are met you just need to add a new section in your applicati
 
 $eventStore = $container->get('inmemoryeventstore');
 
+#### ReadOnlyEventStoreWrapper
+
+If you want to have a read only event store, just add `'read_only' => true` to your event store config.
+
 ### InMemoryProjectionManagerFactory
 
 ```php

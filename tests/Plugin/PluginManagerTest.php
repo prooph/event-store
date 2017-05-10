@@ -18,7 +18,6 @@ use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
 use Psr\Container\ContainerInterface;
-use Zend\ServiceManager\ServiceManager;
 
 class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
 {

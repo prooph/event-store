@@ -24,8 +24,9 @@ use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\ReadOnlyEventStore;
+use Prooph\EventStore\ReadOnlyEventStoreWrapper;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
-use Prooph\EventStore\TransactionalEventStore;
 use Psr\Container\ContainerInterface;
 
 final class InMemoryEventStoreFactory implements
@@ -55,7 +56,7 @@ final class InMemoryEventStoreFactory implements
      *
      * @throws InvalidArgumentException
      */
-    public static function __callStatic(string $name, array $arguments): TransactionalEventStore
+    public static function __callStatic(string $name, array $arguments): ReadOnlyEventStore
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
@@ -74,12 +75,16 @@ final class InMemoryEventStoreFactory implements
     /**
      * @throws ConfigurationException
      */
-    public function __invoke(ContainerInterface $container): TransactionalEventStore
+    public function __invoke(ContainerInterface $container): ReadOnlyEventStore
     {
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
 
         $eventStore = new InMemoryEventStore();
+
+        if ($config['read_only']) {
+            $eventStore = new ReadOnlyEventStoreWrapper($eventStore);
+        }
 
         if (! $config['wrap_action_event_emitter']) {
             return $eventStore;
@@ -149,6 +154,7 @@ final class InMemoryEventStoreFactory implements
             'metadata_enrichers' => [],
             'plugins' => [],
             'wrap_action_event_emitter' => true,
+            'read_only' => false,
         ];
     }
 }

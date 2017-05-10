@@ -22,6 +22,7 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\ReadOnlyEventStoreWrapper;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
@@ -62,6 +63,22 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_read_only_event_store(): void
+    {
+        $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false, 'read_only' => true];
+
+        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
+        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+
+        $factory = new InMemoryEventStoreFactory();
+        $eventStore = $factory($containerMock);
+
+        $this->assertInstanceOf(ReadOnlyEventStoreWrapper::class, $eventStore);
     }
 
     /**
