@@ -52,21 +52,39 @@ class DBALEventStore implements MutableEventStoreInterface, UpcasterAwareInterfa
      */
     public function getStream($id)
     {
-        $query = 'SELECT uuid, name, payload, payload_version, version, datetime_created
-                  FROM event_store
-                  WHERE uuid = :uuid
-                  ORDER BY version ASC';
+        $stream = $this->getPartialStream($id, 0);
 
-        $statement = $this->connection->prepare($query);
-
-        $statement->bindValue('uuid', $id);
-        $statement->execute();
-
-        $eventsFromStore = $statement->fetchAll();
-
-        if (empty($eventsFromStore)) {
+        if (!$stream->count()) {
             throw new EventStreamNotFoundException($id);
         }
+
+        return $stream;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPartialStream($id, $fromVersion, $toVersion = null)
+    {
+        $qb = $this->connection->createQueryBuilder()
+            ->select('uuid, name, payload, payload_version, version, datetime_created')
+            ->from('event_store')
+            ->where('uuid = :uuid')
+            ->andWhere('version > :version_from')
+            ->orderBy('version', 'ASC')
+
+            ->setParameter('uuid', $id)
+            ->setParameter('version_from', $fromVersion)
+        ;
+
+        if ($toVersion) {
+            $qb
+                ->andWhere('version <= :version_to')
+                ->setParameter('version_to', $toVersion)
+            ;
+        }
+
+        $eventsFromStore = $qb->execute()->fetchAll();
 
         return $this->upcastAndDeserialize($eventsFromStore);
     }

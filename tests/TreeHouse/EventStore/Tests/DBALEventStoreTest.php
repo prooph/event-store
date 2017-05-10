@@ -5,7 +5,9 @@ namespace TreeHouse\EventStore\Tests;
 use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Statement;
+use PHPUnit\Framework\Assert;
 use PHPUnit_Framework_TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -26,6 +28,26 @@ class DBALEventStoreTest extends PHPUnit_Framework_TestCase
      * @var DBALEventStore
      */
     private $eventStore;
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var Statement
+     */
+    private $statement;
+
+    /**
+     * @var EventFactory
+     */
+    private $eventFactory;
 
     public function setUp()
     {
@@ -76,13 +98,10 @@ class DBALEventStoreTest extends PHPUnit_Framework_TestCase
             );
         }, $dbEvents);
 
-        $this->statement->bindValue('uuid', self::UUID)->shouldBeCalled();
-        $this->statement->execute()->shouldBeCalled();
         $this->statement->fetchAll()->willReturn($dbEvents);
 
-        $this->connection->prepare(Argument::any())->willReturn(
-            $this->statement->reveal()
-        );
+        $this->connection->createQueryBuilder()->willReturn(new QueryBuilder($this->connection->reveal()));
+        $this->connection->executeQuery(Argument::cetera())->willReturn($this->statement->reveal());
 
         $this->serializer->deserialize('Test', '{"payload":"json"}')->willReturn(new stdClass());
 
@@ -144,6 +163,54 @@ class DBALEventStoreTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_returns_partial_event_stream()
+    {
+        $dbEvents = [
+            [
+                'uuid' => self::UUID,
+                'name' => 'Test',
+                'payload' => '{"payload":"json"}',
+                'payload_version' => 1,
+                'version' => 2,
+                'datetime_created' => '2015-01-02 00:00:00',
+            ],
+        ];
+
+        $this->statement->fetchAll()->willReturn($dbEvents);
+
+        $fromVersion = 1;
+        $toVersion = 2;
+
+        $this->connection->createQueryBuilder()->willReturn(new QueryBuilder($this->connection->reveal()));
+
+        $this->connection->executeQuery(
+            Argument::that(function($arg) {
+            Assert::assertContains('AND (version > :version_from)', $arg);
+            Assert::assertContains('AND (version <= :version_to)', $arg);
+
+            return true;
+        }), Argument::that(function($arg) use ($fromVersion, $toVersion) {
+            Assert::assertArraySubset([
+                'version_from' => $fromVersion,
+                'version_to' => $toVersion,
+            ], $arg);
+
+            return true;
+        }), Argument::cetera())->willReturn($this->statement->reveal());
+
+        $this->serializer->deserialize('Test', '{"payload":"json"}')->willReturn(new stdClass());
+
+        $eventStream = $this->eventStore->getPartialStream(self::UUID, $fromVersion, $toVersion);
+
+        $this->assertEquals(
+            $totalEvents = 1,
+            count($eventStream)
+        );
+    }
+
+    /**
+     * @test
+     */
     public function it_appends_events()
     {
         $this->connection->beginTransaction()->shouldBeCalled();
@@ -186,15 +253,29 @@ class DBALEventStoreTest extends PHPUnit_Framework_TestCase
     {
         $uuid = 'unknown_stream_identifier';
 
-        $this->statement->bindValue('uuid', $uuid)->shouldBeCalled();
-        $this->statement->execute()->shouldBeCalled();
         $this->statement->fetchAll()->willReturn([]);
 
-        $this->connection->prepare(Argument::any())->willReturn(
-            $this->statement->reveal()
-        );
+        $this->connection->createQueryBuilder()->willReturn(new QueryBuilder($this->connection->reveal()));
+        $this->connection->executeQuery(Argument::cetera())->willReturn($this->statement->reveal());
 
         $this->eventStore->getStream($uuid);
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_empty_when_partial_stream_is_not_found()
+    {
+        $uuid = 'unknown_stream_identifier';
+
+        $this->statement->fetchAll()->willReturn([]);
+
+        $this->connection->createQueryBuilder()->willReturn(new QueryBuilder($this->connection->reveal()));
+        $this->connection->executeQuery(Argument::cetera())->willReturn($this->statement->reveal());
+
+        $stream = $this->eventStore->getPartialStream($uuid, 0);
+
+        $this->assertCount(0, $stream);
     }
 
     /**
@@ -224,13 +305,10 @@ class DBALEventStoreTest extends PHPUnit_Framework_TestCase
             ],
         ];
 
-        $this->statement->bindValue('uuid', self::UUID)->shouldBeCalled();
-        $this->statement->execute()->shouldBeCalled();
         $this->statement->fetchAll()->willReturn($dbEvents);
 
-        $this->connection->prepare(Argument::any())->willReturn(
-            $this->statement->reveal()
-        );
+        $this->connection->createQueryBuilder()->willReturn(new QueryBuilder($this->connection->reveal()));
+        $this->connection->executeQuery(Argument::cetera())->willReturn($this->statement->reveal());
 
         $upcastedEvent = new SerializedEvent(
             self::UUID,

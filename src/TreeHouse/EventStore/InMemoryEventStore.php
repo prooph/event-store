@@ -25,6 +25,22 @@ class InMemoryEventStore implements EventStoreInterface
 
     /**
      * @inheritdoc
+     */
+    public function getPartialStream($id, $fromVersion, $toVersion = null)
+    {
+        if (isset($this->store[$id])) {
+            $events = array_filter($this->store[$id], function (Event $event) use ($fromVersion, $toVersion) {
+                return ($event->getVersion() > $fromVersion && (!$toVersion || $event->getVersion() <= $toVersion));
+            });
+
+            return new EventStream(array_values($events));
+        }
+
+        return new EventStream([]);
+    }
+
+    /**
+     * @inheritdoc
      *
      * @throws DuplicateVersionException
      */
