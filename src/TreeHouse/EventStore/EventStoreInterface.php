@@ -14,6 +14,15 @@ interface EventStoreInterface
     public function getStream($id);
 
     /**
+     * @param mixed $id
+     * @param int $fromVersion
+     * @param int|null $toVersion
+     *
+     * @return EventStreamInterface
+     */
+    public function getPartialStream($id, $fromVersion, $toVersion = null);
+
+    /**
      * @param EventStreamInterface|Event[] $eventStream
      *
      * @throws EventStoreException

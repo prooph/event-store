@@ -40,6 +40,17 @@ class EncryptingEventStore implements EventStoreInterface
     /**
      * @inheritdoc
      */
+    public function getPartialStream($id, $fromVersion, $toVersion = null)
+    {
+        /** @var Event[]|EventStreamInterface $eventStream */
+        $eventStream = $this->eventStore->getPartialStream($id, $fromVersion, $toVersion);
+
+        return $this->factory->createDecryptingStream($eventStream);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function append(EventStreamInterface $eventStream)
     {
         $this->eventStore->append(

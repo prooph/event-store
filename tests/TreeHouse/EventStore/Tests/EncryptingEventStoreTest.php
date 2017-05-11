@@ -35,6 +35,27 @@ class EncryptingEventStoreTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function it_wraps_partial_stream_with_descrypted_stream_from_factory()
+    {
+        $eventStream = new EventStream([]);
+
+        $innerStore = $this->prophesize(EventStoreInterface::class);
+        $innerStore->getPartialStream('some-id', 1, 2)->willReturn($eventStream);
+
+        $factory = $this->prophesize(CryptoEventStreamFactory::class);
+        $factory->createDecryptingStream($eventStream)->shouldBeCalled();
+
+        $store = new EncryptingEventStore(
+            $innerStore->reveal(),
+            $factory->reveal()
+        );
+
+        $store->getPartialStream('some-id', 1, 2);
+    }
+
+    /**
+     * @test
+     */
     public function it_wraps_stream_with_encrypted_stream_from_factory()
     {
         $eventStream = new EventStream([]);
