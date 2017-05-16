@@ -86,7 +86,7 @@ class DBALEventStore implements MutableEventStoreInterface, UpcasterAwareInterfa
 
         $eventsFromStore = $qb->execute()->fetchAll();
 
-        return $this->upcastAndDeserialize($eventsFromStore);
+        return $this->upcastAndDeserialize($eventsFromStore, $id, $fromVersion);
     }
 
     /**
@@ -238,11 +238,13 @@ class DBALEventStore implements MutableEventStoreInterface, UpcasterAwareInterfa
     }
 
     /**
-     * @param $eventsFromStore
+     * @param iterable $eventsFromStore
+     * @param mixed $id
+     * @param int $fromVersion
      *
      * @return EventStream
      */
-    private function upcastAndDeserialize($eventsFromStore)
+    private function upcastAndDeserialize($eventsFromStore, $id, $fromVersion)
     {
         $eventsForStream = [];
         foreach ($eventsFromStore as $event) {
@@ -256,7 +258,14 @@ class DBALEventStore implements MutableEventStoreInterface, UpcasterAwareInterfa
             );
 
             if ($this->upcaster->supports($serializedEvent)) {
-                $context = new UpcastingContext(new EventStream($eventsForStream), $this->serializer);
+                $eventsForStreamForContext = new EventStream($eventsForStream);
+
+                // fix for partial streams (upcasters expect full stream)
+                if ($fromVersion > 0) {
+                    $eventsForStreamForContext = $this->getPartialStream($id, 0, $serializedEvent->getVersion() - 1);
+                }
+
+                $context = new UpcastingContext($eventsForStreamForContext, $this->serializer);
 
                 $serializedEvent = $this->upcaster->upcast($serializedEvent, $context);
             }
