@@ -86,7 +86,7 @@ class DBALEventStore implements MutableEventStoreInterface, UpcasterAwareInterfa
 
         $eventsFromStore = $qb->execute()->fetchAll();
 
-        return $this->upcastAndDeserialize($eventsFromStore);
+        return $this->upcastAndDeserialize($eventsFromStore, $id, $fromVersion);
     }
 
     /**
