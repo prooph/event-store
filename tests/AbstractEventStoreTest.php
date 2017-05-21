@@ -18,6 +18,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
+use Prooph\EventStore\Metadata\FieldType;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
@@ -424,6 +425,10 @@ abstract class AbstractEventStoreTest extends TestCase
         $event = $event->withAddedMetadata('int3', 6);
         $event = $event->withAddedMetadata('int4', 7);
 
+        $uuid = $event->uuid()->toString();
+        $before = $event->createdAt()->modify('-5 secs')->format('Y-m-d\TH:i:s.u');
+        $later = $event->createdAt()->modify('+5 secs')->format('Y-m-d\TH:i:s.u');
+
         $stream = new Stream(new StreamName('Prooph\Model\User'), new ArrayIterator([$event]));
 
         $this->eventStore->create($stream);
@@ -433,8 +438,21 @@ abstract class AbstractEventStoreTest extends TestCase
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'baz');
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 4);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 4);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::IN(), [4, 5, 6]);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 7);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::NOT_IN(), [4, 6]);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), '^b[a]r$');
+
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::EQUALS(), $uuid, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::NOT_EQUALS(), 'baz', FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::GREATER_THAN(), $before, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::GREATER_THAN_EQUALS(), $before, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::IN(), [$uuid, 2, 3], FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN(), $later, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN_EQUALS(), $later, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::NOT_IN(), [$before, $later], FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('messageName', Operator::REGEX(), '.+UserCreated$', FieldType::MESSAGE_PROPERTY());
 
         $streamEvents = $this->eventStore->load($stream->streamName(), 1, null, $metadataMatcher);
 
@@ -505,11 +523,6 @@ abstract class AbstractEventStoreTest extends TestCase
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
     }
 
     /**
@@ -524,7 +537,13 @@ abstract class AbstractEventStoreTest extends TestCase
         $event = $event->withAddedMetadata('int3', 6);
         $event = $event->withAddedMetadata('int4', 7);
 
-        $stream = new Stream(new StreamName('Prooph\Model\User'), new ArrayIterator([$event]));
+        $uuid = $event->uuid()->toString();
+        $before = $event->createdAt()->modify('-5 secs')->format('Y-m-d\TH:i:s.u');
+        $later = $event->createdAt()->modify('+5 secs')->format('Y-m-d\TH:i:s.u');
+
+        $streamName = new StreamName('Prooph\Model\User');
+
+        $stream = new Stream($streamName, new ArrayIterator([$event]));
 
         $this->eventStore->create($stream);
 
@@ -533,8 +552,21 @@ abstract class AbstractEventStoreTest extends TestCase
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::NOT_EQUALS(), 'baz');
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::GREATER_THAN(), 4);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int2', Operator::GREATER_THAN_EQUALS(), 4);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::IN(), [4, 5, 6]);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int3', Operator::LOWER_THAN(), 7);
         $metadataMatcher = $metadataMatcher->withMetadataMatch('int4', Operator::LOWER_THAN_EQUALS(), 7);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::NOT_IN(), [4, 6]);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), '^b[a]r$');
+
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::EQUALS(), $uuid, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::NOT_EQUALS(), 'baz', FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::GREATER_THAN(), $before, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::GREATER_THAN_EQUALS(), $before, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::IN(), [$uuid, 2, 3], FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN(), $later, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN_EQUALS(), $later, FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::NOT_IN(), [$before, $later], FieldType::MESSAGE_PROPERTY());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('messageName', Operator::REGEX(), '.+UserCreated$', FieldType::MESSAGE_PROPERTY());
 
         $streamEvents = $this->eventStore->loadReverse($stream->streamName(), 1, null, $metadataMatcher);
 
@@ -606,10 +638,224 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $this->assertFalse($result->valid());
 
-        $this->expectException(InvalidArgumentException::class);
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::IN(), [4, 5, 6]);
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertCount(1, $streamEvents);
 
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::IN(), [4, 6]);
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertFalse($streamEvents->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::NOT_IN(), [4, 5, 6]);
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertFalse($streamEvents->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), '^b[a]r$');
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertCount(1, $streamEvents);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), '^b[a]z$');
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertFalse($streamEvents->valid());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $value = new \stdClass();
+        $value->foo = 'bar';
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), $value);
+    }
+
+    /**
+     * @test
+     * @group by
+     */
+    public function it_returns_only_matched_message_property(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $uuid = $event->uuid()->toString();
+        $createdAt = $event->createdAt()->format('Y-m-d\TH:i:s.u');
+        $messageName = $event->messageName();
+
+        $before = $event->createdAt()->modify('-5 secs')->format('Y-m-d\TH:i:s.u');
+        $later = $event->createdAt()->modify('+5 secs')->format('Y-m-d\TH:i:s.u');
+
+        $streamName = new StreamName('Prooph\Model\User');
+
+        $stream = new Stream($streamName, new ArrayIterator([$event]));
+
+        $this->eventStore->create($stream);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::EQUALS(), 'baz', FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::NOT_EQUALS(), $uuid, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::GREATER_THAN(), $later, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('created_at', Operator::GREATER_THAN_EQUALS(), $later, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('created_at', Operator::IN(), [$before, $later], FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN(), $before, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN_EQUALS(), $before, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('created_at', Operator::NOT_IN(), [$before, $createdAt, $later], FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('message_name', Operator::REGEX(), 'foobar', FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_only_matched_message_property_reverse(): void
+    {
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $uuid = $event->uuid()->toString();
+        $createdAt = $event->createdAt()->format('Y-m-d\TH:i:s.u');
+        $before = $event->createdAt()->modify('-5 secs')->format('Y-m-d\TH:i:s.u');
+        $later = $event->createdAt()->modify('+5 secs')->format('Y-m-d\TH:i:s.u');
+
+        $streamName = new StreamName('Prooph\Model\User');
+        $stream = new Stream($streamName, new ArrayIterator([$event]));
+
+        $this->eventStore->create($stream);
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::EQUALS(), 'baz', FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('uuid', Operator::NOT_EQUALS(), $uuid, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::GREATER_THAN(), $later, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('created_at', Operator::GREATER_THAN_EQUALS(), $later, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('created_at', Operator::IN(), [$before, $later], FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN(), $before, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('createdAt', Operator::LOWER_THAN_EQUALS(), $before, FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('created_at', Operator::NOT_IN(), [$before, $createdAt, $later], FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('message_name', Operator::REGEX(), 'foobar', FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
     }
 
     /**
@@ -877,8 +1123,41 @@ abstract class AbstractEventStoreTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
+        $value = new \stdClass();
+        $value->foo = 'bar';
+
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('key', Operator::EQUALS(), ['foo' => 'bar']);
+        $metadataMatcher->withMetadataMatch('key', Operator::EQUALS(), $value);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_on_invalid_field_for_message_property(): void
+    {
+        $this->expectException(\UnexpectedValueException::class);
+
+        $event = UserCreated::with(['name' => 'John'], 1);
+        $event = $event->withAddedMetadata('foo', 'bar');
+        $event = $event->withAddedMetadata('int', 5);
+        $event = $event->withAddedMetadata('int2', 4);
+        $event = $event->withAddedMetadata('int3', 6);
+        $event = $event->withAddedMetadata('int4', 7);
+
+        $streamName = new StreamName('Prooph\Model\User');
+        $stream = new Stream($streamName, new ArrayIterator([$event]));
+
+        $this->eventStore->create($stream);
+
+        $metadataMatcher = $this->prophesize(MetadataMatcher::class);
+        $metadataMatcher->data()->willReturn([[
+            'field' => 'foo',
+            'value' => 'bar',
+            'operator' => Operator::EQUALS(),
+            'fieldType' => FieldType::MESSAGE_PROPERTY(),
+        ]])->shouldBeCalled();
+
+        $this->eventStore->load($streamName, 1, null, $metadataMatcher->reveal());
     }
 
     public function getMatchingMetadata(): array

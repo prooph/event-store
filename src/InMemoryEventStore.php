@@ -20,6 +20,7 @@ use Prooph\EventStore\Exception\StreamExistsAlready;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
+use Prooph\EventStore\Metadata\FieldType;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Util\Assertion;
@@ -110,6 +111,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             /* @var Message $streamEvent */
             if (($key + 1) >= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
+                && $this->matchesMessagesProperty($metadataMatcher, $streamEvent)
             ) {
                 ++$found;
                 $streamEvents[] = $streamEvent;
@@ -155,6 +157,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             /* @var Message $streamEvent */
             if (($key + 1) <= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
+                && $this->matchesMessagesProperty($metadataMatcher, $streamEvent)
             ) {
                 $streamEvents[] = $streamEvent;
                 ++$found;
@@ -449,6 +452,10 @@ final class InMemoryEventStore implements TransactionalEventStore
     private function matchesMetadata(MetadataMatcher $metadataMatcher, array $metadata): bool
     {
         foreach ($metadataMatcher->data() as $match) {
+            if (! FieldType::METADATA()->is($match['fieldType'])) {
+                continue;
+            }
+
             $field = $match['field'];
 
             if (! isset($metadata[$field])) {
@@ -474,6 +481,11 @@ final class InMemoryEventStore implements TransactionalEventStore
                         return false;
                     }
                     break;
+                case Operator::IN():
+                    if (! in_array($metadata[$field], $expected, true)) {
+                        return false;
+                    }
+                    break;
                 case Operator::LOWER_THAN():
                     if (! ($metadata[$field] < $expected)) {
                         return false;
@@ -486,6 +498,96 @@ final class InMemoryEventStore implements TransactionalEventStore
                     break;
                 case Operator::NOT_EQUALS():
                     if ($metadata[$field] === $expected) {
+                        return false;
+                    }
+                    break;
+                case Operator::NOT_IN():
+                    if (in_array($metadata[$field], $expected, true)) {
+                        return false;
+                    }
+                    break;
+                case Operator::REGEX():
+                    if (! preg_match('/' . $expected . '/', $metadata[$field])) {
+                        return false;
+                    }
+                    break;
+                default:
+                    throw new \UnexpectedValueException('Unknown operator found');
+            }
+        }
+
+        return true;
+    }
+
+    private function matchesMessagesProperty(MetadataMatcher $metadataMatcher, Message $message): bool
+    {
+        foreach ($metadataMatcher->data() as $match) {
+            if (! FieldType::MESSAGE_PROPERTY()->is($match['fieldType'])) {
+                continue;
+            }
+
+            switch ($match['field']) {
+                case 'uuid':
+                    $value = $message->uuid()->toString();
+                    break;
+                case 'message_name':
+                case 'messageName':
+                    $value = $message->messageName();
+                    break;
+                case 'created_at':
+                case 'createdAt':
+                    $value = $message->createdAt()->format('Y-m-d\TH:i:s.u');
+                    break;
+                default:
+                    throw new \UnexpectedValueException(sprintf('Unexpected field "%s" given', $match['field']));
+            }
+
+            $operator = $match['operator'];
+            $expected = $match['value'];
+
+            switch ($operator) {
+                case Operator::EQUALS():
+                    if ($value !== $expected) {
+                        return false;
+                    }
+                    break;
+                case Operator::GREATER_THAN():
+                    if (! ($value > $expected)) {
+                        return false;
+                    }
+                    break;
+                case Operator::GREATER_THAN_EQUALS():
+                    if (! ($value >= $expected)) {
+                        return false;
+                    }
+                    break;
+                case Operator::IN():
+                    if (! in_array($value, $expected, true)) {
+                        return false;
+                    }
+                    break;
+                case Operator::LOWER_THAN():
+                    if (! ($value < $expected)) {
+                        return false;
+                    }
+                    break;
+                case Operator::LOWER_THAN_EQUALS():
+                    if (! ($value <= $expected)) {
+                        return false;
+                    }
+                    break;
+                case Operator::NOT_EQUALS():
+                    if ($value === $expected) {
+                        return false;
+                    }
+                    break;
+                case Operator::NOT_IN():
+                    if (in_array($value, $expected, true)) {
+                        return false;
+                    }
+                    break;
+                case Operator::REGEX():
+                    if (! preg_match('/' . $expected . '/', $value)) {
                         return false;
                     }
                     break;
