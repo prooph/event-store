@@ -505,11 +505,6 @@ abstract class AbstractEventStoreTest extends TestCase
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
     }
 
     /**
@@ -606,10 +601,34 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $this->assertFalse($result->valid());
 
-        $this->expectException(InvalidArgumentException::class);
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::IN(), [4, 5, 6]);
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertCount(1, $streamEvents);
 
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), ['key' => 'value']);
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('int', Operator::NOT_IN(), [4, 5, 6]);
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertFalse($streamEvents->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), '^b[a]r$');
+
+        $streamEvents = $this->eventStore->loadReverse($streamName, null, null, $metadataMatcher);
+
+        $this->assertCount(1, $streamEvents);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $value = new \stdClass();
+        $value->foo = 'bar';
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('meta', Operator::EQUALS(), $value);
     }
 
     /**
@@ -877,8 +896,11 @@ abstract class AbstractEventStoreTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
+        $value = new \stdClass();
+        $value->foo = 'bar';
+
         $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('key', Operator::EQUALS(), ['foo' => 'bar']);
+        $metadataMatcher->withMetadataMatch('key', Operator::EQUALS(), $value);
     }
 
     public function getMatchingMetadata(): array

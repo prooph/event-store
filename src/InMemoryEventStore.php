@@ -474,6 +474,11 @@ final class InMemoryEventStore implements TransactionalEventStore
                         return false;
                     }
                     break;
+                case Operator::IN():
+                    if (! in_array($metadata[$field], $expected, true)) {
+                        return false;
+                    }
+                    break;
                 case Operator::LOWER_THAN():
                     if (! ($metadata[$field] < $expected)) {
                         return false;
@@ -486,6 +491,16 @@ final class InMemoryEventStore implements TransactionalEventStore
                     break;
                 case Operator::NOT_EQUALS():
                     if ($metadata[$field] === $expected) {
+                        return false;
+                    }
+                    break;
+                case Operator::NOT_IN():
+                    if (in_array($metadata[$field], $expected, true)) {
+                        return false;
+                    }
+                    break;
+                case Operator::REGEX():
+                    if (! preg_match('/' . $expected . '/', $metadata[$field])) {
                         return false;
                     }
                     break;

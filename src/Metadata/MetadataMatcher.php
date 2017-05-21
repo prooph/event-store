@@ -39,10 +39,10 @@ class MetadataMatcher
      */
     private function validateValue($value): void
     {
-        if (is_scalar($value)) {
+        if (is_scalar($value) || is_array($value)) {
             return;
         }
 
-        throw new InvalidArgumentException('A metadata value must have a scalar type.');
+        throw new InvalidArgumentException('A metadata value must have a scalar or array    type.');
     }
 }
