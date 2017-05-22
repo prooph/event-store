@@ -31,4 +31,52 @@ class MetadataMatcherTest extends TestCase
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar', FieldType::MESSAGE_PROPERTY());
     }
+
+    /**
+     * @test
+     */
+    public function it_throws_on_invalid_value_for_in_operator(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be an array for the operator IN');
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('foo', Operator::IN(), 'bar', FieldType::METADATA());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_on_invalid_value_for_not_in_operator(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be an array for the operator NOT_IN.');
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('foo', Operator::NOT_IN(), 'bar', FieldType::METADATA());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_on_invalid_value_for_regex_operator(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be a string for the regex operator.');
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), false, FieldType::METADATA());
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_on_invalid_value_for_equals_operator(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must have a scalar type for the operator EQUALS.');
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), ['bar' => 'baz'], FieldType::METADATA());
+    }
 }
