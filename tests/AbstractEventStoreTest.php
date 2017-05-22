@@ -684,7 +684,6 @@ abstract class AbstractEventStoreTest extends TestCase
 
     /**
      * @test
-     * @group by
      */
     public function it_returns_only_matched_message_property(): void
     {
