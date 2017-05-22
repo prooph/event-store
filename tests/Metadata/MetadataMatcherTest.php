@@ -23,18 +23,6 @@ class MetadataMatcherTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_on_invalid_field_for_message_property(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid message property "foo" given');
-
-        $metadataMatcher = new MetadataMatcher();
-        $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar', FieldType::MESSAGE_PROPERTY());
-    }
-
-    /**
-     * @test
-     */
     public function it_throws_on_invalid_value_for_in_operator(): void
     {
         $this->expectException(InvalidArgumentException::class);
