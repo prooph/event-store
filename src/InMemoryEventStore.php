@@ -462,57 +462,8 @@ final class InMemoryEventStore implements TransactionalEventStore
                 return false;
             }
 
-            $operator = $match['operator'];
-            $expected = $match['value'];
-
-            switch ($operator) {
-                case Operator::EQUALS():
-                    if ($metadata[$field] !== $expected) {
-                        return false;
-                    }
-                    break;
-                case Operator::GREATER_THAN():
-                    if (! ($metadata[$field] > $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::GREATER_THAN_EQUALS():
-                    if (! ($metadata[$field] >= $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::IN():
-                    if (! in_array($metadata[$field], $expected, true)) {
-                        return false;
-                    }
-                    break;
-                case Operator::LOWER_THAN():
-                    if (! ($metadata[$field] < $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::LOWER_THAN_EQUALS():
-                    if (! ($metadata[$field] <= $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::NOT_EQUALS():
-                    if ($metadata[$field] === $expected) {
-                        return false;
-                    }
-                    break;
-                case Operator::NOT_IN():
-                    if (in_array($metadata[$field], $expected, true)) {
-                        return false;
-                    }
-                    break;
-                case Operator::REGEX():
-                    if (! preg_match('/' . $expected . '/', $metadata[$field])) {
-                        return false;
-                    }
-                    break;
-                default:
-                    throw new \UnexpectedValueException('Unknown operator found');
+            if (! $this->match($match['operator'], $metadata[$field], $match['value'])) {
+                return false;
             }
         }
 
@@ -542,58 +493,64 @@ final class InMemoryEventStore implements TransactionalEventStore
                     throw new \UnexpectedValueException(sprintf('Unexpected field "%s" given', $match['field']));
             }
 
-            $operator = $match['operator'];
-            $expected = $match['value'];
-
-            switch ($operator) {
-                case Operator::EQUALS():
-                    if ($value !== $expected) {
-                        return false;
-                    }
-                    break;
-                case Operator::GREATER_THAN():
-                    if (! ($value > $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::GREATER_THAN_EQUALS():
-                    if (! ($value >= $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::IN():
-                    if (! in_array($value, $expected, true)) {
-                        return false;
-                    }
-                    break;
-                case Operator::LOWER_THAN():
-                    if (! ($value < $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::LOWER_THAN_EQUALS():
-                    if (! ($value <= $expected)) {
-                        return false;
-                    }
-                    break;
-                case Operator::NOT_EQUALS():
-                    if ($value === $expected) {
-                        return false;
-                    }
-                    break;
-                case Operator::NOT_IN():
-                    if (in_array($value, $expected, true)) {
-                        return false;
-                    }
-                    break;
-                case Operator::REGEX():
-                    if (! preg_match('/' . $expected . '/', $value)) {
-                        return false;
-                    }
-                    break;
-                default:
-                    throw new \UnexpectedValueException('Unknown operator found');
+            if (! $this->match($match['operator'], $value, $match['value'])) {
+                return false;
             }
+        }
+
+        return true;
+    }
+
+    private function match(Operator $operator, $value, $expected): bool
+    {
+        switch ($operator) {
+            case Operator::EQUALS():
+                if ($value !== $expected) {
+                    return false;
+                }
+                break;
+            case Operator::GREATER_THAN():
+                if (! ($value > $expected)) {
+                    return false;
+                }
+                break;
+            case Operator::GREATER_THAN_EQUALS():
+                if (! ($value >= $expected)) {
+                    return false;
+                }
+                break;
+            case Operator::IN():
+                if (! in_array($value, $expected, true)) {
+                    return false;
+                }
+                break;
+            case Operator::LOWER_THAN():
+                if (! ($value < $expected)) {
+                    return false;
+                }
+                break;
+            case Operator::LOWER_THAN_EQUALS():
+                if (! ($value <= $expected)) {
+                    return false;
+                }
+                break;
+            case Operator::NOT_EQUALS():
+                if ($value === $expected) {
+                    return false;
+                }
+                break;
+            case Operator::NOT_IN():
+                if (in_array($value, $expected, true)) {
+                    return false;
+                }
+                break;
+            case Operator::REGEX():
+                if (! preg_match('/' . $expected . '/', $value)) {
+                    return false;
+                }
+                break;
+            default:
+                throw new \UnexpectedValueException('Unknown operator found');
         }
 
         return true;
