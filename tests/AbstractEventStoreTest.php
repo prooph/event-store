@@ -1164,8 +1164,8 @@ abstract class AbstractEventStoreTest extends TestCase
         return [
             [['snapshot' => true]],
             [['some_id' => 123]],
-            [['fuu' => 'bar']],
-            [['snapshot' => true, 'some_id' => 123, 'fuu' => 'bar']],
+            [['foo' => 'bar']],
+            [['snapshot' => true, 'some_id' => 123, 'foo' => 'bar']],
         ];
     }
 }
