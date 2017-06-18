@@ -14,6 +14,7 @@ namespace ProophTest\EventStore;
 
 use ArrayIterator;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\Stream;
@@ -216,5 +217,29 @@ trait TransactionalEventStoreTestTrait
         $this->expectException(TransactionNotStarted::class);
 
         $this->eventStore->rollback();
+    }
+
+    /**
+     * @test
+     */
+    public function it_loads_and_saves_within_one_transaction(): void
+    {
+        $testStream = $this->getTestStream();
+
+        $this->eventStore->beginTransaction();
+
+        $streamNotFound = false;
+
+        try {
+            $this->eventStore->load($testStream->streamName());
+        } catch (StreamNotFound $e) {
+            $streamNotFound = true;
+        }
+
+        $this->assertTrue($streamNotFound);
+
+        $this->eventStore->create($testStream);
+
+        $this->eventStore->commit();
     }
 }
