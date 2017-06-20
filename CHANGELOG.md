@@ -1,7 +1,39 @@
 # Change Log
 
-## [v7.0.0](https://github.com/prooph/event-store/tree/v7.0.0)
+## [v7.1.1](https://github.com/prooph/event-store/tree/v7.1.1) (2017-06-18)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.1.0...v7.1.1)
 
+**Fixed bugs:**
+
+- add test it\_loads\_and\_saves\_within\_one\_transaction [\#290](https://github.com/prooph/event-store/pull/290) ([prolic](https://github.com/prolic))
+
+**Merged pull requests:**
+
+- Fix spelling in test [\#289](https://github.com/prooph/event-store/pull/289) ([prolic](https://github.com/prolic))
+
+## [v7.1.0](https://github.com/prooph/event-store/tree/v7.1.0) (2017-05-22)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.1...v7.1.0)
+
+**Implemented enhancements:**
+
+- Support message property filters [\#284](https://github.com/prooph/event-store/issues/284)
+- better validation in metadata matcher [\#288](https://github.com/prooph/event-store/pull/288) ([prolic](https://github.com/prolic))
+- reduce duplicate code [\#287](https://github.com/prooph/event-store/pull/287) ([prolic](https://github.com/prolic))
+- Support message property filters + new operators [\#286](https://github.com/prooph/event-store/pull/286) ([prolic](https://github.com/prolic))
+- add read only event store wrapper [\#285](https://github.com/prooph/event-store/pull/285) ([prolic](https://github.com/prolic))
+
+**Closed issues:**
+
+- Trackable transaction in TransactionalActionEventEmitterEventStore [\#283](https://github.com/prooph/event-store/issues/283)
+
+## [v7.0.1](https://github.com/prooph/event-store/tree/v7.0.1) (2017-03-30)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0...v7.0.1)
+
+**Closed issues:**
+
+- Link @prolic's blog post in the docs [\#178](https://github.com/prooph/event-store/issues/178)
+
+## [v7.0.0](https://github.com/prooph/event-store/tree/v7.0.0) (2017-03-30)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0-beta3...v7.0.0)
 
 **Implemented enhancements:**
