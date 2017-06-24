@@ -165,7 +165,7 @@ final class InMemoryProjectionManager implements ProjectionManager
     public function fetchProjectionStatus(string $name): ProjectionStatus
     {
         if (! isset($this->projectors[$name])) {
-            throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
+            throw Exception\ProjectionNotFound::withName($name);
         }
 
         $projector = $this->projectors[$name];
@@ -179,7 +179,7 @@ final class InMemoryProjectionManager implements ProjectionManager
     public function fetchProjectionStreamPositions(string $name): array
     {
         if (! isset($this->projectors[$name])) {
-            throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
+            throw Exception\ProjectionNotFound::withName($name);
         }
 
         $projector = $this->projectors[$name];
@@ -194,7 +194,7 @@ final class InMemoryProjectionManager implements ProjectionManager
     public function fetchProjectionState(string $name): array
     {
         if (! isset($this->projectors[$name])) {
-            throw new Exception\RuntimeException('A projection with name "' . $name . '" could not be found.');
+            throw Exception\ProjectionNotFound::withName($name);
         }
 
         return $this->projectors[$name]->getState();
