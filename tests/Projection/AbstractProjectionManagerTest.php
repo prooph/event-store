@@ -15,6 +15,7 @@ namespace ProophTest\EventStore\Projection;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\OutOfRangeException;
+use Prooph\EventStore\Exception\ProjectionNotFound;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\Projection\ProjectionStatus;
@@ -247,7 +248,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
      */
     public function it_throws_exception_when_asked_for_unknown_projection_status(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(ProjectionNotFound::class);
 
         $this->projectionManager->fetchProjectionStatus('unkown');
     }
@@ -257,7 +258,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
      */
     public function it_throws_exception_when_asked_for_unknown_projection_stream_positions(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(ProjectionNotFound::class);
 
         $this->projectionManager->fetchProjectionStreamPositions('unkown');
     }
@@ -267,7 +268,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
      */
     public function it_throws_exception_when_asked_for_unknown_projection_state(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(ProjectionNotFound::class);
 
         $this->projectionManager->fetchProjectionState('unkown');
     }
