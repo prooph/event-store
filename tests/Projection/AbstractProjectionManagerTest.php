@@ -16,7 +16,6 @@ use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\OutOfRangeException;
 use Prooph\EventStore\Exception\ProjectionNotFound;
-use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\Projection\ProjectionStatus;
 
