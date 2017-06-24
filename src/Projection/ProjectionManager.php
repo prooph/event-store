@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projection;
 
+use Prooph\EventStore\Exception\ProjectionNotFound;
+
 interface ProjectionManager
 {
     public function createQuery(): Query;
@@ -27,10 +29,19 @@ interface ProjectionManager
         array $options = []
     ): ReadModelProjector;
 
+    /**
+     * @throws ProjectionNotFound
+     */
     public function deleteProjection(string $name, bool $deleteEmittedEvents): void;
 
+    /**
+     * @throws ProjectionNotFound
+     */
     public function resetProjection(string $name): void;
 
+    /**
+     * @throws ProjectionNotFound
+     */
     public function stopProjection(string $name): void;
 
     /**
@@ -43,9 +54,18 @@ interface ProjectionManager
      */
     public function fetchProjectionNamesRegex(string $regex, int $limit = 20, int $offset = 0): array;
 
+    /**
+     * @throws ProjectionNotFound
+     */
     public function fetchProjectionStatus(string $name): ProjectionStatus;
 
+    /**
+     * @throws ProjectionNotFound
+     */
     public function fetchProjectionStreamPositions(string $name): array;
 
+    /**
+     * @throws ProjectionNotFound
+     */
     public function fetchProjectionState(string $name): array;
 }
