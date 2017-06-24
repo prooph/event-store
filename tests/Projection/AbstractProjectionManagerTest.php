@@ -307,4 +307,34 @@ abstract class AbstractProjectionManagerTest extends TestCase
 
         $this->assertSame([], $this->projectionManager->fetchProjectionState('test-projection'));
     }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_trying_to_delete_non_existing_projection(): void
+    {
+        $this->expectException(ProjectionNotFound::class);
+
+        $this->projectionManager->deleteProjection('unknown', false);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_trying_to_reset_non_existing_projection(): void
+    {
+        $this->expectException(ProjectionNotFound::class);
+
+        $this->projectionManager->resetProjection('unknown');
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_exception_when_trying_to_stop_non_existing_projection(): void
+    {
+        $this->expectException(ProjectionNotFound::class);
+
+        $this->projectionManager->stopProjection('unknown');
+    }
 }
