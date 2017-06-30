@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prooph\EventStore\Projection\ReadModel;
@@ -44,7 +46,7 @@ $projection = $projectionManager->createReadModelProjection(
     'test_projection',
     $readModel,
     [
-        ReadModelProjector::OPTION_PCNTL_DISPATCH => true
+        ReadModelProjector::OPTION_PCNTL_DISPATCH => true,
     ]
 );
 pcntl_signal(SIGQUIT, function () use ($projection) {
@@ -53,5 +55,6 @@ pcntl_signal(SIGQUIT, function () use ($projection) {
 });
 $projection
     ->fromStream('user-123')
-    ->whenAny(function () {})
+    ->whenAny(function () {
+    })
     ->run();

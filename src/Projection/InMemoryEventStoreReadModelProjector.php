@@ -326,7 +326,6 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
             }
 
             $this->triggerPcntlSignalDispatch();
-
         } while ($keepRunning && ! $this->isStopped);
 
         $this->status = ProjectionStatus::IDLE();

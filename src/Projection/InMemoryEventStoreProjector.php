@@ -112,8 +112,7 @@ final class InMemoryEventStoreProjector implements Projector
         int $cacheSize,
         int $sleep,
         bool $triggerPcntlSignalDispatch = false
-    )
-    {
+    ) {
         if ($cacheSize < 1) {
             throw new Exception\InvalidArgumentException('cache size must be a positive integer');
         }
@@ -359,7 +358,6 @@ final class InMemoryEventStoreProjector implements Projector
             }
 
             $this->triggerPcntlSignalDispatch();
-
         } while ($keepRunning && ! $this->isStopped);
 
         $this->status = ProjectionStatus::IDLE();

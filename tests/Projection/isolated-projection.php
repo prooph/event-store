@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prooph\EventStore\Projection\Projector;
@@ -15,7 +17,7 @@ $projectionManager = new InMemoryProjectionManager($eventStore);
 $projection = $projectionManager->createProjection(
     'test_projection',
     [
-        Projector::OPTION_PCNTL_DISPATCH => true
+        Projector::OPTION_PCNTL_DISPATCH => true,
     ]
 );
 pcntl_signal(SIGQUIT, function () use ($projection) {
@@ -24,5 +26,6 @@ pcntl_signal(SIGQUIT, function () use ($projection) {
 });
 $projection
     ->fromStream('user-123')
-    ->whenAny(function () {})
+    ->whenAny(function () {
+    })
     ->run();
