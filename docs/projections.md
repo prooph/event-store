@@ -145,6 +145,22 @@ OPTION_LOCK_TIMEOUT_MS = 'lock_timeout_ms'
 Indicates the time (in microseconds) the projector is locked. During this time no other projector with the same name can
 be started. A running projector will update the lock timeout on every loop.
 
+OPTION_PCNTL_DISPATCH = 'false'
+
+Enable dispatching of process signals to registered [signal handlers](http://php.net/manual/en/function.pcntl-signal.php) while
+the projection is running. You must still register your own signal handler and take according action.
+For example to gracefully stop the projection you could do
+```
+$projection = $projectionManager->createProjection(
+    'test_projection',
+    [ Projector::OPTION_PCNTL_DISPATCH => true, ]
+);
+pcntl_signal(SIGQUIT, function () use ($projection) {
+    $projection->stop();
+});
+$projection->run();
+```
+
 ## Read Model Projections
 
 Projections can also be used to create read models. A read model has to implement `Prooph\EventStore\Projection\ReadModel`.
