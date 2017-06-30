@@ -118,7 +118,7 @@ class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
 
         $eventStore = $this->prophesize(EventStore::class);
 
-        new InMemoryEventStoreProjector($eventStore->reveal(), 'test_projection', 10, 10, 2000);
+        new InMemoryEventStoreProjector($eventStore->reveal(), 'test_projection', 10, 10);
     }
 
     /**
