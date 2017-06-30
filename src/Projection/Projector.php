@@ -21,11 +21,13 @@ interface Projector
     public const OPTION_SLEEP = 'sleep';
     public const OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
     public const OPTION_LOCK_TIMEOUT_MS = 'lock_timeout_ms';
+    public const OPTION_PCNTL_DISPATCH = 'trigger_pcntl_dispatch';
 
     public const DEFAULT_CACHE_SIZE = 1000;
     public const DEFAULT_SLEEP = 100000;
     public const DEFAULT_PERSIST_BLOCK_SIZE = 1000;
     public const DEFAULT_LOCK_TIMEOUT_MS = 1000;
+    public const DEFAULT_PCNTL_DISPATCH = false;
 
     /**
      * The callback has to return an array
