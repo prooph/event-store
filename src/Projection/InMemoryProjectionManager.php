@@ -58,7 +58,8 @@ final class InMemoryProjectionManager implements ProjectionManager
             $this->eventStore,
             $name,
             $options[Projector::OPTION_CACHE_SIZE] ?? Projector::DEFAULT_CACHE_SIZE,
-            $options[Projector::OPTION_SLEEP] ?? Projector::DEFAULT_SLEEP
+            $options[Projector::OPTION_SLEEP] ?? Projector::DEFAULT_SLEEP,
+            $options[Projector::OPTION_PCNTL_DISPATCH] ?? Projector::DEFAULT_PCNTL_DISPATCH
         );
 
         if (! isset($this->projectors[$name])) {
@@ -79,7 +80,8 @@ final class InMemoryProjectionManager implements ProjectionManager
             $readModel,
             $options[ReadModelProjector::OPTION_CACHE_SIZE] ?? ReadModelProjector::DEFAULT_CACHE_SIZE,
             $options[ReadModelProjector::OPTION_PERSIST_BLOCK_SIZE] ?? ReadModelProjector::DEFAULT_PERSIST_BLOCK_SIZE,
-            $options[ReadModelProjector::OPTION_SLEEP] ?? ReadModelProjector::DEFAULT_SLEEP
+            $options[ReadModelProjector::OPTION_SLEEP] ?? ReadModelProjector::DEFAULT_SLEEP,
+            $options[ReadModelProjector::OPTION_PCNTL_DISPATCH] ?? ReadModelProjector::DEFAULT_PCNTL_DISPATCH
         );
 
         if (! isset($this->projectors[$name])) {

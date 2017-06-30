@@ -105,6 +105,11 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
     private $sleep;
 
     /**
+     * @var bool
+     */
+    private $triggerPcntlSignalDispatch;
+
+    /**
      * @var array|null
      */
     private $query;
@@ -115,7 +120,8 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         ReadModel $readModel,
         int $cacheSize,
         int $persistBlockSize,
-        int $sleep
+        int $sleep,
+        bool $triggerPcntlSignalDispatch = false
     ) {
         if ($cacheSize < 1) {
             throw new Exception\InvalidArgumentException('cache size must be a positive integer');
@@ -136,6 +142,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         $this->readModel = $readModel;
         $this->sleep = $sleep;
         $this->status = ProjectionStatus::IDLE();
+        $this->triggerPcntlSignalDispatch = $triggerPcntlSignalDispatch && extension_loaded('pcntl');
 
         while ($eventStore instanceof EventStoreDecorator) {
             $eventStore = $eventStore->getInnerEventStore();
@@ -317,6 +324,9 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
             if (0 === $eventCounter) {
                 usleep($this->sleep);
             }
+
+            $this->triggerPcntlSignalDispatch();
+
         } while ($keepRunning && ! $this->isStopped);
 
         $this->status = ProjectionStatus::IDLE();
@@ -494,5 +504,12 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         }
 
         $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+    }
+
+    private function triggerPcntlSignalDispatch(): void
+    {
+        if ($this->triggerPcntlSignalDispatch) {
+            pcntl_signal_dispatch();
+        }
     }
 }
