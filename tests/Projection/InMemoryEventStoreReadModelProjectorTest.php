@@ -165,4 +165,37 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
 
         new InMemoryEventStoreReadModelProjector($wrappedEventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
     }
+
+    /**
+     * @test
+     */
+    public function it_dispatches_pcntl_signals_when_enabled(): void
+    {
+        if (!extension_loaded('pcntl')) {
+            $this->markTestSkipped('The PCNTL extension is not available.');
+            return;
+        }
+
+        $command = 'php ' . realpath(__DIR__) . '/isolated-read-model-projection.php';
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+        /**
+         * Created process inherits env variables from this process.
+         * Script returns with non-standard code SIGUSR1 from the handler and -1 else
+         */
+        $projectionProcess = proc_open($command, $descriptorSpec, $pipes);
+        $processDetails = proc_get_status($projectionProcess);
+        sleep(2);
+        posix_kill($processDetails['pid'], SIGQUIT);
+        sleep(2);
+
+        $processDetails = proc_get_status($projectionProcess);
+        $this->assertEquals(
+            SIGUSR1,
+            $processDetails['exitcode']
+        );
+    }
 }
