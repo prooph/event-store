@@ -166,7 +166,7 @@ class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
             return;
         }
 
-        $command = 'php ' . realpath(__DIR__) . '/isolated-projection.php';
+        $command = 'exec php ' . realpath(__DIR__) . '/isolated-projection.php';
         $descriptorSpec = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
@@ -178,9 +178,9 @@ class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
          */
         $projectionProcess = proc_open($command, $descriptorSpec, $pipes);
         $processDetails = proc_get_status($projectionProcess);
-        sleep(2);
+        sleep(1);
         posix_kill($processDetails['pid'], SIGQUIT);
-        sleep(2);
+        sleep(1);
 
         $processDetails = proc_get_status($projectionProcess);
         $this->assertEquals(

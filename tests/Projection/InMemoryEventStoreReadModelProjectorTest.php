@@ -177,7 +177,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
             return;
         }
 
-        $command = 'php ' . realpath(__DIR__) . '/isolated-read-model-projection.php';
+        $command = 'exec php ' . realpath(__DIR__) . '/isolated-read-model-projection.php';
         $descriptorSpec = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
@@ -189,9 +189,9 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
          */
         $projectionProcess = proc_open($command, $descriptorSpec, $pipes);
         $processDetails = proc_get_status($projectionProcess);
-        sleep(2);
+        sleep(1);
         posix_kill($processDetails['pid'], SIGQUIT);
-        sleep(2);
+        sleep(1);
 
         $processDetails = proc_get_status($projectionProcess);
         $this->assertEquals(

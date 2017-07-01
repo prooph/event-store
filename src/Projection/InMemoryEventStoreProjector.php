@@ -121,12 +121,16 @@ final class InMemoryEventStoreProjector implements Projector
             throw new Exception\InvalidArgumentException('sleep must be a positive integer');
         }
 
+        if ($triggerPcntlSignalDispatch && ! extension_loaded('pcntl')) {
+            throw Exception\ExtensionNotLoadedException::withName('pcntl');
+        }
+
         $this->eventStore = $eventStore;
         $this->name = $name;
         $this->cachedStreamNames = new ArrayCache($cacheSize);
         $this->sleep = $sleep;
         $this->status = ProjectionStatus::IDLE();
-        $this->triggerPcntlSignalDispatch = $triggerPcntlSignalDispatch && extension_loaded('pcntl');
+        $this->triggerPcntlSignalDispatch = $triggerPcntlSignalDispatch;
 
         while ($eventStore instanceof EventStoreDecorator) {
             $eventStore = $eventStore->getInnerEventStore();
@@ -357,7 +361,9 @@ final class InMemoryEventStoreProjector implements Projector
                 usleep($this->sleep);
             }
 
-            $this->triggerPcntlSignalDispatch();
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
         } while ($keepRunning && ! $this->isStopped);
 
         $this->status = ProjectionStatus::IDLE();
@@ -506,12 +512,5 @@ final class InMemoryEventStoreProjector implements Projector
         }
 
         $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
-    }
-
-    private function triggerPcntlSignalDispatch(): void
-    {
-        if ($this->triggerPcntlSignalDispatch) {
-            pcntl_signal_dispatch();
-        }
     }
 }
