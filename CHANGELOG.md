@@ -1,5 +1,23 @@
 # Change Log
 
+## [v7.2.0](https://github.com/prooph/event-store/tree/v7.2.0)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.1.3...v7.2.0)
+
+**Implemented enhancements:**
+
+- Add projection option constants to trigger pcntl\_signal\_dispatch  [\#293](https://github.com/prooph/event-store/pull/293) ([fritz-gerneth](https://github.com/fritz-gerneth))
+
+## [v7.1.3](https://github.com/prooph/event-store/tree/v7.1.3) (2017-06-24)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.1.2...v7.1.3)
+
+## [v7.1.2](https://github.com/prooph/event-store/tree/v7.1.2) (2017-06-24)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.1.1...v7.1.2)
+
+**Implemented enhancements:**
+
+- add projection not found exception [\#291](https://github.com/prooph/event-store/pull/291) ([prolic](https://github.com/prolic))
+
 ## [v7.1.1](https://github.com/prooph/event-store/tree/v7.1.1) (2017-06-18)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.0...v7.1.1)
 
