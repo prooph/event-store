@@ -54,10 +54,10 @@ final class InMemoryEventStore implements TransactionalEventStore
         }
 
         if ($this->inTransaction) {
-            $this->cachedStreams[$streamNameString]['events'] = $stream->streamEvents();
+            $this->cachedStreams[$streamNameString]['events'] = iterator_to_array($stream->streamEvents());
             $this->cachedStreams[$streamNameString]['metadata'] = $stream->metadata();
         } else {
-            $this->streams[$streamNameString]['events'] = $stream->streamEvents();
+            $this->streams[$streamNameString]['events'] = iterator_to_array($stream->streamEvents());
             $this->streams[$streamNameString]['metadata'] = $stream->metadata();
         }
     }
@@ -153,7 +153,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         $found = 0;
         $streamEvents = [];
 
-        foreach (array_reverse(iterator_to_array($this->streams[$streamName->toString()]['events']), true) as $key => $streamEvent) {
+        foreach (array_reverse($this->streams[$streamName->toString()]['events'], true) as $key => $streamEvent) {
             /* @var Message $streamEvent */
             if (($key + 1) <= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
