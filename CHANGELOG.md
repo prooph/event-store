@@ -1,7 +1,14 @@
 # Change Log
 
-## [v7.2.0](https://github.com/prooph/event-store/tree/v7.2.0)
+## [v7.2.1](https://github.com/prooph/event-store/tree/v7.2.1)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.2.0...v7.2.1)
+
+**Fixed bugs:**
+
+- fix InMemoryEventStore [\#294](https://github.com/prooph/event-store/pull/294) ([prolic](https://github.com/prolic))
+
+## [v7.2.0](https://github.com/prooph/event-store/tree/v7.2.0) (2017-07-01)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.3...v7.2.0)
 
 **Implemented enhancements:**
