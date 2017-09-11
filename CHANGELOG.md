@@ -1,7 +1,22 @@
 # Change Log
 
-## [v7.2.0](https://github.com/prooph/event-store/tree/v7.2.0)
+## [v7.2.2](https://github.com/prooph/event-store/tree/v7.2.2)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.2.1...v7.2.2)
+
+**Fixed bugs:**
+
+- Bug in UpcastingIterator [\#295](https://github.com/prooph/event-store/issues/295)
+- Fixed compability issues EmptyIterator [\#296](https://github.com/prooph/event-store/pull/296) ([hiddeco](https://github.com/hiddeco))
+
+## [v7.2.1](https://github.com/prooph/event-store/tree/v7.2.1) (2017-07-15)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.2.0...v7.2.1)
+
+**Fixed bugs:**
+
+- fix InMemoryEventStore [\#294](https://github.com/prooph/event-store/pull/294) ([prolic](https://github.com/prolic))
+
+## [v7.2.0](https://github.com/prooph/event-store/tree/v7.2.0) (2017-07-01)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.3...v7.2.0)
 
 **Implemented enhancements:**
