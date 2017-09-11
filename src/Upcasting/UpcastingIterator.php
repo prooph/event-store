@@ -46,7 +46,11 @@ final class UpcastingIterator implements Iterator
             return reset($this->storedMessages);
         }
 
-        $current = $this->innerIterator->current();
+        $current = null;
+
+        if (! $this->innerIterator instanceof \EmptyIterator) {
+            $current = $this->innerIterator->current();
+        }
 
         if (null === $current) {
             return null;
@@ -100,6 +104,10 @@ final class UpcastingIterator implements Iterator
 
     public function valid(): bool
     {
+        if ($this->innerIterator instanceof \EmptyIterator) {
+            return false;
+        }
+
         return null !== $this->current();
     }
 

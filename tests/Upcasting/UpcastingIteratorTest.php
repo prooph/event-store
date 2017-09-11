@@ -105,9 +105,23 @@ class UpcastingIteratorTest extends TestCase
     /**
      * @test
      */
-    public function it_iterates_over_empty_iterator(): void
+    public function it_iterates_over_array_iterator(): void
     {
         $iterator = new \ArrayIterator();
+
+        $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
+
+        $this->assertEquals(0, $upcastingIterator->key());
+        $this->assertFalse($upcastingIterator->valid());
+        $this->assertNull($upcastingIterator->current());
+    }
+
+    /**
+     * @test
+     */
+    public function it_iterates_over_empty_iterator(): void
+    {
+        $iterator = new \EmptyIterator();
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
