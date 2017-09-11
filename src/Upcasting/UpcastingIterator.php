@@ -48,7 +48,7 @@ final class UpcastingIterator implements Iterator
 
         $current = null;
 
-        if (!$this->innerIterator instanceof \EmptyIterator) {
+        if (! $this->innerIterator instanceof \EmptyIterator) {
             $current = $this->innerIterator->current();
         }
 
