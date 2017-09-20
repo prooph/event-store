@@ -1,4 +1,4 @@
-# ProophEventStore
+# Prooph Event Store
 
 PHP 7.1 EventStore Implementation.
 
@@ -50,6 +50,14 @@ Then browse to [http://localhost:8080/](http://localhost:8080/)
 
 Please feel free to fork and extend existing or add new plugins and send a pull request with your changes!
 To establish a consistent code quality, please provide unit tests for all your changes and may adapt the documentation.
+
+## Version Guidance
+
+| Version | Status     | PHP Version | Support Until |
+|---------|------------|-------------|---------------|
+| 5.x     | EOL        | >= 5.5      | EOL           |
+| 6.x     | Maintained | >= 5.5      | 3 Dec 2017    |
+| 7.x     | Latest     | >= 7.1      | active        |
 
 ## License
 
