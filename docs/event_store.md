@@ -20,7 +20,7 @@ $readOnlyEventStore = new ReadOnlyEventStoreWrapper($eventStore);
 
 Requirements: an event store wrapped with `Prooph\EventStore\ActionEventEmitterEventStore`.
 
-Action events are triggered when methods of the event store are invoked. The action events are named like the 
+Action events are triggered when methods of the event store are invoked. The action events are named like the
 event store methods. The following events are available (event target is always the event store):
 
 - `create`: event params: `stream` - result params: `streamExistsAlready`
@@ -32,20 +32,20 @@ event store methods. The following events are available (event target is always 
 - `fetchStreamMetadata`: event params: `streamName` - result params: `metadata`, `streamNotFound`
 - `updateStreamMetadata`: event params: `streamName`, `metadata` - result params: `streamNotFound`
 - `fetchStreamNames`: event params: `filter`, `metadataMatcher`, `limit`, `offset` - result params: `streamNames`
-- `fetchStreamNamesRegex`: event params: `filter`, `metadataMatcher`, `limit`, `offset` - result params: `streamNames` 
+- `fetchStreamNamesRegex`: event params: `filter`, `metadataMatcher`, `limit`, `offset` - result params: `streamNames`
 - `fetchCategoryNames`: event params: `filter`, `offset`, `limit` - result params: `categoryNames`
 - `fetchCategoryNamesRegex`: event params: `filter`, `offset`, `limit` - result params: `categoryNames`
 
-If the event store implements additionally \Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore,
+If the event store implements \Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore,
 the following additional events are available:
 
 - `beginTransaction`: event params: none - result params: `transactionAlreadyStarted`
 - `commit`: event params: none - result params: `transactionNotStarted`
-- `rollback`: event params: none - result params: `transactionNotStarted 
+- `rollback`: event params: none - result params: `transactionNotStarted
 
 ## Attaching Plugins
 
-If you had a look at the quick start you should already be familiar with one possibility to attach an event listener plugin.
+If you took a look at the quick start, you should already be familiar with the possibility to attach an event listener plugin.
 
 ```php
 $eventStore->attach(
@@ -57,28 +57,28 @@ $eventStore->attach(
 );
 ```
 
-More complex plugins are typically provided as classes with own dependencies. A plugin can implement the `Prooph\EventStore\Plugin\Plugin` interface
+More complex plugins are typically provided as classes with their own dependencies. A plugin can implement the `Prooph\EventStore\Plugin\Plugin` interface
 and can then attach itself to the event store in the `Plugin::attachToEventStore($eventStore)` method.
 Implementing the interface is especially useful when you use the event store factory.
 
 ## Plugin Use Cases
 
-The event-driven system opens the door for customizations. Here are some ideas what you can do with it:
+The event-driven system opens the door for customizations. Here are some ideas of what you can do with it:
 
 - Attach a domain event dispatcher on the `create` and `appendTo` event
 - Filter events before they are stored
 - Add event metadata like a `causation id` (id of the command which caused the event)
 - Convert events into custom event objects before they are passed back to a repository
-- Implement your own Unit of Work and synchronizes it with the `transaction`, `commit` and `rollback` events
+- Implement your own Unit of Work and synchronize it with the `transaction`, `commit` and `rollback` events
 - ...
 
 ## Metadata enricher
 
-By default the component is shipped with a plugin to automatically add metadata for each events.
-For instance you may want to add information about the command which caused the event or even
+By default, the component is shipped with a plugin to automatically add metadata to each event.
+For instance, you may want to add information about the command which caused the event or even
 the user who triggered that command.
 
-Here is an example of usage:
+Here is an example of its usage:
 
 ```php
 <?php

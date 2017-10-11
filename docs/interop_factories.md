@@ -18,7 +18,7 @@ always bootstrap the components by hand. Just look at the factories for inspirat
 
 ### InMemoryEventStoreFactory
 
-If the requirements are met you just need to add a new section in your application config ...
+If the requirements are met, you just need to add a new section in your application config ...
 
 ```php
 [
@@ -28,7 +28,7 @@ If the requirements are met you just need to add a new section in your applicati
                 'wrap_action_event_emitter' => true,
                 'metadata_enrichers' => [
                     // The factory will get the metadata enrichers and inject them in the MetadataEnricherPlugin.
-                    // Note: you can obtain the same result by instanciating the plugin yourself
+                    // Note: you can obtain the same result by instantiating the plugin yourself
                     // and pass it to the 'plugin' section bellow.
                     'metadata_enricher_1',
                     'metadata_enricher_2',
