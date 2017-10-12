@@ -2,14 +2,14 @@
 
 ## Moved classes
 
-The `Prooph\Snapshot\*` classes are now moved to its own repository [SnapshotStore](https://github.com/prooph/snapshot-store).
+The `Prooph\EventStore\Snapshot\*` classes are now moved to their own repository, [SnapshotStore](https://github.com/prooph/snapshot-store).
 
-The `Prooph\Aggregate\*` classes are now moved into the [event-sourcing](https://github.com/prooph/event-sourcing/) repository.
+The `Prooph\EventStore\Aggregate\*` classes are now moved into the [event-sourcing](https://github.com/prooph/event-sourcing/) repository.
 
 ## Interfaces VS adapters
 
 The event store now ships with a `Prooph\EventStore\ReadOnlyEventStore` and a `Prooph\EventStore\EventStore` interface.
-No event store adapters exist any more, instead there are different implementations of an event store.
+No event store adapters exist anymore, instead there are different implementations of the event store.
 
 ## ActionEventEmitterEventStore
 
@@ -25,7 +25,7 @@ or
 $eventStore = new TransactionalActionEventEmitterEventStore($eventStore);
 ```
 
-Also there are no more `.pre` and `.post` commit hooks any more, instead this is handled with different priorities now.
+Also, there are no more `.pre` and `.post` commit hooks anymore, instead, this is handled with different priorities now.
 
 ## Plugins
 
@@ -53,7 +53,7 @@ If you are making calls to the event store yourself, take a look at the event_st
 
 If you are using v6 with MySQL (using doctrine adpater) and you want to switch to v7 with MySQL (using pdo-event-store),
 you need to upgrade your database before you do this (same for other db vendors of course). The way events are
-persisted have changed and you cannot simply update your source code to make this change. You need to write a migration
+persisted has changed and you cannot simply update your source code to make this change. You need to write a migration
 script, take the database offline, perform the migration and go back online.
 
 Things to do to migrate:
@@ -63,8 +63,8 @@ Things to do to migrate:
 
 This would need to be done for all event streams.
 
-As this is a very tough job, we don't provide any migration script currently and for some applications a downtime is not
-acceptable, then v7 might not be the right choice for you, use it when you can take the application offline for a while
-and you can perform the db migration or wait with v7 usage, until you start a new project.
+As this is a very tough job, we don't provide any migration script currently. For some applications, a downtime is not
+acceptable, in which case v7 might not be the right choice. You should use it when you can take the application offline
+for a while and perform the DB migration, or you can wait until you start a new project to use it.
 
-We will support v6 series with bugfixes at least for a year (until mid 2018).
+We will support v6 series with bugfixes for at least a year (until mid 2018).

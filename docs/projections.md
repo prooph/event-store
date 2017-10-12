@@ -4,12 +4,12 @@ New in v7 are queries and projectons.
 
 ## Queries
 
-We are talking here about event store queries, not queries on your read model. An event store query reads one or
-multiple event stream, aggregates some state from it and makes it accessible. A query is non-persistent, will only
-get executed once, return a result, and that's it.
+Here, we are discussing event store queries, not queries on your read model. An event store query reads one or
+multiple event streams, aggregates some state from it and makes it accessible. A query is a non-persistent function,
+that will only be executed once, and return a result. That's it.
 
 To get started, let's take a simple example where we want to query the
-event-store, how often a given user has changed his username.
+event-store for how often a given user has changed his username.
 
 ```php
 $query = $projectionManager->createQuery();
@@ -38,7 +38,7 @@ $query->reset();
 $query->run();
 ```
 
-Or you can stop the projection at any point in time.
+Or you can stop the query at any point in time.
 
 ```php
 $query = $projectionManager->createQuery();
@@ -59,14 +59,14 @@ $query
     ->run();
 ```
 
-Queries can be used to answer a given question easily, because you don't need to figure out in which read model the
+Queries can be used to answer a given question easily because you don't need to figure out in which read model the
 data is present (maybe it's not?) and how to query it there (maybe a lot of joins are needed in RDBMS).
-Also you can do temporal queries very easy, which is hard until impossible to do with any other database system.
+Also you can do temporal queries very easily, which is hard to impossible to do with any other database system.
 
 ## Projections
 
-Projections are like queries, but first of all, they are persistent, the created state is persistent and can be queried
-later, and also the projection is running forever (in most cases).
+Projections are like queries, but they are persistent, the created state is also persistent and can be queried
+later, and the projection runs forever (in most cases).
 
 Compared to queries, the projectors have a couple of additional methods:
 
@@ -83,7 +83,7 @@ public function delete(bool $deleteEmittedEvents): void;
 - getName() - obviously returns the given name of that projection
 - emit(Message $event) - emits a new event that will be persisted on a stream with the same name as the projection
 - linkTo(string $streamName, Message $event) - emits a new event, that will be persisted on a specific stream
-- delete(bool $deleteEmittedEvents) - deletes the projection completely, the `$deleteEmittedEvents` flag tells, whether or not to delete emitted events.
+- delete(bool $deleteEmittedEvents) - deletes the projection completely, the `$deleteEmittedEvents` flag tells whether or not to delete emitted events.
 
 An example:
 
@@ -124,19 +124,19 @@ There are three options common to all projectors:
 
 OPTION_CACHE_SIZE = 'cache_size';
 
-The cache size is how many stream names are cached in memory, the higher the number to less queries are executed and therefor
-makes the projections run faster, but it consumes more memory.
+The cache size is how many stream names are cached in memory, the higher the number the less queries are executed and therefore
+the projection runs faster, but it consumes more memory.
 
 OPTION_SLEEP = 'sleep';
 
-The sleep options tells the projection to sleep that many microseconds, before querying the event store again, when no events
-were found in the last trip. This reduces having lots of cpu cycles without the projection doing anything really.
+The sleep options tells the projection to sleep that many microseconds before querying the event store again when no events
+were found in the last trip. This reduces the number of cpu cycles without the projection doing any real work.
 
 OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
 
-The persist block size tells the projector, to persist its changes after a given amount of operations. This increases the speed
-of the projection a lot. When you persist only every 1000 events compared to persist on every event, then 999 write operations
-are saved. The higher the number, the less write operations are made to your system, making the projections run faster.
+The persist block size tells the projector to persist its changes after a given number of operations. This increases the speed
+of the projection a lot. When you only persist every 1000 events compared to persist on every event, then 999 write operations
+are saved. The higher the number, the fewer write operations are made to your system, making the projections run faster.
 On the other side, in case of an error, you need to redo the last operations again. If you are publishing events to the outside
 world within a projection, you may think of a persist block size of 1 only.
 
@@ -148,7 +148,7 @@ be started. A running projector will update the lock timeout on every loop.
 OPTION_PCNTL_DISPATCH = 'false'
 
 Enable dispatching of process signals to registered [signal handlers](http://php.net/manual/en/function.pcntl-signal.php) while
-the projection is running. You must still register your own signal handler and take according action.
+the projection is running. You must still register your own signal handler and act accordingly.
 For example to gracefully stop the projection you could do
 ```
 $projection = $projectionManager->createProjection(
@@ -164,15 +164,15 @@ $projection->run();
 ## Read Model Projections
 
 Projections can also be used to create read models. A read model has to implement `Prooph\EventStore\Projection\ReadModel`.
-Prooph also ships with an `Prooph\EventStore\Projection\AbstractReadModel` that helps you to implement a read model yourself.
+Prooph also ships with an `Prooph\EventStore\Projection\AbstractReadModel` that helps you implement a read model yourself.
 
-One nice thing about read model projections is, that you don't need a migration script for your read models at all.
+One nice thing about read model projections is that you don't need a migration script for your read models.
 When you need to make a change to your read model, you simply alter your read model implementation, stop your
-current running projections, reset it and run it again.
+current running projections, reset it, and run it again.
 
 ### Options
 
-The read model projectors have the same options as the normal projectors, see above for more explanations.
+The read model projectors have the same options as the normal projectors. See above for more explanations.
 
 ### Example
 
@@ -212,12 +212,12 @@ The projection manager can do the following for you:
 - Fetch projection stream position
 - Fetch projection state
 
-While the most is pretty straightforward, the delete / reset / stop projection methods may need some additional
+While most methods are pretty straightforward, the delete / reset / stop projection methods may need some additional
 explanation:
 
-When you call stopProjection($name) (or delete or reset) a message is send to the projection. This will notify the
-running projection, that it should act accordingly. This means, that once you call `stopProjection` the projection
-might not be stopped immediately, but it could take a few seconds until the projection is finally stopped.
+When you call stopProjection($name) (or delete or reset) a message is sent to the projection. This will notify the
+running projection that it should act accordingly. This means that once you call `stopProjection`, it could take a few
+seconds before the projection is finally stopped.
 
 ## Internal projection mames
 
