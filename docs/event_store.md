@@ -36,7 +36,7 @@ event store methods. The following events are available (event target is always 
 - `fetchCategoryNames`: event params: `filter`, `offset`, `limit` - result params: `categoryNames`
 - `fetchCategoryNamesRegex`: event params: `filter`, `offset`, `limit` - result params: `categoryNames`
 
-If the event store implements \Prooph\EventStore\CanControlTransactionActionEventEmitterAwareEventStore,
+If the event store implements \Prooph\EventStore\TransactionalActionEventEmitterEventStore,
 the following additional events are available:
 
 - `beginTransaction`: event params: none - result params: `transactionAlreadyStarted`

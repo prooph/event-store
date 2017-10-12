@@ -2,9 +2,9 @@
 
 ## Moved classes
 
-The `Prooph\Snapshot\*` classes are now moved to their own repository, [SnapshotStore](https://github.com/prooph/snapshot-store).
+The `Prooph\EventStore\Snapshot\*` classes are now moved to their own repository, [SnapshotStore](https://github.com/prooph/snapshot-store).
 
-The `Prooph\Aggregate\*` classes are now moved into the [event-sourcing](https://github.com/prooph/event-sourcing/) repository.
+The `Prooph\EventStore\Aggregate\*` classes are now moved into the [event-sourcing](https://github.com/prooph/event-sourcing/) repository.
 
 ## Interfaces VS adapters
 
