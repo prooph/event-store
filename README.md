@@ -40,6 +40,10 @@ $ php -S 0.0.0.0:8080 -t docs/html/
 
 Then browse to [http://localhost:8080/](http://localhost:8080/)
 
+## Video Introduction
+
+[![Prooph Event Store v7](https://img.youtube.com/vi/QhpDIqYQzg0/0.jpg)](https://www.youtube.com/watch?v=QhpDIqYQzg0)
+
 ## Support
 
 - Ask questions on [prooph-users](https://groups.google.com/forum/?hl=de#!forum/prooph) mailing list.
