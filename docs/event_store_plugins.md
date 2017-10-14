@@ -1,20 +1,7 @@
-# Prooph Event Store
+# Plugins & Extensions
 
-Prooph Event Store is the central component of this package. If you are familiar with doctrine
-you can compare it with doctrine's EntityManager.
-However, Prooph Event Store is especially designed to add a centralized, event-driven system on top
-of different low level event stream persistence adapters (f.e. MySQL or Postgres).
-The event-driven store is the unique selling point of prooph/event-store compared to other libraries.
-So let's directly jump into it and see what you can do with it.
-
-## ReadOnlyEventStoreWrapper
-
-In case you need a read only event store, you can wrap your existing event store implementation with the
-ReadOnlyEventStoreWrapper.
-
-```php
-$readOnlyEventStore = new ReadOnlyEventStoreWrapper($eventStore);
-```
+A prooph Event Store can be expanded using plugins. Some plugins are provided by prooph but you can write your own ones
+to customize the event store using event hooks.
 
 ## Event Hooks
 
@@ -117,3 +104,16 @@ $plugin->attachToEventStore($eventStore);
 
 All internal metadata is prefixed with `_` (underscore), f.e. `_causation_id`. Do not use metadata keys starting with an
 underscore, as this is reserved for prooph internals.
+
+## ReadOnlyEventStoreWrapper
+
+The event store interface is divided into read-only methods, see `Prooph\EventStore\ReadOnlyEventStore` and write methods
+see `Prooph\EventStore\EventStore`. This distinction is useful in situations where you want to enforce ready-only access to 
+the event store.
+
+In case you need a read only event store, you can wrap your existing event store implementation with the
+ReadOnlyEventStoreWrapper.
+
+```php
+$readOnlyEventStore = new ReadOnlyEventStoreWrapper($eventStore);
+```

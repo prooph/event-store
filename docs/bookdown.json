@@ -1,13 +1,17 @@
 {
   "title": "Event Store",
   "content": [
-    {"intro": "../README.md"},
-    {"event_store": "event_store.md"},
+    {"intro": "introduction.md"},
+    {"implementations": "implementations/bookdown.json"},
+    {"event_store_plugins": "event_store_plugins.md"},
     {"projections": "projections.md"},
+    {"standard_projections": "https://raw.githubusercontent.com/prooph/standard-projections/master/docs/bookdown.json"},
     {"upcasting": "upcasting.md"},
     {"interop_factories": "interop_factories.md"},
     {"migration": "migration.md"}
   ],
+  "tocDepth": 1,
+  "numbering": false,
   "target": "./html",
   "template": "../vendor/prooph/bookdown-template/templates/main.php"
 }
