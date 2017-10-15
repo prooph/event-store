@@ -12,7 +12,6 @@
   ],
   "tocDepth": 1,
   "numbering": false,
-  "githubRepo": "https://github.com/prooph/event-store",
   "target": "./html",
   "template": "../vendor/prooph/bookdown-template/templates/main.php"
 }
