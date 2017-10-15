@@ -67,4 +67,4 @@ As this is a very tough job, we don't provide any migration script currently. Fo
 acceptable, in which case v7 might not be the right choice. You should use it when you can take the application offline
 for a while and perform the DB migration, or you can wait until you start a new project to use it.
 
-We will support v6 series with bugfixes for at least a year (until mid 2018).
+We will support v6 series with bugfixes until 3 Dec 2017.
