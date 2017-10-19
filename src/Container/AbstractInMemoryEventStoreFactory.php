@@ -28,7 +28,6 @@ use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\ReadOnlyEventStore;
 use Prooph\EventStore\ReadOnlyEventStoreWrapper;
-use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Psr\Container\ContainerInterface;
 
 abstract class AbstractInMemoryEventStoreFactory implements
@@ -74,6 +73,11 @@ abstract class AbstractInMemoryEventStoreFactory implements
         $this->configId = $configId;
     }
 
+    /**
+     * @return string[]
+     */
+    abstract protected function getEventsForDefaultEmitter(): array;
+
     abstract protected function createEventStoreInstance(): EventStore;
 
     abstract protected function createActionEventEmitterDecorator(
@@ -100,7 +104,7 @@ abstract class AbstractInMemoryEventStoreFactory implements
         }
 
         if (! isset($config['event_emitter'])) {
-            $eventEmitter = new ProophActionEventEmitter(TransactionalActionEventEmitterEventStore::ALL_EVENTS);
+            $eventEmitter = new ProophActionEventEmitter($this->getEventsForDefaultEmitter());
         } else {
             $eventEmitter = $container->get($config['event_emitter']);
         }

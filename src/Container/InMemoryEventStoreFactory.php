@@ -21,6 +21,11 @@ use Prooph\EventStore\TransactionalEventStore;
 
 final class InMemoryEventStoreFactory extends AbstractInMemoryEventStoreFactory
 {
+    protected function getEventsForDefaultEmitter(): array
+    {
+        return TransactionalActionEventEmitterEventStore::ALL_EVENTS;
+    }
+
     protected function createEventStoreInstance(): EventStore
     {
         return new InMemoryEventStore();

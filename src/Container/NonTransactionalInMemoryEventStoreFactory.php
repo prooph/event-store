@@ -19,6 +19,11 @@ use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 
 final class NonTransactionalInMemoryEventStoreFactory extends AbstractInMemoryEventStoreFactory
 {
+    protected function getEventsForDefaultEmitter(): array
+    {
+        return ActionEventEmitterEventStore::ALL_EVENTS;
+    }
+
     protected function createEventStoreInstance(): EventStore
     {
         return new NonTransactionalInMemoryEventStore();
