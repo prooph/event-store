@@ -30,7 +30,8 @@ final class InMemoryEventStoreFactory extends AbstractInMemoryEventStoreFactory
         EventStore $eventStore,
         ActionEventEmitter $actionEventEmitter
     ): ActionEventEmitterEventStore {
-    	assert($eventStore instanceof TransactionalEventStore);
+        assert($eventStore instanceof TransactionalEventStore);
+
         return new TransactionalActionEventEmitterEventStore($eventStore, $actionEventEmitter);
     }
 }

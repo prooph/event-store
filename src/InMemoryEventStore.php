@@ -17,7 +17,6 @@ use Prooph\EventStore\Exception\TransactionNotStarted;
 
 final class InMemoryEventStore extends AbstractInMemoryEventStore implements TransactionalEventStore
 {
-
     public function beginTransaction(): void
     {
         if ($this->inTransaction) {
