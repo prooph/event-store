@@ -267,7 +267,6 @@ abstract class AbstractInMemoryEventStore implements EventStore
 
         $result = [];
 
-        $skipped = 0;
         $found = 0;
 
         $streams = $this->streams;
