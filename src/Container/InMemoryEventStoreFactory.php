@@ -198,8 +198,7 @@ final class InMemoryEventStoreFactory implements
         ActionEventEmitter $actionEventEmitter
     ): ActionEventEmitterEventStore {
         if ($this->isTransactional) {
-            assert($eventStore instanceof TransactionalEventStore);
-
+            /** @var TransactionalEventStore $eventStore */
             return new TransactionalActionEventEmitterEventStore($eventStore, $actionEventEmitter);
         }
 
