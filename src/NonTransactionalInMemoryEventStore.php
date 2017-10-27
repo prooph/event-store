@@ -28,12 +28,12 @@ final class NonTransactionalInMemoryEventStore implements EventStore
     /**
      * @var array
      */
-    protected $streams = [];
+    private $streams = [];
 
     /**
      * @var array
      */
-    protected $cachedStreams = [];
+    private $cachedStreams = [];
 
     public function create(Stream $stream): void
     {
