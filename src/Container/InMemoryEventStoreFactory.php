@@ -47,6 +47,11 @@ final class InMemoryEventStoreFactory implements
     private $configId;
 
     /**
+     * @var bool
+     */
+    private $isTransactional;
+
+    /**
      * Creates a new instance from a specified config, specifically meant to be used as static factory.
      *
      * In case you want to use another config key than provided by the factories, you can add the following factory to
@@ -85,7 +90,9 @@ final class InMemoryEventStoreFactory implements
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
 
-        $eventStore = $this->createEventStore($config);
+        $this->isTransactional = $this->isTransactional($config);
+
+        $eventStore = $this->createEventStore();
 
         if ($config['read_only']) {
             $eventStore = new ReadOnlyEventStoreWrapper($eventStore);
@@ -96,12 +103,12 @@ final class InMemoryEventStoreFactory implements
         }
 
         if (! isset($config['event_emitter'])) {
-            $eventEmitter = new ProophActionEventEmitter($this->determineEventsForDefaultEmitter($config));
+            $eventEmitter = new ProophActionEventEmitter($this->determineEventsForDefaultEmitter());
         } else {
             $eventEmitter = $container->get($config['event_emitter']);
         }
 
-        $wrapper = $this->createActionEventEmitterDecorator($config, $eventStore, $eventEmitter);
+        $wrapper = $this->createActionEventEmitterDecorator($eventStore, $eventEmitter);
 
         foreach ($config['plugins'] as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
@@ -168,18 +175,18 @@ final class InMemoryEventStoreFactory implements
         ];
     }
 
-    private function determineEventsForDefaultEmitter(array $config): array
+    private function determineEventsForDefaultEmitter(): array
     {
-        if ($this->isTransactional($config)) {
+        if ($this->isTransactional) {
             return TransactionalActionEventEmitterEventStore::ALL_EVENTS;
         }
 
         return ActionEventEmitterEventStore::ALL_EVENTS;
     }
 
-    private function createEventStore(array $config): EventStore
+    private function createEventStore(): EventStore
     {
-        if ($this->isTransactional($config)) {
+        if ($this->isTransactional) {
             return new InMemoryEventStore();
         }
 
@@ -187,11 +194,10 @@ final class InMemoryEventStoreFactory implements
     }
 
     private function createActionEventEmitterDecorator(
-        array $config,
         EventStore $eventStore,
         ActionEventEmitter $actionEventEmitter
     ): ActionEventEmitterEventStore {
-        if ($this->isTransactional($config)) {
+        if ($this->isTransactional) {
             assert($eventStore instanceof TransactionalEventStore);
 
             return new TransactionalActionEventEmitterEventStore($eventStore, $actionEventEmitter);
