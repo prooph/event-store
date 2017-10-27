@@ -265,7 +265,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         try {
             $result = $callable($this);
             $this->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->rollback();
             throw $e;
         }
