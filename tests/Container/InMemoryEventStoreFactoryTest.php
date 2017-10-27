@@ -17,7 +17,6 @@ use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\Container\InMemoryEventStoreFactory;
-use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
@@ -27,6 +26,7 @@ use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\ReadOnlyEventStoreWrapper;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
@@ -44,10 +44,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf($this->getActionEventEmitterDecoratorClassName(), $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
     }
 
     /**
@@ -60,10 +60,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf($this->getEventStoreClassName(), $eventStore);
+        $this->assertInstanceOf(InMemoryEventStore::class, $eventStore);
     }
 
     /**
@@ -76,7 +76,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(NonTransactionalInMemoryEventStore::class, $eventStore);
@@ -92,7 +92,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
         $this->assertInstanceOf(ReadOnlyEventStoreWrapper::class, $eventStore);
@@ -109,9 +109,9 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
         $type = 'another';
-        $eventStore = $this->createFromFactoryViaCallStatic($type, $containerMock);
+        $eventStore = InMemoryEventStoreFactory::$type($containerMock);
 
-        $this->assertInstanceOf($this->getActionEventEmitterDecoratorClassName(), $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
     }
 
     /**
@@ -125,9 +125,9 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
 
         $type = 'another';
-        $eventStore = $this->createFromFactoryViaCallStatic($type, $containerMock);
+        $eventStore = InMemoryEventStoreFactory::$type($containerMock);
 
-        $this->assertInstanceOf($this->getActionEventEmitterDecoratorClassName(), $eventStore);
+        $this->assertInstanceOf(ActionEventEmitterEventStore::class, $eventStore);
     }
 
     /**
@@ -143,10 +143,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
         $containerMock->expects($this->at(1))->method('get')->with('event_emitter')->willReturn($eventEmitterMock);
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf($this->getActionEventEmitterDecoratorClassName(), $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
     }
 
     /**
@@ -157,16 +157,16 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
         $featureMock = $this->prophesize(Plugin::class);
-        $featureMock->attachToEventStore(Argument::type(ActionEventEmitterEventStore::class))->shouldBeCalled();
+        $featureMock->attachToEventStore(Argument::type(TransactionalActionEventEmitterEventStore::class))->shouldBeCalled();
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
         $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock->reveal());
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
 
-        $this->assertInstanceOf($this->getActionEventEmitterDecoratorClassName(), $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
     }
 
     /**
@@ -185,7 +185,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
         $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock);
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $factory($containerMock);
     }
 
@@ -205,10 +205,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $container->get('metadata_enricher1')->willReturn($metadataEnricher1->reveal());
         $container->get('metadata_enricher2')->willReturn($metadataEnricher2->reveal());
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($container->reveal());
 
-        $this->assertInstanceOf($this->getActionEventEmitterDecoratorClassName(), $eventStore);
+        $this->assertInstanceOf(TransactionalActionEventEmitterEventStore::class, $eventStore);
 
         // Some events to inject into the event store
         $events = [
@@ -248,7 +248,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $container->get('config')->willReturn($config);
         $container->get('foobar')->willReturn(new \stdClass());
 
-        $factory = $this->createEventStoreFactoryInstance();
+        $factory = new InMemoryEventStoreFactory();
         $factory($container->reveal());
     }
 
@@ -260,26 +260,6 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $type = 'another';
-        $this->createFromFactoryViaCallStatic($type, 'invalid container');
-    }
-
-    protected function getEventStoreClassName(): string
-    {
-        return InMemoryEventStore::class;
-    }
-
-    protected function getActionEventEmitterDecoratorClassName(): string
-    {
-        return ActionEventEmitterEventStore::class;
-    }
-
-    protected function createEventStoreFactoryInstance(): InMemoryEventStoreFactory
-    {
-        return new InMemoryEventStoreFactory();
-    }
-
-    protected function createFromFactoryViaCallStatic(string $type, $container): EventStore
-    {
-        return InMemoryEventStoreFactory::$type($container);
+        InMemoryEventStoreFactory::$type('invalid container');
     }
 }
