@@ -62,7 +62,7 @@ $eventStore = $container->get('inmemoryeventstore');
 
 By default, `InMemoryEventStore` which is transactional, is created by factory. If you want to change this behaviour to 
 create `NonTransactionalInMemoryEventStore`, simply override default config of given event store to 
-`'transactional' => true`
+`'transactional' => false`
 
 #### ReadOnlyEventStoreWrapper
 
