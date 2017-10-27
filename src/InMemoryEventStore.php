@@ -30,17 +30,17 @@ final class InMemoryEventStore implements TransactionalEventStore
     /**
      * @var array
      */
-    protected $streams = [];
+    private $streams = [];
 
     /**
      * @var array
      */
-    protected $cachedStreams = [];
+    private $cachedStreams = [];
 
     /**
      * @var bool
      */
-    protected $inTransaction = false;
+    private $inTransaction = false;
 
     public function create(Stream $stream): void
     {
@@ -209,6 +209,70 @@ final class InMemoryEventStore implements TransactionalEventStore
         $this->streams[$streamName->toString()]['metadata'] = $newMetadata;
     }
 
+    public function beginTransaction(): void
+    {
+        if ($this->inTransaction) {
+            throw new TransactionAlreadyStarted();
+        }
+
+        $this->inTransaction = true;
+    }
+
+    public function commit(): void
+    {
+        if (! $this->inTransaction) {
+            throw new TransactionNotStarted();
+        }
+
+        foreach ($this->cachedStreams as $streamName => $data) {
+            if (isset($data['metadata'])) {
+                $this->streams[$streamName] = $data;
+            } else {
+                foreach ($data['events'] as $streamEvent) {
+                    $this->streams[$streamName]['events'][] = $streamEvent;
+                }
+            }
+        }
+
+        $this->cachedStreams = [];
+        $this->inTransaction = false;
+    }
+
+    public function rollback(): void
+    {
+        if (! $this->inTransaction) {
+            throw new TransactionNotStarted();
+        }
+
+        $this->cachedStreams = [];
+        $this->inTransaction = false;
+    }
+
+    public function inTransaction(): bool
+    {
+        return $this->inTransaction;
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return mixed
+     */
+    public function transactional(callable $callable)
+    {
+        $this->beginTransaction();
+
+        try {
+            $result = $callable($this);
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw $e;
+        }
+
+        return $result ?: true;
+    }
+
     public function fetchStreamNames(
         ?string $filter,
         ?MetadataMatcher $metadataMatcher,
@@ -269,6 +333,7 @@ final class InMemoryEventStore implements TransactionalEventStore
 
         $result = [];
 
+        $skipped = 0;
         $found = 0;
 
         $streams = $this->streams;
@@ -489,69 +554,5 @@ final class InMemoryEventStore implements TransactionalEventStore
         }
 
         return true;
-    }
-
-    public function beginTransaction(): void
-    {
-        if ($this->inTransaction) {
-            throw new TransactionAlreadyStarted();
-        }
-
-        $this->inTransaction = true;
-    }
-
-    public function commit(): void
-    {
-        if (! $this->inTransaction) {
-            throw new TransactionNotStarted();
-        }
-
-        foreach ($this->cachedStreams as $streamName => $data) {
-            if (isset($data['metadata'])) {
-                $this->streams[$streamName] = $data;
-            } else {
-                foreach ($data['events'] as $streamEvent) {
-                    $this->streams[$streamName]['events'][] = $streamEvent;
-                }
-            }
-        }
-
-        $this->cachedStreams = [];
-        $this->inTransaction = false;
-    }
-
-    public function rollback(): void
-    {
-        if (! $this->inTransaction) {
-            throw new TransactionNotStarted();
-        }
-
-        $this->cachedStreams = [];
-        $this->inTransaction = false;
-    }
-
-    public function inTransaction(): bool
-    {
-        return $this->inTransaction;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return mixed
-     */
-    public function transactional(callable $callable)
-    {
-        $this->beginTransaction();
-
-        try {
-            $result = $callable($this);
-            $this->commit();
-        } catch (\Exception $e) {
-            $this->rollback();
-            throw $e;
-        }
-
-        return $result ?: true;
     }
 }
