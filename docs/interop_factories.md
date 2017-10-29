@@ -60,6 +60,10 @@ If the requirements are met, you just need to add a new section in your applicat
 
 $eventStore = $container->get('inmemoryeventstore');
 
+By default, `InMemoryEventStore` which is transactional, is created by factory. If you want to change this behaviour to 
+create `NonTransactionalInMemoryEventStore`, simply override default config of given event store to 
+`'transactional' => false`
+
 #### ReadOnlyEventStoreWrapper
 
 If you want to have a read only event store, just add `'read_only' => true` to your event store config.

@@ -16,17 +16,22 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfig;
 use Interop\Config\RequiresConfigId;
+use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use Prooph\EventStore\Metadata\MetadataEnricherPlugin;
+use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\ReadOnlyEventStore;
 use Prooph\EventStore\ReadOnlyEventStoreWrapper;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
+use Prooph\EventStore\TransactionalEventStore;
 use Psr\Container\ContainerInterface;
 
 final class InMemoryEventStoreFactory implements
@@ -40,6 +45,11 @@ final class InMemoryEventStoreFactory implements
      * @var string
      */
     private $configId;
+
+    /**
+     * @var bool
+     */
+    private $isTransactional;
 
     /**
      * Creates a new instance from a specified config, specifically meant to be used as static factory.
@@ -80,7 +90,9 @@ final class InMemoryEventStoreFactory implements
         $config = $container->get('config');
         $config = $this->options($config, $this->configId);
 
-        $eventStore = new InMemoryEventStore();
+        $this->isTransactional = $this->isTransactional($config);
+
+        $eventStore = $this->createEventStore();
 
         if ($config['read_only']) {
             $eventStore = new ReadOnlyEventStoreWrapper($eventStore);
@@ -91,21 +103,23 @@ final class InMemoryEventStoreFactory implements
         }
 
         if (! isset($config['event_emitter'])) {
-            $eventEmitter = new ProophActionEventEmitter(TransactionalActionEventEmitterEventStore::ALL_EVENTS);
+            $eventEmitter = new ProophActionEventEmitter($this->determineEventsForDefaultEmitter());
         } else {
             $eventEmitter = $container->get($config['event_emitter']);
         }
 
-        $wrapper = new TransactionalActionEventEmitterEventStore($eventStore, $eventEmitter);
+        $wrapper = $this->createActionEventEmitterDecorator($eventStore, $eventEmitter);
 
         foreach ($config['plugins'] as $pluginAlias) {
             $plugin = $container->get($pluginAlias);
 
             if (! $plugin instanceof Plugin) {
-                throw ConfigurationException::configurationError(sprintf(
-                    'Plugin %s does not implement the Plugin interface',
-                    $pluginAlias
-                ));
+                throw ConfigurationException::configurationError(
+                    sprintf(
+                        'Plugin %s does not implement the Plugin interface',
+                        $pluginAlias
+                    )
+                );
             }
 
             $plugin->attachToEventStore($wrapper);
@@ -118,10 +132,12 @@ final class InMemoryEventStoreFactory implements
                 $metadataEnricher = $container->get($metadataEnricherAlias);
 
                 if (! $metadataEnricher instanceof MetadataEnricher) {
-                    throw ConfigurationException::configurationError(sprintf(
-                        'Metadata enricher %s does not implement the MetadataEnricher interface',
-                        $metadataEnricherAlias
-                    ));
+                    throw ConfigurationException::configurationError(
+                        sprintf(
+                            'Metadata enricher %s does not implement the MetadataEnricher interface',
+                            $metadataEnricherAlias
+                        )
+                    );
                 }
 
                 $metadataEnrichers[] = $metadataEnricher;
@@ -154,7 +170,43 @@ final class InMemoryEventStoreFactory implements
             'metadata_enrichers' => [],
             'plugins' => [],
             'wrap_action_event_emitter' => true,
+            'transactional' => true,
             'read_only' => false,
         ];
+    }
+
+    private function determineEventsForDefaultEmitter(): array
+    {
+        if ($this->isTransactional) {
+            return TransactionalActionEventEmitterEventStore::ALL_EVENTS;
+        }
+
+        return ActionEventEmitterEventStore::ALL_EVENTS;
+    }
+
+    private function createEventStore(): EventStore
+    {
+        if ($this->isTransactional) {
+            return new InMemoryEventStore();
+        }
+
+        return new NonTransactionalInMemoryEventStore();
+    }
+
+    private function createActionEventEmitterDecorator(
+        EventStore $eventStore,
+        ActionEventEmitter $actionEventEmitter
+    ): ActionEventEmitterEventStore {
+        if ($this->isTransactional) {
+            /** @var TransactionalEventStore $eventStore */
+            return new TransactionalActionEventEmitterEventStore($eventStore, $actionEventEmitter);
+        }
+
+        return new ActionEventEmitterEventStore($eventStore, $actionEventEmitter);
+    }
+
+    private function isTransactional(array $config): bool
+    {
+        return isset($config['transactional']) && $config['transactional'] === true;
     }
 }

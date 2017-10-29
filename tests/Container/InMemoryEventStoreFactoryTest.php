@@ -21,6 +21,7 @@ use Prooph\EventStore\Exception\ConfigurationException;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataEnricher;
+use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\EventStore\ReadOnlyEventStoreWrapper;
 use Prooph\EventStore\Stream;
@@ -68,6 +69,22 @@ class InMemoryEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
+    public function it_creates_non_transactional_event_store_without_event_emitter(): void
+    {
+        $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false, 'transactional' => false];
+
+        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
+        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+
+        $factory = new InMemoryEventStoreFactory();
+        $eventStore = $factory($containerMock);
+
+        $this->assertInstanceOf(NonTransactionalInMemoryEventStore::class, $eventStore);
+    }
+
+    /**
+     * @test
+     */
     public function it_creates_read_only_event_store(): void
     {
         $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false, 'read_only' => true];
@@ -100,6 +117,22 @@ class InMemoryEventStoreFactoryTest extends TestCase
     /**
      * @test
      */
+    public function it_creates_non_transactional_event_store_with_non_transactional_event_emitter_via_callstatic(): void
+    {
+        $config['prooph']['event_store']['another'] = ['transactional' => false];
+
+        $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
+        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+
+        $type = 'another';
+        $eventStore = InMemoryEventStoreFactory::$type($containerMock);
+
+        $this->assertInstanceOf(ActionEventEmitterEventStore::class, $eventStore);
+    }
+
+    /**
+     * @test
+     */
     public function it_injects_custom_event_emitter(): void
     {
         $config['prooph']['event_store']['default']['event_emitter'] = 'event_emitter';
@@ -124,7 +157,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['default']['plugins'][] = 'plugin';
 
         $featureMock = $this->prophesize(Plugin::class);
-        $featureMock->attachToEventStore(Argument::type(ActionEventEmitterEventStore::class))->shouldBeCalled();
+        $featureMock->attachToEventStore(Argument::type(TransactionalActionEventEmitterEventStore::class))->shouldBeCalled();
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
         $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
