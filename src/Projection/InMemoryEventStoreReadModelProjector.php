@@ -472,7 +472,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         $reflectionProperty->setAccessible(true);
 
         $streamPositions = [];
-        $streams = array_keys($reflectionProperty->getValue($this->eventStore));
+        $streams = array_keys($reflectionProperty->getValue($this->innerEventStore));
 
         if (isset($this->query['all'])) {
             foreach ($streams as $stream) {
