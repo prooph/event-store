@@ -1,7 +1,37 @@
 # Change Log
 
-## [v7.2.2](https://github.com/prooph/event-store/tree/v7.2.2)
+## [v7.3.0](https://github.com/prooph/event-store/tree/v7.3.0)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.2.2...v7.3.0)
+
+**Implemented enhancements:**
+
+- Non transactional in memory event store [\#307](https://github.com/prooph/event-store/issues/307)
+- Allow marc-mabe/php-enum v3 [\#311](https://github.com/prooph/event-store/pull/311) ([bgaleotti](https://github.com/bgaleotti))
+- Introducing NonTransactionalInMemoryEventStore [\#308](https://github.com/prooph/event-store/pull/308) ([tomcizek](https://github.com/tomcizek))
+
+**Fixed bugs:**
+
+- Catch Throwable in transactional\(\) [\#309](https://github.com/prooph/event-store/pull/309) ([jiripudil](https://github.com/jiripudil))
+
+**Closed issues:**
+
+- Documentation out of sync [\#300](https://github.com/prooph/event-store/issues/300)
+- Aggregate root not found in MariaDb [\#297](https://github.com/prooph/event-store/issues/297)
+- Promote LTS for current major version [\#199](https://github.com/prooph/event-store/issues/199)
+
+**Merged pull requests:**
+
+- Fix exception in InMemoryEventStoreReadModelProjector [\#310](https://github.com/prooph/event-store/pull/310) ([enumag](https://github.com/enumag))
+- Fix typos [\#306](https://github.com/prooph/event-store/pull/306) ([denniskoenig](https://github.com/denniskoenig))
+- Enhancement: Keep packages sorted in composer.json [\#305](https://github.com/prooph/event-store/pull/305) ([localheinz](https://github.com/localheinz))
+- Restructure docs [\#304](https://github.com/prooph/event-store/pull/304) ([codeliner](https://github.com/codeliner))
+- Link to SO [\#303](https://github.com/prooph/event-store/pull/303) ([codeliner](https://github.com/codeliner))
+- Add video introduction [\#302](https://github.com/prooph/event-store/pull/302) ([codeliner](https://github.com/codeliner))
+- Proofread the docs [\#301](https://github.com/prooph/event-store/pull/301) ([camuthig](https://github.com/camuthig))
+- add version guidance [\#298](https://github.com/prooph/event-store/pull/298) ([prolic](https://github.com/prolic))
+
+## [v7.2.2](https://github.com/prooph/event-store/tree/v7.2.2) (2017-09-11)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.2.1...v7.2.2)
 
 **Fixed bugs:**
@@ -45,7 +75,7 @@
 - Fix spelling in test [\#289](https://github.com/prooph/event-store/pull/289) ([prolic](https://github.com/prolic))
 
 ## [v7.1.0](https://github.com/prooph/event-store/tree/v7.1.0) (2017-05-22)
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.1...v7.1.0)
+[Full Changelog](https://github.com/prooph/event-store/compare/1.1.1...v7.1.0)
 
 **Implemented enhancements:**
 
@@ -53,6 +83,15 @@
 - better validation in metadata matcher [\#288](https://github.com/prooph/event-store/pull/288) ([prolic](https://github.com/prolic))
 - reduce duplicate code [\#287](https://github.com/prooph/event-store/pull/287) ([prolic](https://github.com/prolic))
 - Support message property filters + new operators [\#286](https://github.com/prooph/event-store/pull/286) ([prolic](https://github.com/prolic))
+
+## [1.1.1](https://github.com/prooph/event-store/tree/1.1.1) (2017-05-16)
+[Full Changelog](https://github.com/prooph/event-store/compare/1.1...1.1.1)
+
+## [1.1](https://github.com/prooph/event-store/tree/1.1) (2017-05-11)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.1...1.1)
+
+**Implemented enhancements:**
+
 - add read only event store wrapper [\#285](https://github.com/prooph/event-store/pull/285) ([prolic](https://github.com/prolic))
 
 **Closed issues:**
@@ -83,7 +122,14 @@
 - adds a clustered events constant to event emitter event stores [\#278](https://github.com/prooph/event-store/pull/278) ([oqq](https://github.com/oqq))
 
 ## [v7.0.0-beta3](https://github.com/prooph/event-store/tree/v7.0.0-beta3) (2017-03-13)
-[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.0...v7.0.0-beta3)
+[Full Changelog](https://github.com/prooph/event-store/compare/1.0...v7.0.0-beta3)
+
+**Implemented enhancements:**
+
+- rename projection =\> projector where applicable [\#275](https://github.com/prooph/event-store/pull/275) ([prolic](https://github.com/prolic))
+
+## [1.0](https://github.com/prooph/event-store/tree/1.0) (2017-03-13)
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.0...1.0)
 
 **Implemented enhancements:**
 
@@ -91,7 +137,6 @@
 - Provide abstract event store test [\#257](https://github.com/prooph/event-store/issues/257)
 - Add support for inline upcasting [\#254](https://github.com/prooph/event-store/issues/254)
 - updates unit tests to reflect current implementation [\#276](https://github.com/prooph/event-store/pull/276) ([oqq](https://github.com/oqq))
-- rename projection =\> projector where applicable [\#275](https://github.com/prooph/event-store/pull/275) ([prolic](https://github.com/prolic))
 - Remove PHP\_INT\_MAX constant from interface [\#274](https://github.com/prooph/event-store/pull/274) ([prolic](https://github.com/prolic))
 - improves fetchProjectionNames method [\#268](https://github.com/prooph/event-store/pull/268) ([oqq](https://github.com/oqq))
 - Projection manager [\#267](https://github.com/prooph/event-store/pull/267) ([prolic](https://github.com/prolic))
