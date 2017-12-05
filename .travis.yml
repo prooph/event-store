@@ -14,7 +14,6 @@ matrix:
     - php: 7.2
       env:
         - DEPENDENCIES=""
-        - TEST_COVERAGE=true
     - php: 7.2
       env:
         - DEPENDENCIES="--prefer-lowest --prefer-stable"
