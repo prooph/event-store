@@ -14,7 +14,6 @@ namespace ProophTest\EventStore;
 
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ProophActionEventEmitter;
-use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
 use Prooph\EventStore\Exception\TransactionNotStarted;
 use Prooph\EventStore\InMemoryEventStore;
