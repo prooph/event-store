@@ -1,7 +1,14 @@
 # Change Log
 
-## [v7.3.0](https://github.com/prooph/event-store/tree/v7.3.0)
+## [v7.3.1](https://github.com/prooph/event-store/tree/v7.3.1)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.0...v7.3.1)
+
+**Implemented enhancements:**
+
+- test php 7.2 [\#313](https://github.com/prooph/event-store/pull/313) ([prolic](https://github.com/prolic))
+
+## [v7.3.0](https://github.com/prooph/event-store/tree/v7.3.0) (2017-11-18)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.2.2...v7.3.0)
 
 **Implemented enhancements:**
