@@ -1,7 +1,29 @@
 # Change Log
 
-## [v7.3.1](https://github.com/prooph/event-store/tree/v7.3.1)
+## [v6.2.2](https://github.com/prooph/event-store/tree/v6.2.2)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.1...v6.2.2)
+
+**Fixed bugs:**
+
+- fixed metadata enum class doc-blocks [\#320](https://github.com/prooph/event-store/pull/320) ([ged15](https://github.com/ged15))
+
+**Merged pull requests:**
+
+- it's 2018! [\#321](https://github.com/prooph/event-store/pull/321) ([prolic](https://github.com/prolic))
+
+## [v6.6.1](https://github.com/prooph/event-store/tree/v6.6.1) (2017-12-17)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.1...v6.6.1)
+
+**Closed issues:**
+
+- Thank you all and happy Thanksgiving [\#312](https://github.com/prooph/event-store/issues/312)
+
+**Merged pull requests:**
+
+- Add explicit string type cast for metadata aggregate id \(fix \#314\) [\#315](https://github.com/prooph/event-store/pull/315) ([sandrokeil](https://github.com/sandrokeil))
+
+## [v7.3.1](https://github.com/prooph/event-store/tree/v7.3.1) (2017-12-05)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.0...v7.3.1)
 
 **Implemented enhancements:**
