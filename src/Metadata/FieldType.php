@@ -15,8 +15,8 @@ namespace Prooph\EventStore\Metadata;
 use MabeEnum\Enum;
 
 /**
- * @method static FieldType METADATA
- * @method static FieldType MESSAGE_PROPERTY
+ * @method static FieldType METADATA()
+ * @method static FieldType MESSAGE_PROPERTY()
  */
 final class FieldType extends Enum
 {

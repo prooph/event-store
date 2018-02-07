@@ -15,15 +15,15 @@ namespace Prooph\EventStore\Metadata;
 use MabeEnum\Enum;
 
 /**
- * @method static Operator EQUALS
- * @method static Operator GREATER_THAN
- * @method static Operator GREATER_THAN_EQUALS
- * @method static Operator IN
- * @method static Operator LOWER_THAN
- * @method static Operator LOWER_THAN_EQUALS
- * @method static Operator NOT_EQUALS
- * @method static Operator NOT_IN
- * @method static Operator REGEX
+ * @method static Operator EQUALS()
+ * @method static Operator GREATER_THAN()
+ * @method static Operator GREATER_THAN_EQUALS()
+ * @method static Operator IN()
+ * @method static Operator LOWER_THAN()
+ * @method static Operator LOWER_THAN_EQUALS()
+ * @method static Operator NOT_EQUALS()
+ * @method static Operator NOT_IN()
+ * @method static Operator REGEX()
  */
 class Operator extends Enum
 {
