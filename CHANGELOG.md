@@ -1,8 +1,8 @@
 # Change Log
 
-## [v6.2.2](https://github.com/prooph/event-store/tree/v6.2.2)
+## [v6.6.2](https://github.com/prooph/event-store/tree/v6.6.2)
 
-[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.1...v6.2.2)
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.1...v6.6.2)
 
 **Fixed bugs:**
 
