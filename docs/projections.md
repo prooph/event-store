@@ -1,6 +1,6 @@
 # Projections
 
-New in v7 are queries and projectons.
+New in v7 are queries and projections.
 
 ## Queries
 
