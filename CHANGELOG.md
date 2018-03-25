@@ -1,11 +1,23 @@
 # Change Log
 
-## [v7.3.2](https://github.com/prooph/event-store/tree/v7.3.2)
+## [v7.3.3](https://github.com/prooph/event-store/tree/v7.3.3)
 
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.1...v7.3.2)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.2...7.3.3)
 
 **Fixed bugs:**
 
+- add test cases for multiple calls to reset/stop/delete projection [\#329](https://github.com/prooph/event-store/pull/329) ([prolic](https://github.com/prolic))
+
+**Merged pull requests:**
+
+- Fix typo [\#323](https://github.com/prooph/event-store/pull/323) ([denniskoenig](https://github.com/denniskoenig))
+
+## [v7.3.2](https://github.com/prooph/event-store/tree/v7.3.2) (2018-02-10)
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.1...v7.3.2)
+
+**Fixed bugs:**
+
+- Metadata Aggregate ID can be an integer and causes errors \(v6\) [\#314](https://github.com/prooph/event-store/issues/314)
 - fixed metadata enum class doc-blocks [\#320](https://github.com/prooph/event-store/pull/320) ([ged15](https://github.com/ged15))
 
 **Merged pull requests:**
