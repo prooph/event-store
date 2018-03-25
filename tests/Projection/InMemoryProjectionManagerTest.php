@@ -110,4 +110,28 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
     {
         $this->markTestSkipped('Stopping a projection is not supported in ' . InMemoryProjectionManager::class);
     }
+
+    /**
+     * @test
+     */
+    public function it_does_not_fail_deleting_twice(): void
+    {
+        $this->markTestSkipped('Deleting a projection is not supported in ' . InMemoryProjectionManager::class);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_fail_resetting_twice(): void
+    {
+        $this->markTestSkipped('Resetting a projection is not supported in ' . InMemoryProjectionManager::class);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_fail_stopping_twice(): void
+    {
+        $this->markTestSkipped('Stopping a projection is not supported in ' . InMemoryProjectionManager::class);
+    }
 }

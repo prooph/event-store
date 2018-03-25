@@ -337,4 +337,49 @@ abstract class AbstractProjectionManagerTest extends TestCase
 
         $this->projectionManager->stopProjection('unknown');
     }
+
+    /**
+     * @test
+     */
+    public function it_does_not_fail_deleting_twice(): void
+    {
+        $projection = $this->projectionManager->createProjection('test-projection');
+        $projection->fromAll()->whenAny(function (): void {
+        })->run(false);
+
+        $this->projectionManager->deleteProjection('test-projection', false);
+        $this->projectionManager->deleteProjection('test-projection', false);
+
+        $this->assertTrue($this->projectionManager->fetchProjectionStatus('test-projection')->is(ProjectionStatus::DELETING()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_fail_resetting_twice(): void
+    {
+        $projection = $this->projectionManager->createProjection('test-projection');
+        $projection->fromAll()->whenAny(function (): void {
+        })->run(false);
+
+        $this->projectionManager->resetProjection('test-projection');
+        $this->projectionManager->resetProjection('test-projection');
+
+        $this->assertTrue($this->projectionManager->fetchProjectionStatus('test-projection')->is(ProjectionStatus::RESETTING()));
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_fail_stopping_twice(): void
+    {
+        $projection = $this->projectionManager->createProjection('test-projection');
+        $projection->fromAll()->whenAny(function (): void {
+        })->run(false);
+
+        $this->projectionManager->stopProjection('test-projection');
+        $this->projectionManager->stopProjection('test-projection');
+
+        $this->assertTrue($this->projectionManager->fetchProjectionStatus('test-projection')->is(ProjectionStatus::STOPPING()));
+    }
 }
