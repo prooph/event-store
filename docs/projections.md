@@ -120,19 +120,19 @@ This would count all registered users.
 
 ### Options
 
-There are three options common to all projectors:
+There are six options common to all projectors:
 
-OPTION_CACHE_SIZE = 'cache_size';
+OPTION_CACHE_SIZE = 'cache_size'; //Default: 1000
 
 The cache size is how many stream names are cached in memory, the higher the number the less queries are executed and therefore
 the projection runs faster, but it consumes more memory.
 
-OPTION_SLEEP = 'sleep';
+OPTION_SLEEP = 'sleep'; //Default: 100000
 
 The sleep options tells the projection to sleep that many microseconds before querying the event store again when no events
 were found in the last trip. This reduces the number of cpu cycles without the projection doing any real work.
 
-OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size';
+OPTION_PERSIST_BLOCK_SIZE = 'persist_block_size'; //Default: 1000
 
 The persist block size tells the projector to persist its changes after a given number of operations. This increases the speed
 of the projection a lot. When you only persist every 1000 events compared to persist on every event, then 999 write operations
@@ -140,12 +140,12 @@ are saved. The higher the number, the fewer write operations are made to your sy
 On the other side, in case of an error, you need to redo the last operations again. If you are publishing events to the outside
 world within a projection, you may think of a persist block size of 1 only.
 
-OPTION_LOCK_TIMEOUT_MS = 'lock_timeout_ms'
+OPTION_LOCK_TIMEOUT_MS = 'lock_timeout_ms'; //Default: 1000
 
 Indicates the time (in microseconds) the projector is locked. During this time no other projector with the same name can
 be started. A running projector will update the lock timeout on every loop.
 
-OPTION_PCNTL_DISPATCH = 'false'
+OPTION_PCNTL_DISPATCH = 'trigger_pcntl_dispatch'; //Default: false
 
 Enable dispatching of process signals to registered [signal handlers](http://php.net/manual/en/function.pcntl-signal.php) while
 the projection is running. You must still register your own signal handler and act accordingly.
@@ -160,6 +160,34 @@ pcntl_signal(SIGQUIT, function () use ($projection) {
 });
 $projection->run();
 ```
+
+OPTION_UPDATE_LOCK_THRESHOLD = 'update_lock_threshold'; //Default: 0
+
+If update lock threshold is set to a value greater than 0 the projection won't update lock timeout until number of milliseconds
+have passed. Let's say your projection has a sleep interval of 100 ms and a lock timeout of 1000 ms.
+By default the projector updates lock timeout after each run so basically every 100 ms the lock timeout is set to: `now() + 1000 ms`
+This causes a lot of extra work for your database and in case the database is replicated this can cause a lot of network traffic, too.
+
+This is how the projection works without a threshold set:
+
+```
+1. Process new events. Update lock timeout -> now() + 1000 ms. Sleep 100 ms
+2. Process new events. Update lock timeout -> now() + 1000 ms. Sleep 100 ms
+3. Process new events. Update lock timeout -> now() + 1000 ms. Sleep 100 ms
+...
+```
+
+And this is the projection flow with an update lock threshold set to `700 ms`:
+
+```
+1. Process new events. Sleep 100 ms
+2. Process new events. Sleep 100 ms
+3. Process new events. Sleep 100 ms
+...
+7. Process new events. Update lock timeout -> now() + 1000 ms. Sleep 100 ms
+8. Process new events. Sleep 100 ms
+```
+   
 
 ## Read Model Projections
 
