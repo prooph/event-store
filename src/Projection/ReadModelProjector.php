@@ -30,7 +30,6 @@ interface ReadModelProjector
     public const DEFAULT_PCNTL_DISPATCH = false;
     public const DEFAULT_UPDATE_LOCK_THRESHOLD = 0;
 
-
     /**
      * The callback has to return an array
      */
