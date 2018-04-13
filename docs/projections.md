@@ -142,8 +142,8 @@ world within a projection, you may think of a persist block size of 1 only.
 
 OPTION_LOCK_TIMEOUT_MS = 'lock_timeout_ms'; //Default: 1000
 
-Indicates the time (in microseconds) the projector is locked. During this time no other projector with the same name can
-be started. A running projector will update the lock timeout on every loop.
+Indicates the time (in milliseconds) the projector is locked. During this time no other projector with the same name can
+be started. A running projector will update the lock timeout on every loop, except you configure an update lock threshold.
 
 OPTION_PCNTL_DISPATCH = 'trigger_pcntl_dispatch'; //Default: false
 
