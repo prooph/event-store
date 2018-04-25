@@ -65,3 +65,17 @@ $chain = new UpcasterChain($upcaster1, $upcaster2, $upcaster3);
 $plugin = new UpcastingPlugin($chain);
 $plugin->attachToEventStore($eventStore);
 ```
+
+Note:
+The `UpcastingIterator` wraps the iterator given by the event-store instance. In case you're using the
+`pdo-event-store`, it's an instance of `PdoStreamIterator`. The `UpcastingIterator` will return the
+inner iterator's key when calling `$iterator->key()`. As a side-effect of this, if the upcaster upcasts
+one event into multiple, all of those upcasted events have the same key. This is normally no problem, as
+in userland code, you don't access the key normally. But during projections of the events (f.e. to create
+read models), they key could repeat. This means, if the projection stops at event no 35 f.e. and this event
+is upcasted into two events, the projector could theoretically apply one of them and stop afterwards. When
+the projection starts again, the projection will ask for the next event (no 36), but the second event with
+no 35 was never handled by the projection. Normally a projection is a long-running process in the background,
+or a process is started by a cron-job (f.e. every hour). The problem described can only be an issue,
+if you upcast one event into multiple and manually stop the projection (reset is not a problem of course).
+But even then, the chance of running into issues is very small, but you have been noticed.

@@ -32,8 +32,6 @@ final class UpcastingIterator implements Iterator
      */
     private $storedMessages = [];
 
-    private $position = 0;
-
     public function __construct(Upcaster $upcaster, Iterator $iterator)
     {
         $this->upcaster = $upcaster;
@@ -73,8 +71,6 @@ final class UpcastingIterator implements Iterator
 
     public function next(): void
     {
-        ++$this->position;
-
         if (! empty($this->storedMessages)) {
             array_shift($this->storedMessages);
         }
@@ -99,7 +95,7 @@ final class UpcastingIterator implements Iterator
      */
     public function key()
     {
-        return $this->position;
+        return $this->innerIterator->key();
     }
 
     public function valid(): bool
