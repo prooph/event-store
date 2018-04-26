@@ -345,6 +345,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
 
     public function stop(): void
     {
+        $this->readModel()->persist();
         $this->isStopped = true;
     }
 
@@ -383,6 +384,10 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         $handler = $this->handler;
 
         foreach ($events as $event) {
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
+
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
             $this->eventCounter++;
@@ -409,6 +414,9 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         $this->currentStreamName = $streamName;
 
         foreach ($events as $event) {
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
 

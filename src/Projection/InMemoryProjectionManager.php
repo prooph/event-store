@@ -51,9 +51,12 @@ final class InMemoryProjectionManager implements ProjectionManager
         }
     }
 
-    public function createQuery(): Query
+    public function createQuery(array $options = null): Query
     {
-        return new InMemoryEventStoreQuery($this->eventStore);
+        return new InMemoryEventStoreQuery(
+            $this->eventStore,
+            $options[Projector::OPTION_PCNTL_DISPATCH] ?? Projector::DEFAULT_PCNTL_DISPATCH
+        );
     }
 
     public function createProjection(

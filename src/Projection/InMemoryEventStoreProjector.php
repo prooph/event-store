@@ -394,6 +394,9 @@ final class InMemoryEventStoreProjector implements Projector
         $handler = $this->handler;
 
         foreach ($events as $event) {
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
 
@@ -414,6 +417,9 @@ final class InMemoryEventStoreProjector implements Projector
         $this->currentStreamName = $streamName;
 
         foreach ($events as $event) {
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
 
