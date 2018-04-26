@@ -16,6 +16,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
+use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 
@@ -61,5 +62,16 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
         $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
 
         new InMemoryEventStoreQuery($wrappedEventStore->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_non_transactional_event_store_instance(): void
+    {
+        $eventStore = new NonTransactionalInMemoryEventStore();
+        $query = new InMemoryEventStoreQuery($eventStore);
+
+        $this->assertInstanceOf(InMemoryEventStoreQuery::class, $query);
     }
 }

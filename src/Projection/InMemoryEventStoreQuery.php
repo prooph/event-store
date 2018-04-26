@@ -19,6 +19,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
+use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\StreamName;
 
 final class InMemoryEventStoreQuery implements Query
@@ -81,7 +82,12 @@ final class InMemoryEventStoreQuery implements Query
             $eventStore = $eventStore->getInnerEventStore();
         }
 
-        if (! $eventStore instanceof InMemoryEventStore) {
+        if (
+            ! (
+                $eventStore instanceof InMemoryEventStore
+                || $eventStore instanceof NonTransactionalInMemoryEventStore
+            )
+        ) {
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
 

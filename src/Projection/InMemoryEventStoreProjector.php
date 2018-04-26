@@ -20,6 +20,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
+use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
@@ -136,7 +137,12 @@ final class InMemoryEventStoreProjector implements Projector
             $eventStore = $eventStore->getInnerEventStore();
         }
 
-        if (! $eventStore instanceof InMemoryEventStore) {
+        if (
+            ! (
+                $eventStore instanceof InMemoryEventStore
+                || $eventStore instanceof NonTransactionalInMemoryEventStore
+            )
+        ) {
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
 
