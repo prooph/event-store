@@ -79,7 +79,6 @@ class UpcastingIteratorTest extends TestCase
         $this->assertEquals(2, $upcastingIterator->key());
         $this->assertSame($message3, $upcastingIterator->current());
         $upcastingIterator->next();
-        $this->assertEquals(3, $upcastingIterator->key());
         $this->assertFalse($upcastingIterator->valid());
         $this->assertNull($upcastingIterator->current());
     }
@@ -125,7 +124,6 @@ class UpcastingIteratorTest extends TestCase
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
-        $this->assertEquals(0, $upcastingIterator->key());
         $this->assertFalse($upcastingIterator->valid());
         $this->assertNull($upcastingIterator->current());
     }
