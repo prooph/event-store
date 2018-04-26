@@ -1,8 +1,24 @@
 # Change Log
 
-## [v7.3.3](https://github.com/prooph/event-store/tree/v7.3.3)
+## [v7.3.4](https://github.com/prooph/event-store/tree/v7.3.4)
 
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.2...7.3.3)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.3...v7.3.4)
+
+**Implemented enhancements:**
+
+- Add update lock threshold to read model prj, too [\#332](https://github.com/prooph/event-store/pull/332) ([codeliner](https://github.com/codeliner))
+- Add projection option update lock threshold [\#331](https://github.com/prooph/event-store/pull/331) ([codeliner](https://github.com/codeliner))
+
+**Fixed bugs:**
+
+- fix upcasting iterator [\#334](https://github.com/prooph/event-store/pull/334) ([prolic](https://github.com/prolic))
+
+**Merged pull requests:**
+
+- Fix time unit for lock timeout ms [\#333](https://github.com/prooph/event-store/pull/333) ([codeliner](https://github.com/codeliner))
+
+## [v7.3.3](https://github.com/prooph/event-store/tree/v7.3.3) (2018-03-25)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.2...v7.3.3)
 
 **Fixed bugs:**
 
