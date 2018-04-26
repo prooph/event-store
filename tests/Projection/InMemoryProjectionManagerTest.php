@@ -17,6 +17,7 @@ use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\InMemoryEventStore;
+use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 
 class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
@@ -55,6 +56,17 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         $wrappedEventStore->getInnerEventStore()->willReturn($eventStore->reveal())->shouldBeCalled();
 
         new InMemoryProjectionManager($wrappedEventStore->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_allows_non_transactional_event_store_instance(): void
+    {
+        $eventStore = new NonTransactionalInMemoryEventStore();
+        $manager = new InMemoryProjectionManager($eventStore);
+
+        $this->assertInstanceOf(InMemoryProjectionManager::class, $manager);
     }
 
     /**
