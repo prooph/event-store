@@ -1,7 +1,18 @@
 # Change Log
 
-## [v7.3.4](https://github.com/prooph/event-store/tree/v7.3.4)
+## [v7.3.5](https://github.com/prooph/event-store/tree/v7.3.5)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.4...v7.3.5)
+
+**Implemented enhancements:**
+
+- allows NonTransactionalInMemoryEventStore for projections [\#336](https://github.com/prooph/event-store/pull/336) ([oqq](https://github.com/oqq))
+
+**Closed issues:**
+
+- InMemoryProjectionManager could not handle NonTransactional..EventStore [\#335](https://github.com/prooph/event-store/issues/335)
+
+## [v7.3.4](https://github.com/prooph/event-store/tree/v7.3.4) (2018-04-26)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.3...v7.3.4)
 
 **Implemented enhancements:**
