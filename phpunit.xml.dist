@@ -8,8 +8,11 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="vendor/autoload.php"
+         timeoutForSmallTests="2"
+         enforceTimeLimit="true"
+         failOnWarning="true"
+         failOnRisky="true"
 >
     <testsuite name="Prooph EventStore Test Suite">
         <directory>./tests</directory>

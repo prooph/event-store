@@ -74,9 +74,15 @@ final class InMemoryEventStoreQuery implements Query
      */
     private $query;
 
-    public function __construct(EventStore $eventStore)
+    /**
+     * @var bool
+     */
+    private $triggerPcntlSignalDispatch;
+
+    public function __construct(EventStore $eventStore, bool $triggerPcntlSignalDispatch = false)
     {
         $this->eventStore = $eventStore;
+        $this->triggerPcntlSignalDispatch = $triggerPcntlSignalDispatch;
 
         while ($eventStore instanceof EventStoreDecorator) {
             $eventStore = $eventStore->getInnerEventStore();
@@ -251,6 +257,9 @@ final class InMemoryEventStoreQuery implements Query
             if ($this->isStopped) {
                 break;
             }
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
         }
     }
 
@@ -270,6 +279,10 @@ final class InMemoryEventStoreQuery implements Query
         $handler = $this->handler;
 
         foreach ($events as $event) {
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
+
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
 
@@ -290,6 +303,10 @@ final class InMemoryEventStoreQuery implements Query
         $this->currentStreamName = $streamName;
 
         foreach ($events as $event) {
+            if ($this->triggerPcntlSignalDispatch) {
+                pcntl_signal_dispatch();
+            }
+
             /* @var Message $event */
             $this->streamPositions[$streamName]++;
 
