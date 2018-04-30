@@ -1,7 +1,19 @@
 # Change Log
 
-## [v7.3.5](https://github.com/prooph/event-store/tree/v7.3.5)
+## [v7.3.6](https://github.com/prooph/event-store/tree/v7.3.6)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.5...v7.3.6)
+
+**Implemented enhancements:**
+
+- pcntl\_signal\_dispatch should be called after each event was processed [\#337](https://github.com/prooph/event-store/issues/337)
+- Dispatch PCNTL signal after each event for immediately shutdown [\#338](https://github.com/prooph/event-store/pull/338) ([sandrokeil](https://github.com/sandrokeil))
+
+**Merged pull requests:**
+
+- Add query option OPTION\_PCNTL\_DISPATCH \(\#337\) [\#339](https://github.com/prooph/event-store/pull/339) ([sandrokeil](https://github.com/sandrokeil))
+
+## [v7.3.5](https://github.com/prooph/event-store/tree/v7.3.5) (2018-04-26)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.4...v7.3.5)
 
 **Implemented enhancements:**
