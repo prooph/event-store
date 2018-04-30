@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
-use Prooph\EventStore\Projection\Projector;
+use Prooph\EventStore\Projection\Query;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\TestDomainEvent;
@@ -32,7 +32,7 @@ $eventStore->create(new Stream(new StreamName('user-123'), new ArrayIterator($ev
 $projectionManager = new InMemoryProjectionManager($eventStore);
 $query = $projectionManager->createQuery(
     [
-        Projector::OPTION_PCNTL_DISPATCH => true,
+        Query::OPTION_PCNTL_DISPATCH => true,
     ]
 );
 
