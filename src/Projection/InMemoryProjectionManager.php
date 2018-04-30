@@ -55,7 +55,7 @@ final class InMemoryProjectionManager implements ProjectionManager
     {
         return new InMemoryEventStoreQuery(
             $this->eventStore,
-            $options[Projector::OPTION_PCNTL_DISPATCH] ?? Projector::DEFAULT_PCNTL_DISPATCH
+            $options[Query::OPTION_PCNTL_DISPATCH] ?? Query::DEFAULT_PCNTL_DISPATCH
         );
     }
 

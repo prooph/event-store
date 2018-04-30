@@ -16,6 +16,10 @@ use Closure;
 
 interface Query
 {
+    public const OPTION_PCNTL_DISPATCH = 'trigger_pcntl_dispatch';
+
+    public const DEFAULT_PCNTL_DISPATCH = false;
+
     /**
      * The callback has to return an array
      */
