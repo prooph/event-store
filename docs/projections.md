@@ -112,7 +112,7 @@ $projector
             $state['count']++;
             return $state;
         }
-    )
+    ])
     ->run();
 ```
 
