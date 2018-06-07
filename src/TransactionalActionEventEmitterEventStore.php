@@ -54,7 +54,7 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
             try {
                 $this->eventStore->beginTransaction();
             } catch (TransactionAlreadyStarted $exception) {
-                $event->setParam('transactionAlreadyStarted', true);
+                $event->setParam('transactionAlreadyStarted', $exception);
             }
         });
 
@@ -62,7 +62,7 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
             try {
                 $this->eventStore->commit();
             } catch (TransactionNotStarted $exception) {
-                $event->setParam('transactionNotStarted', true);
+                $event->setParam('transactionNotStarted', $exception);
             }
         });
 
@@ -70,7 +70,7 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
             try {
                 $this->eventStore->rollback();
             } catch (TransactionNotStarted $exception) {
-                $event->setParam('transactionNotStarted', true);
+                $event->setParam('transactionNotStarted', $exception);
             }
         });
     }
@@ -81,8 +81,8 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('transactionAlreadyStarted', false)) {
-            throw new TransactionAlreadyStarted();
+        if ($exception = $event->getParam('transactionAlreadyStarted', false)) {
+            throw $exception;
         }
     }
 
@@ -92,8 +92,8 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('transactionNotStarted', false)) {
-            throw new TransactionNotStarted();
+        if ($exception = $event->getParam('transactionNotStarted', false)) {
+            throw $exception;
         }
     }
 
@@ -103,8 +103,8 @@ class TransactionalActionEventEmitterEventStore extends ActionEventEmitterEventS
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('transactionNotStarted', false)) {
-            throw new TransactionNotStarted();
+        if ($exception = $event->getParam('transactionNotStarted', false)) {
+            throw $exception;
         }
     }
 
