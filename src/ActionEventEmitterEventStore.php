@@ -73,7 +73,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             try {
                 $this->eventStore->create($stream);
             } catch (StreamExistsAlready $exception) {
-                $event->setParam('streamExistsAlready', true);
+                $event->setParam('streamExistsAlready', $exception);
             }
         });
 
@@ -84,9 +84,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             try {
                 $this->eventStore->appendTo($streamName, $streamEvents);
             } catch (StreamNotFound $exception) {
-                $event->setParam('streamNotFound', true);
+                $event->setParam('streamNotFound', $exception);
             } catch (ConcurrencyException $exception) {
-                $event->setParam('concurrencyException', true);
+                $event->setParam('concurrencyException', $exception);
             }
         });
 
@@ -100,7 +100,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
                 $streamEvents = $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
                 $event->setParam('streamEvents', $streamEvents);
             } catch (StreamNotFound $exception) {
-                $event->setParam('streamNotFound', true);
+                $event->setParam('streamNotFound', $exception);
             }
         });
 
@@ -114,7 +114,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
                 $streamEvents = $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
                 $event->setParam('streamEvents', $streamEvents);
             } catch (StreamNotFound $exception) {
-                $event->setParam('streamNotFound', true);
+                $event->setParam('streamNotFound', $exception);
             }
         });
 
@@ -124,7 +124,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             try {
                 $this->eventStore->delete($streamName);
             } catch (StreamNotFound $exception) {
-                $event->setParam('streamNotFound', true);
+                $event->setParam('streamNotFound', $exception);
             }
         });
 
@@ -141,7 +141,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
                 $metadata = $this->eventStore->fetchStreamMetadata($streamName);
                 $event->setParam('metadata', $metadata);
             } catch (StreamNotFound $exception) {
-                $event->setParam('streamNotFound', true);
+                $event->setParam('streamNotFound', $exception);
             }
         });
 
@@ -152,7 +152,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
             try {
                 $this->eventStore->updateStreamMetadata($streamName, $metadata);
             } catch (StreamNotFound $exception) {
-                $event->setParam('streamNotFound', true);
+                $event->setParam('streamNotFound', $exception);
             }
         });
 
@@ -207,8 +207,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamExistsAlready', false)) {
-            throw StreamExistsAlready::with($stream->streamName());
+        if ($exception = $event->getParam('streamExistsAlready', false)) {
+            throw $exception;
         }
     }
 
@@ -220,12 +220,12 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamNotFound', false)) {
-            throw StreamNotFound::with($streamName);
+        if ($exception = $event->getParam('streamNotFound', false)) {
+            throw $exception;
         }
 
-        if ($event->getParam('concurrencyException', false)) {
-            throw new ConcurrencyException();
+        if ($exception = $event->getParam('concurrencyException', false)) {
+            throw $exception;
         }
     }
 
@@ -249,8 +249,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamNotFound', false)) {
-            throw StreamNotFound::with($streamName);
+        if ($exception = $event->getParam('streamNotFound', false)) {
+            throw $exception;
         }
 
         $stream = $event->getParam('streamEvents', false);
@@ -282,8 +282,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamNotFound', false)) {
-            throw StreamNotFound::with($streamName);
+        if ($exception = $event->getParam('streamNotFound', false)) {
+            throw $exception;
         }
 
         $stream = $event->getParam('streamEvents', false);
@@ -301,8 +301,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamNotFound', false)) {
-            throw StreamNotFound::with($streamName);
+        if ($exception = $event->getParam('streamNotFound', false)) {
+            throw $exception;
         }
     }
 
@@ -329,8 +329,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamNotFound', false)) {
-            throw StreamNotFound::with($streamName);
+        if ($exception = $event->getParam('streamNotFound', false)) {
+            throw $exception;
         }
 
         $metadata = $event->getParam('metadata', false);
@@ -355,8 +355,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $this->actionEventEmitter->dispatch($event);
 
-        if ($event->getParam('streamNotFound', false)) {
-            throw StreamNotFound::with($streamName);
+        if ($exception = $event->getParam('streamNotFound', false)) {
+            throw $exception;
         }
     }
 
