@@ -34,7 +34,7 @@
         "phpunit/php-invoker": "^2.0",
         "phpunit/phpunit": "^7.1.4",
         "prooph/bookdown-template": "^0.2.3",
-        "prooph/php-cs-fixer-config": "^0.2.1",
+        "prooph/php-cs-fixer-config": "^0.2.2",
         "psr/container": "^1.0",
         "sandrokeil/interop-config": "^2.0.1",
         "satooshi/php-coveralls": "^1.0"
