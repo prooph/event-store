@@ -1,7 +1,18 @@
 # Change Log
 
-## [v7.3.6](https://github.com/prooph/event-store/tree/v7.3.6)
+## [v7.3.7](https://github.com/prooph/event-store/tree/v7.3.7)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.6...v7.3.7)
+
+**Implemented enhancements:**
+
+- Preserve original exceptions in parameters [\#341](https://github.com/prooph/event-store/pull/341) ([enumag](https://github.com/enumag))
+
+**Merged pull requests:**
+
+- add missing closing bracket [\#340](https://github.com/prooph/event-store/pull/340) ([darrylhein](https://github.com/darrylhein))
+
+## [v7.3.6](https://github.com/prooph/event-store/tree/v7.3.6) (2018-04-30)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.5...v7.3.6)
 
 **Implemented enhancements:**
