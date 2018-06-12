@@ -220,12 +220,12 @@ class InMemoryEventStoreFactoryTest extends TestCase
         // times as there are events
         $metadataEnricher1
             ->enrich(Argument::type(Message::class))
-            ->shouldBeCalledTimes(count($events))
+            ->shouldBeCalledTimes(\count($events))
             ->willReturnArgument(0);
 
         $metadataEnricher2
             ->enrich(Argument::type(Message::class))
-            ->shouldBeCalledTimes(count($events))
+            ->shouldBeCalledTimes(\count($events))
             ->willReturnArgument(0);
 
         $stream = new Stream(new StreamName('test'), new \ArrayIterator($events));

@@ -50,6 +50,6 @@ class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
 
         $loggedStreamEvents = $container->get('eventlogger')->getLoggedStreamEvents();
 
-        $this->assertEquals(1, count($loggedStreamEvents));
+        $this->assertEquals(1, \count($loggedStreamEvents));
     }
 }

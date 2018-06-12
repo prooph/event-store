@@ -31,7 +31,7 @@ class ReadModelMock extends AbstractReadModel
 
     public function update(string $key, $value): void
     {
-        if (! array_key_exists($key, $this->storage)) {
+        if (! \array_key_exists($key, $this->storage)) {
             throw new InvalidArgumentException('Invalid key given');
         }
 
@@ -40,7 +40,7 @@ class ReadModelMock extends AbstractReadModel
 
     public function hasKey(string $key): bool
     {
-        return is_array($this->storage) && array_key_exists($key, $this->storage);
+        return \is_array($this->storage) && \array_key_exists($key, $this->storage);
     }
 
     public function read(string $key)
@@ -55,7 +55,7 @@ class ReadModelMock extends AbstractReadModel
 
     public function isInitialized(): bool
     {
-        return is_array($this->storage);
+        return \is_array($this->storage);
     }
 
     public function reset(): void

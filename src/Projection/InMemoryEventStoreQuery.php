@@ -110,7 +110,7 @@ final class InMemoryEventStoreQuery implements Query
 
         $result = $callback();
 
-        if (is_array($result)) {
+        if (\is_array($result)) {
             $this->state = $result;
         }
 
@@ -185,7 +185,7 @@ final class InMemoryEventStoreQuery implements Query
         }
 
         foreach ($handlers as $eventName => $handler) {
-            if (! is_string($eventName)) {
+            if (! \is_string($eventName)) {
                 throw new Exception\InvalidArgumentException('Invalid event name given, string expected');
             }
 
@@ -216,10 +216,10 @@ final class InMemoryEventStoreQuery implements Query
 
         $callback = $this->initCallback;
 
-        if (is_callable($callback)) {
+        if (\is_callable($callback)) {
             $result = $callback();
 
-            if (is_array($result)) {
+            if (\is_array($result)) {
                 $this->state = $result;
 
                 return;
@@ -258,7 +258,7 @@ final class InMemoryEventStoreQuery implements Query
                 break;
             }
             if ($this->triggerPcntlSignalDispatch) {
-                pcntl_signal_dispatch();
+                \pcntl_signal_dispatch();
             }
         }
     }
@@ -280,7 +280,7 @@ final class InMemoryEventStoreQuery implements Query
 
         foreach ($events as $event) {
             if ($this->triggerPcntlSignalDispatch) {
-                pcntl_signal_dispatch();
+                \pcntl_signal_dispatch();
             }
 
             /* @var Message $event */
@@ -288,7 +288,7 @@ final class InMemoryEventStoreQuery implements Query
 
             $result = $handler($this->state, $event);
 
-            if (is_array($result)) {
+            if (\is_array($result)) {
                 $this->state = $result;
             }
 
@@ -304,7 +304,7 @@ final class InMemoryEventStoreQuery implements Query
 
         foreach ($events as $event) {
             if ($this->triggerPcntlSignalDispatch) {
-                pcntl_signal_dispatch();
+                \pcntl_signal_dispatch();
             }
 
             /* @var Message $event */
@@ -317,7 +317,7 @@ final class InMemoryEventStoreQuery implements Query
             $handler = $this->handlers[$event->messageName()];
             $result = $handler($this->state, $event);
 
-            if (is_array($result)) {
+            if (\is_array($result)) {
                 $this->state = $result;
             }
 
@@ -360,22 +360,22 @@ final class InMemoryEventStoreQuery implements Query
 
     private function prepareStreamPositions(): void
     {
-        $reflectionProperty = new \ReflectionProperty(get_class($this->innerEventStore), 'streams');
+        $reflectionProperty = new \ReflectionProperty(\get_class($this->innerEventStore), 'streams');
         $reflectionProperty->setAccessible(true);
 
         $streamPositions = [];
-        $streams = array_keys($reflectionProperty->getValue($this->eventStore));
+        $streams = \array_keys($reflectionProperty->getValue($this->eventStore));
 
         if (isset($this->query['all'])) {
             foreach ($streams as $stream) {
-                if (substr($stream, 0, 1) === '$') {
+                if (\substr($stream, 0, 1) === '$') {
                     // ignore internal streams
                     continue;
                 }
                 $streamPositions[$stream] = 0;
             }
 
-            $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+            $this->streamPositions = \array_merge($streamPositions, $this->streamPositions);
 
             return;
         }
@@ -383,14 +383,14 @@ final class InMemoryEventStoreQuery implements Query
         if (isset($this->query['categories'])) {
             foreach ($streams as $stream) {
                 foreach ($this->query['categories'] as $category) {
-                    if (substr($stream, 0, strlen($category) + 1) === $category . '-') {
+                    if (\substr($stream, 0, \strlen($category) + 1) === $category . '-') {
                         $streamPositions[$stream] = 0;
                         break;
                     }
                 }
             }
 
-            $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+            $this->streamPositions = \array_merge($streamPositions, $this->streamPositions);
 
             return;
         }
@@ -400,6 +400,6 @@ final class InMemoryEventStoreQuery implements Query
             $streamPositions[$stream] = 0;
         }
 
-        $this->streamPositions = array_merge($streamPositions, $this->streamPositions);
+        $this->streamPositions = \array_merge($streamPositions, $this->streamPositions);
     }
 }

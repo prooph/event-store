@@ -335,7 +335,7 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
         $metadata = $event->getParam('metadata', false);
 
-        if (! is_array($metadata)) {
+        if (! \is_array($metadata)) {
             throw StreamNotFound::with($streamName);
         }
 

@@ -245,7 +245,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $events = [];
         for ($i = 51; $i <= 100; $i++) {
             $events[] = UsernameChanged::with([
-                'name' => uniqid('name_'),
+                'name' => \uniqid('name_'),
             ], $i);
         }
 
@@ -432,7 +432,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         ], 1);
         for ($i = 2; $i < 50; $i++) {
             $events[] = UsernameChanged::with([
-                'name' => uniqid('name_'),
+                'name' => \uniqid('name_'),
             ], $i);
         }
         $events[] = UsernameChanged::with([

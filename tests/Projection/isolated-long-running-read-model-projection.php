@@ -65,13 +65,13 @@ $projection = $projectionManager->createReadModelProjection(
         ReadModelProjector::OPTION_PCNTL_DISPATCH => true,
     ]
 );
-pcntl_signal(SIGQUIT, function () use ($projection) {
+\pcntl_signal(SIGQUIT, function () use ($projection) {
     $projection->stop();
     exit(SIGUSR1);
 });
 $projection
     ->fromStream('user-123')
     ->whenAny(function () {
-        usleep(500000);
+        \usleep(500000);
     })
     ->run();

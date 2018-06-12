@@ -86,7 +86,7 @@ $eventStore->attach(
         $recordedEvents = $actionEvent->getParam('streamEvents');
 
         foreach ($recordedEvents as $recordedEvent) {
-            echo sprintf(
+            echo \sprintf(
                 "Event with name %s was recorded. It occurred on %s ///\n\n",
                 $recordedEvent->messageName(),
                 $recordedEvent->createdAt()->format('Y-m-d H:i:s')

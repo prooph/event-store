@@ -1010,7 +1010,7 @@ abstract class AbstractEventStoreTest extends TestCase
             }
 
             for ($i = 0; $i < 20; $i++) {
-                $streamName = uniqid('rand');
+                $streamName = \uniqid('rand');
                 $streamNames[] = $streamName;
                 $this->eventStore->create(new Stream(new StreamName($streamName), new \EmptyIterator()));
             }
@@ -1083,7 +1083,7 @@ abstract class AbstractEventStoreTest extends TestCase
             }
 
             for ($i = 0; $i < 20; $i++) {
-                $streamName = uniqid('rand');
+                $streamName = \uniqid('rand');
                 $streamNames[] = $streamName;
                 $this->eventStore->create(new Stream(new StreamName($streamName), new \EmptyIterator()));
             }

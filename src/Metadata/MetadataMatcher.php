@@ -50,22 +50,22 @@ class MetadataMatcher
     {
         if ($operator->is(Operator::IN()) || $operator->is(Operator::NOT_IN())
         ) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 return;
             }
 
-            throw new InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'Value must be an array for the operator %s.',
                 $operator->getName()
             ));
         }
 
-        if ($operator->is(Operator::REGEX()) && ! is_string($value)) {
+        if ($operator->is(Operator::REGEX()) && ! \is_string($value)) {
             throw new InvalidArgumentException('Value must be a string for the regex operator.');
         }
 
-        if (! is_scalar($value)) {
-            throw new InvalidArgumentException(sprintf(
+        if (! \is_scalar($value)) {
+            throw new InvalidArgumentException(\sprintf(
                 'Value must have a scalar type for the operator %s.',
                 $operator->getName()
             ));

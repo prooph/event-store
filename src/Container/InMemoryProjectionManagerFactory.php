@@ -52,7 +52,7 @@ final class InMemoryProjectionManagerFactory implements
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
-                sprintf('The first argument must be of type %s', ContainerInterface::class)
+                \sprintf('The first argument must be of type %s', ContainerInterface::class)
             );
         }
 

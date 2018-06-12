@@ -102,17 +102,17 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function deleteProjection(string $name, bool $deleteEmittedEvents): void
     {
-        throw new Exception\RuntimeException('Deleting a projection is not supported in ' . get_class($this));
+        throw new Exception\RuntimeException('Deleting a projection is not supported in ' . \get_class($this));
     }
 
     public function resetProjection(string $name): void
     {
-        throw new Exception\RuntimeException('Resetting a projection is not supported in ' . get_class($this));
+        throw new Exception\RuntimeException('Resetting a projection is not supported in ' . \get_class($this));
     }
 
     public function stopProjection(string $name): void
     {
-        throw new Exception\RuntimeException('Stopping a projection is not supported in ' . get_class($this));
+        throw new Exception\RuntimeException('Stopping a projection is not supported in ' . \get_class($this));
     }
 
     public function fetchProjectionNames(?string $filter, int $limit = 20, int $offset = 0): array
@@ -130,10 +130,10 @@ final class InMemoryProjectionManager implements ProjectionManager
         }
 
         if (null === $filter) {
-            $result = array_keys($this->projectors);
-            sort($result, \SORT_STRING);
+            $result = \array_keys($this->projectors);
+            \sort($result, \SORT_STRING);
 
-            return array_slice($result, $offset, $limit);
+            return \array_slice($result, $offset, $limit);
         }
 
         if (isset($this->projectors[$filter])) {
@@ -157,19 +157,19 @@ final class InMemoryProjectionManager implements ProjectionManager
             );
         }
 
-        set_error_handler(function ($errorNo, $errorMsg): void {
+        \set_error_handler(function ($errorNo, $errorMsg): void {
             throw new Exception\RuntimeException($errorMsg);
         });
 
         try {
-            $result = preg_grep("/$regex/", array_keys($this->projectors));
-            sort($result, \SORT_STRING);
+            $result = \preg_grep("/$regex/", \array_keys($this->projectors));
+            \sort($result, \SORT_STRING);
 
-            return array_slice($result, $offset, $limit);
+            return \array_slice($result, $offset, $limit);
         } catch (Exception\RuntimeException $e) {
             throw new Exception\InvalidArgumentException('Invalid regex pattern given', 0, $e);
         } finally {
-            restore_error_handler();
+            \restore_error_handler();
         }
     }
 
@@ -181,7 +181,7 @@ final class InMemoryProjectionManager implements ProjectionManager
 
         $projector = $this->projectors[$name];
 
-        $ref = new \ReflectionProperty(get_class($projector), 'status');
+        $ref = new \ReflectionProperty(\get_class($projector), 'status');
         $ref->setAccessible(true);
 
         return $ref->getValue($projector);
@@ -195,7 +195,7 @@ final class InMemoryProjectionManager implements ProjectionManager
 
         $projector = $this->projectors[$name];
 
-        $ref = new \ReflectionProperty(get_class($projector), 'streamPositions');
+        $ref = new \ReflectionProperty(\get_class($projector), 'streamPositions');
         $ref->setAccessible(true);
         $value = $ref->getValue($projector);
 

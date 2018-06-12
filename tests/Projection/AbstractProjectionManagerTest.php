@@ -45,7 +45,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
             }
 
             for ($i = 0; $i < 20; $i++) {
-                $projection = $this->projectionManager->createProjection(uniqid('rand'));
+                $projection = $this->projectionManager->createProjection(\uniqid('rand'));
                 $projection->fromAll()->whenAny(function (): void {
                 })->run(false);
                 $projections[] = $projection;
@@ -166,7 +166,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         }
 
         for ($i = 0; $i < 20; $i++) {
-            $projection = $this->projectionManager->createProjection(uniqid('rand'));
+            $projection = $this->projectionManager->createProjection(\uniqid('rand'));
             $projection->fromAll()->whenAny(function (): void {
             })->run(false);
         }
@@ -204,8 +204,8 @@ abstract class AbstractProjectionManagerTest extends TestCase
         })->run(false);
 
         $this->assertEquals(
-            json_encode(['user-1', 'user-10', 'user-100', 'user-21']),
-            json_encode($this->projectionManager->fetchProjectionNamesRegex('ser-'))
+            \json_encode(['user-1', 'user-10', 'user-100', 'user-21']),
+            \json_encode($this->projectionManager->fetchProjectionNamesRegex('ser-'))
         );
     }
 

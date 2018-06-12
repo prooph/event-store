@@ -36,7 +36,7 @@ class ArrayCache
         }
 
         $this->size = $size;
-        $this->container = array_fill(0, $size, null);
+        $this->container = \array_fill(0, $size, null);
     }
 
     /**
@@ -64,7 +64,7 @@ class ArrayCache
 
     public function has($value): bool
     {
-        return in_array($value, $this->container, true);
+        return \in_array($value, $this->container, true);
     }
 
     public function size(): int

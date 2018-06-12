@@ -70,7 +70,7 @@ final class InMemoryEventStoreFactory implements
     {
         if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new InvalidArgumentException(
-                sprintf('The first argument must be of type %s', ContainerInterface::class)
+                \sprintf('The first argument must be of type %s', ContainerInterface::class)
             );
         }
 
@@ -115,7 +115,7 @@ final class InMemoryEventStoreFactory implements
 
             if (! $plugin instanceof Plugin) {
                 throw ConfigurationException::configurationError(
-                    sprintf(
+                    \sprintf(
                         'Plugin %s does not implement the Plugin interface',
                         $pluginAlias
                     )
@@ -125,7 +125,7 @@ final class InMemoryEventStoreFactory implements
             $plugin->attachToEventStore($wrapper);
         }
 
-        if (count($config['metadata_enrichers']) > 0) {
+        if (\count($config['metadata_enrichers']) > 0) {
             $metadataEnrichers = [];
 
             foreach ($config['metadata_enrichers'] as $metadataEnricherAlias) {
@@ -133,7 +133,7 @@ final class InMemoryEventStoreFactory implements
 
                 if (! $metadataEnricher instanceof MetadataEnricher) {
                     throw ConfigurationException::configurationError(
-                        sprintf(
+                        \sprintf(
                             'Metadata enricher %s does not implement the MetadataEnricher interface',
                             $metadataEnricherAlias
                         )

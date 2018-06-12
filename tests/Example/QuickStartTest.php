@@ -21,7 +21,7 @@ class QuickStartTest extends TestCase
      */
     public function it_provides_the_correct_example_output(): void
     {
-        $pattern = sprintf(
+        $pattern = \sprintf(
             '~^Event with name Prooph\\\\EventStore\\\\QuickStart\\\\Event\\\\QuickStartSucceeded was recorded\. It occurred on %s ///\n\nIt works$~',
             '\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
         );
@@ -31,9 +31,9 @@ class QuickStartTest extends TestCase
 
     private function getQuickstartOutput(): string
     {
-        ob_start();
+        \ob_start();
         include __DIR__ . '/../../examples/quickstart.php';
 
-        return ob_get_clean();
+        return \ob_get_clean();
     }
 }

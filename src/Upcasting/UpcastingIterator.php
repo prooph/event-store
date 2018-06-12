@@ -41,7 +41,7 @@ final class UpcastingIterator implements Iterator
     public function current(): ?Message
     {
         if (! empty($this->storedMessages)) {
-            return reset($this->storedMessages);
+            return \reset($this->storedMessages);
         }
 
         $current = null;
@@ -66,13 +66,13 @@ final class UpcastingIterator implements Iterator
             $this->storedMessages = $this->upcaster->upcast($this->innerIterator->current());
         }
 
-        return reset($this->storedMessages);
+        return \reset($this->storedMessages);
     }
 
     public function next(): void
     {
         if (! empty($this->storedMessages)) {
-            array_shift($this->storedMessages);
+            \array_shift($this->storedMessages);
         }
 
         if (! empty($this->storedMessages)) {

@@ -81,13 +81,13 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
      */
     public function it_stops_immediately_after_pcntl_signal_was_received(): void
     {
-        if (! extension_loaded('pcntl')) {
+        if (! \extension_loaded('pcntl')) {
             $this->markTestSkipped('The PCNTL extension is not available.');
 
             return;
         }
 
-        $command = 'exec php ' . realpath(__DIR__) . '/isolated-long-running-query.php';
+        $command = 'exec php ' . \realpath(__DIR__) . '/isolated-long-running-query.php';
         $descriptorSpec = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
@@ -97,13 +97,13 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
          * Created process inherits env variables from this process.
          * Script returns with non-standard code SIGUSR1 from the handler and -1 else
          */
-        $projectionProcess = proc_open($command, $descriptorSpec, $pipes);
-        $processDetails = proc_get_status($projectionProcess);
-        usleep(500000);
-        posix_kill($processDetails['pid'], SIGQUIT);
-        usleep(500000);
+        $projectionProcess = \proc_open($command, $descriptorSpec, $pipes);
+        $processDetails = \proc_get_status($projectionProcess);
+        \usleep(500000);
+        \posix_kill($processDetails['pid'], SIGQUIT);
+        \usleep(500000);
 
-        $processDetails = proc_get_status($projectionProcess);
+        $processDetails = \proc_get_status($projectionProcess);
         $this->assertEquals(
             SIGUSR1,
             $processDetails['exitcode']

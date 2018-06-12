@@ -19,7 +19,7 @@ final class StreamNotFound extends RuntimeException
     public static function with(StreamName $streamName): StreamNotFound
     {
         return new self(
-            sprintf(
+            \sprintf(
                 'A stream with name %s could not be found',
                 $streamName->toString()
             )

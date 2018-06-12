@@ -19,7 +19,7 @@ final class StreamExistsAlready extends RuntimeException
     public static function with(StreamName $streamName): StreamExistsAlready
     {
         return new self(
-            sprintf(
+            \sprintf(
                 'A stream with name %s exists already',
                 $streamName->toString()
             )
