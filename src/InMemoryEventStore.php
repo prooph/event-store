@@ -35,7 +35,7 @@ final class InMemoryEventStore implements TransactionalEventStore
     /**
      * @var array
      */
-    private $cachedStreams = [];
+    private $cachedPositions = [];
 
     /**
      * @var bool
@@ -47,18 +47,15 @@ final class InMemoryEventStore implements TransactionalEventStore
         $streamName = $stream->streamName();
         $streamNameString = $streamName->toString();
 
-        if (isset($this->streams[$streamNameString])
-            || isset($this->cachedStreams[$streamNameString])
-        ) {
+        if (isset($this->streams[$streamNameString])) {
             throw StreamExistsAlready::with($streamName);
         }
 
+        $this->streams[$streamNameString]['events'] = \iterator_to_array($stream->streamEvents());
+        $this->streams[$streamNameString]['metadata'] = $stream->metadata();
+
         if ($this->inTransaction) {
-            $this->cachedStreams[$streamNameString]['events'] = \iterator_to_array($stream->streamEvents());
-            $this->cachedStreams[$streamNameString]['metadata'] = $stream->metadata();
-        } else {
-            $this->streams[$streamNameString]['events'] = \iterator_to_array($stream->streamEvents());
-            $this->streams[$streamNameString]['metadata'] = $stream->metadata();
+            $this->cachedPositions[$streamNameString] = \count($this->streams[$streamNameString]['events']);
         }
     }
 
@@ -66,23 +63,18 @@ final class InMemoryEventStore implements TransactionalEventStore
     {
         $streamNameString = $streamName->toString();
 
-        if (! isset($this->streams[$streamNameString])
-            && ! isset($this->cachedStreams[$streamNameString])
-        ) {
+        if (! isset($this->streams[$streamNameString])) {
             throw StreamNotFound::with($streamName);
         }
 
-        if ($this->inTransaction) {
-            if (! isset($this->cachedStreams[$streamNameString])) {
-                $this->cachedStreams[$streamNameString]['events'] = [];
-            }
+        if ($this->inTransaction && ! isset($this->cachedPositions[$streamNameString])) {
+            $this->cachedPositions[$streamNameString] = 0;
+        }
+        foreach ($streamEvents as $streamEvent) {
+            $this->streams[$streamNameString]['events'][] = $streamEvent;
 
-            foreach ($streamEvents as $streamEvent) {
-                $this->cachedStreams[$streamNameString]['events'][] = $streamEvent;
-            }
-        } else {
-            foreach ($streamEvents as $streamEvent) {
-                $this->streams[$streamNameString]['events'][] = $streamEvent;
+            if ($this->inTransaction) {
+                $this->cachedPositions[$streamNameString]++;
             }
         }
     }
@@ -224,17 +216,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             throw new TransactionNotStarted();
         }
 
-        foreach ($this->cachedStreams as $streamName => $data) {
-            if (isset($data['metadata'])) {
-                $this->streams[$streamName] = $data;
-            } else {
-                foreach ($data['events'] as $streamEvent) {
-                    $this->streams[$streamName]['events'][] = $streamEvent;
-                }
-            }
-        }
-
-        $this->cachedStreams = [];
+        $this->cachedPositions = [];
         $this->inTransaction = false;
     }
 
@@ -243,8 +225,19 @@ final class InMemoryEventStore implements TransactionalEventStore
         if (! $this->inTransaction) {
             throw new TransactionNotStarted();
         }
+        foreach ($this->cachedPositions as $streamName => $cachedPosition) {
+            $this->streams[$streamName]['events'] = \array_slice(
+                $this->streams[$streamName]['events'],
+                0,
+                $cachedPosition * -1
+            );
 
-        $this->cachedStreams = [];
+            if (empty($this->streams[$streamName]['events'])) {
+                unset($this->streams[$streamName]);
+            }
+        }
+
+        $this->cachedPositions = [];
         $this->inTransaction = false;
     }
 
