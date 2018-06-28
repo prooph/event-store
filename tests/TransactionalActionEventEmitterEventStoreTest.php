@@ -55,7 +55,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
 
         $this->eventStore->create($stream->reveal());
 
-        $this->assertFalse($this->eventStore->hasStream($streamName));
+        $this->assertTrue($this->eventStore->hasStream($streamName), 'It can not read transactional data');
 
         $this->eventStore->commit();
 
@@ -82,7 +82,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
 
         $this->eventStore->create($stream->reveal());
 
-        $this->assertFalse($this->eventStore->hasStream($streamName));
+        $this->assertTrue($this->eventStore->hasStream($streamName), 'It can not read transactional data');
 
         $this->eventStore->rollback();
 
