@@ -1,7 +1,19 @@
 # Change Log
 
-## [v7.3.7](https://github.com/prooph/event-store/tree/v7.3.7)
+## [v7.3.8](https://github.com/prooph/event-store/tree/v7.3.8)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.7...v7.3.8)
+
+**Fixed bugs:**
+
+- fix expected projections event count  [\#345](https://github.com/prooph/event-store/pull/345) ([basz](https://github.com/basz))
+
+**Closed issues:**
+
+- Documentation uses wrong pcntl signal?  [\#344](https://github.com/prooph/event-store/issues/344)
+- InMemoryEventStore can't read it's own events if in transaction [\#342](https://github.com/prooph/event-store/issues/342)
+
+## [v7.3.7](https://github.com/prooph/event-store/tree/v7.3.7) (2018-06-12)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.6...v7.3.7)
 
 **Implemented enhancements:**
