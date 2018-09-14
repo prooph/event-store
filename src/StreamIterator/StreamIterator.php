@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\StreamIterator;
 
-abstract class StreamIterator implements IterableStream
+use Countable;
+use Iterator;
+
+abstract class StreamIterator implements Countable, Iterator
 {
 }

@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\StreamIterator;
 
-final class InMemoryStreamIterator extends \ArrayIterator implements IterableStream
+use ArrayIterator;
+use Countable;
+use Iterator;
+
+final class InMemoryStreamIterator extends ArrayIterator implements Countable, Iterator
 {
 }

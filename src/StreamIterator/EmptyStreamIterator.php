@@ -12,31 +12,12 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\StreamIterator;
 
-final class EmptyStreamIterator implements IterableStream
+use Countable;
+use EmptyIterator;
+use Iterator;
+
+final class EmptyStreamIterator extends EmptyIterator implements Countable, Iterator
 {
-    public function current()
-    {
-        throw new \BadMethodCallException('Accessing the value of an EmptyIterator');
-    }
-
-    public function next(): void
-    {
-    }
-
-    public function key()
-    {
-        throw new \BadMethodCallException('Accessing the key of an EmptyIterator');
-    }
-
-    public function valid(): bool
-    {
-        return false;
-    }
-
-    public function rewind(): void
-    {
-    }
-
     public function count(): int
     {
         return 0;
