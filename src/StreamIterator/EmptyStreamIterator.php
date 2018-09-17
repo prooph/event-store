@@ -12,11 +12,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\StreamIterator;
 
-use Countable;
 use EmptyIterator;
-use Iterator;
 
-final class EmptyStreamIterator extends EmptyIterator implements Countable, Iterator
+final class EmptyStreamIterator extends EmptyIterator implements StreamIterator
 {
     public function count(): int
     {
