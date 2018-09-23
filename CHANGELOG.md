@@ -1,8 +1,19 @@
 # Change Log
 
-## [v7.3.8](https://github.com/prooph/event-store/tree/v7.3.8)
+## [v7.4.0](https://github.com/prooph/event-store/tree/v7.4.0)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.3.8...v7.4.0)
+
+**Implemented enhancements:**
+
+- \[WIP\] feature/countable stream iterator [\#346](https://github.com/prooph/event-store/pull/346) ([basz](https://github.com/basz))
+
+## [v7.3.8](https://github.com/prooph/event-store/tree/v7.3.8) (2018-08-27)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.7...v7.3.8)
+
+**Implemented enhancements:**
+
+- Create original event-store implementation [\#327](https://github.com/prooph/event-store/issues/327)
 
 **Fixed bugs:**
 
