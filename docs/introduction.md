@@ -105,14 +105,14 @@ $eventStore->appendTo($streamName, new ArrayIterator([$quickStartSucceeded /*, .
 
 /**
  * Once committed you can of course also load a set of events or the entire stream
- * Use $eventStore->loadEventsByMetadataFrom($streamName, $metadata, $minVersion);
+ * Use $eventStore->load($streamName, $metadata, $minVersion);
  * to load a list of events
  *
  * or the $eventStore->load($streamName); to get all events
  */
-$persistedEventStream = $eventStore->load($streamName);
+$streamIterator = $eventStore->load($streamName);
 
-foreach ($persistedEventStream as $event) {
+foreach ($streamIterator as $event) {
     if ($event instanceof QuickStartSucceeded) {
         echo $event->getText();
     }

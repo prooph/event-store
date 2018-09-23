@@ -22,6 +22,7 @@ use Prooph\EventStore\Metadata\FieldType;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamIterator\StreamIterator;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\Mock\UserCreated;
@@ -1167,5 +1168,25 @@ abstract class AbstractEventStoreTest extends TestCase
             [['foo' => 'bar']],
             [['snapshot' => true, 'some_id' => 123, 'foo' => 'bar']],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function it_return_stream_iterator_for_load(): void
+    {
+        $this->eventStore->create($this->getTestStream());
+
+        $this->assertInstanceOf(StreamIterator::class, $this->eventStore->load(new StreamName('Prooph\Model\User')));
+    }
+
+    /**
+     * @test
+     */
+    public function it_return_stream_iterator_for_load_reversed(): void
+    {
+        $this->eventStore->create($this->getTestStream());
+
+        $this->assertInstanceOf(StreamIterator::class, $this->eventStore->loadReverse(new StreamName('Prooph\Model\User')));
     }
 }
