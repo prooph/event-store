@@ -214,13 +214,13 @@ $projector
     ->fromAll()
     ->when([
         'user-created' => function ($state, Message $event) {
-            $this->readModelProjection()->insert(
+            $this->readModel()->insert(
                 'name',
                 $event->payload()['name']
             );
         },
         'username-changed' => function ($state, Message $event) {
-            $this->readModelProjection()->update(
+            $this->readModel()->update(
                 'name',
                 $event->payload()['name']
             );
