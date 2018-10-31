@@ -59,7 +59,7 @@ The event-driven system opens the door for customizations. Here are some ideas o
 - Implement your own Unit of Work and synchronize it with the `transaction`, `commit` and `rollback` events
 - ...
 
-## Metadata enricher
+## Metadata enricher {#metadata-enrichier}
 
 By default, the component is shipped with a plugin to automatically add metadata to each event.
 For instance, you may want to add information about the command which caused the event or even

@@ -92,3 +92,37 @@ If you want to have a read only event store, just add `'read_only' => true` to y
 ```
 
 $projectionManager = $container->get('inmemoryeventstoreprojectionmanager');
+
+### PDO-based event stores
+
+The three PDO-based event stores (`MySqlEventStoreFactory`, `MariaDbEventStoreFactory`and `PostgresEventStoreFactory`)
+share the same config options:
+
+* `connection` (**required**): The ID of your PDO service
+* `persistence_strategy` (**required**): The ID of your persistence strategy service. You can learn more about
+persistence strategies [here](/event-store/implementations/pdo_event_store/variants.html#persistence-strategies).
+* `load_batch_size` (*default: 1000*): This is the maximum number of events retrieved when calling the `load` method.
+* `event_streams_table` (*default: `event_streams`*): The name of the table where event streams metadata are persisted. Note that this is not the
+table where the stream of events is persisted.
+* `message_factory` (*default: [FQCNMessageFactory](https://github.com/prooph/common/blob/master/src/Messaging/FQCNMessageFactory.php)*):
+The ID of a service implementing [`MessageFactory` interface](https://github.com/prooph/common/blob/master/src/Messaging/MessageFactory.php#L15).
+* `wrap_action_event_emitter` (*default: true*): Decorate the event store with an `ActionEventEmitterEventStore`.
+This is needed if you want to use plugins (see more details [here](http://docs.getprooph.org/event-store/event_store_plugins.html)).
+* `metadata_enrichers` (*default: []*): A list of IDs of services implementing the [`MetadataEnricher` interface](https://github.com/prooph/event-store/blob/master/src/Metadata/MetadataEnricher.php).
+`wrap_action_event_emitter` has to be enabled. For more details about metadata enrichers, see [here](event_store_plugins.html#metadata-enrichier).
+* `plugins` (*default: []*): A list of IDs of services implementing the [`Plugin` interface](https://github.com/prooph/event-store/blob/master/src/Plugin/Plugin.php).
+`wrap_action_event_emitter` has to be enabled. For more details about plugins, see [here](event_store_plugins.html).
+* `disable_transaction_handling` (*default: false*): Disable SQL transactions.
+
+#### PDOConnectionFactory
+
+In addition to event store factories, a `PDOConnectionFactory` is also provided. It supports following config options,
+under `prooph.pdo_connection` dimension:
+
+* `schema` (**required**): Type of the database (either `mysql` or `pgsql`).
+* `host` (*default: 127.0.0.1*)
+* `port` (**required**)
+* `user` (**required**)
+* `password` (**required**)
+* `dbname` (*default: event_store*)
+* `charset` (*default: utf8*)
