@@ -1,6 +1,7 @@
 <?php
+
 /**
- * This file is part of the prooph/event-store.
+ * This file is part of prooph/event-store.
  * (c) 2014-2018 prooph software GmbH <contact@prooph.de>
  * (c) 2015-2018 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
