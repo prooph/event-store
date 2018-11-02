@@ -19,6 +19,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
+use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
@@ -115,6 +116,11 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
      */
     private $query;
 
+    /**
+     * @var MetadataMatcher|null
+     */
+    private $metadataMatcher;
+
     public function __construct(
         EventStore $eventStore,
         string $name,
@@ -184,13 +190,14 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         return $this;
     }
 
-    public function fromStream(string $streamName): ReadModelProjector
+    public function fromStream(string $streamName, MetadataMatcher $metadataMatcher = null): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
         $this->query['streams'][] = $streamName;
+        $this->metadataMatcher = $metadataMatcher;
 
         return $this;
     }
@@ -312,7 +319,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
 
             foreach ($this->streamPositions as $streamName => $position) {
                 try {
-                    $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1);
+                    $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1, null, $this->metadataMatcher);
                 } catch (Exception\StreamNotFound $e) {
                     // ignore
                     continue;
