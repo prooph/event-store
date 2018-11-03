@@ -1,7 +1,20 @@
 # Change Log
 
-## [v7.4.0](https://github.com/prooph/event-store/tree/v7.4.0)
+## [v7.5.0](https://github.com/prooph/event-store/tree/v7.5.0)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.4.0...v7.5.0)
+
+**Implemented enhancements:**
+
+- Update fromStream for Projection, Query and ReadModelProjection [\#350](https://github.com/prooph/event-store/pull/350) ([fjogeleit](https://github.com/fjogeleit))
+
+**Merged pull requests:**
+
+- Update cs headers [\#351](https://github.com/prooph/event-store/pull/351) ([basz](https://github.com/basz))
+- Fix branch-alias [\#348](https://github.com/prooph/event-store/pull/348) ([enumag](https://github.com/enumag))
+- Fix method name in doc [\#347](https://github.com/prooph/event-store/pull/347) ([rodion-k](https://github.com/rodion-k))
+
+## [v7.4.0](https://github.com/prooph/event-store/tree/v7.4.0) (2018-09-23)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.8...v7.4.0)
 
 **Implemented enhancements:**
