@@ -19,6 +19,8 @@ use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\Projection\ReadModel;
 use Prooph\EventStore\Projection\ReadModelProjector;
@@ -172,6 +174,38 @@ abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
             ->run(false);
 
         $this->assertEquals(100, $projection->getState()['count']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_query_from_stream_and_filter_with_metadata_matcher(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $readModel = new ReadModelMock();
+
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel);
+        $metadataMatcher = (new MetadataMatcher())
+            ->withMetadataMatch('_aggregate_version', Operator::EQUALS(), 10);
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0, 'version' => null];
+            })
+            ->fromStream('user-123', $metadataMatcher)
+            ->whenAny(
+                function (array $state, Message $event): array {
+                    $state['count']++;
+                    $state['version'] = $event->metadata()['_aggregate_version'];
+
+                    return $state;
+                }
+            )
+            ->run(false);
+
+        $this->assertEquals(1, $projection->getState()['count']);
+        $this->assertEquals(10, $projection->getState()['version']);
     }
 
     /**

@@ -251,3 +251,28 @@ seconds before the projection is finally stopped.
 
 All internal projection names are prefixed with `$` (dollar-sign), f.e. `$ct-`. Do not use projection names starting
 with a dollar-sign, as this is reserved for prooph internals.
+
+## Stream filtering
+
+The basic InMemory and PDO implementations for `Query`, `Projector` and `ReadModelProjector` have now a second optional `MetadataMatcher` parameter. It makes it possible to filter streams by all basic and custom metadata like `_aggregation_id` or `_aggregation_type`. It allows you for example to query over all events for a specific `Aggregate`.
+
+### Example
+
+```php
+$query = $projectionManager->createQuery();
+$metaMatcher = (new MetadataMatcher)->withMetadataMatch('_aggregate_id', Operator::EQUALS(), '123')
+
+$query
+    ->init(function (): array {
+        return ['count' => 0];
+    })
+    ->fromStream('users', $metaMatcher)
+    ->whenAny(function (
+            array $state, DomainEvent $event
+        ): array {
+            $state['count']++;
+            return $state;
+        }
+    )
+    ->run();
+```
