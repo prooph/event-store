@@ -1,8 +1,0 @@
-{
-  "title": "Implementations",
-  "tocDepth": 1,
-  "numbering": false,
-  "content": [
-    {"pdo_event_store": "https://raw.githubusercontent.com/prooph/pdo-event-store/master/docs/bookdown.json"}
-  ]
-}
