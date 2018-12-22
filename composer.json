@@ -19,7 +19,6 @@
   "require": {
     "php": "^7.2",
     "ext-json": "*",
-    "prooph/php-cs-fixer-config": "^0.3",
     "ramsey/uuid": "^3.7.3"
   },
   "require-dev": {
