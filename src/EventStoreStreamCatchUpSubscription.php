@@ -13,20 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use Throwable;
-
-/** @internal  */
-interface EventStoreStreamCatchUpSubscription
+interface EventStoreStreamCatchUpSubscription extends EventStoreCatchUpSubscription
 {
-    public function isSubscribedToAll(): bool;
-
-    public function streamId(): string;
-
-    public function subscriptionName(): string;
-
-    public function start(): void;
-
-    public function stop(): void;
-
-    public function dropSubscription(SubscriptionDropReason $reason, ?Throwable $error): void;
+    public function lastProcessedEventNumber(): int;
 }
