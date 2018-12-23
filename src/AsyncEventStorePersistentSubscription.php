@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use Amp\Promise;
+use Prooph\EventStore\Internal\ResolvedEvent;
 
 interface AsyncEventStorePersistentSubscription
 {

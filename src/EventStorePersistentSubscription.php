@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Prooph\EventStore\Internal\ResolvedEvent;
+
 interface EventStorePersistentSubscription
 {
     public const DEFAULT_BUFFER_SIZE = 10;
