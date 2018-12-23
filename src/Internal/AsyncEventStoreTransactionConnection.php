@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Internal;
 
+use Amp\Promise;
 use Prooph\EventStore\AsyncEventStoreTransaction;
 use Prooph\EventStore\UserCredentials;
-use Prooph\EventStore\WriteResult;
 
 /** @internal */
 interface AsyncEventStoreTransactionConnection
@@ -24,10 +24,11 @@ interface AsyncEventStoreTransactionConnection
         AsyncEventStoreTransaction $transaction,
         array $events,
         ?UserCredentials $userCredentials
-    ): void;
+    ): Promise;
 
+    /** @return Promise<WriteResult> */
     public function commitTransactionAsync(
         AsyncEventStoreTransaction $transaction,
         ?UserCredentials $userCredentials
-    ): WriteResult;
+    ): Promise;
 }
