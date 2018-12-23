@@ -18,7 +18,7 @@ use Prooph\EventStore\UserCredentials;
 use Prooph\EventStore\WriteResult;
 
 /** @internal */
-interface AsyncEventStoreTransactionConnection
+interface EventStoreTransactionConnection
 {
     public function transactionalWriteAsync(
         AsyncEventStoreTransaction $transaction,
