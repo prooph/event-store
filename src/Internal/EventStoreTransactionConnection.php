@@ -13,21 +13,21 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Internal;
 
-use Prooph\EventStore\AsyncEventStoreTransaction;
+use Prooph\EventStore\EventStoreTransaction;
 use Prooph\EventStore\UserCredentials;
 use Prooph\EventStore\WriteResult;
 
 /** @internal */
 interface EventStoreTransactionConnection
 {
-    public function transactionalWriteAsync(
-        AsyncEventStoreTransaction $transaction,
+    public function transactionalWrite(
+        EventStoreTransaction $transaction,
         array $events,
         ?UserCredentials $userCredentials
     ): void;
 
-    public function commitTransactionAsync(
-        AsyncEventStoreTransaction $transaction,
+    public function commitTransaction(
+        EventStoreTransaction $transaction,
         ?UserCredentials $userCredentials
     ): WriteResult;
 }
