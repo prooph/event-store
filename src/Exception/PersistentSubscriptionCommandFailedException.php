@@ -15,18 +15,4 @@ namespace Prooph\EventStore\Exception;
 
 class PersistentSubscriptionCommandFailedException extends EventStoreConnectionException
 {
-    /** @var int */
-    private $httpStatusCode;
-
-    public function __construct(int $httpStatusCode, string $message)
-    {
-        $this->httpStatusCode = $httpStatusCode;
-
-        parent::__construct($message);
-    }
-
-    public function httpStatusCode(): int
-    {
-        return $this->httpStatusCode;
-    }
 }

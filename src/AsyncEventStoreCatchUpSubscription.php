@@ -16,7 +16,6 @@ namespace Prooph\EventStore;
 use Amp\Promise;
 use Throwable;
 
-/** @internal  */
 interface AsyncEventStoreCatchUpSubscription
 {
     public function isSubscribedToAll(): bool;
