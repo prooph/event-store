@@ -13,7 +13,7 @@ You can install prooph/event-store via composer by adding `"prooph/event-store":
 ### Available persistent implementations
 
 - [Event Store Client](https://github.com/prooph/event-store-client) for async TCP connections
-- [Event Store HTTP Client](https://github.com/prooph/event-http-store-client) for HTTP connections
+- [Event Store HTTP Client](https://github.com/prooph/event-store-http-client) for HTTP connections
 
 ## Documentation
 
