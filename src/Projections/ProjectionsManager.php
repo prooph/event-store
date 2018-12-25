@@ -19,22 +19,22 @@ use Prooph\EventStore\UserCredentials;
 interface ProjectionsManager
 {
     /**
-     * Asynchronously enables a projection
+     * Synchronously enables a projection
      */
     public function enable(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously aborts and disables a projection without writing a checkpoint
+     * Synchronously aborts and disables a projection without writing a checkpoint
      */
     public function disable(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously disables a projection
+     * Synchronously disables a projection
      */
     public function abort(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously creates a one-time query
+     * Synchronously creates a one-time query
      */
     public function createOneTime(
         string $query,
@@ -42,7 +42,7 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously creates a one-time query
+     * Synchronously creates a one-time query
      */
     public function createTransient(
         string $name,
@@ -51,7 +51,7 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously creates a continuous projection
+     * Synchronously creates a continuous projection
      */
     public function createContinuous(
         string $name,
@@ -61,28 +61,28 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously lists all projections
+     * Synchronously lists all projections
      *
      * @return Promise<ProjectionDetails[]>
      */
     public function listAll(?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously lists all one-time projections
+     * Synchronously lists all one-time projections
      *
      * @return Promise<ProjectionDetails[]>
      */
     public function listOneTime(?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously lists this status of all continuous projections
+     * Synchronously lists this status of all continuous projections
      *
      * @return Promise<ProjectionDetails[]>
      */
     public function listContinuous(?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously gets the status of a projection
+     * Synchronously gets the status of a projection
      *
      * returns String of JSON containing projection status
      *
@@ -91,7 +91,7 @@ interface ProjectionsManager
     public function getStatus(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously gets the state of a projection.
+     * Synchronously gets the state of a projection.
      *
      * returns String of JSON containing projection state
      *
@@ -100,7 +100,7 @@ interface ProjectionsManager
     public function getState(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously gets the state of a projection for a specified partition
+     * Synchronously gets the state of a projection for a specified partition
      *
      * returns String of JSON containing projection state
      *
@@ -113,7 +113,7 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously gets the resut of a projection
+     * Synchronously gets the resut of a projection
      *
      * returns String of JSON containing projection result
      *
@@ -122,7 +122,7 @@ interface ProjectionsManager
     public function getResult(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously gets the result of a projection for a specified partition
+     * Synchronously gets the result of a projection for a specified partition
      *
      * returns String of JSON containing projection result
      *
@@ -135,7 +135,7 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously gets the statistics of a projection
+     * Synchronously gets the statistics of a projection
      *
      * returns String of JSON containing projection statistics
      *
@@ -144,14 +144,14 @@ interface ProjectionsManager
     public function getStatistics(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously gets the status of a query
+     * Synchronously gets the status of a query
      *
      * @return Promise<string>
      */
     public function getQuery(string $name, ?UserCredentials $userCredentials = null): void;
 
     /**
-     * Asynchronously updates the definition of a query
+     * Synchronously updates the definition of a query
      */
     public function updateQuery(
         string $name,
@@ -161,7 +161,7 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously deletes a projection
+     * Synchronously deletes a projection
      */
     public function delete(
         string $name,
@@ -170,7 +170,7 @@ interface ProjectionsManager
     ): void;
 
     /**
-     * Asynchronously resets a projection
+     * Synchronously resets a projection
      */
     public function reset(string $name, ?UserCredentials $userCredentials = null): void;
 }

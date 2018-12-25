@@ -18,7 +18,7 @@ use Prooph\EventStore\UserCredentials;
 interface QueryManager
 {
     /**
-     * Asynchronously executes a query
+     * Synchronously executes a query
      *
      * Creates a new transient projection and polls its status until it is Completed
      *
@@ -32,7 +32,7 @@ interface QueryManager
      *
      * @return string
      */
-    public function executeAsync(
+    public function execute(
         string $name,
         string $query,
         int $initialPollingDelay,
