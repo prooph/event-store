@@ -14,12 +14,13 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use Amp\Promise;
+use Prooph\EventStore\Internal\PersistentSubscriptionCreateResult;
+use Prooph\EventStore\Internal\PersistentSubscriptionDeleteResult;
+use Prooph\EventStore\Internal\PersistentSubscriptionUpdateResult;
 
 interface AsyncEventStoreConnection
 {
     public function connectionName(): string;
-
-    public function connectionSettings(): ConnectionSettings;
 
     public function connectAsync(): Promise;
 

@@ -19,8 +19,6 @@ use Prooph\EventStore\Internal\PersistentSubscriptionUpdateResult;
 
 interface EventStoreConnection
 {
-    public function connectionSettings(): ConnectionSettings;
-
     public function deleteStream(
         string $stream,
         int $expectedVersion,
