@@ -15,12 +15,16 @@ namespace Prooph\EventStore\Exception;
 
 class WrongExpectedVersionException extends RuntimeException
 {
-    public static function withExpectedVersion(string $stream, int $expectedVersion): WrongExpectedVersionException
-    {
+    public static function with(
+        string $stream,
+        int $expectedVersion,
+        int $currentVersion
+    ): WrongExpectedVersionException {
         return new self(\sprintf(
-            'Append failed due to WrongExpectedVersion. Stream: %s, Expected version: %d',
+            'Operation failed due to WrongExpectedVersion. Stream: %s, Expected version: %d, Current version: %d',
             $stream,
-            $expectedVersion
+            $expectedVersion,
+            $currentVersion
         ));
     }
 }
