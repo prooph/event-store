@@ -136,7 +136,7 @@ interface EventStoreConnection
         ?UserCredentials $userCredentials = null
     ): PersistentSubscriptionDeleteResult;
 
-    public function subscribeToStreamAsync(
+    public function subscribeToStream(
         string $stream,
         bool $resolveLinkTos,
         EventAppearedOnSubscription $eventAppeared,
@@ -144,7 +144,7 @@ interface EventStoreConnection
         ?UserCredentials $userCredentials = null
     ): EventStoreSubscription;
 
-    public function subscribeToStreamFromAsync(
+    public function subscribeToStreamFrom(
         string $stream,
         ?int $lastCheckpoint,
         ?CatchUpSubscriptionSettings $settings,
@@ -154,14 +154,14 @@ interface EventStoreConnection
         ?UserCredentials $userCredentials = null
     ): EventStoreStreamCatchUpSubscription;
 
-    public function subscribeToAllAsync(
+    public function subscribeToAll(
         bool $resolveLinkTos,
         EventAppearedOnSubscription $eventAppeared,
         ?SubscriptionDropped $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): EventStoreSubscription;
 
-    public function subscribeToAllFromAsync(
+    public function subscribeToAllFrom(
         ?Position $lastCheckpoint,
         ?CatchUpSubscriptionSettings $settings,
         EventAppearedOnCatchupSubscription $eventAppeared,
