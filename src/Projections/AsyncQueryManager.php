@@ -29,6 +29,7 @@ interface AsyncQueryManager
      * @param string $query The source code for the query
      * @param int $initialPollingDelay Initial time to wait between polling for projection status
      * @param int $maximumPollingDelay Maximum time to wait between polling for projection status
+     * @param string $type The type to use, defaults to JS
      * @param UserCredentials|null $userCredentials Credentials for a user with permission to create a query
      *
      * @return Promise<string>
@@ -38,6 +39,7 @@ interface AsyncQueryManager
         string $query,
         int $initialPollingDelay,
         int $maximumPollingDelay,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): Promise;
 }
