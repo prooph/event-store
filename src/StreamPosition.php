@@ -11,8 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+class StreamPosition
 {
+    // The first event in a stream
+    public const START = 0;
+    // The last event in a stream
+    public const END = -1;
 }

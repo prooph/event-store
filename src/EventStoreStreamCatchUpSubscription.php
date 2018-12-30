@@ -11,8 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+interface EventStoreStreamCatchUpSubscription extends EventStoreCatchUpSubscription
 {
+    public function lastProcessedEventNumber(): int;
 }

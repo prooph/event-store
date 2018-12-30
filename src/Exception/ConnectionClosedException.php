@@ -13,6 +13,13 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+class ConnectionClosedException extends EventStoreConnectionException
 {
+    public static function withName(string $name): ConnectionClosedException
+    {
+        return new self(\sprintf(
+            'Connection \'%s\' was closed',
+            $name
+        ));
+    }
 }

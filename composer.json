@@ -1,78 +1,54 @@
 {
-    "name": "prooph/event-store",
-    "description": "PHP EventStore Implementation",
-    "type": "library",
-    "license": "BSD-3-Clause",
-    "homepage": "http://getprooph.org/",
-    "authors": [
-        {
-            "name": "Alexander Miertsch",
-            "email": "contact@prooph.de",
-            "homepage": "http://www.prooph.de"
-        },
-        {
-            "name": "Sascha-Oliver Prolic",
-            "email": "saschaprolic@googlemail.com"
-        }
-    ],
-    "keywords": [
-        "EventStore",
-        "EventSourcing",
-        "DDD",
-        "prooph"
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {
-        "php": "^7.1",
-        "marc-mabe/php-enum": "^2.3.1 || ^3.0.0",
-        "prooph/common": "^4.1.0"
-    },
-    "require-dev": {
-        "phpspec/prophecy": "^1.7",
-        "phpunit/php-invoker": "^2.0",
-        "phpunit/phpunit": "^7.1.4",
-        "prooph/bookdown-template": "^0.2.3",
-        "prooph/php-cs-fixer-config": "^0.3",
-        "psr/container": "^1.0",
-        "sandrokeil/interop-config": "^2.0.1",
-        "satooshi/php-coveralls": "^1.0"
-    },
-    "suggest" : {
-        "prooph/pdo-event-store": "For usage with MySQL or Postgres as event store",
-        "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
-        "prooph/service-bus" : "Message bus facade to connect the event store with messaging systems",
-        "psr/container": "^1.0 for usage of provided factories",
-        "sandrokeil/interop-config": "For usage of provided factories"
-    },
-    "conflict": {
-        "sandrokeil/interop-config": "<2.0.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Prooph\\EventStore\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ProophTest\\EventStore\\": "tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "7.4-dev"
-        }
-    },
-    "scripts": {
-        "check": [
-            "@cs",
-            "@test"
-        ],
-        "cs": "php-cs-fixer fix -v --diff --dry-run",
-        "cs-fix": "php-cs-fixer fix -v --diff",
-        "test": "phpunit"
-    },
-    "config": {
-        "sort-packages": true
+  "name": "prooph/event-store-",
+  "type": "library",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Sascha-Oliver Prolic",
+      "email": "saschaprolic@googlemail.com"
     }
+  ],
+  "description": "Event Store v8",
+  "keywords": [
+    "EventStore",
+    "EventSourcing",
+    "DDD",
+    "prooph"
+  ],
+  "prefer-stable": true,
+  "require": {
+    "php": "^7.2",
+    "ext-json": "*",
+    "ramsey/uuid": "^3.7.3"
+  },
+  "require-dev": {
+    "amphp/amp": "^2.0.7",
+    "phpspec/prophecy": "^1.7",
+    "phpunit/phpunit": "^7.4",
+    "doctrine/instantiator": "^1.1",
+    "sebastian/object-enumerator": "^3.0.3",
+    "satooshi/php-coveralls": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Prooph\\EventStore\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ProophTest\\EventStore\\": "tests/"
+    }
+  },
+  "scripts": {
+    "check": [
+      "@cs",
+      "@test"
+    ],
+    "cs": "php-cs-fixer fix -v --diff --dry-run",
+    "cs-fix": "php-cs-fixer fix -v --diff",
+    "test": "phpunit"
+  },
+  "config": {
+    "sort-packages": true
+  }
 }

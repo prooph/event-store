@@ -11,8 +11,16 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+/**
+ * This class contains constants to be used when setting up subscriptions
+ * using the EventStoreAsyncConnection::subscribeToAllFromAsync method
+ */
+class AllCheckpoint
 {
+    /**
+     * Indicates that a catch-up subscription should receive all events in the database.
+     */
+    public const ALL_START = null;
 }

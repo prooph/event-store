@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+class UnexpectedOperationResult extends RuntimeException
 {
+    public function __construct(string $message = 'Unexpected operation result')
+    {
+        parent::__construct($message);
+    }
 }

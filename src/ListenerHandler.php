@@ -11,8 +11,21 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+class ListenerHandler
 {
+    /** @var callable */
+    private $listener;
+
+    /** @internal */
+    public function __construct(callable $listener)
+    {
+        $this->listener = $listener;
+    }
+
+    public function callback(): callable
+    {
+        return $this->listener;
+    }
 }

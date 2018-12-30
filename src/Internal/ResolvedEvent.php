@@ -11,8 +11,18 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore\Internal;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+use Prooph\EventStore\Position;
+use Prooph\EventStore\RecordedEvent;
+
+interface ResolvedEvent
 {
+    public function originalEvent(): ?RecordedEvent;
+
+    public function originalPosition(): ?Position;
+
+    public function originalStreamName(): string;
+
+    public function originalEventNumber(): int;
 }

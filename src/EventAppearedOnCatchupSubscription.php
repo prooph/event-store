@@ -11,8 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+use Amp\Promise;
+
+interface EventAppearedOnCatchupSubscription
 {
+    public function __invoke(
+        EventStoreCatchUpSubscription $subscription,
+        ResolvedEvent $resolvedEvent
+    ): Promise;
 }

@@ -11,8 +11,20 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+class DeleteResult
 {
+    /** @var Position */
+    private $logPosition;
+
+    public function __construct(Position $logPosition)
+    {
+        $this->logPosition = $logPosition;
+    }
+
+    public function logPosition(): Position
+    {
+        return $this->logPosition;
+    }
 }

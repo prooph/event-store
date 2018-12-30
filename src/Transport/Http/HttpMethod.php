@@ -11,8 +11,16 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore\Transport\Http;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+/** @internal */
+class HttpMethod
 {
+    public const GET = 'GET';
+    public const POST = 'POST';
+    public const PUT = 'PUT';
+    public const DELETE = 'DELETE';
+    public const OPTIONS = 'OPTIONS';
+    public const HEAD = 'HEAD';
+    public const PATCH = 'PATCH';
 }

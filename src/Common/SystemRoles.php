@@ -11,8 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore\Common;
 
-class OutOfRangeException extends \OutOfRangeException implements EventStoreException
+class SystemRoles
 {
+    public const ALL = '$all';
+    public const ADMINS = '$admins';
+    public const OPS = '$ops';
 }
