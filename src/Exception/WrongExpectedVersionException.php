@@ -23,7 +23,7 @@ class WrongExpectedVersionException extends RuntimeException
         $message = 'Operation failed due to WrongExpectedVersion. Stream: \'%s\', Expected version: %d';
 
         if (null !== $currentVersion) {
-            $message = ', Current version: %d';
+            $message .= ', Current version: %d';
         }
 
         return new self(\sprintf(
