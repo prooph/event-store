@@ -21,7 +21,7 @@ class WrongExpectedVersionException extends RuntimeException
         int $currentVersion
     ): WrongExpectedVersionException {
         return new self(\sprintf(
-            'Operation failed due to WrongExpectedVersion. Stream: %s, Expected version: %d, Current version: %d',
+            'Operation failed due to WrongExpectedVersion. Stream: \'%s\', Expected version: %d, Current version: %d',
             $stream,
             $expectedVersion,
             $currentVersion
