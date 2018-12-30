@@ -38,6 +38,7 @@ interface AsyncProjectionsManager
      */
     public function createOneTimeAsync(
         string $query,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): Promise;
 
@@ -47,6 +48,7 @@ interface AsyncProjectionsManager
     public function createTransientAsync(
         string $name,
         string $query,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): Promise;
 
@@ -57,6 +59,7 @@ interface AsyncProjectionsManager
         string $name,
         string $query,
         bool $trackEmittedStreams = false,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): Promise;
 

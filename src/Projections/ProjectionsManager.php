@@ -38,6 +38,7 @@ interface ProjectionsManager
      */
     public function createOneTime(
         string $query,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): void;
 
@@ -47,6 +48,7 @@ interface ProjectionsManager
     public function createTransient(
         string $name,
         string $query,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): void;
 
@@ -57,98 +59,85 @@ interface ProjectionsManager
         string $name,
         string $query,
         bool $trackEmittedStreams = false,
+        string $type = 'JS',
         ?UserCredentials $userCredentials = null
     ): void;
 
     /**
      * Synchronously lists all projections
      *
-     * @return Promise<ProjectionDetails[]>
+     * @return ProjectionDetails[]
      */
-    public function listAll(?UserCredentials $userCredentials = null): void;
+    public function listAll(?UserCredentials $userCredentials = null): array;
 
     /**
      * Synchronously lists all one-time projections
      *
-     * @return Promise<ProjectionDetails[]>
+     * @return ProjectionDetails[]
      */
-    public function listOneTime(?UserCredentials $userCredentials = null): void;
+    public function listOneTime(?UserCredentials $userCredentials = null): array;
 
     /**
      * Synchronously lists this status of all continuous projections
      *
-     * @return Promise<ProjectionDetails[]>
+     * @return ProjectionDetails[]
      */
-    public function listContinuous(?UserCredentials $userCredentials = null): void;
+    public function listContinuous(?UserCredentials $userCredentials = null): array;
 
     /**
      * Synchronously gets the status of a projection
      *
      * returns String of JSON containing projection status
-     *
-     * @return Promise<string>
      */
-    public function getStatus(string $name, ?UserCredentials $userCredentials = null): void;
+    public function getStatus(string $name, ?UserCredentials $userCredentials = null): string;
 
     /**
      * Synchronously gets the state of a projection.
      *
      * returns String of JSON containing projection state
-     *
-     * @return Promise<string>
      */
-    public function getState(string $name, ?UserCredentials $userCredentials = null): void;
+    public function getState(string $name, ?UserCredentials $userCredentials = null): string;
 
     /**
      * Synchronously gets the state of a projection for a specified partition
      *
      * returns String of JSON containing projection state
-     *
-     * @return Promise<string>
      */
     public function getPartitionState(
         string $name,
         string $partition,
         ?UserCredentials $userCredentials = null
-    ): void;
+    ): string;
 
     /**
      * Synchronously gets the resut of a projection
      *
      * returns String of JSON containing projection result
-     *
-     * @return Promise<string>
      */
-    public function getResult(string $name, ?UserCredentials $userCredentials = null): void;
+    public function getResult(string $name, ?UserCredentials $userCredentials = null): string;
 
     /**
      * Synchronously gets the result of a projection for a specified partition
      *
      * returns String of JSON containing projection result
-     *
-     * @return Promise<string>
      */
     public function getPartitionResult(
         string $name,
         string $partition,
         ?UserCredentials $userCredentials = null
-    ): void;
+    ): string;
 
     /**
      * Synchronously gets the statistics of a projection
      *
      * returns String of JSON containing projection statistics
-     *
-     * @return Promise<string>
      */
-    public function getStatistics(string $name, ?UserCredentials $userCredentials = null): void;
+    public function getStatistics(string $name, ?UserCredentials $userCredentials = null): string;
 
     /**
      * Synchronously gets the status of a query
-     *
-     * @return Promise<string>
      */
-    public function getQuery(string $name, ?UserCredentials $userCredentials = null): void;
+    public function getQuery(string $name, ?UserCredentials $userCredentials = null): string;
 
     /**
      * Synchronously updates the definition of a query
