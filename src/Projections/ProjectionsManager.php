@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projections;
 
-use Amp\Promise;
 use Prooph\EventStore\UserCredentials;
 
 interface ProjectionsManager
