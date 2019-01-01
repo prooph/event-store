@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Amp\Promise;
+
 interface EventAppearedOnAsyncSubscription
 {
     public function __invoke(
         EventStoreSubscription $subscription,
         ResolvedEvent $resolvedEvent
-    ): void;
+    ): Promise;
 }
