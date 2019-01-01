@@ -11,8 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Exception;
+namespace Prooph\EventStore;
 
-class UserCommandFailedException extends EventStoreConnectionException
+interface EventAppearedOnAsyncSubscription
 {
+    public function __invoke(
+        EventStoreSubscription $subscription,
+        ResolvedEvent $resolvedEvent
+    ): void;
 }
