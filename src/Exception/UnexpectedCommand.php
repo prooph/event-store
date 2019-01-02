@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class UnexpectedCommandException extends RuntimeException
+class UnexpectedCommand extends RuntimeException
 {
-    public static function withName(string $actualCommand): UnexpectedCommandException
+    public static function withName(string $actualCommand): UnexpectedCommand
     {
         return new self(\sprintf(
             'Unexpected command \'%s\'',
@@ -23,7 +23,7 @@ class UnexpectedCommandException extends RuntimeException
         ));
     }
 
-    public static function with(string $expectedCommand, string $actualCommand): UnexpectedCommandException
+    public static function with(string $expectedCommand, string $actualCommand): UnexpectedCommand
     {
         return new self(\sprintf(
             'Unexpected command \'%s\': expected \'%s\'',

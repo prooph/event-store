@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class NotAuthenticatedException extends RuntimeException
+class CannotEstablishConnection extends RuntimeException
 {
-    public function __construct(string $message = 'Not authenticated')
-    {
-        parent::__construct($message);
-    }
 }

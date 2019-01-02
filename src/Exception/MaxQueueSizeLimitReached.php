@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class RetriesLimitReachedException extends RuntimeException
+class MaxQueueSizeLimitReached extends RuntimeException
 {
-    public static function with(int $retries): RetriesLimitReachedException
+    public static function with(string $connectionName, int $maxQueueSize): MaxQueueSizeLimitReached
     {
         return new self(
             \sprintf(
-                'Operation reached retries limit: \'%s\'',
-                $retries
+                'EventStoreNodeConnection \'%s\': reached max queue size limit: \'%s\'',
+                $connectionName,
+                $maxQueueSize
             )
         );
     }

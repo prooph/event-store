@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class ObjectDisposedException extends InvalidOperationException
+class ProjectionCommandConflict extends ProjectionCommandFailed
 {
 }

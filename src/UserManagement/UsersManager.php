@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\UserManagement;
 
-use Prooph\EventStore\Exception\UserCommandFailedException;
+use Prooph\EventStore\Exception\UserCommandFailed;
 use Prooph\EventStore\UserCredentials;
 
 interface UsersManager
@@ -22,7 +22,7 @@ interface UsersManager
 
     public function disable(string $login, ?UserCredentials $userCredentials = null): void;
 
-    /** @throws UserCommandFailedException */
+    /** @throws UserCommandFailed */
     public function deleteUser(string $login, ?UserCredentials $userCredentials = null): void;
 
     /** @return UserDetails[] */

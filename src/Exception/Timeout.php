@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class ProjectionCommandFailedException extends EventStoreConnectionException
+class Timeout extends RuntimeException
 {
 }

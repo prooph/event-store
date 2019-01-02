@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class AccessDeniedException extends RuntimeException
+class AccessDenied extends RuntimeException
 {
-    public static function toAllStream(): AccessDeniedException
+    public static function toAllStream(): AccessDenied
     {
         return new self(\sprintf(
             'Access to stream \'%s\' is denied',
@@ -23,7 +23,7 @@ class AccessDeniedException extends RuntimeException
         ));
     }
 
-    public static function toStream(string $stream): AccessDeniedException
+    public static function toStream(string $stream): AccessDenied
     {
         return new self(\sprintf(
             'Access to stream \'%s\' is denied',

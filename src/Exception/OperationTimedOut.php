@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class CannotEstablishConnectionException extends RuntimeException
+class OperationTimedOut extends RuntimeException
 {
 }

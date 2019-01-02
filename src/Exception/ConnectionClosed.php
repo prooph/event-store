@@ -13,6 +13,13 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class UserCommandConflictException extends ProjectionCommandFailedException
+class ConnectionClosed extends EventStoreConnectionException
 {
+    public static function withName(string $name): ConnectionClosed
+    {
+        return new self(\sprintf(
+            'Connection \'%s\' was closed',
+            $name
+        ));
+    }
 }

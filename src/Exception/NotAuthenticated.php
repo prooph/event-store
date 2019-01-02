@@ -13,13 +13,10 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
-class ConnectionClosedException extends EventStoreConnectionException
+class NotAuthenticated extends RuntimeException
 {
-    public static function withName(string $name): ConnectionClosedException
+    public function __construct(string $message = 'Not authenticated')
     {
-        return new self(\sprintf(
-            'Connection \'%s\' was closed',
-            $name
-        ));
+        parent::__construct($message);
     }
 }

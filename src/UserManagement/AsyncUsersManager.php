@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\UserManagement;
 
 use Amp\Promise;
-use Prooph\EventStore\Exception\UserCommandFailedException;
+use Prooph\EventStore\Exception\UserCommandFailed;
 use Prooph\EventStore\UserCredentials;
 
 interface AsyncUsersManager
@@ -23,7 +23,7 @@ interface AsyncUsersManager
 
     public function disableAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
-    /** @throws UserCommandFailedException */
+    /** @throws UserCommandFailed */
     public function deleteUserAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
     /** @return Promise<UserDetails[]> */
