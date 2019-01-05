@@ -37,7 +37,7 @@ script:
 - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run; fi
 
 after_success:
-- if [[ $TEST_COVERAGE == 'true' ]]; then php vendor/bin/coveralls -v; fi
+- if [[ $TEST_COVERAGE == 'true' ]]; then php vendor/bin/php-coveralls -v; fi
 
 notifications:
   webhooks:
