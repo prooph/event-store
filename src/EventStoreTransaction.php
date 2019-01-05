@@ -61,7 +61,7 @@ class EventStoreTransaction
      *
      * @return void
      */
-    public function writeAsync(array $events = []): void
+    public function write(array $events = []): void
     {
         if ($this->isRolledBack) {
             throw new \RuntimeException('Cannot commit a rolledback transaction');
