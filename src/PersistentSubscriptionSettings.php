@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use JsonSerializable;
 use Prooph\EventStore\Common\SystemConsumerStrategies;
 use Prooph\EventStore\Exception\InvalidArgumentException;
+use stdClass;
 
-class PersistentSubscriptionSettings
+class PersistentSubscriptionSettings implements JsonSerializable
 {
     /**
      * Tells the subscription to resolve link events.
@@ -211,5 +213,25 @@ class PersistentSubscriptionSettings
     public function namedConsumerStrategy(): string
     {
         return $this->namedConsumerStrategy;
+    }
+
+    public function jsonSerialize(): object
+    {
+        $object = new stdClass();
+        $object->resolveLinkTos = $this->resolveLinkTos;
+        $object->startFrom = $this->startFrom;
+        $object->extraStatistics = $this->extraStatistics;
+        $object->checkPointAfterMilliseconds = $this->checkPointAfterMilliseconds;
+        $object->liveBufferSize = $this->liveBufferSize;
+        $object->readBatchSize = $this->readBatchSize;
+        $object->bufferSize = $this->bufferSize;
+        $object->maxCheckPointCount = $this->maxCheckPointCount;
+        $object->maxRetryCount = $this->maxRetryCount;
+        $object->maxSubscriberCount = $this->maxSubscriberCount;
+        $object->messageTimeoutMilliseconds = $this->messageTimeoutMilliseconds;
+        $object->minCheckPointCount = $this->minCheckPointCount;
+        $object->namedConsumerStrategy = $this->namedConsumerStrategy;
+
+        return $object;
     }
 }
