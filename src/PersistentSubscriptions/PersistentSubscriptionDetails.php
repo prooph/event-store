@@ -54,6 +54,8 @@ final class PersistentSubscriptionDetails
     private $retryBufferCount;
     /** @var int */
     private $totalInFlightMessages;
+    /** @var int */
+    private $connectionCount;
     /** @var string */
     private $parkedMessageUri;
     /** @var string */
@@ -91,6 +93,7 @@ final class PersistentSubscriptionDetails
         $details->totalInFlightMessages = $data['totalInFlightMessages'];
         $details->parkedMessageUri = $data['parkedMessageUri'];
         $details->getMessagesUri = $data['getMessagesUri'];
+        $details->connectionCount = $details['connectionCount'] ?? 0;
 
         return $details;
     }
@@ -164,6 +167,11 @@ final class PersistentSubscriptionDetails
     public function totalInFlightMessages(): int
     {
         return $this->totalInFlightMessages;
+    }
+
+    public function connectionCount(): int
+    {
+        return $this->connectionCount;
     }
 
     public function parkedMessageUri(): string
