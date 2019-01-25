@@ -13,13 +13,18 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use Amp\Promise;
-
-interface EventAppearedOnAsyncPersistentSubscription
+class ClientReconnectingEventArgs implements EventArgs
 {
-    public function __invoke(
-        AsyncEventStorePersistentSubscription $subscription,
-        ResolvedEvent $resolvedEvent,
-        ?int $retryCount = null
-    ): Promise;
+    /** @var EventStoreConnection */
+    private $connection;
+
+    public function __construct(EventStoreConnection $connection)
+    {
+        $this->connection = $connection;
+    }
+
+    public function connection(): EventStoreConnection
+    {
+        return $this->connection;
+    }
 }

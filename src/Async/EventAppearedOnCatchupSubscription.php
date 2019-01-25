@@ -11,9 +11,15 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-interface LiveProcessingStartedOnAsyncCatchUpSubscription
+use Amp\Promise;
+use Prooph\EventStore\ResolvedEvent;
+
+interface EventAppearedOnCatchupSubscription
 {
-    public function __invoke(AsyncEventStoreCatchUpSubscription $subscription): void;
+    public function __invoke(
+        EventStoreCatchUpSubscription $subscription,
+        ResolvedEvent $resolvedEvent
+    ): Promise;
 }

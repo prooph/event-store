@@ -11,12 +11,15 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
 use Prooph\EventStore\Async\Internal\EventStoreTransactionConnection;
+use Prooph\EventStore\EventData;
+use Prooph\EventStore\UserCredentials;
+use Prooph\EventStore\WriteResult;
 
-class AsyncEventStoreTransaction
+class EventStoreTransaction
 {
     /** @var int */
     private $transactionId;

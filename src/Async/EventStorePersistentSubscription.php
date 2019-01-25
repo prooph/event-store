@@ -11,12 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
+use Prooph\EventStore\EventId;
 use Prooph\EventStore\Internal\ResolvedEvent;
+use Prooph\EventStore\PersistentSubscriptionNakEventAction;
 
-interface AsyncEventStorePersistentSubscription
+interface EventStorePersistentSubscription
 {
     public const DEFAULT_BUFFER_SIZE = 10;
 

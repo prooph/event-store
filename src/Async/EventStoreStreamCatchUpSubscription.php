@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-interface AsyncEventStoreAllCatchUpSubscription extends AsyncEventStoreCatchUpSubscription
+interface EventStoreStreamCatchUpSubscription extends EventStoreCatchUpSubscription
 {
-    public function lastProcessedPosition(): Position;
+    public function lastProcessedEventNumber(): int;
 }
