@@ -15,7 +15,6 @@ namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
 use Prooph\EventStore\AllEventsSlice;
-use Prooph\EventStore\Async\CatchUpSubscriptionDropped;
 use Prooph\EventStore\CatchUpSubscriptionSettings;
 use Prooph\EventStore\ConditionalWriteResult;
 use Prooph\EventStore\DeleteResult;
