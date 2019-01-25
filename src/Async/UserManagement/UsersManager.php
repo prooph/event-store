@@ -11,13 +11,14 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\UserManagement;
+namespace Prooph\EventStore\Async\UserManagement;
 
 use Amp\Promise;
 use Prooph\EventStore\Exception\UserCommandFailed;
 use Prooph\EventStore\UserCredentials;
+use Prooph\EventStore\UserManagement\UserDetails;
 
-interface AsyncUsersManager
+interface UsersManager
 {
     public function enableAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
