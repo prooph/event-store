@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Async;
 
-use Prooph\EventStore\EventStoreCatchUpSubscription;
 use Prooph\EventStore\Position;
 
 interface EventStoreAllCatchUpSubscription extends EventStoreCatchUpSubscription
