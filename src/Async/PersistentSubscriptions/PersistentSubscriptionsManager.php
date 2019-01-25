@@ -11,17 +11,19 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\PersistentSubscriptions;
+namespace Prooph\EventStore\Async\PersistentSubscriptions;
 
 use Amp\Promise;
+use Prooph\EventStore\PersistentSubscriptions\PersistentSubscriptionDetails;
 use Prooph\EventStore\UserCredentials;
 
-interface AsyncPersistentSubscriptionsManager
+interface PersistentSubscriptionsManager
 {
     /**
      * @param string $stream
      * @param string $subscriptionName
      * @param null|UserCredentials $userCredentials
+     *
      * @return Promise<PersistentSubscriptionDetails>
      */
     public function describe(
@@ -39,6 +41,7 @@ interface AsyncPersistentSubscriptionsManager
     /**
      * @param null|string $stream
      * @param null|UserCredentials $userCredentials
+     *
      * @return Promise<PersistentSubscriptionDetails[]>
      */
     public function list(?string $stream = null, ?UserCredentials $userCredentials = null): Promise;
