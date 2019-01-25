@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Async\Internal;
 
-use Prooph\EventStore\ClientAuthenticationFailedEventArgs;
-use Prooph\EventStore\ClientClosedEventArgs;
-use Prooph\EventStore\ClientConnectionEventArgs;
-use Prooph\EventStore\ClientErrorEventArgs;
-use Prooph\EventStore\ClientReconnectingEventArgs;
+use Prooph\EventStore\Async\ClientAuthenticationFailedEventArgs;
+use Prooph\EventStore\Async\ClientClosedEventArgs;
+use Prooph\EventStore\Async\ClientConnectionEventArgs;
+use Prooph\EventStore\Async\ClientErrorEventArgs;
+use Prooph\EventStore\Async\ClientReconnectingEventArgs;
 use Prooph\EventStore\ListenerHandler;
 use SplObjectStorage;
 
