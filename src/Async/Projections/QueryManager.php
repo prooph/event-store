@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Projections;
+namespace Prooph\EventStore\Async\Projections;
 
 use Amp\Promise;
 use Prooph\EventStore\UserCredentials;
 
-interface AsyncQueryManager
+interface QueryManager
 {
     /**
      * Asynchronously executes a query
