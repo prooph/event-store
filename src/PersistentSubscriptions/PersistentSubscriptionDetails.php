@@ -93,7 +93,7 @@ final class PersistentSubscriptionDetails
         $details->totalInFlightMessages = $data['totalInFlightMessages'];
         $details->parkedMessageUri = $data['parkedMessageUri'];
         $details->getMessagesUri = $data['getMessagesUri'];
-        $details->connectionCount = $details['connectionCount'] ?? 0;
+        $details->connectionCount = $data['connectionCount'] ?? 0;
 
         return $details;
     }
