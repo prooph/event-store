@@ -11,7 +11,10 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
+
+use Prooph\EventStore\EndPoint;
+use Prooph\EventStore\EventArgs;
 
 class ClientConnectionEventArgs implements EventArgs
 {

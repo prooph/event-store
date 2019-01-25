@@ -11,7 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
+
+use Prooph\EventStore\EventArgs;
 
 class ClientReconnectingEventArgs implements EventArgs
 {
