@@ -11,15 +11,16 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-use Throwable;
+use Amp\Promise;
+use Prooph\EventStore\EventStoreSubscription;
+use Prooph\EventStore\ResolvedEvent;
 
-interface AsyncPersistentSubscriptionDropped
+interface EventAppearedOnSubscription
 {
     public function __invoke(
-        AsyncEventStorePersistentSubscription $subscription,
-        SubscriptionDropReason $reason,
-        ?Throwable $exception = null
-    ): void;
+        EventStoreSubscription $subscription,
+        ResolvedEvent $resolvedEvent
+    ): Promise;
 }

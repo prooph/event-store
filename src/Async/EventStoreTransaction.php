@@ -11,18 +11,21 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
-use Prooph\EventStore\Internal\AsyncEventStoreTransactionConnection;
+use Prooph\EventStore\Async\Internal\EventStoreTransactionConnection;
+use Prooph\EventStore\EventData;
+use Prooph\EventStore\UserCredentials;
+use Prooph\EventStore\WriteResult;
 
-class AsyncEventStoreTransaction
+class EventStoreTransaction
 {
     /** @var int */
     private $transactionId;
     /** @var UserCredentials|null */
     private $userCredentials;
-    /** @var AsyncEventStoreTransactionConnection */
+    /** @var EventStoreTransactionConnection */
     private $connection;
     /** @var bool */
     private $isRolledBack;
@@ -32,7 +35,7 @@ class AsyncEventStoreTransaction
     public function __construct(
         int $transactionId,
         ?UserCredentials $userCredentials,
-        AsyncEventStoreTransactionConnection $connection
+        EventStoreTransactionConnection $connection
     ) {
         $this->transactionId = $transactionId;
         $this->userCredentials = $userCredentials;

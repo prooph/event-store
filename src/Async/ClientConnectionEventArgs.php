@@ -11,21 +11,22 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-use Throwable;
+use Prooph\EventStore\EndPoint;
+use Prooph\EventStore\EventArgs;
 
-class ClientErrorEventArgs implements EventArgs
+class ClientConnectionEventArgs implements EventArgs
 {
     /** @var EventStoreConnection */
     private $connection;
-    /** @var Throwable */
-    private $exception;
+    /** @var EndPoint */
+    private $remoteEndPoint;
 
-    public function __construct(EventStoreConnection $connection, Throwable $exception)
+    public function __construct(EventStoreConnection $connection, EndPoint $remoteEndPoint)
     {
         $this->connection = $connection;
-        $this->exception = $exception;
+        $this->remoteEndPoint = $remoteEndPoint;
     }
 
     public function connection(): EventStoreConnection
@@ -33,8 +34,8 @@ class ClientErrorEventArgs implements EventArgs
         return $this->connection;
     }
 
-    public function exception(): Throwable
+    public function remoteEndPoint(): EndPoint
     {
-        return $this->exception;
+        return $this->remoteEndPoint;
     }
 }

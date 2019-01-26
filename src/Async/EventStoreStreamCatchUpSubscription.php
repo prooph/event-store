@@ -11,15 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-use Amp\Promise;
-
-interface EventAppearedOnAsyncPersistentSubscription
+interface EventStoreStreamCatchUpSubscription extends EventStoreCatchUpSubscription
 {
-    public function __invoke(
-        AsyncEventStorePersistentSubscription $subscription,
-        ResolvedEvent $resolvedEvent,
-        ?int $retryCount = null
-    ): Promise;
+    public function lastProcessedEventNumber(): int;
 }

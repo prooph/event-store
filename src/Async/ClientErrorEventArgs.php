@@ -11,8 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
+use Prooph\EventStore\EventArgs;
 use Throwable;
 
 class ClientErrorEventArgs implements EventArgs

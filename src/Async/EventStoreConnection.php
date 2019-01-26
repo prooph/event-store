@@ -11,14 +11,32 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
+use Prooph\EventStore\AllEventsSlice;
+use Prooph\EventStore\CatchUpSubscriptionSettings;
+use Prooph\EventStore\ConditionalWriteResult;
+use Prooph\EventStore\DeleteResult;
+use Prooph\EventStore\EventData;
+use Prooph\EventStore\EventReadResult;
+use Prooph\EventStore\EventStoreSubscription;
 use Prooph\EventStore\Internal\PersistentSubscriptionCreateResult;
 use Prooph\EventStore\Internal\PersistentSubscriptionDeleteResult;
 use Prooph\EventStore\Internal\PersistentSubscriptionUpdateResult;
+use Prooph\EventStore\ListenerHandler;
+use Prooph\EventStore\PersistentSubscriptionSettings;
+use Prooph\EventStore\Position;
+use Prooph\EventStore\RawStreamMetadataResult;
+use Prooph\EventStore\StreamEventsSlice;
+use Prooph\EventStore\StreamMetadata;
+use Prooph\EventStore\StreamMetadataResult;
+use Prooph\EventStore\SubscriptionDropped;
+use Prooph\EventStore\SystemSettings;
+use Prooph\EventStore\UserCredentials;
+use Prooph\EventStore\WriteResult;
 
-interface AsyncEventStoreConnection
+interface EventStoreConnection
 {
     public function connectionName(): string;
 
@@ -129,7 +147,7 @@ interface AsyncEventStoreConnection
     /** @return Promise<WriteResult> */
     public function setSystemSettingsAsync(SystemSettings $settings, ?UserCredentials $userCredentials = null): Promise;
 
-    /** @return Promise<AsyncEventStoreTransaction> */
+    /** @return Promise<EventStoreTransaction> */
     public function startTransactionAsync(
         string $stream,
         int $expectedVersion,
@@ -139,7 +157,7 @@ interface AsyncEventStoreConnection
     public function continueTransaction(
         int $transactionId,
         ?UserCredentials $userCredentials = null
-    ): AsyncEventStoreTransaction;
+    ): EventStoreTransaction;
 
     /** @return Promise<PersistentSubscriptionCreateResult> */
     public function createPersistentSubscriptionAsync(
@@ -170,21 +188,21 @@ interface AsyncEventStoreConnection
     public function subscribeToStreamAsync(
         string $stream,
         bool $resolveLinkTos,
-        EventAppearedOnAsyncSubscription $eventAppeared,
+        EventAppearedOnSubscription $eventAppeared,
         ?SubscriptionDropped $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): Promise;
 
     /**
-     * @return Promise<AsyncEventStoreStreamCatchUpSubscription>
+     * @return Promise<EventStoreStreamCatchUpSubscription>
      */
     public function subscribeToStreamFromAsync(
         string $stream,
         ?int $lastCheckpoint,
         ?CatchUpSubscriptionSettings $settings,
-        EventAppearedOnAsyncCatchupSubscription $eventAppeared,
-        ?LiveProcessingStartedOnAsyncCatchUpSubscription $liveProcessingStarted = null,
-        ?AsyncCatchUpSubscriptionDropped $subscriptionDropped = null,
+        EventAppearedOnCatchupSubscription $eventAppeared,
+        ?LiveProcessingStartedOnCatchUpSubscription $liveProcessingStarted = null,
+        ?CatchUpSubscriptionDropped $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): Promise;
 
@@ -193,31 +211,31 @@ interface AsyncEventStoreConnection
      */
     public function subscribeToAllAsync(
         bool $resolveLinkTos,
-        EventAppearedOnAsyncSubscription $eventAppeared,
+        EventAppearedOnSubscription $eventAppeared,
         ?SubscriptionDropped $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): Promise;
 
     /**
-     * @return Promise<AsyncEventStoreAllCatchUpSubscription>
+     * @return Promise<EventStoreAllCatchUpSubscription>
      */
     public function subscribeToAllFromAsync(
         ?Position $lastCheckpoint,
         ?CatchUpSubscriptionSettings $settings,
-        EventAppearedOnAsyncCatchupSubscription $eventAppeared,
-        ?LiveProcessingStartedOnAsyncCatchUpSubscription $liveProcessingStarted = null,
-        ?AsyncCatchUpSubscriptionDropped $subscriptionDropped = null,
+        EventAppearedOnCatchupSubscription $eventAppeared,
+        ?LiveProcessingStartedOnCatchUpSubscription $liveProcessingStarted = null,
+        ?CatchUpSubscriptionDropped $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): Promise;
 
     /**
-     * @return Promise<AsyncEventStorePersistentSubscription>
+     * @return Promise<EventStorePersistentSubscription>
      */
     public function connectToPersistentSubscriptionAsync(
         string $stream,
         string $groupName,
-        EventAppearedOnAsyncPersistentSubscription $eventAppeared,
-        ?AsyncPersistentSubscriptionDropped $subscriptionDropped = null,
+        EventAppearedOnPersistentSubscription $eventAppeared,
+        ?PersistentSubscriptionDropped $subscriptionDropped = null,
         int $bufferSize = 10,
         bool $autoAck = true,
         ?UserCredentials $userCredentials = null

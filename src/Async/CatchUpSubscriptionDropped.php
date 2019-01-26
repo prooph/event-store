@@ -11,14 +11,15 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
+use Prooph\EventStore\SubscriptionDropReason;
 use Throwable;
 
-interface AsyncCatchUpSubscriptionDropped
+interface CatchUpSubscriptionDropped
 {
     public function __invoke(
-        AsyncEventStoreCatchUpSubscription $subscription,
+        EventStoreCatchUpSubscription $subscription,
         SubscriptionDropReason $reason,
         ?Throwable $exception = null
     ): void;

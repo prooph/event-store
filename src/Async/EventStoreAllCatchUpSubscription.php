@@ -11,14 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-use Amp\Promise;
+use Prooph\EventStore\Position;
 
-interface EventAppearedOnAsyncSubscription
+interface EventStoreAllCatchUpSubscription extends EventStoreCatchUpSubscription
 {
-    public function __invoke(
-        EventStoreSubscription $subscription,
-        ResolvedEvent $resolvedEvent
-    ): Promise;
+    public function lastProcessedPosition(): Position;
 }

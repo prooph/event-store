@@ -11,12 +11,13 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
+use Prooph\EventStore\SubscriptionDropReason;
 use Throwable;
 
-interface AsyncEventStoreCatchUpSubscription
+interface EventStoreCatchUpSubscription
 {
     public function isSubscribedToAll(): bool;
 

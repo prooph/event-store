@@ -11,21 +11,21 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-use Throwable;
+use Prooph\EventStore\EventArgs;
 
-class ClientErrorEventArgs implements EventArgs
+class ClientAuthenticationFailedEventArgs implements EventArgs
 {
     /** @var EventStoreConnection */
     private $connection;
-    /** @var Throwable */
-    private $exception;
+    /** @var string */
+    private $reason;
 
-    public function __construct(EventStoreConnection $connection, Throwable $exception)
+    public function __construct(EventStoreConnection $connection, string $reason)
     {
         $this->connection = $connection;
-        $this->exception = $exception;
+        $this->reason = $reason;
     }
 
     public function connection(): EventStoreConnection
@@ -33,8 +33,8 @@ class ClientErrorEventArgs implements EventArgs
         return $this->connection;
     }
 
-    public function exception(): Throwable
+    public function reason(): string
     {
-        return $this->exception;
+        return $this->reason;
     }
 }

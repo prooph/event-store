@@ -11,9 +11,16 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore;
+namespace Prooph\EventStore\Async;
 
-interface AsyncEventStoreAllCatchUpSubscription extends AsyncEventStoreCatchUpSubscription
+use Prooph\EventStore\SubscriptionDropReason;
+use Throwable;
+
+interface PersistentSubscriptionDropped
 {
-    public function lastProcessedPosition(): Position;
+    public function __invoke(
+        EventStorePersistentSubscription $subscription,
+        SubscriptionDropReason $reason,
+        ?Throwable $exception = null
+    ): void;
 }

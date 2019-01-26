@@ -11,12 +11,13 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Projections;
+namespace Prooph\EventStore\Async\Projections;
 
 use Amp\Promise;
+use Prooph\EventStore\Projections\ProjectionDetails;
 use Prooph\EventStore\UserCredentials;
 
-interface AsyncProjectionsManager
+interface ProjectionsManager
 {
     /**
      * Asynchronously enables a projection

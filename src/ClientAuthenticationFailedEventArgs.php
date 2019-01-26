@@ -15,18 +15,18 @@ namespace Prooph\EventStore;
 
 class ClientAuthenticationFailedEventArgs implements EventArgs
 {
-    /** @var AsyncEventStoreConnection */
+    /** @var EventStoreConnection */
     private $connection;
     /** @var string */
     private $reason;
 
-    public function __construct(AsyncEventStoreConnection $connection, string $reason)
+    public function __construct(EventStoreConnection $connection, string $reason)
     {
         $this->connection = $connection;
         $this->reason = $reason;
     }
 
-    public function connection(): AsyncEventStoreConnection
+    public function connection(): EventStoreConnection
     {
         return $this->connection;
     }
