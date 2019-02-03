@@ -83,5 +83,27 @@ interface EventStorePersistentSubscription
         string $reason
     ): void;
 
+    /**
+     * Mark a message failed processing. The server will be take action based upon the action paramter
+     */
+    public function failEventId(
+        EventId $eventId,
+        PersistentSubscriptionNakEventAction $action,
+        string $reason
+    ): void;
+
+    /**
+     * Mark n messages that have failed processing. The server will take action based upon the action parameter
+     *
+     * @param EventId[] $eventIds
+     * @param PersistentSubscriptionNakEventAction $action
+     * @param string $reason
+     */
+    public function failMultipleEventIds(
+        array $eventIds,
+        PersistentSubscriptionNakEventAction $action,
+        string $reason
+    ): void;
+
     public function stop(): void;
 }
