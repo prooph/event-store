@@ -21,20 +21,19 @@ use Prooph\EventStore\Internal\ResolvedEvent as InternalResolvedEvent;
 class ResolvedEvent implements InternalResolvedEvent
 {
     /**
-     * The event, or the resolved link event if this is a link event
+     * If this ResolvedEvent is a link, this will contain the linked event.
+     * If this ResolvedEvent is a simple event without link, the event will be here.
      * @var RecordedEvent|null
      */
     private $event;
     /**
-     * The link event if this ResolvedEvent is a link event.
+     * If this ResolvedEvent is a link, this will contain the link. Otherwise it will be empty.
      * @var RecordedEvent|null
      */
     private $link;
     /**
      * Returns the event that was read or which triggered the subscription.
-     *
-     * If this ResolvedEvent represents a link event, the Link
-     * will be the OriginalEvent otherwise it will be the event.
+     * If this ResolvedEvent is a link, this will contain the link. Otherwise it will be the event.
      * @var RecordedEvent|null
      */
     private $originalEvent;
