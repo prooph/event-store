@@ -771,6 +771,13 @@ abstract class AbstractEventStoreTest extends TestCase
         $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
 
         $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('event_name', Operator::REGEX(), 'foobar', FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->load($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
     }
 
     /**
@@ -853,6 +860,13 @@ abstract class AbstractEventStoreTest extends TestCase
 
         $metadataMatcher = new MetadataMatcher();
         $metadataMatcher = $metadataMatcher->withMetadataMatch('message_name', Operator::REGEX(), 'foobar', FieldType::MESSAGE_PROPERTY());
+
+        $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
+
+        $this->assertFalse($result->valid());
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('event_name', Operator::REGEX(), 'foobar', FieldType::MESSAGE_PROPERTY());
 
         $result = $this->eventStore->loadReverse($streamName, 1, null, $metadataMatcher);
 

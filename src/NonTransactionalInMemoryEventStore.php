@@ -404,6 +404,7 @@ final class NonTransactionalInMemoryEventStore implements EventStore
                 case 'uuid':
                     $value = $message->uuid()->toString();
                     break;
+                case 'event_name':
                 case 'message_name':
                 case 'messageName':
                     $value = $message->messageName();

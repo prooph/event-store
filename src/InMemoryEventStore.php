@@ -482,6 +482,7 @@ final class InMemoryEventStore implements TransactionalEventStore
                 case 'uuid':
                     $value = $message->uuid()->toString();
                     break;
+                case 'event_name':
                 case 'message_name':
                 case 'messageName':
                     $value = $message->messageName();
