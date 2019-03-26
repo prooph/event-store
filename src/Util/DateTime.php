@@ -15,6 +15,7 @@ namespace Prooph\EventStore\Util;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use InvalidArgumentException;
 
 class DateTime
 {
@@ -25,11 +26,22 @@ class DateTime
 
     public static function create(string $dateTimeString): DateTimeImmutable
     {
-        return DateTimeImmutable::createFromFormat(
+        $dateTime = DateTimeImmutable::createFromFormat(
             'Y-m-d\TH:i:s.uP',
             $dateTimeString,
             new DateTimeZone('UTC')
         );
+
+        if ($dateTime === false) {
+            throw new InvalidArgumentException(
+                \sprintf(
+                    'Could not create DateTimeImmutable from string "%s".',
+                    $dateTimeString
+                )
+            );
+        }
+
+        return $dateTime;
     }
 
     public static function format(DateTimeImmutable $dateTime): string
