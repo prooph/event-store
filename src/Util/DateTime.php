@@ -34,7 +34,7 @@ class DateTime
 
         if ($dateTime === false) {
             throw new InvalidArgumentException(
-                sprintf(
+                \sprintf(
                     'Could not create DateTimeImmutable from string "%s".',
                     $dateTimeString
                 )
