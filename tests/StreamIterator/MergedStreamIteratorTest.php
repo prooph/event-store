@@ -43,7 +43,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
     }
 
     /**
-     * test
+     * @test
      */
     public function it_implements_stream_iterator(): void
     {
@@ -53,7 +53,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
     }
 
     /**
-     * test
+     * @test
      */
     public function it_counts_correct(): void
     {

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\StreamIterator;
 
-use Countable;
 use Prooph\Common\Messaging\Message;
 
 class MergedStreamIterator implements StreamIterator
@@ -96,11 +95,7 @@ class MergedStreamIterator implements StreamIterator
     {
         $count = 0;
         foreach ($this->iterators as $iterator) {
-            if ($iterator instanceof Countable) {
-                $count += \count($iterator);
-            } else {
-                $count += \iterator_count($iterator);
-            }
+            $count += \count($iterator);
         }
 
         return $count;
