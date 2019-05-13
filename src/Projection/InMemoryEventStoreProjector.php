@@ -15,7 +15,6 @@ namespace Prooph\EventStore\Projection;
 
 use ArrayIterator;
 use Closure;
-use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
@@ -24,6 +23,7 @@ use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamIterator\MergedStreamIterator;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
@@ -351,24 +351,27 @@ final class InMemoryEventStoreProjector implements Projector
             $singleHandler = null !== $this->handler;
 
             $eventCounter = 0;
+            $eventStreams = [];
 
             foreach ($this->streamPositions as $streamName => $position) {
                 try {
-                    $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1, null, $this->metadataMatcher);
+                    $eventStreams[$streamName] = $this->eventStore->load(new StreamName($streamName), $position + 1, null, $this->metadataMatcher);
                 } catch (Exception\StreamNotFound $e) {
                     // ignore
                     continue;
                 }
+            }
 
-                if ($singleHandler) {
-                    $this->handleStreamWithSingleHandler($streamName, $streamEvents);
-                } else {
-                    $this->handleStreamWithHandlers($streamName, $streamEvents);
-                }
+            $streamEvents = new MergedStreamIterator(\array_keys($eventStreams), ...\array_values($eventStreams));
 
-                if ($this->isStopped) {
-                    break;
-                }
+            if ($singleHandler) {
+                $this->handleStreamWithSingleHandler($streamEvents);
+            } else {
+                $this->handleStreamWithHandlers($streamEvents);
+            }
+
+            if ($this->isStopped) {
+                break;
             }
 
             if (0 === $eventCounter) {
@@ -396,17 +399,18 @@ final class InMemoryEventStoreProjector implements Projector
         $this->streamPositions = [];
     }
 
-    private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    private function handleStreamWithSingleHandler(MergedStreamIterator $events): void
     {
-        $this->currentStreamName = $streamName;
         $handler = $this->handler;
 
+        /* @var Message $event */
         foreach ($events as $event) {
             if ($this->triggerPcntlSignalDispatch) {
                 \pcntl_signal_dispatch();
             }
-            /* @var Message $event */
-            $this->streamPositions[$streamName]++;
+
+            $this->currentStreamName = $events->streamName();
+            $this->streamPositions[$this->currentStreamName]++;
 
             $result = $handler($this->state, $event);
 
@@ -420,16 +424,16 @@ final class InMemoryEventStoreProjector implements Projector
         }
     }
 
-    private function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    private function handleStreamWithHandlers(MergedStreamIterator $events): void
     {
-        $this->currentStreamName = $streamName;
-
+        /* @var Message $event */
         foreach ($events as $event) {
             if ($this->triggerPcntlSignalDispatch) {
                 \pcntl_signal_dispatch();
             }
-            /* @var Message $event */
-            $this->streamPositions[$streamName]++;
+
+            $this->currentStreamName = $events->streamName();
+            $this->streamPositions[$this->currentStreamName]++;
 
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;
