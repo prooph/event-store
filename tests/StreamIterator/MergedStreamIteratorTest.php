@@ -24,20 +24,20 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
     public function getStreams(): array
     {
         return [
-            new InMemoryStreamIterator([
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 5], 1, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388510')),
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 7], 2, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388519')),
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 8], 3, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388520')),
+            'streamA' => new InMemoryStreamIterator([
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 5, 'expected_stream_name' => 'streamA'], 1, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388510')),
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 7, 'expected_stream_name' => 'streamA'], 2, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388519')),
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 8, 'expected_stream_name' => 'streamA'], 3, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388520')),
             ]),
-            new InMemoryStreamIterator([
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 1], 1, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388501')),
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 2], 2, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388503')),
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 4], 3, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388509')),
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 6], 4, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388515')),
+            'streamB' => new InMemoryStreamIterator([
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 1, 'expected_stream_name' => 'streamB'], 1, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388501')),
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 2, 'expected_stream_name' => 'streamB'], 2, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388503')),
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 4, 'expected_stream_name' => 'streamB'], 3, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388509')),
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 6, 'expected_stream_name' => 'streamB'], 4, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388515')),
             ]),
-            new InMemoryStreamIterator([
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 0], 1, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388500')),
-                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 3], 2, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388503')),
+            'streamC' => new InMemoryStreamIterator([
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 0, 'expected_stream_name' => 'streamC'], 1, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388500')),
+                TestDomainEvent::withPayloadAndSpecifiedCreatedAt(['expected_index' => 3, 'expected_stream_name' => 'streamC'], 2, DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', '2019-05-10T10:18:19.388503')),
             ]),
         ];
     }
@@ -47,7 +47,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
      */
     public function it_implements_stream_iterator(): void
     {
-        $iterator = new MergedStreamIterator(...$this->getStreams());
+        $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
 
         $this->assertInstanceOf(StreamIterator::class, $iterator);
     }
@@ -57,7 +57,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
      */
     public function it_counts_correct(): void
     {
-        $iterator = new MergedStreamIterator(...$this->getStreams());
+        $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
 
         $this->assertEquals(8, $iterator->count());
     }
@@ -67,7 +67,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
      */
     public function it_can_rewind(): void
     {
-        $iterator = new MergedStreamIterator(...$this->getStreams());
+        $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
 
         $iterator->next();
 
@@ -83,10 +83,11 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
      */
     public function it_returns_messages_in_order(): void
     {
-        $iterator = new MergedStreamIterator(...$this->getStreams());
+        $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
 
         foreach ($iterator as $key => $message) {
             $this->assertEquals($key, $message->payload()['expected_index']);
+            $this->assertEquals($iterator->streamName(), $message->payload()['expected_stream_name']);
         }
     }
 }
