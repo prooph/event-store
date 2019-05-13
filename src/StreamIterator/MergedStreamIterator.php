@@ -24,13 +24,19 @@ class MergedStreamIterator implements StreamIterator
     private $iterators;
 
     /**
+     * @var string[]
+     */
+    private $streamNames;
+
+    /**
      * @var integer
      */
     private $index = 0;
 
-    public function __construct(StreamIterator ...$iterators)
+    public function __construct(array $streamNames, StreamIterator ...$iterators)
     {
         $this->iterators = [];
+        $this->streamNames = $streamNames;
 
         foreach ($iterators as $key => $iterator) {
             $this->iterators[$key] = $iterator;
@@ -74,6 +80,11 @@ class MergedStreamIterator implements StreamIterator
     public function current()
     {
         return $this->iterators[\array_keys($this->iterators)[0]]->current();
+    }
+
+    public function streamName(): string
+    {
+        return $this->streamNames[\array_keys($this->iterators)[0]];
     }
 
     public function key(): int
