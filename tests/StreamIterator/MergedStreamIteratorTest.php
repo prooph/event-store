@@ -59,7 +59,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
     {
         $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
 
-        $this->assertEquals(8, $iterator->count());
+        $this->assertEquals(9, $iterator->count());
     }
 
     /**
