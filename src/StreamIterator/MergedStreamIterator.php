@@ -27,11 +27,6 @@ class MergedStreamIterator implements StreamIterator
      */
     private $streamNames;
 
-    /**
-     * @var integer
-     */
-    private $index = 0;
-
     public function __construct(array $streamNames, StreamIterator ...$iterators)
     {
         $this->iterators = [];
@@ -49,8 +44,6 @@ class MergedStreamIterator implements StreamIterator
         foreach ($this->iterators as $iter) {
             $iter->rewind();
         }
-
-        $this->index = 0;
 
         $this->prioritizeIterators();
     }
@@ -71,8 +64,6 @@ class MergedStreamIterator implements StreamIterator
         // only advance the prioritized iterator
         $this->iterators[\array_keys($this->iterators)[0]]->next();
 
-        $this->index++;
-
         $this->prioritizeIterators();
     }
 
@@ -88,7 +79,7 @@ class MergedStreamIterator implements StreamIterator
 
     public function key(): int
     {
-        return $this->index;
+        return $this->iterators[\array_keys($this->iterators)[0]]->key();
     }
 
     public function count(): int
