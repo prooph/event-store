@@ -496,7 +496,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
             ->run(false);
 
         $this->assertEquals(0, $projection->getState()['count']);
-        $this->assertEquals(5, $calledTimes);
+        $this->assertEquals(4, $calledTimes);
         $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
     }
 
@@ -538,7 +538,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
             ->run(false);
 
         $this->assertEquals(0, $projection->getState()['count']);
-        $this->assertEquals(5, $calledTimes);
+        $this->assertEquals(4, $calledTimes);
         $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
     }
 
