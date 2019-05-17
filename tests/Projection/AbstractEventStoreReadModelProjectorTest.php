@@ -47,6 +47,62 @@ abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
 
     /**
      * @test
+     *
+     * This tests works because this projection does not handle the first event in the stream.
+     */
+    public function it_persists_after_blocksize_processed_events_for_multiple_handlers(): void
+    {
+        $this->prepareEventStream('user-123');
+
+        $testCase = $this;
+        $projectionManager = $this->projectionManager;
+        $readModel = new ReadModelMock();
+        $projection = $this->projectionManager->createReadModelProjection('test_projection', $readModel, [
+            ReadModelProjector::OPTION_PERSIST_BLOCK_SIZE => 10,
+        ]);
+
+        $calledTimes = 0;
+
+        $projection
+            ->init(function (): array {
+                return ['count' => 0];
+            })
+            ->fromStream('user-123')
+            ->when([
+                UsernameChanged::class => function (array $state, UsernameChanged $event) use ($projectionManager, $testCase, &$calledTimes): array {
+                    $state['count']++;
+                    $calledTimes++;
+
+                    $position = $projectionManager->fetchProjectionStreamPositions('test_projection');
+                    switch (true) {
+                        case $calledTimes < 10:
+                            $testCase->assertSame([], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 'none'));
+                            break;
+                        case $calledTimes < 20:
+                            $testCase->assertSame(['user-123' => 10], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 10));
+                            break;
+                        case $calledTimes < 30:
+                            $testCase->assertSame(['user-123' => 20], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 20));
+                            break;
+                        case $calledTimes < 40:
+                            $testCase->assertSame(['user-123' => 30], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 30));
+                            break;
+                        case $calledTimes < 50:
+                            $testCase->assertSame(['user-123' => 40], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 40));
+                            break;
+                    }
+
+                    return $state;
+                },
+            ])
+            ->run(false);
+
+        $position = $projectionManager->fetchProjectionStreamPositions('test_projection');
+        $testCase->assertSame(['user-123' => 50], $position, \sprintf("finally the persisted position expectation is '%s'", 50));
+    }
+
+    /**
+     * @test
      */
     public function it_can_project_from_stream_and_reset(): void
     {
