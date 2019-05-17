@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use Closure;
-use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
@@ -22,6 +21,7 @@ use Prooph\EventStore\Exception;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\NonTransactionalInMemoryEventStore;
+use Prooph\EventStore\StreamIterator\MergedStreamIterator;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
@@ -161,10 +161,10 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         }
 
         if (
-            ! (
-                $eventStore instanceof InMemoryEventStore
-                || $eventStore instanceof NonTransactionalInMemoryEventStore
-            )
+        ! (
+            $eventStore instanceof InMemoryEventStore
+            || $eventStore instanceof NonTransactionalInMemoryEventStore
+        )
         ) {
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
@@ -317,24 +317,23 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
             $singleHandler = null !== $this->handler;
 
             $eventCounter = 0;
+            $eventStreams = [];
 
             foreach ($this->streamPositions as $streamName => $position) {
                 try {
-                    $streamEvents = $this->eventStore->load(new StreamName($streamName), $position + 1, null, $this->metadataMatcher);
+                    $eventStreams[$streamName] = $this->eventStore->load(new StreamName($streamName), $position + 1, null, $this->metadataMatcher);
                 } catch (Exception\StreamNotFound $e) {
                     // ignore
                     continue;
                 }
+            }
 
-                if ($singleHandler) {
-                    $this->handleStreamWithSingleHandler($streamName, $streamEvents);
-                } else {
-                    $this->handleStreamWithHandlers($streamName, $streamEvents);
-                }
+            $streamEvents = new MergedStreamIterator(\array_keys($eventStreams), ...\array_values($eventStreams));
 
-                if ($this->isStopped) {
-                    break;
-                }
+            if ($singleHandler) {
+                $this->handleStreamWithSingleHandler($streamEvents);
+            } else {
+                $this->handleStreamWithHandlers($streamEvents);
             }
 
             $this->readModel()->persist();
@@ -386,18 +385,18 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         }
     }
 
-    private function handleStreamWithSingleHandler(string $streamName, Iterator $events): void
+    private function handleStreamWithSingleHandler(MergedStreamIterator $events): void
     {
-        $this->currentStreamName = $streamName;
         $handler = $this->handler;
 
+        /* @var Message $event */
         foreach ($events as $event) {
             if ($this->triggerPcntlSignalDispatch) {
                 \pcntl_signal_dispatch();
             }
 
-            /* @var Message $event */
-            $this->streamPositions[$streamName]++;
+            $this->currentStreamName = $events->streamName();
+            $this->streamPositions[$this->currentStreamName]++;
             $this->eventCounter++;
 
             $result = $handler($this->state, $event);
@@ -417,16 +416,16 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         }
     }
 
-    private function handleStreamWithHandlers(string $streamName, Iterator $events): void
+    private function handleStreamWithHandlers(MergedStreamIterator $events): void
     {
-        $this->currentStreamName = $streamName;
-
+        /* @var Message $event */
         foreach ($events as $event) {
             if ($this->triggerPcntlSignalDispatch) {
                 \pcntl_signal_dispatch();
             }
-            /* @var Message $event */
-            $this->streamPositions[$streamName]++;
+
+            $this->currentStreamName = $events->streamName();
+            $this->streamPositions[$this->currentStreamName]++;
 
             if (! isset($this->handlers[$event->messageName()])) {
                 continue;
