@@ -42,6 +42,14 @@ class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
     /**
      * @test
      */
+    public function it_persists_after_blocksize_processed_events_for_multiple_handlers(): void
+    {
+        $this->markTestSkipped('InMemoryProjectionManager does not honor blocksize');
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_exception_when_trying_to_run_two_projections_at_the_same_time(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot guard agains concurrent projections');
