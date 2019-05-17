@@ -73,21 +73,23 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
                     $calledTimes++;
 
                     $position = $projectionManager->fetchProjectionStreamPositions('test_projection');
+                    $position = isset($position['user-123']) ? (int) $position['user-123'] : null;
+
                     switch (true) {
                         case $calledTimes < 10:
-                            $testCase->assertSame([], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 'none'));
+                            $testCase->assertSame(null, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 'none'));
                             break;
                         case $calledTimes < 20:
-                            $testCase->assertSame(['user-123' => 10], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 10));
+                            $testCase->assertSame(10, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 10));
                             break;
                         case $calledTimes < 30:
-                            $testCase->assertSame(['user-123' => 20], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 20));
+                            $testCase->assertSame(20, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 20));
                             break;
                         case $calledTimes < 40:
-                            $testCase->assertSame(['user-123' => 30], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 30));
+                            $testCase->assertSame(30, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 30));
                             break;
                         case $calledTimes < 50:
-                            $testCase->assertSame(['user-123' => 40], $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 40));
+                            $testCase->assertSame(40, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 40));
                             break;
                     }
 
@@ -97,7 +99,8 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
             ->run(false);
 
         $position = $projectionManager->fetchProjectionStreamPositions('test_projection');
-        $testCase->assertSame(['user-123' => 50], $position, \sprintf("finally the persisted position expectation is '%s'", 50));
+        $position = isset($position['user-123']) ? (int) $position['user-123'] : null;
+        $testCase->assertSame(50, $position, \sprintf("finally the persisted position expectation is '%s'", 50));
     }
 
     /**
