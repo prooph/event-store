@@ -1,7 +1,59 @@
 # Change Log
 
-## [v7.5.0](https://github.com/prooph/event-store/tree/v7.5.0)
+## [v7.5.3](https://github.com/prooph/event-store/tree/v7.5.3)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.1...v7.5.3)
+
+**Implemented enhancements:**
+
+- Improvement/merged stream iterator [\#367](https://github.com/prooph/event-store/pull/367) ([basz](https://github.com/basz))
+
+**Fixed bugs:**
+
+- Improvement/persist after blocksize processed events [\#368](https://github.com/prooph/event-store/pull/368) ([basz](https://github.com/basz))
+
+## [v7.5.1](https://github.com/prooph/event-store/tree/v7.5.1) (2019-03-26)
+[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-2...v7.5.1)
+
+**Merged pull requests:**
+
+- Add Support for "event\_name" field for MetadataMatcher in InMemoryEventStore [\#363](https://github.com/prooph/event-store/pull/363) ([fjogeleit](https://github.com/fjogeleit))
+- Improve docblocks of ResolvedEvent [\#360](https://github.com/prooph/event-store/pull/360) ([enumag](https://github.com/enumag))
+
+## [v8.0.0-BETA-2](https://github.com/prooph/event-store/tree/v8.0.0-BETA-2) (2019-02-03)
+[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-1...v8.0.0-BETA-2)
+
+**Implemented enhancements:**
+
+- add fail \(multiple\) eventId\(s\) to EventStorePersistentSubscription [\#359](https://github.com/prooph/event-store/pull/359) ([prolic](https://github.com/prolic))
+
+## [v8.0.0-BETA-1](https://github.com/prooph/event-store/tree/v8.0.0-BETA-1) (2019-01-26)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.0...v8.0.0-BETA-1)
+
+**Implemented enhancements:**
+
+- \[RFC\] Refactor projections or add new projection styles [\#328](https://github.com/prooph/event-store/issues/328)
+- Add AsyncEventStore interface [\#318](https://github.com/prooph/event-store/issues/318)
+- refactor async interfaces [\#358](https://github.com/prooph/event-store/pull/358) ([prolic](https://github.com/prolic))
+- rename exceptions [\#355](https://github.com/prooph/event-store/pull/355) ([prolic](https://github.com/prolic))
+
+**Closed issues:**
+
+- \[RFC\] Creating read model from a category with PdoEventStoreReadModelProjector in wrong order [\#330](https://github.com/prooph/event-store/issues/330)
+- \[RFC\] Remove MetadataMatcher [\#326](https://github.com/prooph/event-store/issues/326)
+- \[RFC\] Remove stream position from metadata [\#324](https://github.com/prooph/event-store/issues/324)
+- Projections vs. event listners [\#322](https://github.com/prooph/event-store/issues/322)
+- Add EventLog interface [\#319](https://github.com/prooph/event-store/issues/319)
+- Using MongoDB for writing projections and MariaDB as the event store [\#317](https://github.com/prooph/event-store/issues/317)
+- RFC projection consumer groups [\#299](https://github.com/prooph/event-store/issues/299)
+
+**Merged pull requests:**
+
+- Add JsonSerializable to PersistentSubscriptionSettings [\#357](https://github.com/prooph/event-store/pull/357) ([enumag](https://github.com/enumag))
+- Fix PersistentSubscriptionDropped [\#356](https://github.com/prooph/event-store/pull/356) ([enumag](https://github.com/enumag))
+- Event Store v8 [\#354](https://github.com/prooph/event-store/pull/354) ([prolic](https://github.com/prolic))
+
+## [v7.5.0](https://github.com/prooph/event-store/tree/v7.5.0) (2018-11-03)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.4.0...v7.5.0)
 
 **Implemented enhancements:**
