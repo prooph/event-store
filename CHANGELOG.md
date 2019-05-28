@@ -1,7 +1,14 @@
 # Change Log
 
-## [v7.5.3](https://github.com/prooph/event-store/tree/v7.5.3)
+## [v7.5.4](https://github.com/prooph/event-store/tree/v7.5.4)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.3...v7.5.4)
+
+**Implemented enhancements:**
+
+- Allow marc-mabe/php-enum v4 [\#370](https://github.com/prooph/event-store/pull/370) ([Lctrs](https://github.com/Lctrs))
+
+## [v7.5.3](https://github.com/prooph/event-store/tree/v7.5.3) (2019-05-21)
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.5.1...v7.5.3)
 
 **Implemented enhancements:**
@@ -11,6 +18,11 @@
 **Fixed bugs:**
 
 - Improvement/persist after blocksize processed events [\#368](https://github.com/prooph/event-store/pull/368) ([basz](https://github.com/basz))
+- Improve DateTime::create\(\) [\#364](https://github.com/prooph/event-store/pull/364) ([enumag](https://github.com/enumag))
+
+**Merged pull requests:**
+
+- Fix DateTime parsing [\#365](https://github.com/prooph/event-store/pull/365) ([enumag](https://github.com/enumag))
 
 ## [v7.5.1](https://github.com/prooph/event-store/tree/v7.5.1) (2019-03-26)
 [Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-2...v7.5.1)
