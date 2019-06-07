@@ -16,20 +16,19 @@ namespace Prooph\EventStore;
 use JsonSerializable;
 use Prooph\EventStore\Common\SystemMetadata;
 use Prooph\EventStore\Common\SystemRoles;
-use Prooph\EventStore\Exception\InvalidArgumentException;
 use stdClass;
 
 class SystemSettings implements JsonSerializable
 {
     /**
      * Default access control list for new user streams.
-     * @var StreamAcl
+     * @var StreamAcl|null
      */
     private $userStreamAcl;
 
     /**
      * Default access control list for new system streams.
-     * @var StreamAcl
+     * @var StreamAcl|null
      */
     private $systemStreamAcl;
 
@@ -53,18 +52,18 @@ class SystemSettings implements JsonSerializable
         );
     }
 
-    public function __construct(StreamAcl $userStreamAcl, StreamAcl $systemStreamAcl)
+    public function __construct(?StreamAcl $userStreamAcl = null, ?StreamAcl $systemStreamAcl = null)
     {
         $this->userStreamAcl = $userStreamAcl;
         $this->systemStreamAcl = $systemStreamAcl;
     }
 
-    public function userStreamAcl(): StreamAcl
+    public function userStreamAcl(): ?StreamAcl
     {
         return $this->userStreamAcl;
     }
 
-    public function systemStreamAcl(): StreamAcl
+    public function systemStreamAcl(): ?StreamAcl
     {
         return $this->systemStreamAcl;
     }
@@ -72,25 +71,27 @@ class SystemSettings implements JsonSerializable
     public function jsonSerialize(): object
     {
         $object = new stdClass();
-        $object->{SystemMetadata::USER_STREAM_ACL} = $this->userStreamAcl->toArray();
-        $object->{SystemMetadata::SYSTEM_STREAM_ACL} = $this->systemStreamAcl->toArray();
+
+        if ($this->userStreamAcl) {
+            $object->{SystemMetadata::USER_STREAM_ACL} = $this->userStreamAcl->toArray();
+        }
+
+        if ($this->systemStreamAcl) {
+            $object->{SystemMetadata::SYSTEM_STREAM_ACL} = $this->systemStreamAcl->toArray();
+        }
 
         return $object;
     }
 
     public static function createFromArray(array $data): SystemSettings
     {
-        if (! isset($data[SystemMetadata::USER_STREAM_ACL])) {
-            throw new InvalidArgumentException(SystemMetadata::USER_STREAM_ACL . ' is missing');
-        }
-
-        if (! isset($data[SystemMetadata::SYSTEM_STREAM_ACL])) {
-            throw new InvalidArgumentException(SystemMetadata::SYSTEM_STREAM_ACL . ' is missing');
-        }
-
         return new self(
-            StreamAcl::fromArray($data[SystemMetadata::USER_STREAM_ACL]),
-            StreamAcl::fromArray($data[SystemMetadata::SYSTEM_STREAM_ACL])
+            isset($data[SystemMetadata::USER_STREAM_ACL])
+                ? StreamAcl::fromArray($data[SystemMetadata::USER_STREAM_ACL])
+                : null,
+            isset($data[SystemMetadata::SYSTEM_STREAM_ACL])
+                ? StreamAcl::fromArray($data[SystemMetadata::SYSTEM_STREAM_ACL])
+                : null
         );
     }
 }

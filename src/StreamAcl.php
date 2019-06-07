@@ -119,22 +119,35 @@ class StreamAcl
     public function toArray(): array
     {
         return [
-            SystemMetadata::ACL_READ => $this->readRoles,
-            SystemMetadata::ACL_WRITE => $this->writeRoles,
-            SystemMetadata::ACL_DELETE => $this->deleteRoles,
-            SystemMetadata::ACL_META_READ => $this->metaReadRoles,
-            SystemMetadata::ACL_META_WRITE => $this->metaWriteRoles,
+            SystemMetadata::ACL_READ => $this->exportRoles($this->readRoles),
+            SystemMetadata::ACL_WRITE => $this->exportRoles($this->writeRoles),
+            SystemMetadata::ACL_DELETE => $this->exportRoles($this->deleteRoles),
+            SystemMetadata::ACL_META_READ => $this->exportRoles($this->metaReadRoles),
+            SystemMetadata::ACL_META_WRITE => $this->exportRoles($this->metaWriteRoles),
         ];
     }
 
     public static function fromArray(array $data): StreamAcl
     {
         return new self(
-            $data[SystemMetadata::ACL_READ] ?? [],
-            $data[SystemMetadata::ACL_WRITE] ?? [],
-            $data[SystemMetadata::ACL_DELETE] ?? [],
-            $data[SystemMetadata::ACL_META_READ] ?? [],
-            $data[SystemMetadata::ACL_META_WRITE] ?? []
+            (array) $data[SystemMetadata::ACL_READ] ?? [],
+            (array) $data[SystemMetadata::ACL_WRITE] ?? [],
+            (array) $data[SystemMetadata::ACL_DELETE] ?? [],
+            (array) $data[SystemMetadata::ACL_META_READ] ?? [],
+            (array) $data[SystemMetadata::ACL_META_WRITE] ?? []
         );
+    }
+
+    private function exportRoles(?array $roles)
+    {
+        if (null === $roles) {
+            return null;
+        }
+
+        if (\count($roles) === 1) {
+            return $roles[0];
+        }
+
+        return $roles;
     }
 }
