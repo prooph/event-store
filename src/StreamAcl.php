@@ -130,11 +130,11 @@ class StreamAcl
     public static function fromArray(array $data): StreamAcl
     {
         return new self(
-            (array) $data[SystemMetadata::ACL_READ] ?? [],
-            (array) $data[SystemMetadata::ACL_WRITE] ?? [],
-            (array) $data[SystemMetadata::ACL_DELETE] ?? [],
-            (array) $data[SystemMetadata::ACL_META_READ] ?? [],
-            (array) $data[SystemMetadata::ACL_META_WRITE] ?? []
+            (array) ($data[SystemMetadata::ACL_READ] ?? []),
+            (array) ($data[SystemMetadata::ACL_WRITE] ?? []),
+            (array) ($data[SystemMetadata::ACL_DELETE] ?? []),
+            (array) ($data[SystemMetadata::ACL_META_READ] ?? []),
+            (array) ($data[SystemMetadata::ACL_META_WRITE] ?? [])
         );
     }
 
