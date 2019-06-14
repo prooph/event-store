@@ -26,6 +26,11 @@ class DateTime
 
     public static function create(string $dateTimeString): DateTimeImmutable
     {
+        // https://github.com/prooph/event-store/issues/371.
+        if (strlen($dateTimeString) === 28) {
+            $dateTimeString = substr($dateTimeString, 0, -2) . substr($dateTimeString, -1);
+        }
+
         $dateTime = DateTimeImmutable::createFromFormat(
             'Y-m-d\TH:i:s.uP',
             $dateTimeString,
