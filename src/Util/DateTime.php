@@ -32,15 +32,6 @@ class DateTime
             new DateTimeZone('UTC')
         );
 
-        // Workaround for https://github.com/EventStore/EventStore/issues/1903.
-        if ($dateTime === false) {
-            $dateTime = DateTimeImmutable::createFromFormat(
-                'Y-m-d\TH:i:sP',
-                $dateTimeString,
-                new DateTimeZone('UTC')
-            );
-        }
-
         if ($dateTime === false) {
             throw new InvalidArgumentException(
                 \sprintf(
