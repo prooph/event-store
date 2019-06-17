@@ -168,7 +168,11 @@ class StreamMetadata implements JsonSerializable
         }
 
         if (null !== $this->acl) {
-            $object->{SystemMetadata::ACL} = $this->acl->toArray();
+            $acl = $this->acl->toArray();
+
+            if (! empty($acl)) {
+                $object->{SystemMetadata::ACL} = $acl;
+            }
         }
 
         foreach ($this->customMetadata as $key => $value) {

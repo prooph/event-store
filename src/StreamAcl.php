@@ -118,13 +118,29 @@ class StreamAcl
 
     public function toArray(): array
     {
-        return [
-            SystemMetadata::ACL_READ => $this->exportRoles($this->readRoles),
-            SystemMetadata::ACL_WRITE => $this->exportRoles($this->writeRoles),
-            SystemMetadata::ACL_DELETE => $this->exportRoles($this->deleteRoles),
-            SystemMetadata::ACL_META_READ => $this->exportRoles($this->metaReadRoles),
-            SystemMetadata::ACL_META_WRITE => $this->exportRoles($this->metaWriteRoles),
-        ];
+        $data = [];
+
+        if (! empty($this->readRoles)) {
+            $data[SystemMetadata::ACL_READ] = $this->exportRoles($this->readRoles);
+        }
+
+        if (! empty($this->writeRoles)) {
+            $data[SystemMetadata::ACL_WRITE] = $this->exportRoles($this->writeRoles);
+        }
+
+        if (! empty($this->deleteRoles)) {
+            $data[SystemMetadata::ACL_DELETE] = $this->exportRoles($this->deleteRoles);
+        }
+
+        if (! empty($this->metaReadRoles)) {
+            $data[SystemMetadata::ACL_META_READ] = $this->exportRoles($this->metaReadRoles);
+        }
+
+        if (! empty($this->metaWriteRoles)) {
+            $data[SystemMetadata::ACL_META_WRITE] = $this->exportRoles($this->metaWriteRoles);
+        }
+
+        return $data;
     }
 
     public static function fromArray(array $data): StreamAcl
@@ -140,7 +156,9 @@ class StreamAcl
 
     private function exportRoles(?array $roles)
     {
-        if (null === $roles) {
+        if (null === $roles
+            || empty($roles)
+        ) {
             return null;
         }
 
