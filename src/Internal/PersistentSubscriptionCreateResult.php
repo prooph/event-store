@@ -2,7 +2,7 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
+ * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
  * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
