@@ -57,7 +57,7 @@ class StreamAcl
     ) {
         $check = function (array $data): void {
             foreach ($data as $value) {
-                if (! \is_string($value) || '' === $value) {
+                if (! \is_string($value)) {
                     throw new InvalidArgumentException('Invalid roles given, expected an array of strings');
                 }
             }
