@@ -1,7 +1,55 @@
 # Change Log
 
-## [v8.0.0-BETA-2](https://github.com/prooph/event-store/tree/v8.0.0-BETA-2)
+## [v8.0.0-RC-1](https://github.com/prooph/event-store/tree/v8.0.0-RC-1)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-2...v8.0.0-RC-1)
+
+**Fixed bugs:**
+
+- Uncaught InvalidArgumentException: Could not create DateTimeImmutable [\#371](https://github.com/prooph/event-store/issues/371)
+- Remove workaround in DateTime parsing [\#375](https://github.com/prooph/event-store/pull/375) ([prolic](https://github.com/prolic))
+- fix acl settings [\#372](https://github.com/prooph/event-store/pull/372) ([prolic](https://github.com/prolic))
+
+**Merged pull requests:**
+
+- Change copyright [\#376](https://github.com/prooph/event-store/pull/376) ([codeliner](https://github.com/codeliner))
+
+## [v7.5.4](https://github.com/prooph/event-store/tree/v7.5.4) (2019-05-28)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.3...v7.5.4)
+
+**Implemented enhancements:**
+
+- Allow marc-mabe/php-enum v4 [\#370](https://github.com/prooph/event-store/pull/370) ([Lctrs](https://github.com/Lctrs))
+
+**Closed issues:**
+
+- 7.5.2 is completely breaking from 7.5.1 [\#369](https://github.com/prooph/event-store/issues/369)
+
+## [v7.5.3](https://github.com/prooph/event-store/tree/v7.5.3) (2019-05-21)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.1...v7.5.3)
+
+**Implemented enhancements:**
+
+- Improvement/merged stream iterator [\#367](https://github.com/prooph/event-store/pull/367) ([basz](https://github.com/basz))
+
+**Fixed bugs:**
+
+- Improvement/persist after blocksize processed events [\#368](https://github.com/prooph/event-store/pull/368) ([basz](https://github.com/basz))
+- Improve DateTime::create\(\) [\#364](https://github.com/prooph/event-store/pull/364) ([enumag](https://github.com/enumag))
+
+**Merged pull requests:**
+
+- Fix DateTime parsing [\#365](https://github.com/prooph/event-store/pull/365) ([enumag](https://github.com/enumag))
+
+## [v7.5.1](https://github.com/prooph/event-store/tree/v7.5.1) (2019-03-26)
+[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-2...v7.5.1)
+
+**Merged pull requests:**
+
+- Add Support for "event\_name" field for MetadataMatcher in InMemoryEventStore [\#363](https://github.com/prooph/event-store/pull/363) ([fjogeleit](https://github.com/fjogeleit))
+- Improve docblocks of ResolvedEvent [\#360](https://github.com/prooph/event-store/pull/360) ([enumag](https://github.com/enumag))
+
+## [v8.0.0-BETA-2](https://github.com/prooph/event-store/tree/v8.0.0-BETA-2) (2019-02-03)
 [Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-1...v8.0.0-BETA-2)
 
 **Implemented enhancements:**
