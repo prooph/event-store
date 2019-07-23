@@ -24,7 +24,7 @@
   "require-dev": {
     "amphp/amp": "^2.0.7",
     "phpspec/prophecy": "^1.7",
-    "phpunit/phpunit": "^7.4",
+    "phpunit/phpunit": "^7.4 || ^8.0",
     "doctrine/instantiator": "^1.1",
     "sebastian/object-enumerator": "^3.0.3",
     "php-coveralls/php-coveralls": "^2.1"
