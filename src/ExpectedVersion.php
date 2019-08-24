@@ -19,8 +19,6 @@ class ExpectedVersion
     public const ANY = -2;
     // The stream being written to should not yet exist. If it does exist treat that as a concurrency problem.
     public const NO_STREAM = -1;
-    // The stream should exist and should be empty. If it does not exist or is not empty treat that as a concurrency problem.
-    public const EMPTY_STREAM = -1;
     // The stream should exist. If it or a metadata stream does not exist treat that as a concurrency problem.
     public const STREAM_EXISTS = -4;
 }
