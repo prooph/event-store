@@ -94,21 +94,7 @@ class PersistentSubscriptionSettings implements JsonSerializable
 
     public static function create(): PersistentSubscriptionSettingsBuilder
     {
-        return new PersistentSubscriptionSettingsBuilder(
-            false,
-            -1,
-            false,
-            30000,
-            500,
-            500,
-            10,
-            20,
-            2000,
-            10,
-            1000,
-            0,
-            SystemConsumerStrategies::ROUND_ROBIN
-        );
+        return new PersistentSubscriptionSettingsBuilder();
     }
 
     /** @internal  */

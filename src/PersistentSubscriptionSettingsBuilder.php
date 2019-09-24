@@ -22,96 +22,70 @@ class PersistentSubscriptionSettingsBuilder
      * Tells the subscription to resolve link events.
      * @var bool
      */
-    private $resolveLinkTos;
+    private $resolveLinkTos = false;
     /**
      * Start the subscription from the position-of the event in the stream.
      * If the value is set to `-1` that the subscription should start from
      * where the stream is when the subscription is first connected.
      * @var int
      */
-    private $startFrom;
+    private $startFrom = -1;
     /**
      * Tells the backend to measure timings on the clients so statistics will contain histograms of them.
      * @var bool
      */
-    private $extraStatistics;
+    private $extraStatistics = false;
     /**
      * The amount of time the system should try to checkpoint after.
      * @var int
      */
-    private $checkPointAfterMilliseconds;
+    private $checkPointAfterMilliseconds = 2000;
     /**
      * The size of the live buffer (in memory) before resorting to paging.
      * @var int
      */
-    private $liveBufferSize;
+    private $liveBufferSize = 500;
     /**
      * The size of the read batch when in paging mode.
      * @var int
      */
-    private $readBatchSize;
+    private $readBatchSize = 20;
     /**
      * The number of messages that should be buffered when in paging mode.
      * @var int
      */
-    private $bufferSize;
+    private $bufferSize = 500;
     /**
      * The maximum number of messages not checkpointed before forcing a checkpoint.
      * @var int
      */
-    private $maxCheckPointCount;
+    private $maxCheckPointCount = 1000;
     /**
      * Sets the number of times a message should be retried before considered a bad message.
      * @var int
      */
-    private $maxRetryCount;
+    private $maxRetryCount = 10;
     /**
      * Sets the maximum number of allowed subscribers.
      * @var int
      */
-    private $maxSubscriberCount;
+    private $maxSubscriberCount = 0;
     /**
      * Sets the timeout for a client before the message will be retried.
      * @var int
      */
-    private $messageTimeoutMilliseconds;
+    private $messageTimeoutMilliseconds = 30000;
     /**
      * The minimum number of messages to write a checkpoint for.
      * @var int
      */
-    private $minCheckPointCount;
+    private $minCheckPointCount = 10;
     /** @var string */
-    private $namedConsumerStrategy;
+    private $namedConsumerStrategy = SystemConsumerStrategies::ROUND_ROBIN;
 
     /** @internal */
-    public function __construct(
-        bool $resolveLinkTos,
-        int $startFrom,
-        bool $extraStatistics,
-        int $messageTimeoutMilliseconds,
-        int $bufferSize,
-        int $liveBufferSize,
-        int $maxRetryCount,
-        int $readBatchSize,
-        int $checkPointAfterMilliseconds,
-        int $minCheckPointCount,
-        int $maxCheckPointCount,
-        int $maxSubscriberCount,
-        string $namedConsumerStrategy
-    ) {
-        $this->resolveLinkTos = $resolveLinkTos;
-        $this->startFrom = $startFrom;
-        $this->extraStatistics = $extraStatistics;
-        $this->messageTimeoutMilliseconds = $messageTimeoutMilliseconds;
-        $this->bufferSize = $bufferSize;
-        $this->liveBufferSize = $liveBufferSize;
-        $this->maxRetryCount = $maxRetryCount;
-        $this->readBatchSize = $readBatchSize;
-        $this->checkPointAfterMilliseconds = $checkPointAfterMilliseconds;
-        $this->minCheckPointCount = $minCheckPointCount;
-        $this->maxCheckPointCount = $maxCheckPointCount;
-        $this->maxSubscriberCount = $maxSubscriberCount;
-        $this->namedConsumerStrategy = $namedConsumerStrategy;
+    public function __construct()
+    {
     }
 
     public function withExtraStatistics(): self
