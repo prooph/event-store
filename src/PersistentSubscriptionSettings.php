@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use JsonSerializable;
-use Prooph\EventStore\Common\SystemConsumerStrategies;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use stdClass;
 
