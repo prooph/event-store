@@ -46,7 +46,8 @@
         "sandrokeil/interop-config": "For usage of provided factories"
     },
     "conflict": {
-        "sandrokeil/interop-config": "<2.0.1"
+        "sandrokeil/interop-config": "<2.0.1",
+        "beberlei/assert": "3.2.3 - 3.2.4"
     },
     "autoload": {
         "psr-4": {
