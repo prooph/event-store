@@ -36,7 +36,7 @@ final class UpcasterChain implements Upcaster
             $result = [];
 
             foreach ($messages as $message) {
-                $result += $upcaster->upcast($message);
+                $result = \array_merge($result, $upcaster->upcast($message));
             }
 
             $messages = $result;
