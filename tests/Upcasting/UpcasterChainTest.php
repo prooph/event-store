@@ -19,7 +19,6 @@ use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
 use Prooph\EventStore\Upcasting\Upcaster;
 use Prooph\EventStore\Upcasting\UpcasterChain;
-use Prophecy\Argument;
 
 class UpcasterChainTest extends TestCase
 {
