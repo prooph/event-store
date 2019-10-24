@@ -104,7 +104,7 @@ class UpcasterChainTest extends TestCase
             ['name' => 'subsequentMessage-modified'],
             ['name' => 'furtherSubsequentMessage'],
         ];
-        $messagePayloads = array_map(function (Message $message) {
+        $messagePayloads = \array_map(function (Message $message) {
             return $message->payload();
         }, $messages);
 
