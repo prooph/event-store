@@ -144,7 +144,7 @@ interface ProjectionsManager
     public function updateQuery(
         string $name,
         string $query,
-        bool $emitEnabled = false,
+        ?bool $emitEnabled = null,
         ?UserCredentials $userCredentials = null
     ): void;
 
