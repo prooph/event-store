@@ -160,7 +160,7 @@ interface ProjectionsManager
     public function updateQueryAsync(
         string $name,
         string $query,
-        bool $emitEnabled = false,
+        ?bool $emitEnabled = null,
         ?UserCredentials $userCredentials = null
     ): Promise;
 

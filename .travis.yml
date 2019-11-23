@@ -30,7 +30,6 @@ before_script:
 - if php --ri xdebug >/dev/null; then phpenv config-rm xdebug.ini; fi
 - composer self-update
 - composer update --prefer-dist $DEPENDENCIES
-- if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer require prooph/php-cs-fixer-config ^0.3; fi
 
 script:
 - if [[ $TEST_COVERAGE == 'true' ]]; then php -dzend_extension=xdebug.so ./vendor/bin/phpunit --exclude-group=ignore --coverage-text --coverage-clover ./build/logs/clover.xml; else ./vendor/bin/phpunit --exclude-group=ignore; fi
