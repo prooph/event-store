@@ -31,7 +31,7 @@ final class ProjectionDetails
     private $partitionsCached;
     /** @var string */
     private $status;
-    /** @var string */
+    /** @var string|null */
     private $stateReason;
     /** @var string */
     private $name;
@@ -41,7 +41,7 @@ final class ProjectionDetails
     private $position;
     /** @var float */
     private $progress;
-    /** @var string */
+    /** @var string|null */
     private $lastCheckpoint;
     /** @var int */
     private $eventsProcessedAfterRestart;
@@ -57,7 +57,7 @@ final class ProjectionDetails
     private $enableCommandUrl;
     /** @var string */
     private $disableCommandUrl;
-    /** @var string */
+    /** @var string|null */
     private $checkpointStatus;
     /** @var int */
     private $bufferedEvents;
@@ -75,12 +75,12 @@ final class ProjectionDetails
         int $readsInProgress,
         int $partitionsCached,
         string $status,
-        string $stateReason,
+        ?string $stateReason,
         string $name,
         string $mode,
         string $position,
         float $progress,
-        string $lastCheckpoint,
+        ?string $lastCheckpoint,
         int $eventsProcessedAfterRestart,
         string $statusUrl,
         string $stateUrl,
@@ -88,7 +88,7 @@ final class ProjectionDetails
         string $queryUrl,
         string $enableCommandUrl,
         string $disableCommandUrl,
-        string $checkpointStatus,
+        ?string $checkpointStatus,
         int $bufferedEvents,
         int $writePendingEventsBeforeCheckpoint,
         int $writePendingEventsAfterCheckpoint
@@ -160,7 +160,7 @@ final class ProjectionDetails
         return $this->status;
     }
 
-    public function stateReason(): string
+    public function stateReason(): ?string
     {
         return $this->stateReason;
     }
@@ -185,7 +185,7 @@ final class ProjectionDetails
         return $this->progress;
     }
 
-    public function lastCheckpoint(): string
+    public function lastCheckpoint(): ?string
     {
         return $this->lastCheckpoint;
     }
@@ -225,7 +225,7 @@ final class ProjectionDetails
         return $this->disableCommandUrl;
     }
 
-    public function checkpointStatus(): string
+    public function checkpointStatus(): ?string
     {
         return $this->checkpointStatus;
     }
