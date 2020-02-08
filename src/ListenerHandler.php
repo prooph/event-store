@@ -15,16 +15,15 @@ namespace Prooph\EventStore;
 
 class ListenerHandler
 {
-    /** @var callable */
-    private $listener;
+    private Closure $listener;
 
     /** @internal */
-    public function __construct(callable $listener)
+    public function __construct(Closure $listener)
     {
         $this->listener = $listener;
     }
 
-    public function callback(): callable
+    public function callback(): Closure
     {
         return $this->listener;
     }

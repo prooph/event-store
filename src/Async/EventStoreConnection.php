@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
+use Closure;
 use Prooph\EventStore\AllEventsSlice;
 use Prooph\EventStore\CatchUpSubscriptionSettings;
 use Prooph\EventStore\ConditionalWriteResult;
@@ -241,17 +242,17 @@ interface EventStoreConnection
         ?UserCredentials $userCredentials = null
     ): Promise;
 
-    public function onConnected(callable $handler): ListenerHandler;
+    public function onConnected(Closure $handler): ListenerHandler;
 
-    public function onDisconnected(callable $handler): ListenerHandler;
+    public function onDisconnected(Closure $handler): ListenerHandler;
 
-    public function onReconnecting(callable $handler): ListenerHandler;
+    public function onReconnecting(Closure $handler): ListenerHandler;
 
-    public function onClosed(callable $handler): ListenerHandler;
+    public function onClosed(Closure $handler): ListenerHandler;
 
-    public function onErrorOccurred(callable $handler): ListenerHandler;
+    public function onErrorOccurred(Closure $handler): ListenerHandler;
 
-    public function onAuthenticationFailed(callable $handler): ListenerHandler;
+    public function onAuthenticationFailed(Closure $handler): ListenerHandler;
 
     public function detach(ListenerHandler $handler): void;
 }

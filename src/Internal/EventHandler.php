@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Internal;
 
+use Closure;
 use Prooph\EventStore\ClientAuthenticationFailedEventArgs;
 use Prooph\EventStore\ClientClosedEventArgs;
 use Prooph\EventStore\ClientConnectionEventArgs;
@@ -86,32 +87,32 @@ class EventHandler
         }
     }
 
-    public function whenConnected(callable $handler): ListenerHandler
+    public function whenConnected(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'connected');
     }
 
-    public function whenDisconnected(callable $handler): ListenerHandler
+    public function whenDisconnected(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'disconnected');
     }
 
-    public function whenReconnecting(callable $handler): ListenerHandler
+    public function whenReconnecting(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'reconnecting');
     }
 
-    public function whenClosed(callable $handler): ListenerHandler
+    public function whenClosed(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'closed');
     }
 
-    public function whenErrorOccurred(callable $handler): ListenerHandler
+    public function whenErrorOccurred(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'errorOccurred');
     }
 
-    public function whenAuthenticationFailed(callable $handler): ListenerHandler
+    public function whenAuthenticationFailed(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'authenticationFailed');
     }
@@ -123,7 +124,7 @@ class EventHandler
         }
     }
 
-    private function attach(callable $handler, string $eventName): ListenerHandler
+    private function attach(Closure $handler, string $eventName): ListenerHandler
     {
         $handler = new ListenerHandler($handler);
 
