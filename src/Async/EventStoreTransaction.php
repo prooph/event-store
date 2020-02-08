@@ -22,7 +22,7 @@ use Prooph\EventStore\WriteResult;
 class EventStoreTransaction
 {
     private int $transactionId;
-    private UserCredentials $userCredentials;
+    private ?UserCredentials $userCredentials;
     private EventStoreTransactionConnection $connection;
     private bool $isRolledBack;
     private bool $isCommitted;

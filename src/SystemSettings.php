@@ -23,12 +23,12 @@ class SystemSettings implements JsonSerializable
     /**
      * Default access control list for new user streams.
      */
-    private StreamAcl $userStreamAcl;
+    private ?StreamAcl $userStreamAcl;
 
     /**
      * Default access control list for new system streams.
      */
-    private StreamAcl $systemStreamAcl;
+    private ?StreamAcl $systemStreamAcl;
 
     public static function default(): SystemSettings
     {

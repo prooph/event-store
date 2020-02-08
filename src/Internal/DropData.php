@@ -20,7 +20,7 @@ use Throwable;
 class DropData
 {
     private SubscriptionDropReason $reason;
-    private Throwable $error;
+    private ?Throwable $error;
 
     public function __construct(SubscriptionDropReason $reason, ?Throwable $error)
     {

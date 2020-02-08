@@ -45,7 +45,7 @@ class StreamMetadata implements JsonSerializable
     /**
      * The access control list for the stream.
      */
-    private StreamAcl $acl;
+    private ?StreamAcl $acl;
 
     /**
      * key => value pairs of custom metadata
