@@ -16,20 +16,13 @@ namespace Prooph\EventStore\PersistentSubscriptions;
 /** @internal */
 final class PersistentSubscriptionConnectionDetails
 {
-    /** @var string */
-    private $from;
-    /** @var string */
-    private $username;
-    /** @var float */
-    private $averageItemsPerSecond;
-    /** @var int */
-    private $totalItemsProcessed;
-    /** @var int */
-    private $countSinceLastMeasurement;
-    /** @var int */
-    private $availableSlots;
-    /** @var int */
-    private $inFlightMessages;
+    private string $from;
+    private string $username;
+    private float $averageItemsPerSecond;
+    private int $totalItemsProcessed;
+    private int $countSinceLastMeasurement;
+    private int $availableSlots;
+    private int $inFlightMessages;
 
     private function __construct()
     {

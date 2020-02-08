@@ -15,22 +15,15 @@ namespace Prooph\EventStore;
 
 class StreamEventsSlice
 {
-    /** @var SliceReadStatus */
-    private $status;
-    /** @var string */
-    private $stream;
-    /** @var int */
-    private $fromEventNumber;
-    /** @var ReadDirection */
-    private $readDirection;
+    private SliceReadStatus $status;
+    private string $stream;
+    private int $fromEventNumber;
+    private ReadDirection $readDirection;
     /** @var ResolvedEvent[] */
-    private $events;
-    /** @var int */
-    private $nextEventNumber;
-    /** @var int */
-    private $lastEventNumber;
-    /** @var bool */
-    private $isEndOfStream;
+    private array $events;
+    private int $nextEventNumber;
+    private int $lastEventNumber;
+    private bool $isEndOfStream;
 
     /** @internal */
     public function __construct(

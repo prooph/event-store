@@ -17,49 +17,33 @@ namespace Prooph\EventStore\PersistentSubscriptions;
 final class PersistentSubscriptionDetails
 {
     /**
-     * @var PersistentSubscriptionConfigDetails
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
-    private $config;
+    private PersistentSubscriptionConfigDetails $config;
 
     /**
      * @var PersistentSubscriptionConfigDetails[]
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
-    private $connections = [];
+    private array $connections = [];
 
-    /** @var string */
-    private $eventStreamId;
-    /** @var string */
-    private $groupName;
-    /** @var string */
-    private $status;
-    /** @var float */
-    private $averageItemsPerSecond;
-    /** @var int */
-    private $totalItemsProcessed;
-    /** @var int */
-    private $countSinceLastMeasurement;
-    /** @var int */
-    private $lastProcessedEventNumber;
-    /** @var int */
-    private $lastKnownEventNumber;
-    /** @var int */
-    private $readBufferCount;
-    /** @var int */
-    private $liveBufferCount;
-    /** @var int */
-    private $retryBufferCount;
-    /** @var int */
-    private $totalInFlightMessages;
-    /** @var int */
-    private $connectionCount;
-    /** @var string */
-    private $parkedMessageUri;
-    /** @var string */
-    private $getMessagesUri;
+    private string $eventStreamId;
+    private string $groupName;
+    private string $status;
+    private float $averageItemsPerSecond;
+    private int $totalItemsProcessed;
+    private int $countSinceLastMeasurement;
+    private int $lastProcessedEventNumber;
+    private int $lastKnownEventNumber;
+    private int $readBufferCount;
+    private int $liveBufferCount;
+    private int $retryBufferCount;
+    private int $totalInFlightMessages;
+    private int $connectionCount;
+    private string $parkedMessageUri;
+    private string $getMessagesUri;
 
     private function __construct()
     {

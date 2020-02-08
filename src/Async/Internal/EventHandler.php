@@ -24,7 +24,7 @@ use SplObjectStorage;
 class EventHandler
 {
     /** @var SplObjectStorage[] */
-    private $handlers;
+    private array $handlers;
 
     public function __construct()
     {

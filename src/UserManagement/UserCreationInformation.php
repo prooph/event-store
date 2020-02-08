@@ -18,14 +18,11 @@ use stdClass;
 
 final class UserCreationInformation implements JsonSerializable
 {
-    /** @var string */
-    private $loginName;
-    /** @var string */
-    private $fullName;
+    private string $loginName;
+    private string $fullName;
     /** @var string[] */
-    private $groups;
-    /** @var string */
-    private $password;
+    private array $groups;
+    private string $password;
 
     public function __construct(string $loginName, string $fullName, array $groups, string $password)
     {

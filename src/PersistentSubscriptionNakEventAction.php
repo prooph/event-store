@@ -36,8 +36,8 @@ class PersistentSubscriptionNakEventAction
     // Stop the subscription
     public const STOP = 4;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

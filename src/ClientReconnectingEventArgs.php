@@ -15,8 +15,7 @@ namespace Prooph\EventStore;
 
 class ClientReconnectingEventArgs implements EventArgs
 {
-    /** @var EventStoreConnection */
-    private $connection;
+    private EventStoreConnection $connection;
 
     public function __construct(EventStoreConnection $connection)
     {

@@ -20,8 +20,7 @@ use Prooph\EventStore\PersistentSubscriptionNakEventAction;
 /** @internal */
 class PersistentEventStoreSubscription extends EventStoreSubscription
 {
-    /** @var ConnectToPersistentSubscriptions */
-    private $subscriptionOperation;
+    private ConnectToPersistentSubscriptions $subscriptionOperation;
 
     public function __construct(
         ConnectToPersistentSubscriptions $subscriptionOperation,

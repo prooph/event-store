@@ -26,8 +26,8 @@ class PersistentSubscriptionDeleteStatus
     public const SUCCESS = 0;
     public const FAILURE = 1;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

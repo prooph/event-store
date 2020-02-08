@@ -17,14 +17,10 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class RawStreamMetadataResult
 {
-    /** @var string */
-    private $stream;
-    /** @var bool */
-    private $isStreamDeleted;
-    /** @var int */
-    private $metastreamVersion;
-    /** @var string */
-    private $streamMetadata;
+    private string $stream;
+    private bool $isStreamDeleted;
+    private int $metastreamVersion;
+    private string $streamMetadata;
 
     public function __construct(string $stream, bool $isStreamDeleted, int $metastreamVersion, string $streamMetadata)
     {

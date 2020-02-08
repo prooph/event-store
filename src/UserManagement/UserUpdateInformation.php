@@ -19,10 +19,9 @@ use stdClass;
 /** @internal */
 class UserUpdateInformation implements JsonSerializable
 {
-    /** @var string */
-    private $fullName;
+    private string $fullName;
     /** @var string[] */
-    private $groups;
+    private array $groups;
 
     public function __construct(string $fullName, array $groups)
     {

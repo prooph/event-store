@@ -15,10 +15,8 @@ namespace Prooph\EventStore;
 
 class ClientClosedEventArgs implements EventArgs
 {
-    /** @var EventStoreConnection */
-    private $connection;
-    /** @var string */
-    private $reason;
+    private EventStoreConnection $connection;
+    private string $reason;
 
     public function __construct(EventStoreConnection $connection, string $reason)
     {

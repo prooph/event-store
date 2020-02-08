@@ -15,8 +15,7 @@ namespace Prooph\EventStore;
 
 class DeleteResult
 {
-    /** @var Position */
-    private $logPosition;
+    private Position $logPosition;
 
     public function __construct(Position $logPosition)
     {

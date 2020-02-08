@@ -17,12 +17,9 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class ConditionalWriteResult
 {
-    /** @var ConditionalWriteStatus */
-    private $status;
-    /** @var int|null */
-    private $nextExpectedVersion;
-    /** @var Position|null */
-    private $logPosition;
+    private ConditionalWriteStatus $status;
+    private ?int $nextExpectedVersion;
+    private ?Position $logPosition;
 
     private function __construct()
     {

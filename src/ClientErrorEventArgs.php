@@ -17,10 +17,8 @@ use Throwable;
 
 class ClientErrorEventArgs implements EventArgs
 {
-    /** @var EventStoreConnection */
-    private $connection;
-    /** @var Throwable */
-    private $exception;
+    private EventStoreConnection $connection;
+    private Throwable $exception;
 
     public function __construct(EventStoreConnection $connection, Throwable $exception)
     {

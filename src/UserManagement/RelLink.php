@@ -15,10 +15,8 @@ namespace Prooph\EventStore\UserManagement;
 
 class RelLink
 {
-    /** @var string */
-    private $href;
-    /** @var string */
-    private $rel;
+    private string $href;
+    private string $rel;
 
     public function __construct(string $href, string $rel)
     {

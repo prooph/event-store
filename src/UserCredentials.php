@@ -17,10 +17,8 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class UserCredentials
 {
-    /** @var string */
-    private $username;
-    /** @var string */
-    private $password;
+    private string $username;
+    private string $password;
 
     public function __construct(string $username, string $password)
     {

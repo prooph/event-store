@@ -15,14 +15,10 @@ namespace Prooph\EventStore;
 
 abstract class EventStoreSubscription
 {
-    /** @var bool */
-    private $isSubscribedToAll;
-    /** @var string */
-    private $streamId;
-    /** @var int */
-    private $lastCommitPosition;
-    /** @var int|null */
-    private $lastEventNumber;
+    private bool $isSubscribedToAll;
+    private string $streamId;
+    private int $lastCommitPosition;
+    private ?int $lastEventNumber;
 
     public function __construct(string $streamId, int $lastCommitPosition, ?int $lastEventNumber)
     {

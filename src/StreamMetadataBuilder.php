@@ -25,18 +25,12 @@ class StreamMetadataBuilder
     private $truncateBefore;
     /** @var int|null*/
     private $cacheControl;
-    /** @var array */
-    private $aclRead;
-    /** @var array */
-    private $aclWrite;
-    /** @var array */
-    private $aclDelete;
-    /** @var array */
-    private $aclMetaRead;
-    /** @var array */
-    private $aclMetaWrite;
-    /** @var array */
-    private $customMetadata;
+    private array $aclRead;
+    private array $aclWrite;
+    private array $aclDelete;
+    private array $aclMetaRead;
+    private array $aclMetaWrite;
+    private array $customMetadata;
 
     public function __construct(
         ?int $maxCount = null,

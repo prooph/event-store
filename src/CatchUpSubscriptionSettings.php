@@ -21,26 +21,19 @@ class CatchUpSubscriptionSettings
     /**
      * The maximum amount of events to cache when processing from a live subscription.
      * Going above this value will drop the subscription.
-     *
-     * @var int
      */
-    private $maxLiveQueueSize;
+    private int $maxLiveQueueSize;
 
     /**
      * The number of events to read per batch when reading the history.
-     *
-     * @var int
      */
-    private $readBatchSize;
+    private int $readBatchSize;
 
-    /** @var bool */
-    private $verboseLogging;
+    private bool $verboseLogging;
 
-    /** @var bool */
-    private $resolveLinkTos;
+    private bool $resolveLinkTos;
 
-    /** @var string */
-    private $subscriptionName;
+    private string $subscriptionName;
 
     public function __construct(
         int $maxLiveQueueSize,

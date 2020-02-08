@@ -20,10 +20,8 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
  */
 class Position
 {
-    /** @var int */
-    private $commitPosition;
-    /** @var int */
-    private $preparePosition;
+    private int $commitPosition;
+    private int $preparePosition;
 
     /** @internal */
     public function __construct(int $commitPosition, int $preparePosition)

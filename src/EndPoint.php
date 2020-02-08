@@ -15,10 +15,8 @@ namespace Prooph\EventStore;
 
 class EndPoint
 {
-    /** @var string */
-    private $host;
-    /** @var int */
-    private $port;
+    private string $host;
+    private int $port;
 
     public function __construct(string $host, int $port)
     {

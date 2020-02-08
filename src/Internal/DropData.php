@@ -19,10 +19,8 @@ use Throwable;
 /** @internal */
 class DropData
 {
-    /** @var SubscriptionDropReason */
-    private $reason;
-    /** @var Throwable|null */
-    private $error;
+    private SubscriptionDropReason $reason;
+    private Throwable $error;
 
     public function __construct(SubscriptionDropReason $reason, ?Throwable $error)
     {

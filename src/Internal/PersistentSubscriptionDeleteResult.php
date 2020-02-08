@@ -15,8 +15,7 @@ namespace Prooph\EventStore\Internal;
 
 class PersistentSubscriptionDeleteResult
 {
-    /** @var PersistentSubscriptionDeleteStatus */
-    private $status;
+    private PersistentSubscriptionDeleteStatus $status;
 
     /** @internal */
     public function __construct(PersistentSubscriptionDeleteStatus $status)

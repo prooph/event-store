@@ -47,8 +47,8 @@ class SubscriptionDropReason
     public const UNKNOWN = 100;
     public const NOT_FOUND = 11;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

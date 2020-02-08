@@ -3,19 +3,12 @@ language: php
 matrix:
   fast_finish: true
   include:
-  - php: 7.2
+  - php: 7.4
     env:
     - DEPENDENCIES=""
     - EXECUTE_CS_CHECK=true
     - TEST_COVERAGE=true
-  - php: 7.2
-    env:
-    - DEPENDENCIES="--prefer-lowest --prefer-stable"
-  - php: 7.3
-    env:
-    - DEPENDENCIES=""
-    - TEST_COVERAGE=true
-  - php: 7.3
+  - php: 7.4
     env:
     - DEPENDENCIES="--prefer-lowest --prefer-stable"
 

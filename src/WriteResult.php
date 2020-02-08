@@ -15,10 +15,8 @@ namespace Prooph\EventStore;
 
 class WriteResult
 {
-    /** @var int */
-    private $nextExpectedVersion;
-    /** @var Position */
-    private $logPosition;
+    private int $nextExpectedVersion;
+    private Position $logPosition;
 
     public function __construct(int $nextExpectedVersion, Position $logPosition)
     {

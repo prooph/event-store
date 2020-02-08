@@ -27,8 +27,8 @@ class SliceReadStatus
     public const STREAM_NOT_FOUND = 1;
     public const STREAM_DELETED = 2;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

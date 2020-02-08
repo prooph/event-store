@@ -21,16 +21,11 @@ use Prooph\EventStore\WriteResult;
 
 class EventStoreTransaction
 {
-    /** @var int */
-    private $transactionId;
-    /** @var UserCredentials|null */
-    private $userCredentials;
-    /** @var EventStoreTransactionConnection */
-    private $connection;
-    /** @var bool */
-    private $isRolledBack;
-    /** @var bool */
-    private $isCommitted;
+    private int $transactionId;
+    private UserCredentials $userCredentials;
+    private EventStoreTransactionConnection $connection;
+    private bool $isRolledBack;
+    private bool $isCommitted;
 
     public function __construct(
         int $transactionId,

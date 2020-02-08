@@ -18,10 +18,8 @@ use Prooph\EventStore\Internal\ResolvedEvent as InternalResolvedEvent;
 /** @internal */
 class PersistentSubscriptionResolvedEvent implements InternalResolvedEvent
 {
-    /** @var int|null */
-    private $retryCount;
-    /** @var ResolvedEvent */
-    private $event;
+    private ?int $retryCount;
+    private ResolvedEvent $event;
 
     public function __construct(ResolvedEvent $event, ?int $retryCount)
     {

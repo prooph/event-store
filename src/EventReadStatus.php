@@ -29,8 +29,8 @@ class EventReadStatus
     public const NO_STREAM = 2;
     public const STREAM_DELETED = 3;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

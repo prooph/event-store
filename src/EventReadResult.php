@@ -15,17 +15,13 @@ namespace Prooph\EventStore;
 
 class EventReadResult
 {
-    /** @var EventReadStatus */
-    private $status;
+    private EventReadStatus $status;
 
-    /** @var string */
-    private $stream;
+    private string $stream;
 
-    /** @var int */
-    private $eventNumber;
+    private int $eventNumber;
 
-    /** @var ResolvedEvent|null */
-    private $event;
+    private ?ResolvedEvent $event;
 
     /** @internal */
     public function __construct(EventReadStatus $status, string $stream, int $eventNumber, ?ResolvedEvent $event)

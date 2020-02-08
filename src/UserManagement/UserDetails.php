@@ -20,18 +20,14 @@ use Prooph\EventStore\Util\DateTime;
 /** @internal */
 final class UserDetails
 {
-    /** @var string */
-    private $loginName;
-    /** @var string */
-    private $fullName;
+    private string $loginName;
+    private string $fullName;
     /** @var string[] */
-    private $groups = [];
-    /** @var DateTimeImmutable */
-    private $dateLastUpdated;
-    /** @var bool */
-    private $disabled;
+    private array $groups = [];
+    private DateTimeImmutable $dateLastUpdated;
+    private bool $disabled;
     /** @var RelLink[] */
-    private $links = [];
+    private array $links = [];
 
     private function __construct()
     {

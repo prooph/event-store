@@ -28,8 +28,8 @@ class PersistentSubscriptionCreateStatus
     public const ALREADY_EXISTS = 1;
     public const FAILURE = 2;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

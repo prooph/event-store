@@ -17,8 +17,7 @@ use Prooph\EventStore\EventArgs;
 
 class ClientReconnectingEventArgs implements EventArgs
 {
-    /** @var EventStoreConnection */
-    private $connection;
+    private EventStoreConnection $connection;
 
     public function __construct(EventStoreConnection $connection)
     {

@@ -18,10 +18,8 @@ use Prooph\EventStore\EventArgs;
 
 class ClientConnectionEventArgs implements EventArgs
 {
-    /** @var EventStoreConnection */
-    private $connection;
-    /** @var EndPoint */
-    private $remoteEndPoint;
+    private EventStoreConnection $connection;
+    private EndPoint $remoteEndPoint;
 
     public function __construct(EventStoreConnection $connection, EndPoint $remoteEndPoint)
     {

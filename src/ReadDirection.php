@@ -25,8 +25,8 @@ class ReadDirection
     public const FORWARD = 0;
     public const BACKWARD = 1;
 
-    private $name;
-    private $value;
+    private string $name;
+    private int $value;
 
     private function __construct(string $name)
     {

@@ -19,8 +19,7 @@ use stdClass;
 /** @internal */
 class ResetPasswordDetails implements JsonSerializable
 {
-    /** @var string */
-    private $newPassword;
+    private string $newPassword;
 
     public function __construct(string $newPassword)
     {

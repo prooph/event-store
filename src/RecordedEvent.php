@@ -17,22 +17,14 @@ use DateTimeImmutable;
 
 class RecordedEvent
 {
-    /** @var string */
-    protected $eventStreamId;
-    /** @var int */
-    protected $eventNumber;
-    /** @var EventId */
-    protected $eventId;
-    /** @var string */
-    protected $eventType;
-    /** @var bool */
-    protected $isJson;
-    /** @var string */
-    protected $data;
-    /** @var string */
-    protected $metadata;
-    /** @var DateTimeImmutable */
-    protected $created;
+    protected string $eventStreamId;
+    protected int $eventNumber;
+    protected EventId $eventId;
+    protected string $eventType;
+    protected bool $isJson;
+    protected string $data;
+    protected string $metadata;
+    protected DateTimeImmutable $created;
 
     /** @internal */
     public function __construct(

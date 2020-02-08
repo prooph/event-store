@@ -15,16 +15,12 @@ namespace Prooph\EventStore;
 
 class AllEventsSlice
 {
-    /** @var ReadDirection */
-    private $readDirection;
-    /** @var Position */
-    private $fromPosition;
-    /** @var Position */
-    private $nextPosition;
+    private ReadDirection $readDirection;
+    private Position $fromPosition;
+    private Position $nextPosition;
     /** @var ResolvedEvent[] */
-    private $events;
-    /** @var bool */
-    private $isEndOfStream;
+    private array $events;
+    private bool $isEndOfStream;
 
     /**
      * @internal
