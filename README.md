@@ -39,7 +39,7 @@ To establish a consistent code quality, please provide unit tests for all your c
 | 5.x     | EOL         | >= 5.5      | EOL           |
 | 6.x     | Maintained  | >= 5.5      | 3 Dec 2017    |
 | 7.x     | Latest      | >= 7.1      | active        |
-| 8.x     | Development | >= 7.2      | active        |
+| 8.x     | Development | >= 7.4      | active        |
 
 ## License
 

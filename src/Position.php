@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,10 +20,8 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
  */
 class Position
 {
-    /** @var int */
-    private $commitPosition;
-    /** @var int */
-    private $preparePosition;
+    private int $commitPosition;
+    private int $preparePosition;
 
     /** @internal */
     public function __construct(int $commitPosition, int $preparePosition)

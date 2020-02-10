@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,30 +23,25 @@ class ResolvedEvent implements InternalResolvedEvent
     /**
      * If this ResolvedEvent is a link, this will contain the linked event.
      * If this ResolvedEvent is a simple event without link, the event will be here.
-     * @var RecordedEvent|null
      */
-    private $event;
+    private ?RecordedEvent $event;
     /**
      * If this ResolvedEvent is a link, this will contain the link. Otherwise it will be empty.
-     * @var RecordedEvent|null
      */
-    private $link;
+    private ?RecordedEvent $link;
     /**
      * Returns the event that was read or which triggered the subscription.
      * If this ResolvedEvent is a link, this will contain the link. Otherwise it will be the event.
-     * @var RecordedEvent|null
      */
-    private $originalEvent;
+    private ?RecordedEvent $originalEvent;
     /**
      * Indicates whether this ResolvedEvent is a resolved link event.
-     * @var bool
      */
-    private $isResolved;
+    private bool $isResolved;
     /**
      * The logical position of the OriginalEvent
-     * @var Position|null
      */
-    private $originalPosition;
+    private ?Position $originalPosition;
 
     /** @internal */
     public function __construct(?RecordedEvent $event, ?RecordedEvent $link, ?Position $originalPosition)

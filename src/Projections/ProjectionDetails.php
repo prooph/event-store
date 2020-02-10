@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,56 +15,31 @@ namespace Prooph\EventStore\Projections;
 
 final class ProjectionDetails
 {
-    /** @var int */
-    private $coreProcessingTime;
-    /** @var int */
-    private $version;
-    /** @var int */
-    private $epoch;
-    /** @var string */
-    private $effectiveName;
-    /** @var int */
-    private $writesInProgress;
-    /** @var int */
-    private $readsInProgress;
-    /** @var int */
-    private $partitionsCached;
-    /** @var string */
-    private $status;
-    /** @var string|null */
-    private $stateReason;
-    /** @var string */
-    private $name;
-    /** @var string */
-    private $mode;
-    /** @var string */
-    private $position;
-    /** @var float */
-    private $progress;
-    /** @var string|null */
-    private $lastCheckpoint;
-    /** @var int */
-    private $eventsProcessedAfterRestart;
-    /** @var string */
-    private $statusUrl;
-    /** @var string */
-    private $stateUrl;
-    /** @var string */
-    private $resultUrl;
-    /** @var string */
-    private $queryUrl;
-    /** @var string */
-    private $enableCommandUrl;
-    /** @var string */
-    private $disableCommandUrl;
-    /** @var string|null */
-    private $checkpointStatus;
-    /** @var int */
-    private $bufferedEvents;
-    /** @var int */
-    private $writePendingEventsBeforeCheckpoint;
-    /** @var int */
-    private $writePendingEventsAfterCheckpoint;
+    private int $coreProcessingTime;
+    private int $version;
+    private int $epoch;
+    private string $effectiveName;
+    private int $writesInProgress;
+    private int $readsInProgress;
+    private int $partitionsCached;
+    private string $status;
+    private ?string $stateReason;
+    private string $name;
+    private string $mode;
+    private string $position;
+    private float $progress;
+    private ?string $lastCheckpoint;
+    private int $eventsProcessedAfterRestart;
+    private string $statusUrl;
+    private string $stateUrl;
+    private string $resultUrl;
+    private string $queryUrl;
+    private string $enableCommandUrl;
+    private string $disableCommandUrl;
+    private ?string $checkpointStatus;
+    private int $bufferedEvents;
+    private int $writePendingEventsBeforeCheckpoint;
+    private int $writePendingEventsAfterCheckpoint;
 
     public function __construct(
         int $coreProcessingTime,

@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,22 +15,15 @@ namespace Prooph\EventStore;
 
 class StreamEventsSlice
 {
-    /** @var SliceReadStatus */
-    private $status;
-    /** @var string */
-    private $stream;
-    /** @var int */
-    private $fromEventNumber;
-    /** @var ReadDirection */
-    private $readDirection;
+    private SliceReadStatus $status;
+    private string $stream;
+    private int $fromEventNumber;
+    private ReadDirection $readDirection;
     /** @var ResolvedEvent[] */
-    private $events;
-    /** @var int */
-    private $nextEventNumber;
-    /** @var int */
-    private $lastEventNumber;
-    /** @var bool */
-    private $isEndOfStream;
+    private array $events;
+    private int $nextEventNumber;
+    private int $lastEventNumber;
+    private bool $isEndOfStream;
 
     /** @internal */
     public function __construct(

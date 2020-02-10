@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Async\Internal;
 
+use Closure;
 use Prooph\EventStore\Async\ClientAuthenticationFailedEventArgs;
 use Prooph\EventStore\Async\ClientClosedEventArgs;
 use Prooph\EventStore\Async\ClientConnectionEventArgs;
@@ -24,7 +25,7 @@ use SplObjectStorage;
 class EventHandler
 {
     /** @var SplObjectStorage[] */
-    private $handlers;
+    private array $handlers;
 
     public function __construct()
     {
@@ -86,32 +87,32 @@ class EventHandler
         }
     }
 
-    public function whenConnected(callable $handler): ListenerHandler
+    public function whenConnected(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'connected');
     }
 
-    public function whenDisconnected(callable $handler): ListenerHandler
+    public function whenDisconnected(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'disconnected');
     }
 
-    public function whenReconnecting(callable $handler): ListenerHandler
+    public function whenReconnecting(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'reconnecting');
     }
 
-    public function whenClosed(callable $handler): ListenerHandler
+    public function whenClosed(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'closed');
     }
 
-    public function whenErrorOccurred(callable $handler): ListenerHandler
+    public function whenErrorOccurred(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'errorOccurred');
     }
 
-    public function whenAuthenticationFailed(callable $handler): ListenerHandler
+    public function whenAuthenticationFailed(Closure $handler): ListenerHandler
     {
         return $this->attach($handler, 'authenticationFailed');
     }
@@ -123,7 +124,7 @@ class EventHandler
         }
     }
 
-    private function attach(callable $handler, string $eventName): ListenerHandler
+    private function attach(Closure $handler, string $eventName): ListenerHandler
     {
         $handler = new ListenerHandler($handler);
 

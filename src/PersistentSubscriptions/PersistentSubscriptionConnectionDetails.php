@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,20 +16,13 @@ namespace Prooph\EventStore\PersistentSubscriptions;
 /** @internal */
 final class PersistentSubscriptionConnectionDetails
 {
-    /** @var string */
-    private $from;
-    /** @var string */
-    private $username;
-    /** @var float */
-    private $averageItemsPerSecond;
-    /** @var int */
-    private $totalItemsProcessed;
-    /** @var int */
-    private $countSinceLastMeasurement;
-    /** @var int */
-    private $availableSlots;
-    /** @var int */
-    private $inFlightMessages;
+    private string $from;
+    private string $username;
+    private float $averageItemsPerSecond;
+    private int $totalItemsProcessed;
+    private int $countSinceLastMeasurement;
+    private int $availableSlots;
+    private int $inFlightMessages;
 
     private function __construct()
     {

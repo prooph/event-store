@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,34 +16,20 @@ namespace Prooph\EventStore\PersistentSubscriptions;
 /** @internal */
 final class PersistentSubscriptionConfigDetails
 {
-    /** @var bool */
-    private $resolveLinktos;
-    /** @var int */
-    private $startFrom;
-    /** @var int */
-    private $messageTimeoutMilliseconds;
-    /** @var bool */
-    private $extraStatistics;
-    /** @var int */
-    private $maxRetryCount;
-    /** @var int */
-    private $liveBufferSize;
-    /** @var int */
-    private $bufferSize;
-    /** @var int */
-    private $readBatchSize;
-    /** @var int */
-    private $checkPointAfterMilliseconds;
-    /** @var int */
-    private $minCheckPointCount;
-    /** @var int */
-    private $maxCheckPointCount;
-    /** @var int */
-    private $maxSubscriberCount;
-    /** @var string */
-    private $namedConsumerStrategy;
-    /** @var bool */
-    private $preferRoundRobin;
+    private bool $resolveLinktos;
+    private int $startFrom;
+    private int $messageTimeoutMilliseconds;
+    private bool $extraStatistics;
+    private int $maxRetryCount;
+    private int $liveBufferSize;
+    private int $bufferSize;
+    private int $readBatchSize;
+    private int $checkPointAfterMilliseconds;
+    private int $minCheckPointCount;
+    private int $maxCheckPointCount;
+    private int $maxSubscriberCount;
+    private string $namedConsumerStrategy;
+    private bool $preferRoundRobin;
 
     private function __construct()
     {

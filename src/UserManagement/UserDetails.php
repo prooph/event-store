@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,18 +20,14 @@ use Prooph\EventStore\Util\DateTime;
 /** @internal */
 final class UserDetails
 {
-    /** @var string */
-    private $loginName;
-    /** @var string */
-    private $fullName;
+    private string $loginName;
+    private string $fullName;
     /** @var string[] */
-    private $groups = [];
-    /** @var DateTimeImmutable */
-    private $dateLastUpdated;
-    /** @var bool */
-    private $disabled;
+    private array $groups = [];
+    private DateTimeImmutable $dateLastUpdated;
+    private bool $disabled;
     /** @var RelLink[] */
-    private $links = [];
+    private array $links = [];
 
     private function __construct()
     {

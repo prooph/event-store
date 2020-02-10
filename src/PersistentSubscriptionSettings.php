@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,68 +21,55 @@ class PersistentSubscriptionSettings implements JsonSerializable
 {
     /**
      * Tells the subscription to resolve link events.
-     * @var bool
      */
-    private $resolveLinkTos;
+    private bool $resolveLinkTos;
     /**
      * Start the subscription from the position-of the event in the stream.
      * If the value is set to `-1` that the subscription should start from
      * where the stream is when the subscription is first connected.
-     * @var int
      */
-    private $startFrom;
+    private int $startFrom;
     /**
      * Tells the backend to measure timings on the clients so statistics will contain histograms of them.
-     * @var bool
      */
-    private $extraStatistics;
+    private bool $extraStatistics;
     /**
      * The amount of time the system should try to checkpoint after.
-     * @var int
      */
-    private $checkPointAfterMilliseconds;
+    private int $checkPointAfterMilliseconds;
     /**
      * The size of the live buffer (in memory) before resorting to paging.
-     * @var int
      */
-    private $liveBufferSize;
+    private int $liveBufferSize;
     /**
      * The size of the read batch when in paging mode.
-     * @var int
      */
-    private $readBatchSize;
+    private int $readBatchSize;
     /**
      * The number of messages that should be buffered when in paging mode.
-     * @var int
      */
-    private $bufferSize;
+    private int $bufferSize;
     /**
      * The maximum number of messages not checkpointed before forcing a checkpoint.
-     * @var int
      */
-    private $maxCheckPointCount;
+    private int $maxCheckPointCount;
     /**
      * Sets the number of times a message should be retried before considered a bad message.
-     * @var int
      */
-    private $maxRetryCount;
+    private int $maxRetryCount;
     /**
      * Sets the maximum number of allowed subscribers.
-     * @var int
      */
-    private $maxSubscriberCount;
+    private int $maxSubscriberCount;
     /**
      * Sets the timeout for a client before the message will be retried.
-     * @var int
      */
-    private $messageTimeoutMilliseconds;
+    private int $messageTimeoutMilliseconds;
     /**
      * The minimum number of messages to write a checkpoint for.
-     * @var int
      */
-    private $minCheckPointCount;
-    /** @var string */
-    private $namedConsumerStrategy;
+    private int $minCheckPointCount;
+    private string $namedConsumerStrategy;
 
     private const INT_32_MAX = 2147483647;
 

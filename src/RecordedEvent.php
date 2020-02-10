@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,22 +17,14 @@ use DateTimeImmutable;
 
 class RecordedEvent
 {
-    /** @var string */
-    protected $eventStreamId;
-    /** @var int */
-    protected $eventNumber;
-    /** @var EventId */
-    protected $eventId;
-    /** @var string */
-    protected $eventType;
-    /** @var bool */
-    protected $isJson;
-    /** @var string */
-    protected $data;
-    /** @var string */
-    protected $metadata;
-    /** @var DateTimeImmutable */
-    protected $created;
+    protected string $eventStreamId;
+    protected int $eventNumber;
+    protected EventId $eventId;
+    protected string $eventType;
+    protected bool $isJson;
+    protected string $data;
+    protected string $metadata;
+    protected DateTimeImmutable $created;
 
     /** @internal */
     public function __construct(

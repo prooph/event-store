@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,16 +18,11 @@ namespace Prooph\EventStore;
  */
 class EventData
 {
-    /** @var EventId */
-    private $eventId;
-    /** @var string */
-    private $eventType;
-    /** @var bool */
-    private $isJson;
-    /** @var string */
-    private $data;
-    /** @var string */
-    private $metaData;
+    private EventId $eventId;
+    private string $eventType;
+    private bool $isJson;
+    private string $data;
+    private string $metaData;
 
     public function __construct(?EventId $eventId, string $eventType, bool $isJson, string $data = '', string $metaData = '')
     {
