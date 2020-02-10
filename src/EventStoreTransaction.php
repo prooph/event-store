@@ -31,6 +31,8 @@ class EventStoreTransaction
         $this->transactionId = $transactionId;
         $this->userCredentials = $userCredentials;
         $this->connection = $connection;
+        $this->isRolledBack = false;
+        $this->isCommitted = false;
     }
 
     public function transactionId(): int
