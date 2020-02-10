@@ -24,7 +24,7 @@ final class UserDetails
     private string $fullName;
     /** @var string[] */
     private array $groups = [];
-    private DateTimeImmutable $dateLastUpdated;
+    private ?DateTimeImmutable $dateLastUpdated = null;
     private bool $disabled;
     /** @var RelLink[] */
     private array $links = [];
