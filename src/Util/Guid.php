@@ -19,7 +19,7 @@ use Ramsey\Uuid\UuidInterface;
 
 class Guid
 {
-    private UuidFactory $factory;
+    private static UuidFactory $factory;
 
     public static function generate(): UuidInterface
     {
