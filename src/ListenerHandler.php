@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Closure;
+
 class ListenerHandler
 {
     private Closure $listener;
