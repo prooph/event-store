@@ -20,8 +20,8 @@ class EventStoreTransaction
     private int $transactionId;
     private ?UserCredentials $userCredentials;
     private EventStoreTransactionConnection $connection;
-    private bool $isRolledBack;
-    private bool $isCommitted;
+    private bool $isRolledBack = false;
+    private bool $isCommitted = false;
 
     public function __construct(
         int $transactionId,
@@ -31,8 +31,6 @@ class EventStoreTransaction
         $this->transactionId = $transactionId;
         $this->userCredentials = $userCredentials;
         $this->connection = $connection;
-        $this->isRolledBack = false;
-        $this->isCommitted = false;
     }
 
     public function transactionId(): int
@@ -55,8 +53,6 @@ class EventStoreTransaction
 
     /**
      * @param EventData[] $events
-     *
-     * @return void
      */
     public function write(array $events = []): void
     {

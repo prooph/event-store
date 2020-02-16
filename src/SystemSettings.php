@@ -24,7 +24,6 @@ class SystemSettings implements JsonSerializable
      * Default access control list for new user streams.
      */
     private ?StreamAcl $userStreamAcl;
-
     /**
      * Default access control list for new system streams.
      */

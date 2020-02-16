@@ -23,16 +23,12 @@ class CatchUpSubscriptionSettings
      * Going above this value will drop the subscription.
      */
     private int $maxLiveQueueSize;
-
     /**
      * The number of events to read per batch when reading the history.
      */
     private int $readBatchSize;
-
     private bool $verboseLogging;
-
     private bool $resolveLinkTos;
-
     private string $subscriptionName;
 
     public function __construct(

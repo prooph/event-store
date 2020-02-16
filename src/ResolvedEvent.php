@@ -48,8 +48,8 @@ class ResolvedEvent implements InternalResolvedEvent
     {
         $this->event = $event;
         $this->link = $link;
-        $this->originalEvent = $link ?? $event;
-        $this->isResolved = null !== $link && null !== $event;
+        $this->originalEvent = ($link ?? $event);
+        $this->isResolved = (null !== $link && null !== $event);
         $this->originalPosition = $originalPosition;
     }
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\PersistentSubscriptions;
 
-/** @internal */
 final class PersistentSubscriptionDetails
 {
     /**
@@ -21,14 +20,12 @@ final class PersistentSubscriptionDetails
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
     private PersistentSubscriptionConfigDetails $config;
-
     /**
      * @var PersistentSubscriptionConfigDetails[]
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
     private array $connections = [];
-
     private string $eventStreamId;
     private string $groupName;
     private string $status;

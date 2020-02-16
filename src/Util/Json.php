@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Util;
 
-use Prooph\EventStore\Exception\JsonException;
-
 class Json
 {
     /**
@@ -23,15 +21,9 @@ class Json
      */
     public static function encode($value): string
     {
-        $flags = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_PRESERVE_ZERO_FRACTION;
+        $flags = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_PRESERVE_ZERO_FRACTION | \JSON_THROW_ON_ERROR;
 
-        $string = \json_encode($value, $flags);
-
-        if ($error = \json_last_error()) {
-            throw new JsonException(\json_last_error_msg(), $error);
-        }
-
-        return $string;
+        return \json_encode($value, $flags);
     }
 
     /**
@@ -40,13 +32,7 @@ class Json
      */
     public static function decode(string $json)
     {
-        $data = \json_decode($json, true, 512, \JSON_BIGINT_AS_STRING);
-
-        if ($error = \json_last_error()) {
-            throw new JsonException(\json_last_error_msg(), $error);
-        }
-
-        return $data;
+        return \json_decode($json, true, 512, \JSON_BIGINT_AS_STRING | \JSON_THROW_ON_ERROR);
     }
 
     final private function __construct()

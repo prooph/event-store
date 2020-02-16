@@ -16,11 +16,8 @@ namespace Prooph\EventStore;
 class EventReadResult
 {
     private EventReadStatus $status;
-
     private string $stream;
-
     private int $eventNumber;
-
     private ?ResolvedEvent $event;
 
     /** @internal */

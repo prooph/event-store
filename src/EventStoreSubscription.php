@@ -22,7 +22,7 @@ abstract class EventStoreSubscription
 
     public function __construct(string $streamId, int $lastCommitPosition, ?int $lastEventNumber)
     {
-        $this->isSubscribedToAll = $streamId === '';
+        $this->isSubscribedToAll = empty($streamId);
         $this->streamId = $streamId;
         $this->lastCommitPosition = $lastCommitPosition;
         $this->lastEventNumber = $lastEventNumber;
