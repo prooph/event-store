@@ -17,14 +17,10 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class StreamMetadataBuilder
 {
-    /** @var int|null */
-    private $maxCount;
-    /** @var int|null */
-    private $maxAge;
-    /** @var int|null */
-    private $truncateBefore;
-    /** @var int|null*/
-    private $cacheControl;
+    private ?int $maxCount;
+    private ?int $maxAge;
+    private ?int $truncateBefore;
+    private ?int $cacheControl;
     private array $aclRead;
     private array $aclWrite;
     private array $aclDelete;

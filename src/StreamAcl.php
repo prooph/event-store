@@ -23,25 +23,21 @@ class StreamAcl
      * @var string[]
      */
     private array $readRoles;
-
     /**
      * Roles and users permitted to write to the stream
      * @var string[]
      */
     private array $writeRoles;
-
     /**
      * Roles and users permitted to delete the stream
      * @var string[]
      */
     private array $deleteRoles;
-
     /**
      * Roles and users permitted to read stream metadata
      * @var string[]
      */
     private array $metaReadRoles;
-
     /**
      * Roles and users permitted to write stream metadata
      * @var string[]

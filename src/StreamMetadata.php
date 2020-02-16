@@ -25,28 +25,23 @@ class StreamMetadata implements JsonSerializable
      * The maximum number of events allowed in the stream.
      */
     private ?int $maxCount;
-
     /**
      * The maximum age in seconds for events allowed in the stream.
      */
     private ?int $maxAge;
-
     /**
      * The event number from which previous events can be scavenged.
      * This is used to implement soft-deletion of streams.
      */
     private ?int $truncateBefore;
-
     /**
      * The amount of time in seconds for which the stream head is cachable.
      */
     private ?int $cacheControl;
-
     /**
      * The access control list for the stream.
      */
     private ?StreamAcl $acl;
-
     /**
      * key => value pairs of custom metadata
      */
