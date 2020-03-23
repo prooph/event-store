@@ -19,7 +19,7 @@
   "require": {
     "php": "^7.4",
     "ext-json": "*",
-    "ramsey/uuid": "^3.8"
+    "ramsey/uuid": "^3.8 || ^4.0"
   },
   "require-dev": {
     "amphp/amp": "^2.1.2",
