@@ -52,7 +52,7 @@ class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
      */
     public function it_throws_exception_when_trying_to_run_two_projections_at_the_same_time(): void
     {
-        $this->markTestSkipped('InMemoryProjectionManager cannot guard agains concurrent projections');
+        $this->markTestSkipped('InMemoryProjectionManager cannot guard against concurrent projections');
     }
 
     /**

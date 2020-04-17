@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Plugin;
 
-use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\StreamIterator\StreamIterator;
 use Prooph\EventStore\Upcasting\Upcaster;
 use Prooph\EventStore\Upcasting\UpcastingIterator;
 
@@ -38,7 +38,7 @@ final class UpcastingPlugin extends AbstractPlugin
         $upcaster = function (ActionEvent $actionEvent): void {
             $streamEvents = $actionEvent->getParam('streamEvents');
 
-            if (! $streamEvents instanceof Iterator) {
+            if (! $streamEvents instanceof StreamIterator) {
                 return;
             }
 
