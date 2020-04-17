@@ -15,6 +15,8 @@ namespace ProophTest\EventStore\Upcasting;
 
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\StreamIterator\EmptyStreamIterator;
+use Prooph\EventStore\StreamIterator\InMemoryStreamIterator;
 use Prooph\EventStore\StreamIterator\StreamIterator;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
 use Prooph\EventStore\Upcasting\UpcastingIterator;
@@ -52,8 +54,7 @@ class UpcastingIteratorTest extends TestCase
         $message4->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
         $message4 = $message4->reveal();
 
-        $iterator = new class([$message1, $message2, $message3, $message4]) extends \ArrayIterator implements StreamIterator {
-        };
+        $iterator = new InMemoryStreamIterator([$message1, $message2, $message3, $message4]);
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
@@ -90,8 +91,7 @@ class UpcastingIteratorTest extends TestCase
         $message->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
         $message = $message->reveal();
 
-        $iterator = new class([$message]) extends \ArrayIterator implements StreamIterator {
-        };
+        $iterator = new InMemoryStreamIterator([$message]);
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
@@ -120,12 +120,7 @@ class UpcastingIteratorTest extends TestCase
      */
     public function it_iterates_over_empty_iterator(): void
     {
-        $iterator = new class() extends \EmptyIterator implements StreamIterator {
-            public function count(): int
-            {
-                return 0;
-            }
-        };
+        $iterator = new EmptyStreamIterator();
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
