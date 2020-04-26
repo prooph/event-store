@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Upcasting;
 
-use Iterator;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\StreamIterator\StreamIterator;
 
-final class UpcastingIterator implements Iterator
+final class UpcastingIterator implements StreamIterator
 {
     /**
      * @var Upcaster
@@ -24,7 +24,7 @@ final class UpcastingIterator implements Iterator
     private $upcaster;
 
     /**
-     * @var Iterator
+     * @var StreamIterator
      */
     private $innerIterator;
 
@@ -33,7 +33,7 @@ final class UpcastingIterator implements Iterator
      */
     private $storedMessages = [];
 
-    public function __construct(Upcaster $upcaster, Iterator $iterator)
+    public function __construct(Upcaster $upcaster, StreamIterator $iterator)
     {
         $this->upcaster = $upcaster;
         $this->innerIterator = $iterator;
@@ -113,5 +113,10 @@ final class UpcastingIterator implements Iterator
         $this->storedMessages = [];
         $this->innerIterator->rewind();
         $this->position = 0;
+    }
+
+    public function count(): int
+    {
+        return $this->innerIterator->count();
     }
 }

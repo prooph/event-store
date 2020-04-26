@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,6 +15,9 @@ namespace ProophTest\EventStore\Upcasting;
 
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
+use Prooph\EventStore\StreamIterator\EmptyStreamIterator;
+use Prooph\EventStore\StreamIterator\InMemoryStreamIterator;
+use Prooph\EventStore\StreamIterator\StreamIterator;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
 use Prooph\EventStore\Upcasting\UpcastingIterator;
 
@@ -51,12 +54,7 @@ class UpcastingIteratorTest extends TestCase
         $message4->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
         $message4 = $message4->reveal();
 
-        $iterator = new \ArrayIterator([
-            $message1,
-            $message2,
-            $message3,
-            $message4,
-        ]);
+        $iterator = new InMemoryStreamIterator([$message1, $message2, $message3, $message4]);
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
@@ -93,7 +91,7 @@ class UpcastingIteratorTest extends TestCase
         $message->metadata()->willReturn(['foo' => 'baz'])->shouldBeCalled();
         $message = $message->reveal();
 
-        $iterator = new \ArrayIterator([$message]);
+        $iterator = new InMemoryStreamIterator([$message]);
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
@@ -107,7 +105,8 @@ class UpcastingIteratorTest extends TestCase
      */
     public function it_iterates_over_array_iterator(): void
     {
-        $iterator = new \ArrayIterator();
+        $iterator = new class() extends \ArrayIterator implements StreamIterator {
+        };
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 
@@ -121,7 +120,7 @@ class UpcastingIteratorTest extends TestCase
      */
     public function it_iterates_over_empty_iterator(): void
     {
-        $iterator = new \EmptyIterator();
+        $iterator = new EmptyStreamIterator();
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
 

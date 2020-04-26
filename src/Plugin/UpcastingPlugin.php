@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2020 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2020 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Plugin;
 
-use Iterator;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\StreamIterator\StreamIterator;
 use Prooph\EventStore\Upcasting\Upcaster;
 use Prooph\EventStore\Upcasting\UpcastingIterator;
 
@@ -38,7 +38,7 @@ final class UpcastingPlugin extends AbstractPlugin
         $upcaster = function (ActionEvent $actionEvent): void {
             $streamEvents = $actionEvent->getParam('streamEvents');
 
-            if (! $streamEvents instanceof Iterator) {
+            if (! $streamEvents instanceof StreamIterator) {
                 return;
             }
 
