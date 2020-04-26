@@ -1,5 +1,29 @@
 # Change Log
 
+## [v7.5.7](https://github.com/prooph/event-store/tree/v7.5.7)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.6...v7.5.7)
+
+**Implemented enhancements:**
+
+- fix upcasting iterator [\#389](https://github.com/prooph/event-store/pull/389) ([prolic](https://github.com/prolic))
+
+## [v7.5.6](https://github.com/prooph/event-store/tree/v7.5.6)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.5...v7.5.6)
+
+**Implemented enhancements:**
+
+- Fix subsequent messages raised within upcasting chain [\#381](https://github.com/prooph/event-store/pull/381) ([chrisharrison](https://github.com/chrisharrison))
+
+## [v7.5.5](https://github.com/prooph/event-store/tree/v7.5.5)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.4...v7.5.5)
+
+**Implemented enhancements:**
+
+- Adds beberlei/assert 3.2.3 - 3.2.4 to composer conflict section, because those two releases are incompatible with Util\Assertion [\#378](https://github.com/prooph/event-store/pull/378) ([codeliner](https://github.com/codeliner))
+
 ## [v7.5.4](https://github.com/prooph/event-store/tree/v7.5.4)
 
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.5.3...v7.5.4)
