@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Async;
 
 use Amp\Promise;
-use Prooph\EventStore\SubscriptionDropReason;
 use Throwable;
 
 interface EventStoreCatchUpSubscription
@@ -25,10 +24,5 @@ interface EventStoreCatchUpSubscription
 
     public function subscriptionName(): string;
 
-    /** @internal */
-    public function startAsync(): Promise;
-
     public function stop(?int $timeout = null): Promise;
-
-    public function dropSubscription(SubscriptionDropReason $reason, ?Throwable $error): void;
 }

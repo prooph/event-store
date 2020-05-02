@@ -26,6 +26,4 @@ interface EventStoreCatchUpSubscription
     public function start(): void;
 
     public function stop(): void;
-
-    public function dropSubscription(SubscriptionDropReason $reason, ?Throwable $error): void;
 }

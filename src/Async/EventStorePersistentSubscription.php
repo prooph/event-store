@@ -23,13 +23,6 @@ interface EventStorePersistentSubscription
     public const DEFAULT_BUFFER_SIZE = 10;
 
     /**
-     * @internal
-     *
-     * @return Promise<self>
-     */
-    public function start(): Promise;
-
-    /**
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
      * Note: There is no need to ack a message if you have Auto Ack enabled
      *
