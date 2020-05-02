@@ -24,8 +24,5 @@ interface EventStoreCatchUpSubscription
 
     public function subscriptionName(): string;
 
-    /** @internal */
-    public function startAsync(): Promise;
-
     public function stop(?int $timeout = null): Promise;
 }
