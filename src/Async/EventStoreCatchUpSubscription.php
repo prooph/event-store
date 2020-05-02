@@ -30,5 +30,6 @@ interface EventStoreCatchUpSubscription
 
     public function stop(?int $timeout = null): Promise;
 
+    /** @internal */
     public function dropSubscription(SubscriptionDropReason $reason, ?Throwable $error): void;
 }
