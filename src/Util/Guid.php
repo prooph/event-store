@@ -33,7 +33,9 @@ class Guid
 
     public static function generateAsHex(): string
     {
-        return self::generate()->getHex();
+        // string cast is a BC layer for ramsey/uuid v3
+        // to be refactor when dropping retrocompatibility
+        return (string) self::generate()->getHex();
     }
 
     public static function fromString(string $uuid): UuidInterface
