@@ -80,11 +80,11 @@ class ResolvedEvent implements InternalResolvedEvent
 
     public function originalStreamName(): string
     {
-        return $this->originalEvent->eventStreamId();
+        return null !== $this->originalEvent ? $this->originalEvent->eventStreamId() : '';
     }
 
     public function originalEventNumber(): int
     {
-        return $this->originalEvent->eventNumber();
+        return null !== $this->originalEvent ? $this->originalEvent->eventNumber() : 0;
     }
 }

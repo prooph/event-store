@@ -54,11 +54,11 @@ class StreamMetadataBuilder
 
     public function build(): StreamMetadata
     {
-        $acl = null === $this->aclRead
-                && null === $this->aclWrite
-                && null === $this->aclDelete
-                && null === $this->aclMetaRead
-                && null === $this->aclMetaWrite
+        $acl = empty($this->aclRead)
+                && empty($this->aclWrite)
+                && empty($this->aclDelete)
+                && empty($this->aclMetaRead)
+                && empty($this->aclMetaWrite)
             ? null
             : new StreamAcl($this->aclRead, $this->aclWrite, $this->aclDelete, $this->aclMetaRead, $this->aclMetaWrite);
 

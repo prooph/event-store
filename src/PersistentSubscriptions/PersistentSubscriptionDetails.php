@@ -21,7 +21,7 @@ final class PersistentSubscriptionDetails
      */
     private PersistentSubscriptionConfigDetails $config;
     /**
-     * @var PersistentSubscriptionConfigDetails[]
+     * @var array<int, PersistentSubscriptionConnectionDetails>
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
@@ -84,7 +84,7 @@ final class PersistentSubscriptionDetails
         return $this->config;
     }
 
-    /** @return PersistentSubscriptionConfigDetails[] */
+    /** @return array<int, PersistentSubscriptionConnectionDetails> */
     public function connections(): array
     {
         return $this->connections;

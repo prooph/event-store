@@ -30,7 +30,7 @@ class WrongExpectedVersion extends RuntimeException
             $message,
             $stream,
             $expectedVersion,
-            $currentVersion
+            (string) $currentVersion
         ));
     }
 }
