@@ -20,7 +20,7 @@ final class PersistentSubscriptionDetails
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
-    private PersistentSubscriptionConfigDetails $config;
+    private ?PersistentSubscriptionConfigDetails $config;
     /**
      * @var array<int, PersistentSubscriptionConnectionDetails>
      *
@@ -43,45 +43,84 @@ final class PersistentSubscriptionDetails
     private string $parkedMessageUri;
     private string $getMessagesUri;
 
-    private function __construct()
-    {
-    }
-
-    public static function fromArray(array $data): self
-    {
-        $details = new self();
-
-        if (isset($data['config'])) {
-            $details->config = PersistentSubscriptionConfigDetails::fromArray($data['config']);
-        }
-
-        if (isset($data['connections'])) {
-            foreach ($data['connections'] as $connection) {
-                $details->connections[] = PersistentSubscriptionConnectionDetails::fromArray($connection);
-            }
-        }
-
-        $details->eventStreamId = $data['eventStreamId'];
-        $details->groupName = $data['groupName'];
-        $details->status = $data['status'];
-        $details->averageItemsPerSecond = $data['averageItemsPerSecond'];
-        $details->totalItemsProcessed = $data['totalItemsProcessed'];
-        $details->countSinceLastMeasurement = $data['countSinceLastMeasurement'] ?? 0;
-        $details->lastProcessedEventNumber = $data['lastProcessedEventNumber'];
-        $details->lastKnownEventNumber = $data['lastKnownEventNumber'];
-        $details->readBufferCount = $data['readBufferCount'] ?? 0;
-        $details->liveBufferCount = $data['liveBufferCount'] ?? 0;
-        $details->retryBufferCount = $data['retryBufferCount'] ?? 0;
-        $details->totalInFlightMessages = $data['totalInFlightMessages'];
-        $details->parkedMessageUri = $data['parkedMessageUri'];
-        $details->getMessagesUri = $data['getMessagesUri'];
-        $details->connectionCount = $data['connectionCount'] ?? 0;
-
-        return $details;
+    private function __construct(
+        ?PersistentSubscriptionConfigDetails $config,
+        array $connections,
+        string $eventStreamId,
+        string $groupName,
+        string $status,
+        float $averageItemsPerSecond,
+        int $totalItemsProcessed,
+        int $countSinceLastMeasurement,
+        int $lastProcessedEventNumber,
+        int $lastKnownEventNumber,
+        int $readBufferCount,
+        int $liveBufferCount,
+        int $retryBufferCount,
+        int $totalInFlightMessages,
+        int $connectionCount,
+        string $parkedMessageUri,
+        string $getMessagesUri
+    ) {
+        $this->config = $config;
+        $this->connections = $connections;
+        $this->eventStreamId = $eventStreamId;
+        $this->groupName = $groupName;
+        $this->status = $status;
+        $this->averageItemsPerSecond = $averageItemsPerSecond;
+        $this->totalItemsProcessed = $totalItemsProcessed;
+        $this->countSinceLastMeasurement = $countSinceLastMeasurement;
+        $this->lastProcessedEventNumber = $lastProcessedEventNumber;
+        $this->lastKnownEventNumber = $lastKnownEventNumber;
+        $this->readBufferCount = $readBufferCount;
+        $this->liveBufferCount = $liveBufferCount;
+        $this->retryBufferCount = $retryBufferCount;
+        $this->totalInFlightMessages = $totalInFlightMessages;
+        $this->connectionCount = $connectionCount;
+        $this->parkedMessageUri = $parkedMessageUri;
+        $this->getMessagesUri = $getMessagesUri;
     }
 
     /** @psalm-pure */
-    public function config(): PersistentSubscriptionConfigDetails
+    public static function fromArray(array $data): self
+    {
+        $config = null;
+
+        if (isset($data['config'])) {
+            $config = PersistentSubscriptionConfigDetails::fromArray($data['config']);
+        }
+
+        $connections = [];
+
+        if (isset($data['connections'])) {
+            foreach ($data['connections'] as $connection) {
+                $connections[] = PersistentSubscriptionConnectionDetails::fromArray($connection);
+            }
+        }
+
+        return new self(
+            $config,
+            $connections,
+            $data['eventStreamId'],
+            $data['groupName'],
+            $data['status'],
+            $data['averageItemsPerSecond'],
+            $data['totalItemsProcessed'],
+            $data['countSinceLastMeasurement'] ?? 0,
+            $data['lastProcessedEventNumber'],
+            $data['lastKnownEventNumber'],
+            $data['readBufferCount'] ?? 0,
+            $data['liveBufferCount'] ?? 0,
+            $data['retryBufferCount'] ?? 0,
+            $data['totalInFlightMessages'],
+            $data['connectionCount'] ?? 0,
+            $data['parkedMessageUri'],
+            $data['getMessagesUri']
+        );
+    }
+
+    /** @psalm-pure */
+    public function config(): ?PersistentSubscriptionConfigDetails
     {
         return $this->config;
     }
