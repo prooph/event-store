@@ -22,11 +22,11 @@ final class UserDetails
 {
     private string $loginName;
     private string $fullName;
-    /** @var string[] */
+    /** @var array<int, string> */
     private array $groups = [];
     private ?DateTimeImmutable $dateLastUpdated = null;
     private bool $disabled;
-    /** @var RelLink[] */
+    /** @var array<int, RelLink> */
     private array $links = [];
 
     /**
@@ -50,7 +50,6 @@ final class UserDetails
         $this->groups = $groups;
         $this->dateLastUpdated = $dateLastUpdated;
         $this->disabled = $disabled;
-        /** @psalm-suppress ImpurePropertyAssignment */
         $this->links = $links;
     }
 
@@ -58,23 +57,26 @@ final class UserDetails
     public static function fromArray(array $data): self
     {
         $dateLastUpdated = isset($data['dateLastUpdated'])
-            ? DateTime::create($data['dateLastUpdated'])
+            ? DateTime::create((string) $data['dateLastUpdated'])
             : null;
 
         $links = [];
 
         if (isset($data['links'])) {
+            /** @var array<int, array<string, string>> $data['links'] */
             foreach ($data['links'] as $link) {
-                $links[] = new RelLink($link['href'], $link['rel']);
+                $links[] = new RelLink((string) $link['href'], (string) $link['rel']);
             }
         }
 
+        /** @var array<int, string> $data['groups'] */
+
         return new self(
-            $data['loginName'],
-            $data['fullName'],
+            (string) $data['loginName'],
+            (string) $data['fullName'],
             $data['groups'],
             $dateLastUpdated,
-            $data['disabled'],
+            (bool) $data['disabled'],
             $links
         );
     }

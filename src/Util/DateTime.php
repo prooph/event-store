@@ -24,6 +24,7 @@ class DateTime
         return new DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 
+    /** @psalm-pure */
     public static function create(string $dateTimeString): DateTimeImmutable
     {
         $dateTime = DateTimeImmutable::createFromFormat(
@@ -44,6 +45,7 @@ class DateTime
         return $dateTime;
     }
 
+    /** @psalm-pure */
     public static function format(DateTimeImmutable $dateTime): string
     {
         return $dateTime->format('Y-m-d\TH:i:s.uP');
