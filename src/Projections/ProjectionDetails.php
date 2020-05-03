@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Projections;
 
+/** @psalm-immutable */
 final class ProjectionDetails
 {
     private int $coreProcessingTime;
@@ -95,126 +96,151 @@ final class ProjectionDetails
         $this->writePendingEventsAfterCheckpoint = $writePendingEventsAfterCheckpoint;
     }
 
+    /** @psalm-pure */
     public function coreProcessingTime(): int
     {
         return $this->coreProcessingTime;
     }
 
+    /** @psalm-pure */
     public function version(): int
     {
         return $this->version;
     }
 
+    /** @psalm-pure */
     public function epoch(): int
     {
         return $this->epoch;
     }
 
+    /** @psalm-pure */
     public function effectiveName(): string
     {
         return $this->effectiveName;
     }
 
+    /** @psalm-pure */
     public function writesInProgress(): int
     {
         return $this->writesInProgress;
     }
 
+    /** @psalm-pure */
     public function readsInProgress(): int
     {
         return $this->readsInProgress;
     }
 
+    /** @psalm-pure */
     public function partitionsCached(): int
     {
         return $this->partitionsCached;
     }
 
+    /** @psalm-pure */
     public function status(): string
     {
         return $this->status;
     }
 
+    /** @psalm-pure */
     public function stateReason(): ?string
     {
         return $this->stateReason;
     }
 
+    /** @psalm-pure */
     public function name(): string
     {
         return $this->name;
     }
 
+    /** @psalm-pure */
     public function mode(): string
     {
         return $this->mode;
     }
 
+    /** @psalm-pure */
     public function position(): string
     {
         return $this->position;
     }
 
+    /** @psalm-pure */
     public function progress(): float
     {
         return $this->progress;
     }
 
+    /** @psalm-pure */
     public function lastCheckpoint(): ?string
     {
         return $this->lastCheckpoint;
     }
 
+    /** @psalm-pure */
     public function eventsProcessedAfterRestart(): int
     {
         return $this->eventsProcessedAfterRestart;
     }
 
+    /** @psalm-pure */
     public function statusUrl(): string
     {
         return $this->statusUrl;
     }
 
+    /** @psalm-pure */
     public function stateUrl(): string
     {
         return $this->stateUrl;
     }
 
+    /** @psalm-pure */
     public function resultUrl(): string
     {
         return $this->resultUrl;
     }
 
+    /** @psalm-pure */
     public function queryUrl(): string
     {
         return $this->queryUrl;
     }
 
+    /** @psalm-pure */
     public function enableCommandUrl(): string
     {
         return $this->enableCommandUrl;
     }
 
+    /** @psalm-pure */
     public function disableCommandUrl(): string
     {
         return $this->disableCommandUrl;
     }
 
+    /** @psalm-pure */
     public function checkpointStatus(): ?string
     {
         return $this->checkpointStatus;
     }
 
+    /** @psalm-pure */
     public function bufferedEvents(): int
     {
         return $this->bufferedEvents;
     }
 
+    /** @psalm-pure */
     public function writePendingEventsBeforeCheckpoint(): int
     {
         return $this->writePendingEventsBeforeCheckpoint;
     }
 
+    /** @psalm-pure */
     public function writePendingEventsAfterCheckpoint(): int
     {
         return $this->writePendingEventsAfterCheckpoint;

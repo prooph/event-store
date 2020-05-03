@@ -15,9 +15,7 @@ namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 class EventReadStatus
 {
     public const OPTIONS = [
@@ -81,33 +79,25 @@ class EventReadStatus
         throw new InvalidArgumentException('Unknown enum value given');
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function equals(EventReadStatus $other): bool
     {
         return static::class === \get_class($other) && $this->name === $other->name;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function name(): string
     {
         return $this->name;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function value(): int
     {
         return $this->value;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function __toString(): string
     {
         return $this->name;

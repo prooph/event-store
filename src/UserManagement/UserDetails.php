@@ -17,9 +17,7 @@ use DateTimeImmutable;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Util\DateTime;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class UserDetails
 {
     private string $loginName;
@@ -81,17 +79,13 @@ final class UserDetails
         );
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function loginName(): string
     {
         return $this->loginName;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function fullName(): string
     {
         return $this->fullName;
@@ -106,17 +100,13 @@ final class UserDetails
         return $this->groups;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function dateLastUpdated(): ?DateTimeImmutable
     {
         return $this->dateLastUpdated;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function disabled(): bool
     {
         return $this->disabled;

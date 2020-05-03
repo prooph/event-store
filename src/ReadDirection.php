@@ -15,9 +15,7 @@ namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 class ReadDirection
 {
     public const OPTIONS = [
@@ -72,25 +70,19 @@ class ReadDirection
         return \get_class($this) === \get_class($other) && $this->name === $other->name;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function name(): string
     {
         return $this->name;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function value(): int
     {
         return $this->value;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function __toString(): string
     {
         return $this->name;

@@ -15,9 +15,7 @@ namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 class SubscriptionDropReason
 {
     public const OPTIONS = [
@@ -144,33 +142,25 @@ class SubscriptionDropReason
         throw new InvalidArgumentException('Unknown enum value given');
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function equals(SubscriptionDropReason $other): bool
     {
         return \get_class($this) === \get_class($other) && $this->name === $other->name;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function name(): string
     {
         return $this->name;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function value(): int
     {
         return $this->value;
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     public function __toString(): string
     {
         return $this->name;
