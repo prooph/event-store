@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\PersistentSubscriptions;
 
+/**
+ * @psalm-immutable
+ */
 final class PersistentSubscriptionDetails
 {
     /**
@@ -79,87 +82,138 @@ final class PersistentSubscriptionDetails
         return $details;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function config(): PersistentSubscriptionConfigDetails
     {
         return $this->config;
     }
 
-    /** @return array<int, PersistentSubscriptionConnectionDetails> */
+    /**
+     * @return array<int, PersistentSubscriptionConnectionDetails>
+     * @psalm-pure
+     */
     public function connections(): array
     {
         return $this->connections;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function eventStreamId(): string
     {
         return $this->eventStreamId;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function groupName(): string
     {
         return $this->groupName;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function status(): string
     {
         return $this->status;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function averageItemsPerSecond(): float
     {
         return $this->averageItemsPerSecond;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function totalItemsProcessed(): int
     {
         return $this->totalItemsProcessed;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function countSinceLastMeasurement(): int
     {
         return $this->countSinceLastMeasurement;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function lastProcessedEventNumber(): int
     {
         return $this->lastProcessedEventNumber;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function lastKnownEventNumber(): int
     {
         return $this->lastKnownEventNumber;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function readBufferCount(): int
     {
         return $this->readBufferCount;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function liveBufferCount(): int
     {
         return $this->liveBufferCount;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function retryBufferCount(): int
     {
         return $this->retryBufferCount;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function totalInFlightMessages(): int
     {
         return $this->totalInFlightMessages;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function connectionCount(): int
     {
         return $this->connectionCount;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function parkedMessageUri(): string
     {
         return $this->parkedMessageUri;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function getMessagesUri(): string
     {
         return $this->getMessagesUri;
