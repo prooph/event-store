@@ -150,6 +150,11 @@ class StreamAcl
         );
     }
 
+    /**
+     * @psalm-pure
+     * @param array|null $roles
+     * @return array|mixed|null
+     */
     private function exportRoles(?array $roles)
     {
         if (null === $roles

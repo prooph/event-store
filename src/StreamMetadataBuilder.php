@@ -160,6 +160,10 @@ class StreamMetadataBuilder
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
     public function setCustomProperty(string $key, $value): StreamMetadataBuilder
     {
         $this->customMetadata[$key] = $value;

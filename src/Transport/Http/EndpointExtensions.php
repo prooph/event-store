@@ -38,7 +38,7 @@ class EndpointExtensions
         EndPoint $endPoint,
         string $schema,
         string $formatString,
-        ...$args
+        string ...$args
     ): string {
         return self::createHttpUrl(
             $schema,
