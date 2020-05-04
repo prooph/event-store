@@ -25,10 +25,7 @@ final class UserCreationInformation implements JsonSerializable
     private string $password;
 
     /**
-     * @param string $loginName
-     * @param string $fullName
      * @param list<string> $groups
-     * @param string $password
      */
     public function __construct(string $loginName, string $fullName, array $groups, string $password)
     {

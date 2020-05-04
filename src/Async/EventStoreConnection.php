@@ -56,10 +56,7 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param string $stream
-     * @param int $expectedVersion
      * @param list<EventData> $events
-     * @param UserCredentials|null $userCredentials
      * @return Promise<WriteResult>
      */
     public function appendToStreamAsync(
@@ -70,10 +67,7 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param string $stream
-     * @param int $expectedVersion
      * @param list<EventData> $events
-     * @param UserCredentials|null $userCredentials
      * @return Promise<ConditionalWriteResult>
      */
     public function conditionalAppendToStreamAsync(
@@ -186,8 +180,6 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param string $stream
-     * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): Promise $eventAppeared
      * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
      * @param null|UserCredentials $userCredentials
@@ -202,13 +194,9 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param string $stream
-     * @param null|int $lastCheckpoint
-     * @param null|CatchUpSubscriptionSettings $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): Promise $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
      * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreStreamCatchUpSubscription>
      */
     public function subscribeToStreamFromAsync(
@@ -222,10 +210,8 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): Promise $eventAppeared
      * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreSubscription>
      */
     public function subscribeToAllAsync(
@@ -236,12 +222,9 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param null|Position $lastCheckpoint
-     * @param null|CatchUpSubscriptionSettings $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): Promise $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
      * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreAllCatchUpSubscription>
      */
     public function subscribeToAllFromAsync(
@@ -254,13 +237,9 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param string $stream
-     * @param string $groupName
      * @param Closure(EventStorePersistentSubscription, ResolvedEvent, ?int): Promise $eventAppeared
      * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param int $bufferSize
-     * @param bool $autoAck
-     * @param UserCredentials|null $userCredentials
+     *
      * @return Promise<EventStorePersistentSubscription>
      */
     public function connectToPersistentSubscriptionAsync(
@@ -275,37 +254,31 @@ interface EventStoreConnection
 
     /**
      * @param Closure(ClientConnectionEventArgs): void $handler
-     * @return ListenerHandler
      */
     public function onConnected(Closure $handler): ListenerHandler;
 
     /**
      * @param Closure(ClientConnectionEventArgs): void $handler
-     * @return ListenerHandler
      */
     public function onDisconnected(Closure $handler): ListenerHandler;
 
     /**
      * @param Closure(ClientReconnectingEventArgs): void $handler
-     * @return ListenerHandler
      */
     public function onReconnecting(Closure $handler): ListenerHandler;
 
     /**
      * @param Closure(ClientClosedEventArgs): void $handler
-     * @return ListenerHandler
      */
     public function onClosed(Closure $handler): ListenerHandler;
 
     /**
      * @param Closure(ClientErrorEventArgs): void $handler
-     * @return ListenerHandler
      */
     public function onErrorOccurred(Closure $handler): ListenerHandler;
 
     /**
      * @param Closure(ClientAuthenticationFailedEventArgs): void $handler
-     * @return ListenerHandler
      */
     public function onAuthenticationFailed(Closure $handler): ListenerHandler;
 

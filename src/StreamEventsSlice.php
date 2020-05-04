@@ -29,14 +29,7 @@ class StreamEventsSlice
     /**
      * @internal
      *
-     * @param SliceReadStatus $status
-     * @param string $stream
-     * @param int $fromEventNumber
-     * @param ReadDirection $readDirection
      * @param list<ResolvedEvent> $events
-     * @param int $nextEventNumber
-     * @param int $lastEventNumber
-     * @param bool $isEndOfStream
      */
     public function __construct(
         SliceReadStatus $status,

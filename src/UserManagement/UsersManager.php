@@ -33,13 +33,7 @@ interface UsersManager
     public function getUser(string $login, ?UserCredentials $userCredentials = null): UserDetails;
 
     /**
-     * @param string $login
-     * @param string $fullName
-     * @param string[] $groups
-     * @param string $password
-     * @param UserCredentials|null $userCredentials
-     *
-     * @return void
+     * @param list<string> $groups
      */
     public function createUser(
         string $login,
@@ -50,12 +44,7 @@ interface UsersManager
     ): void;
 
     /**
-     * @param string $login
-     * @param string $fullName
-     * @param string[] $groups
-     * @param UserCredentials|null $userCredentials
-     *
-     * @return void
+     * @param list<string> $groups
      */
     public function updateUser(
         string $login,

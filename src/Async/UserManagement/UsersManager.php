@@ -20,8 +20,10 @@ use Prooph\EventStore\UserManagement\UserDetails;
 
 interface UsersManager
 {
+    /** @return Promise<void> */
     public function enableAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
+    /** @return Promise<void> */
     public function disableAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
     /** @throws UserCommandFailed */
@@ -37,12 +39,8 @@ interface UsersManager
     public function getUserAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
     /**
-     * @param string $login
-     * @param string $fullName
-     * @param string[] $groups
-     * @param string $password
-     * @param UserCredentials|null $userCredentials
-     * @return Promise
+     * @param list<string> $groups
+     * @return Promise<void>
      */
     public function createUserAsync(
         string $login,
@@ -53,11 +51,8 @@ interface UsersManager
     ): Promise;
 
     /**
-     * @param string $login
-     * @param string $fullName
-     * @param string[] $groups
-     * @param UserCredentials|null $userCredentials
-     * @return Promise
+     * @param list<string> $groups
+     * @return Promise<void>
      */
     public function updateUserAsync(
         string $login,
@@ -66,6 +61,7 @@ interface UsersManager
         ?UserCredentials $userCredentials = null
     ): Promise;
 
+    /** @return Promise<void> */
     public function changePasswordAsync(
         string $login,
         string $oldPassword,
@@ -73,6 +69,7 @@ interface UsersManager
         ?UserCredentials $userCredentials = null
     ): Promise;
 
+    /** @return Promise<void> */
     public function resetPasswordAsync(
         string $login,
         string $newPassword,

@@ -26,7 +26,6 @@ class UserUpdateInformation implements JsonSerializable
     private array $groups;
 
     /**
-     * @param string $fullName
      * @param list<string> $groups
      *
      * @psalm-pure

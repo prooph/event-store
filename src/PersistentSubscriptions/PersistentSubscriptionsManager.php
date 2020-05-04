@@ -30,9 +30,7 @@ interface PersistentSubscriptionsManager
     ): void;
 
     /**
-     * @param null|string $stream
-     * @param null|UserCredentials $userCredentials
-     * @return PersistentSubscriptionDetails[]
+     * @return list<PersistentSubscriptionDetails>
      */
     public function list(?string $stream = null, ?UserCredentials $userCredentials = null): array;
 }

@@ -30,11 +30,7 @@ final class UserDetails
     private array $links = [];
 
     /**
-     * @param string $loginName
-     * @param string $fullName
      * @param list<string> $groups
-     * @param null|DateTimeImmutable $dateLastUpdated
-     * @param bool $disabled
      * @param list<RelLink> $links
      */
     private function __construct(

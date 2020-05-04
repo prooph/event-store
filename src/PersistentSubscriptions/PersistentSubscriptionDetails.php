@@ -44,23 +44,7 @@ final class PersistentSubscriptionDetails
     private string $getMessagesUri;
 
     /**
-     * @param null|PersistentSubscriptionConfigDetails $config
      * @param list<PersistentSubscriptionConnectionDetails> $connections
-     * @param string $eventStreamId
-     * @param string $groupName
-     * @param string $status
-     * @param float $averageItemsPerSecond
-     * @param int $totalItemsProcessed
-     * @param int $countSinceLastMeasurement
-     * @param int $lastProcessedEventNumber
-     * @param int $lastKnownEventNumber
-     * @param int $readBufferCount
-     * @param int $liveBufferCount
-     * @param int $retryBufferCount
-     * @param int $totalInFlightMessages
-     * @param int $connectionCount
-     * @param string $parkedMessageUri
-     * @param string $getMessagesUri
      */
     private function __construct(
         ?PersistentSubscriptionConfigDetails $config,

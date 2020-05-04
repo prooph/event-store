@@ -25,10 +25,7 @@ class AllEventsSlice
     /**
      * @internal
      *
-     * @param ReadDirection $readDirection
-     * @param Position $fromPosition
-     * @param Position $nextPosition
-     * @param ResolvedEvent[] $events
+     * @param list<ResolvedEvent> $events
      */
     public function __construct(
         ReadDirection $readDirection,

@@ -35,10 +35,6 @@ class StreamMetadataBuilder
     private array $customMetadata;
 
     /**
-     * @param null|int $maxCount
-     * @param null|int $maxAge
-     * @param null|int $truncateBefore
-     * @param null|int $cacheControl
      * @param list<string> $aclRead
      * @param list<string> $aclWrite
      * @param list<string> $aclDelete
@@ -179,7 +175,6 @@ class StreamMetadataBuilder
     }
 
     /**
-     * @param string $key
      * @param mixed $value
      */
     public function setCustomProperty(string $key, $value): StreamMetadataBuilder

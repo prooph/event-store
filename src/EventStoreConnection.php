@@ -29,10 +29,7 @@ interface EventStoreConnection
     ): DeleteResult;
 
     /**
-     * @param string $stream
-     * @param int $expectedVersion
-     * @param EventData[] $events
-     * @param UserCredentials|null $userCredentials
+     * @param list<EventData> $events
      *
      * @return WriteResult
      */
@@ -139,12 +136,8 @@ interface EventStoreConnection
     ): PersistentSubscriptionDeleteResult;
 
     /**
-     * @param string $stream
-     * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
      * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param UserCredentials|null $userCredentials
-     * @return EventStoreSubscription
      */
     public function subscribeToStream(
         string $stream,
@@ -155,14 +148,9 @@ interface EventStoreConnection
     ): EventStoreSubscription;
 
     /**
-     * @param string $stream
-     * @param int|null $lastCheckpoint
-     * @param CatchUpSubscriptionSettings|null $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
      * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param UserCredentials|null $userCredentials
-     * @return EventStoreStreamCatchUpSubscription
      */
     public function subscribeToStreamFrom(
         string $stream,
@@ -175,11 +163,8 @@ interface EventStoreConnection
     ): EventStoreStreamCatchUpSubscription;
 
     /**
-     * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
      * @param Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param UserCredentials|null $userCredentials
-     * @return EventStoreSubscription
      */
     public function subscribeToAll(
         bool $resolveLinkTos,
@@ -189,13 +174,9 @@ interface EventStoreConnection
     ): EventStoreSubscription;
 
     /**
-     * @param Position|null $lastCheckpoint
-     * @param CatchUpSubscriptionSettings|null $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
      * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param UserCredentials|null $userCredentials
-     * @return EventStoreAllCatchUpSubscription
      */
     public function subscribeToAllFrom(
         ?Position $lastCheckpoint,
@@ -207,14 +188,8 @@ interface EventStoreConnection
     ): EventStoreAllCatchUpSubscription;
 
     /**
-     * @param string $stream
-     * @param string $groupName
      * @param Closure(EventStorePersistentSubscription, ResolvedEvent, ?int): void $eventAppeared
      * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param int $bufferSize
-     * @param bool $autoAck
-     * @param UserCredentials|null $userCredentials
-     * @return EventStorePersistentSubscription
      */
     public function connectToPersistentSubscription(
         string $stream,
