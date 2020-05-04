@@ -39,8 +39,8 @@ final class UserDetails
         array $groups,
         ?DateTimeImmutable $dateLastUpdated,
         bool $disabled,
-        array $links)
-    {
+        array $links
+    ) {
         $this->loginName = $loginName;
         $this->fullName = $fullName;
         $this->groups = $groups;

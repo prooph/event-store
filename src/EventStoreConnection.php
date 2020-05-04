@@ -137,7 +137,7 @@ interface EventStoreConnection
 
     /**
      * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
-     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      */
     public function subscribeToStream(
         string $stream,
@@ -150,7 +150,7 @@ interface EventStoreConnection
     /**
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      */
     public function subscribeToStreamFrom(
         string $stream,
@@ -164,7 +164,7 @@ interface EventStoreConnection
 
     /**
      * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
-     * @param Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      */
     public function subscribeToAll(
         bool $resolveLinkTos,
@@ -176,7 +176,7 @@ interface EventStoreConnection
     /**
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      */
     public function subscribeToAllFrom(
         ?Position $lastCheckpoint,
@@ -188,8 +188,8 @@ interface EventStoreConnection
     ): EventStoreAllCatchUpSubscription;
 
     /**
-     * @param Closure(EventStorePersistentSubscription, ResolvedEvent, ?int): void $eventAppeared
-     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param Closure(EventStorePersistentSubscription, ResolvedEvent, null|int): void $eventAppeared
+     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      */
     public function connectToPersistentSubscription(
         string $stream,

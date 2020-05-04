@@ -181,7 +181,7 @@ interface EventStoreConnection
 
     /**
      * @param Closure(EventStoreSubscription, ResolvedEvent): Promise $eventAppeared
-     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreSubscription>
      */
@@ -196,7 +196,7 @@ interface EventStoreConnection
     /**
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): Promise $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      * @return Promise<EventStoreStreamCatchUpSubscription>
      */
     public function subscribeToStreamFromAsync(
@@ -211,7 +211,7 @@ interface EventStoreConnection
 
     /**
      * @param Closure(EventStoreSubscription, ResolvedEvent): Promise $eventAppeared
-     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      * @return Promise<EventStoreSubscription>
      */
     public function subscribeToAllAsync(
@@ -224,7 +224,7 @@ interface EventStoreConnection
     /**
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): Promise $eventAppeared
      * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      * @return Promise<EventStoreAllCatchUpSubscription>
      */
     public function subscribeToAllFromAsync(
@@ -237,8 +237,8 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param Closure(EventStorePersistentSubscription, ResolvedEvent, ?int): Promise $eventAppeared
-     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param Closure(EventStorePersistentSubscription, ResolvedEvent, null|int): Promise $eventAppeared
+     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      *
      * @return Promise<EventStorePersistentSubscription>
      */
