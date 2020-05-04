@@ -32,6 +32,6 @@ interface PersistentSubscriptionsManager
         ?UserCredentials $userCredentials = null
     ): Promise;
 
-    /** @return Promise<PersistentSubscriptionDetails[]> */
+    /** @return Promise<list<PersistentSubscriptionDetails>> */
     public function list(?string $stream = null, ?UserCredentials $userCredentials = null): Promise;
 }

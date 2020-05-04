@@ -65,21 +65,21 @@ interface ProjectionsManager
     /**
      * Synchronously lists all projections
      *
-     * @return ProjectionDetails[]
+     * @return list<ProjectionDetails>
      */
     public function listAll(?UserCredentials $userCredentials = null): array;
 
     /**
      * Synchronously lists all one-time projections
      *
-     * @return ProjectionDetails[]
+     * @return list<ProjectionDetails>
      */
     public function listOneTime(?UserCredentials $userCredentials = null): array;
 
     /**
      * Synchronously lists this status of all continuous projections
      *
-     * @return ProjectionDetails[]
+     * @return list<ProjectionDetails>
      */
     public function listContinuous(?UserCredentials $userCredentials = null): array;
 
