@@ -43,6 +43,25 @@ final class PersistentSubscriptionDetails
     private string $parkedMessageUri;
     private string $getMessagesUri;
 
+    /**
+     * @param ?PersistentSubscriptionConfigDetails $config
+     * @param list<PersistentSubscriptionConnectionDetails> $connections
+     * @param string $eventStreamId
+     * @param string $groupName
+     * @param string $status
+     * @param float $averageItemsPerSecond
+     * @param int $totalItemsProcessed
+     * @param int $countSinceLastMeasurement
+     * @param int $lastProcessedEventNumber
+     * @param int $lastKnownEventNumber
+     * @param int $readBufferCount
+     * @param int $liveBufferCount
+     * @param int $retryBufferCount
+     * @param int $totalInFlightMessages
+     * @param int $connectionCount
+     * @param string $parkedMessageUri
+     * @param string $getMessagesUri
+     */
     private function __construct(
         ?PersistentSubscriptionConfigDetails $config,
         array $connections,
@@ -81,18 +100,19 @@ final class PersistentSubscriptionDetails
         $this->getMessagesUri = $getMessagesUri;
     }
 
-    /** @psalm-pure */
     public static function fromArray(array $data): self
     {
         $config = null;
 
         if (isset($data['config'])) {
+            /** @var array<string, bool|int|string> $data['config'] */
             $config = PersistentSubscriptionConfigDetails::fromArray($data['config']);
         }
 
         $connections = [];
 
         if (isset($data['connections'])) {
+            /** @var array<string, string|float|int> $connection */
             foreach ($data['connections'] as $connection) {
                 $connections[] = PersistentSubscriptionConnectionDetails::fromArray($connection);
             }
@@ -101,21 +121,21 @@ final class PersistentSubscriptionDetails
         return new self(
             $config,
             $connections,
-            $data['eventStreamId'],
-            $data['groupName'],
-            $data['status'],
-            $data['averageItemsPerSecond'],
-            $data['totalItemsProcessed'],
-            $data['countSinceLastMeasurement'] ?? 0,
-            $data['lastProcessedEventNumber'],
-            $data['lastKnownEventNumber'],
-            $data['readBufferCount'] ?? 0,
-            $data['liveBufferCount'] ?? 0,
-            $data['retryBufferCount'] ?? 0,
-            $data['totalInFlightMessages'],
-            $data['connectionCount'] ?? 0,
-            $data['parkedMessageUri'],
-            $data['getMessagesUri']
+            (string) $data['eventStreamId'],
+            (string) $data['groupName'],
+            (string) $data['status'],
+            (float) $data['averageItemsPerSecond'],
+            (int) $data['totalItemsProcessed'],
+            (int) ($data['countSinceLastMeasurement'] ?? 0),
+            (int) $data['lastProcessedEventNumber'],
+            (int) $data['lastKnownEventNumber'],
+            (int) ($data['readBufferCount'] ?? 0),
+            (int) ($data['liveBufferCount'] ?? 0),
+            (int) ($data['retryBufferCount'] ?? 0),
+            (int) $data['totalInFlightMessages'],
+            (int) ($data['connectionCount'] ?? 0),
+            (string) $data['parkedMessageUri'],
+            (string) $data['getMessagesUri']
         );
     }
 

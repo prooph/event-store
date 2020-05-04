@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use Prooph\EventStore\Common\SystemMetadata;
-use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class StreamAcl
 {
@@ -58,20 +57,6 @@ class StreamAcl
         array $metaReadRoles = [],
         array $metaWriteRoles = []
     ) {
-        $check = function (array $data): void {
-            foreach ($data as $value) {
-                if (! \is_string($value)) {
-                    throw new InvalidArgumentException('Invalid roles given, expected an array of strings');
-                }
-            }
-        };
-
-        $check($readRoles);
-        $check($writeRoles);
-        $check($deleteRoles);
-        $check($metaReadRoles);
-        $check($metaWriteRoles);
-
         $this->readRoles = $readRoles;
         $this->writeRoles = $writeRoles;
         $this->deleteRoles = $deleteRoles;
@@ -147,7 +132,7 @@ class StreamAcl
     }
 
     /**
-     * @param array<string, list<string>>
+     * @param array<string, list<string>> $data
      */
     public static function fromArray(array $data): StreamAcl
     {
@@ -161,9 +146,13 @@ class StreamAcl
     }
 
     /**
+     * @param ?array $roles
+     * @return list<string>|string|null
+     *
      * @psalm-pure
-     * @param array|null $roles
-     * @return array|mixed|null
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress MixedReturnTypeCoercion
      */
     private function exportRoles(?array $roles)
     {

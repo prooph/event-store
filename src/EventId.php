@@ -38,27 +38,35 @@ class EventId
 
     private function __construct(UuidInterface $eventId)
     {
+        /** @psalm-suppress ImpurePropertyAssignment */
         $this->uuid = $eventId;
     }
 
+    /** @psalm-pure */
     public function toString(): string
     {
+        /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->toString();
     }
 
+    /** @psalm-pure */
     public function toBinary(): string
     {
+        /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->getBytes();
     }
 
+    /** @psalm-pure */
     public function __toString(): string
     {
+        /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->toString();
     }
 
     /** @psalm-pure */
     public function equals(EventId $other): bool
     {
+        /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->equals($other->uuid);
     }
 }

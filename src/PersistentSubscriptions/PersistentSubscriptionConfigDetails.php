@@ -66,24 +66,26 @@ final class PersistentSubscriptionConfigDetails
         $this->preferRoundRobin = $preferRoundRobin;
     }
 
-    /** @psalm-pure */
+    /**
+     * @param array<string, bool|int|string> $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['resolveLinktos'],
-            $data['startFrom'],
-            $data['messageTimeoutMilliseconds'],
-            $data['extraStatistics'],
-            $data['maxRetryCount'],
-            $data['liveBufferSize'],
-            $data['bufferSize'],
-            $data['readBatchSize'],
-            $data['checkPointAfterMilliseconds'],
-            $data['minCheckPointCount'],
-            $data['maxCheckPointCount'],
-            $data['maxSubscriberCount'],
-            $data['namedConsumerStrategy'],
-            $data['preferRoundRobin']
+            (bool) $data['resolveLinktos'],
+            (int) $data['startFrom'],
+            (int) $data['messageTimeoutMilliseconds'],
+            (bool) $data['extraStatistics'],
+            (int) $data['maxRetryCount'],
+            (int) $data['liveBufferSize'],
+            (int) $data['bufferSize'],
+            (int) $data['readBatchSize'],
+            (int) $data['checkPointAfterMilliseconds'],
+            (int) $data['minCheckPointCount'],
+            (int) $data['maxCheckPointCount'],
+            (int) $data['maxSubscriberCount'],
+            (string) $data['namedConsumerStrategy'],
+            (bool) $data['preferRoundRobin']
         );
     }
 

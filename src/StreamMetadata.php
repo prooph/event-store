@@ -195,7 +195,7 @@ class StreamMetadata implements JsonSerializable
             if (\in_array($key, $internals, true)) {
                 $params[$key] = $value;
             } elseif ($key === SystemMetadata::ACL) {
-                assert(\is_array($value));
+                /** @var array<string, list<string>> $value */
                 $params[SystemMetadata::ACL] = StreamAcl::fromArray($value);
             } else {
                 $params['customMetadata'][$key] = $value;

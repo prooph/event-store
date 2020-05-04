@@ -45,17 +45,20 @@ final class PersistentSubscriptionConnectionDetails
         $this->inFlightMessages = $inFlightMessages;
     }
 
-    /** @psalm-pure */
+    /**
+     * @param array<string, string|float|int> $data
+     * @psalm-pure
+     */
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['from'],
-            $data['username'],
-            $data['averageItemsPerSecond'],
-            $data['totalItemsProcessed'],
-            $data['countSinceLastMeasurement'],
-            $data['availableSlots'],
-            $data['inFlightMessages'],
+            (string) $data['from'],
+            (string) $data['username'],
+            (float) $data['averageItemsPerSecond'],
+            (int) $data['totalItemsProcessed'],
+            (int) $data['countSinceLastMeasurement'],
+            (int) $data['availableSlots'],
+            (int) $data['inFlightMessages'],
         );
     }
 
