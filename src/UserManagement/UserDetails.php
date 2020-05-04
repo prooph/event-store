@@ -33,7 +33,7 @@ final class UserDetails
      * @param string $loginName
      * @param string $fullName
      * @param list<string> $groups
-     * @param ?DateTimeImmutable $dateLastUpdated
+     * @param null|DateTimeImmutable $dateLastUpdated
      * @param bool $disabled
      * @param list<RelLink> $links
      */

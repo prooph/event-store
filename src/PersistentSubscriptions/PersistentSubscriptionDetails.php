@@ -44,7 +44,7 @@ final class PersistentSubscriptionDetails
     private string $getMessagesUri;
 
     /**
-     * @param ?PersistentSubscriptionConfigDetails $config
+     * @param null|PersistentSubscriptionConfigDetails $config
      * @param list<PersistentSubscriptionConnectionDetails> $connections
      * @param string $eventStreamId
      * @param string $groupName

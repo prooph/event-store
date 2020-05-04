@@ -35,10 +35,10 @@ class StreamMetadataBuilder
     private array $customMetadata;
 
     /**
-     * @param ?int $maxCount
-     * @param ?int $maxAge
-     * @param ?int $truncateBefore
-     * @param ?int $cacheControl
+     * @param null|int $maxCount
+     * @param null|int $maxAge
+     * @param null|int $truncateBefore
+     * @param null|int $cacheControl
      * @param list<string> $aclRead
      * @param list<string> $aclWrite
      * @param list<string> $aclDelete

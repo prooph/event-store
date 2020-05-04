@@ -142,7 +142,7 @@ interface EventStoreConnection
      * @param string $stream
      * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
-     * @param ?Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
      * @param UserCredentials|null $userCredentials
      * @return EventStoreSubscription
      */
@@ -159,8 +159,8 @@ interface EventStoreConnection
      * @param int|null $lastCheckpoint
      * @param CatchUpSubscriptionSettings|null $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
-     * @param ?Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param ?Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
      * @param UserCredentials|null $userCredentials
      * @return EventStoreStreamCatchUpSubscription
      */
@@ -192,8 +192,8 @@ interface EventStoreConnection
      * @param Position|null $lastCheckpoint
      * @param CatchUpSubscriptionSettings|null $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
-     * @param ?Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param ?Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
      * @param UserCredentials|null $userCredentials
      * @return EventStoreAllCatchUpSubscription
      */
@@ -210,7 +210,7 @@ interface EventStoreConnection
      * @param string $stream
      * @param string $groupName
      * @param Closure(EventStorePersistentSubscription, ResolvedEvent, ?int): void $eventAppeared
-     * @param ?Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
      * @param int $bufferSize
      * @param bool $autoAck
      * @param UserCredentials|null $userCredentials

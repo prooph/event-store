@@ -49,11 +49,11 @@ class StreamMetadata implements JsonSerializable
     private array $customMetadata;
 
     /**
-     * @param ?int $maxCount
-     * @param ?int $maxAge
-     * @param ?int $truncateBefore
-     * @param ?int $cacheControl
-     * @param ?StreamAcl $acl
+     * @param null|int $maxCount
+     * @param null|int $maxAge
+     * @param null|int $truncateBefore
+     * @param null|int $cacheControl
+     * @param null|StreamAcl $acl
      * @param array<string, mixed> $customMetadata
      */
     public function __construct(

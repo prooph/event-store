@@ -146,7 +146,7 @@ class StreamAcl
     }
 
     /**
-     * @param ?array $roles
+     * @param null|array $roles
      * @return list<string>|string|null
      *
      * @psalm-pure

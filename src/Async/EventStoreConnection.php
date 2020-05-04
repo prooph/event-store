@@ -189,8 +189,8 @@ interface EventStoreConnection
      * @param string $stream
      * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): Promise $eventAppeared
-     * @param ?Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param ?UserCredentials $userCredentials
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreSubscription>
      */
     public function subscribeToStreamAsync(
@@ -203,12 +203,12 @@ interface EventStoreConnection
 
     /**
      * @param string $stream
-     * @param ?int $lastCheckpoint
-     * @param ?CatchUpSubscriptionSettings $settings
+     * @param null|int $lastCheckpoint
+     * @param null|CatchUpSubscriptionSettings $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): Promise $eventAppeared
-     * @param ?Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param ?Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param ?UserCredentials $userCredentials
+     * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreStreamCatchUpSubscription>
      */
     public function subscribeToStreamFromAsync(
@@ -224,8 +224,8 @@ interface EventStoreConnection
     /**
      * @param bool $resolveLinkTos
      * @param Closure(EventStoreSubscription, ResolvedEvent): Promise $eventAppeared
-     * @param ?Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param ?UserCredentials $userCredentials
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreSubscription>
      */
     public function subscribeToAllAsync(
@@ -236,12 +236,12 @@ interface EventStoreConnection
     ): Promise;
 
     /**
-     * @param ?Position $lastCheckpoint
-     * @param ?CatchUpSubscriptionSettings $settings
+     * @param null|Position $lastCheckpoint
+     * @param null|CatchUpSubscriptionSettings $settings
      * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): Promise $eventAppeared
-     * @param ?Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
-     * @param ?Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
-     * @param ?UserCredentials $userCredentials
+     * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|UserCredentials $userCredentials
      * @return Promise<EventStoreAllCatchUpSubscription>
      */
     public function subscribeToAllFromAsync(
@@ -257,7 +257,7 @@ interface EventStoreConnection
      * @param string $stream
      * @param string $groupName
      * @param Closure(EventStorePersistentSubscription, ResolvedEvent, ?int): Promise $eventAppeared
-     * @param ?Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, ?Throwable): void $subscriptionDropped
      * @param int $bufferSize
      * @param bool $autoAck
      * @param UserCredentials|null $userCredentials
