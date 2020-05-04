@@ -54,14 +54,14 @@ class PersistentSubscriptionDeleteStatus
             throw new InvalidArgumentException('Unknown enum name given');
         }
 
-        return self::{$value}();
+        return new self($value);
     }
 
     public static function byValue(int $value): self
     {
         foreach (self::OPTIONS as $name => $v) {
             if ($v === $value) {
-                return self::{$name}();
+                return new self($name);
             }
         }
 

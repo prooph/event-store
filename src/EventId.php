@@ -16,6 +16,7 @@ namespace Prooph\EventStore;
 use Prooph\EventStore\Util\Guid;
 use Ramsey\Uuid\UuidInterface;
 
+/** @psalm-immutable */
 class EventId
 {
     private UuidInterface $uuid;
@@ -55,6 +56,7 @@ class EventId
         return $this->uuid->toString();
     }
 
+    /** @psalm-pure */
     public function equals(EventId $other): bool
     {
         return $this->uuid->equals($other->uuid);

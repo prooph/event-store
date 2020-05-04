@@ -21,13 +21,31 @@ class StreamMetadataBuilder
     private ?int $maxAge;
     private ?int $truncateBefore;
     private ?int $cacheControl;
+    /** @var list<string> */
     private array $aclRead;
+    /** @var list<string> */
     private array $aclWrite;
+    /** @var list<string> */
     private array $aclDelete;
+    /** @var list<string> */
     private array $aclMetaRead;
+    /** @var list<string> */
     private array $aclMetaWrite;
+    /** @var array<string, mixed> */
     private array $customMetadata;
 
+    /**
+     * @param ?int $maxCount
+     * @param ?int $maxAge
+     * @param ?int $truncateBefore
+     * @param ?int $cacheControl
+     * @param list<string> $aclRead
+     * @param list<string> $aclWrite
+     * @param list<string> $aclDelete
+     * @param list<string> $aclMetaRead
+     * @param list<string> $aclMetaWrite
+     * @param array<string, mixed> $customMetadata
+     */
     public function __construct(
         ?int $maxCount = null,
         ?int $maxAge = null,

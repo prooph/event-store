@@ -22,20 +22,20 @@ final class UserDetails
 {
     private string $loginName;
     private string $fullName;
-    /** @var array<int, string> */
+    /** @var list<string> */
     private array $groups = [];
     private ?DateTimeImmutable $dateLastUpdated = null;
     private bool $disabled;
-    /** @var array<int, RelLink> */
+    /** @var list<RelLink> */
     private array $links = [];
 
     /**
      * @param string $loginName
      * @param string $fullName
-     * @param array<int, string> $groups
+     * @param list<string> $groups
      * @param ?DateTimeImmutable $dateLastUpdated
      * @param bool $disabled
-     * @param array<int, RelLink> $links
+     * @param list<RelLink> $links
      */
     private function __construct(
         string $loginName,
@@ -63,13 +63,13 @@ final class UserDetails
         $links = [];
 
         if (isset($data['links'])) {
-            /** @var array<int, array<string, string>> $data['links'] */
+            /** @var list<array<string, string>> $data['links'] */
             foreach ($data['links'] as $link) {
                 $links[] = new RelLink((string) $link['href'], (string) $link['rel']);
             }
         }
 
-        /** @var array<int, string> $data['groups'] */
+        /** @var list<string> $data['groups'] */
 
         return new self(
             (string) $data['loginName'],
@@ -94,7 +94,7 @@ final class UserDetails
     }
 
     /**
-     * @return array<int, string>
+     * @return list<string>
      * @psalm-pure
      */
     public function groups(): array
@@ -115,7 +115,7 @@ final class UserDetails
     }
 
     /**
-     * @return array<int, RelLink>
+     * @return list<RelLink>
      * @psalm-pure
      */
     public function links(): array

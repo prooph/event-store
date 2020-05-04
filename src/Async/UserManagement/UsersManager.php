@@ -27,7 +27,7 @@ interface UsersManager
     /** @throws UserCommandFailed */
     public function deleteUserAsync(string $login, ?UserCredentials $userCredentials = null): Promise;
 
-    /** @return Promise<array<int, UserDetails>> */
+    /** @return Promise<list<UserDetails>> */
     public function listAllAsync(?UserCredentials $userCredentials = null): Promise;
 
     /** @return Promise<UserDetails> */

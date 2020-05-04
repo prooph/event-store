@@ -22,12 +22,12 @@ use stdClass;
 class UserUpdateInformation implements JsonSerializable
 {
     private string $fullName;
-    /** @var array<int, string> */
+    /** @var list<string> */
     private array $groups;
 
     /**
      * @param string $fullName
-     * @param array<int, string> $groups
+     * @param list<string> $groups
      *
      * @psalm-pure
      */

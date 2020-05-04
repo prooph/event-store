@@ -20,30 +20,37 @@ class StreamAcl
 {
     /**
      * Roles and users permitted to read the stream
-     * @var string[]
+     * @var list<string>
      */
     private array $readRoles;
     /**
      * Roles and users permitted to write to the stream
-     * @var string[]
+     * @var list<string>
      */
     private array $writeRoles;
     /**
      * Roles and users permitted to delete the stream
-     * @var string[]
+     * @var list<string>
      */
     private array $deleteRoles;
     /**
      * Roles and users permitted to read stream metadata
-     * @var string[]
+     * @var list<string>
      */
     private array $metaReadRoles;
     /**
      * Roles and users permitted to write stream metadata
-     * @var string[]
+     * @var list<string>
      */
     private array $metaWriteRoles;
 
+    /**
+     * @param list<string> $readRoles
+     * @param list<string> $writeRoles
+     * @param list<string> $deleteRoles
+     * @param list<string> $metaReadRoles
+     * @param list<string> $metaWriteRoles
+     */
     public function __construct(
         array $readRoles = [],
         array $writeRoles = [],
@@ -73,7 +80,7 @@ class StreamAcl
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function readRoles(): array
     {
@@ -81,7 +88,7 @@ class StreamAcl
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function writeRoles(): array
     {
@@ -89,7 +96,7 @@ class StreamAcl
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function deleteRoles(): array
     {
@@ -97,7 +104,7 @@ class StreamAcl
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function metaReadRoles(): array
     {
@@ -105,7 +112,7 @@ class StreamAcl
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function metaWriteRoles(): array
     {
@@ -139,6 +146,9 @@ class StreamAcl
         return $data;
     }
 
+    /**
+     * @param array<string, list<string>>
+     */
     public static function fromArray(array $data): StreamAcl
     {
         return new self(

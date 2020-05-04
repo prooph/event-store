@@ -22,7 +22,7 @@ final class PersistentSubscriptionDetails
      */
     private ?PersistentSubscriptionConfigDetails $config;
     /**
-     * @var array<int, PersistentSubscriptionConnectionDetails>
+     * @var list<PersistentSubscriptionConnectionDetails>
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
@@ -126,7 +126,7 @@ final class PersistentSubscriptionDetails
     }
 
     /**
-     * @return array<int, PersistentSubscriptionConnectionDetails>
+     * @return list<PersistentSubscriptionConnectionDetails>
      * @psalm-pure
      */
     public function connections(): array

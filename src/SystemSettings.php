@@ -82,6 +82,7 @@ class SystemSettings implements JsonSerializable
 
     public static function createFromArray(array $data): SystemSettings
     {
+        /** @var array<string, array<string, list<string>>> $data */
         return new self(
             isset($data[SystemMetadata::USER_STREAM_ACL])
                 ? StreamAcl::fromArray($data[SystemMetadata::USER_STREAM_ACL])

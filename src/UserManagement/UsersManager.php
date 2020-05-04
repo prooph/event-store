@@ -25,7 +25,7 @@ interface UsersManager
     /** @throws UserCommandFailed */
     public function deleteUser(string $login, ?UserCredentials $userCredentials = null): void;
 
-    /** @return array<int, UserDetails> */
+    /** @return list<UserDetails> */
     public function listAll(?UserCredentials $userCredentials = null): array;
 
     public function getCurrentUser(?UserCredentials $userCredentials = null): UserDetails;

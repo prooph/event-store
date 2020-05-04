@@ -58,7 +58,7 @@ interface EventStoreConnection
     /**
      * @param string $stream
      * @param int $expectedVersion
-     * @param array<int, EventData> $events
+     * @param list<EventData> $events
      * @param UserCredentials|null $userCredentials
      * @return Promise<WriteResult>
      */
@@ -72,7 +72,7 @@ interface EventStoreConnection
     /**
      * @param string $stream
      * @param int $expectedVersion
-     * @param array<int, EventData> $events
+     * @param list<EventData> $events
      * @param UserCredentials|null $userCredentials
      * @return Promise<ConditionalWriteResult>
      */
