@@ -43,6 +43,7 @@ interface EventStoreConnection
 {
     public function connectionName(): string;
 
+    /** @return Promise<void> */
     public function connectAsync(): Promise;
 
     public function close(): void;

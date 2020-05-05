@@ -15,6 +15,7 @@ namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
+/** @psalm-immutable */
 class UserCredentials
 {
     private string $username;
@@ -34,11 +35,13 @@ class UserCredentials
         $this->password = $password;
     }
 
+    /** @psalm-pure */
     public function username(): string
     {
         return $this->username;
     }
 
+    /** @psalm-pure */
     public function password(): string
     {
         return $this->password;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+/** @psalm-immutable */
 class EndPoint
 {
     private string $host;
@@ -24,21 +25,25 @@ class EndPoint
         $this->port = $port;
     }
 
+    /** @psalm-pure */
     public function host(): string
     {
         return $this->host;
     }
 
+    /** @psalm-pure */
     public function port(): int
     {
         return $this->port;
     }
 
+    /** @psalm-pure */
     public function equals(EndPoint $endPoint): bool
     {
         return $this->host === $endPoint->host && $this->port === $endPoint->port;
     }
 
+    /** @psalm-pure */
     public function __toString(): string
     {
         return $this->host . ':' . $this->port;
