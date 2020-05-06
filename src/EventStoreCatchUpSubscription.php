@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use Throwable;
-
 interface EventStoreCatchUpSubscription
 {
     public function isSubscribedToAll(): bool;
