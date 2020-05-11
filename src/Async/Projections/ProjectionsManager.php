@@ -90,7 +90,7 @@ interface ProjectionsManager
      *
      * returns String of JSON containing projection status
      *
-     * @return Promise<string>
+     * @return Promise<ProjectionDetails>
      */
     public function getStatusAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
