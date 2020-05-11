@@ -16,13 +16,20 @@ namespace Prooph\EventStore\UserManagement;
 use JsonSerializable;
 use stdClass;
 
-/** @internal */
+/**
+ * @internal
+ */
 class UserUpdateInformation implements JsonSerializable
 {
     private string $fullName;
-    /** @var string[] */
+    /** @var list<string> */
     private array $groups;
 
+    /**
+     * @param list<string> $groups
+     *
+     * @psalm-pure
+     */
     public function __construct(string $fullName, array $groups)
     {
         $this->fullName = $fullName;

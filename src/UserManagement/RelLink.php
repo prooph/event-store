@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\UserManagement;
 
+/**
+ * @psalm-immutable
+ */
 class RelLink
 {
     private string $href;
@@ -24,11 +27,13 @@ class RelLink
         $this->rel = $rel;
     }
 
+    /** @psalm-pure */
     public function href(): string
     {
         return $this->href;
     }
 
+    /** @psalm-pure */
     public function rel(): string
     {
         return $this->rel;

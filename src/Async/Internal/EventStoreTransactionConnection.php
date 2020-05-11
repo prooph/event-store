@@ -21,6 +21,7 @@ use Prooph\EventStore\WriteResult;
 /** @internal */
 interface EventStoreTransactionConnection
 {
+    /** @return Promise<void> */
     public function transactionalWriteAsync(
         EventStoreTransaction $transaction,
         array $events,

@@ -17,6 +17,8 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 
 /**
  * Transaction File Position
+ *
+ * @psalm-immutable
  */
 class Position
 {
@@ -62,49 +64,58 @@ class Position
         return new Position($commitPosition, $preparePosition);
     }
 
+    /** @psalm-pure */
     public function commitPosition(): int
     {
         return $this->commitPosition;
     }
 
+    /** @psalm-pure */
     public function preparePosition(): int
     {
         return $this->preparePosition;
     }
 
+    /** @psalm-pure */
     public function asString(): string
     {
         return \substr('000000000000000' . \dechex($this->commitPosition), -16)
             . \substr('000000000000000' . \dechex($this->preparePosition), -16);
     }
 
+    /** @psalm-pure */
     public function __toString(): string
     {
         return 'C:' . $this->commitPosition . '/P:' . $this->preparePosition;
     }
 
+    /** @psalm-pure */
     public function equals(Position $other): bool
     {
         return $this->commitPosition === $other->commitPosition && $this->preparePosition === $other->preparePosition;
     }
 
+    /** @psalm-pure */
     public function greater(Position $other): bool
     {
         return $this->commitPosition > $other->commitPosition
             || ($this->commitPosition === $other->commitPosition && $this->preparePosition > $other->preparePosition);
     }
 
+    /** @psalm-pure */
     public function smaller(Position $other): bool
     {
         return $this->commitPosition < $other->commitPosition
             || ($this->commitPosition === $other->commitPosition && $this->preparePosition < $other->preparePosition);
     }
 
+    /** @psalm-pure */
     public function greaterOrEquals(Position $other): bool
     {
         return $this->greater($other) || $this->equals($other);
     }
 
+    /** @psalm-pure */
     public function smallerOrEquals(Position $other): bool
     {
         return $this->smaller($other) || $this->equals($other);

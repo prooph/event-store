@@ -13,19 +13,24 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+/** @psalm-immutable */
 class StreamEventsSlice
 {
     private SliceReadStatus $status;
     private string $stream;
     private int $fromEventNumber;
     private ReadDirection $readDirection;
-    /** @var ResolvedEvent[] */
+    /** @var list<ResolvedEvent> */
     private array $events;
     private int $nextEventNumber;
     private int $lastEventNumber;
     private bool $isEndOfStream;
 
-    /** @internal */
+    /**
+     * @internal
+     *
+     * @param list<ResolvedEvent> $events
+     */
     public function __construct(
         SliceReadStatus $status,
         string $stream,
@@ -46,44 +51,53 @@ class StreamEventsSlice
         $this->isEndOfStream = $isEndOfStream;
     }
 
+    /** @psalm-pure */
     public function status(): SliceReadStatus
     {
         return $this->status;
     }
 
+    /** @psalm-pure */
     public function stream(): string
     {
         return $this->stream;
     }
 
+    /** @psalm-pure */
     public function fromEventNumber(): int
     {
         return $this->fromEventNumber;
     }
 
+    /** @psalm-pure */
     public function readDirection(): ReadDirection
     {
         return $this->readDirection;
     }
 
     /**
-     * @return ResolvedEvent[]
+     * @return list<ResolvedEvent>
+     *
+     * @psalm-pure
      */
     public function events(): array
     {
         return $this->events;
     }
 
+    /** @psalm-pure */
     public function nextEventNumber(): int
     {
         return $this->nextEventNumber;
     }
 
+    /** @psalm-pure */
     public function lastEventNumber(): int
     {
         return $this->lastEventNumber;
     }
 
+    /** @psalm-pure */
     public function isEndOfStream(): bool
     {
         return $this->isEndOfStream;

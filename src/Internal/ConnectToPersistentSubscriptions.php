@@ -19,13 +19,11 @@ use Prooph\EventStore\PersistentSubscriptionNakEventAction;
 /** @internal */
 interface ConnectToPersistentSubscriptions
 {
-    /** @param EventId[] $eventIds */
+    /** @param list<EventId> $eventIds */
     public function notifyEventsProcessed(array $eventIds): void;
 
     /**
-     * @param EventId[] $eventIds
-     * @param PersistentSubscriptionNakEventAction $action
-     * @param string $reason
+     * @param list<EventId> $eventIds
      */
     public function notifyEventsFailed(
         array $eventIds,

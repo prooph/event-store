@@ -17,79 +17,112 @@ use DateTimeImmutable;
 use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\Util\DateTime;
 
-/** @internal */
+/** @psalm-immutable */
 final class UserDetails
 {
     private string $loginName;
     private string $fullName;
-    /** @var string[] */
+    /** @var list<string> */
     private array $groups = [];
     private ?DateTimeImmutable $dateLastUpdated = null;
     private bool $disabled;
-    /** @var RelLink[] */
+    /** @var list<RelLink> */
     private array $links = [];
 
-    private function __construct()
-    {
+    /**
+     * @param list<string> $groups
+     * @param list<RelLink> $links
+     */
+    private function __construct(
+        string $loginName,
+        string $fullName,
+        array $groups,
+        ?DateTimeImmutable $dateLastUpdated,
+        bool $disabled,
+        array $links
+    ) {
+        $this->loginName = $loginName;
+        $this->fullName = $fullName;
+        $this->groups = $groups;
+        $this->dateLastUpdated = $dateLastUpdated;
+        $this->disabled = $disabled;
+        $this->links = $links;
     }
 
+    /** @internal */
     public static function fromArray(array $data): self
     {
-        $details = new self();
-
-        $details->loginName = $data['loginName'];
-        $details->fullName = $data['fullName'];
-        $details->groups = $data['groups'];
-        $details->disabled = $data['disabled'];
-
-        $details->dateLastUpdated = isset($data['dateLastUpdated'])
-            ? DateTime::create($data['dateLastUpdated'])
+        $dateLastUpdated = isset($data['dateLastUpdated'])
+            ? DateTime::create((string) $data['dateLastUpdated'])
             : null;
 
         $links = [];
+
         if (isset($data['links'])) {
+            /** @var list<array<string, string>> $data['links'] */
             foreach ($data['links'] as $link) {
-                $links[] = new RelLink($link['href'], $link['rel']);
+                $links[] = new RelLink((string) $link['href'], (string) $link['rel']);
             }
         }
-        $details->links = $links;
 
-        return $details;
+        /** @var list<string> $data['groups'] */
+
+        return new self(
+            (string) $data['loginName'],
+            (string) $data['fullName'],
+            $data['groups'],
+            $dateLastUpdated,
+            (bool) $data['disabled'],
+            $links
+        );
     }
 
+    /** @psalm-pure */
     public function loginName(): string
     {
         return $this->loginName;
     }
 
+    /** @psalm-pure */
     public function fullName(): string
     {
         return $this->fullName;
     }
 
-    /** @return string[] */
+    /**
+     * @return list<string>
+     * @psalm-pure
+     */
     public function groups(): array
     {
         return $this->groups;
     }
 
+    /** @psalm-pure */
     public function dateLastUpdated(): ?DateTimeImmutable
     {
         return $this->dateLastUpdated;
     }
 
+    /** @psalm-pure */
     public function disabled(): bool
     {
         return $this->disabled;
     }
 
-    /** @return RelLink[] */
+    /**
+     * @return list<RelLink>
+     * @psalm-pure
+     */
     public function links(): array
     {
         return $this->links;
     }
 
-    /** @throws RuntimeException if rel not found */
+    /**
+     * @throws RuntimeException if rel not found
+     * @psalm-pure
+     */
     public function getRelLink(string $rel): string
     {
         $rel = \strtolower($rel);

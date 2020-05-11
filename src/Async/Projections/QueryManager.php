@@ -25,13 +25,6 @@ interface QueryManager
      *
      * returns String of JSON containing query result
      *
-     * @param string $name A name for the query
-     * @param string $query The source code for the query
-     * @param int $initialPollingDelay Initial time to wait between polling for projection status
-     * @param int $maximumPollingDelay Maximum time to wait between polling for projection status
-     * @param string $type The type to use, defaults to JS
-     * @param UserCredentials|null $userCredentials Credentials for a user with permission to create a query
-     *
      * @return Promise<string>
      */
     public function executeAsync(

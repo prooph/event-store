@@ -42,16 +42,14 @@ class PersistentEventStoreSubscription extends EventStoreSubscription
         $this->subscriptionOperation->unsubscribe();
     }
 
-    /** @param EventId[] $eventIds */
+    /** @param list<EventId> $eventIds */
     public function notifyEventsProcessed(array $eventIds): void
     {
         $this->subscriptionOperation->notifyEventsProcessed($eventIds);
     }
 
     /**
-     * @param EventId[] $eventIds
-     * @param PersistentSubscriptionNakEventAction $action
-     * @param string $reason
+     * @param list<EventId> $eventIds
      */
     public function notifyEventsFailed(
         array $eventIds,

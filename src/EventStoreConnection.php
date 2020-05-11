@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Closure;
 use Prooph\EventStore\Internal\PersistentSubscriptionCreateResult;
 use Prooph\EventStore\Internal\PersistentSubscriptionDeleteResult;
 use Prooph\EventStore\Internal\PersistentSubscriptionUpdateResult;
+use Throwable;
 
 interface EventStoreConnection
 {
@@ -27,10 +29,7 @@ interface EventStoreConnection
     ): DeleteResult;
 
     /**
-     * @param string $stream
-     * @param int $expectedVersion
-     * @param EventData[] $events
-     * @param UserCredentials|null $userCredentials
+     * @param list<EventData> $events
      *
      * @return WriteResult
      */
@@ -136,45 +135,67 @@ interface EventStoreConnection
         ?UserCredentials $userCredentials = null
     ): PersistentSubscriptionDeleteResult;
 
+    /**
+     * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
+     */
     public function subscribeToStream(
         string $stream,
         bool $resolveLinkTos,
-        EventAppearedOnSubscription $eventAppeared,
-        ?SubscriptionDropped $subscriptionDropped = null,
+        Closure $eventAppeared,
+        ?Closure $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): EventStoreSubscription;
 
+    /**
+     * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
+     * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
+     */
     public function subscribeToStreamFrom(
         string $stream,
         ?int $lastCheckpoint,
         ?CatchUpSubscriptionSettings $settings,
-        EventAppearedOnCatchupSubscription $eventAppeared,
-        ?LiveProcessingStartedOnCatchUpSubscription $liveProcessingStarted = null,
-        ?CatchUpSubscriptionDropped $subscriptionDropped = null,
+        Closure $eventAppeared,
+        ?Closure $liveProcessingStarted = null,
+        ?Closure $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): EventStoreStreamCatchUpSubscription;
 
+    /**
+     * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
+     * @param Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
+     */
     public function subscribeToAll(
         bool $resolveLinkTos,
-        EventAppearedOnSubscription $eventAppeared,
-        ?SubscriptionDropped $subscriptionDropped = null,
+        Closure $eventAppeared,
+        ?Closure $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): EventStoreSubscription;
 
+    /**
+     * @param Closure(EventStoreCatchUpSubscription, ResolvedEvent): void $eventAppeared
+     * @param null|Closure(EventStoreCatchUpSubscription): void $liveProcessingStarted
+     * @param null|Closure(EventStoreCatchUpSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
+     */
     public function subscribeToAllFrom(
         ?Position $lastCheckpoint,
         ?CatchUpSubscriptionSettings $settings,
-        EventAppearedOnCatchupSubscription $eventAppeared,
-        ?LiveProcessingStartedOnCatchUpSubscription $liveProcessingStarted = null,
-        ?CatchUpSubscriptionDropped $subscriptionDropped = null,
+        Closure $eventAppeared,
+        ?Closure $liveProcessingStarted = null,
+        ?Closure $subscriptionDropped = null,
         ?UserCredentials $userCredentials = null
     ): EventStoreAllCatchUpSubscription;
 
+    /**
+     * @param Closure(EventStorePersistentSubscription, ResolvedEvent, null|int): void $eventAppeared
+     * @param null|Closure(EventStorePersistentSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
+     */
     public function connectToPersistentSubscription(
         string $stream,
         string $groupName,
-        EventAppearedOnPersistentSubscription $eventAppeared,
-        ?PersistentSubscriptionDropped $subscriptionDropped = null,
+        Closure $eventAppeared,
+        ?Closure $subscriptionDropped = null,
         int $bufferSize = 10,
         bool $autoAck = true,
         ?UserCredentials $userCredentials = null

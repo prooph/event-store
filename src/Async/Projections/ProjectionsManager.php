@@ -67,21 +67,21 @@ interface ProjectionsManager
     /**
      * Asynchronously lists all projections
      *
-     * @return Promise<ProjectionDetails[]>
+     * @return Promise<list<ProjectionDetails>>
      */
     public function listAllAsync(?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously lists all one-time projections
      *
-     * @return Promise<ProjectionDetails[]>
+     * @return Promise<list<ProjectionDetails>>
      */
     public function listOneTimeAsync(?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously lists this status of all continuous projections
      *
-     * @return Promise<ProjectionDetails[]>
+     * @return Promise<list<ProjectionDetails>>
      */
     public function listContinuousAsync(?UserCredentials $userCredentials = null): Promise;
 

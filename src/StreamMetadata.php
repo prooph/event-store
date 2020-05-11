@@ -44,9 +44,13 @@ class StreamMetadata implements JsonSerializable
     private ?StreamAcl $acl;
     /**
      * key => value pairs of custom metadata
+     * @var array<string, mixed>
      */
     private array $customMetadata;
 
+    /**
+     * @param array<string, mixed> $customMetadata
+     */
     public function __construct(
         ?int $maxCount = null,
         ?int $maxAge = null,
@@ -69,12 +73,6 @@ class StreamMetadata implements JsonSerializable
 
         if (null !== $cacheControl && $cacheControl < 1) {
             throw new InvalidArgumentException('Cache control should be positive value');
-        }
-
-        foreach ($customMetadata as $key => $value) {
-            if (! \is_string($key)) {
-                throw new InvalidArgumentException('CustomMetadata key must be a string');
-            }
         }
 
         $this->maxCount = $maxCount;
@@ -116,7 +114,7 @@ class StreamMetadata implements JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function customMetadata(): array
     {
@@ -124,7 +122,6 @@ class StreamMetadata implements JsonSerializable
     }
 
     /**
-     * @param string $key
      * @return mixed
      */
     public function getValue(string $key)
@@ -164,6 +161,7 @@ class StreamMetadata implements JsonSerializable
             }
         }
 
+        /** @psalm-suppress MixedAssignment */
         foreach ($this->customMetadata as $key => $value) {
             $object->{$key} = $value;
         }
@@ -171,6 +169,11 @@ class StreamMetadata implements JsonSerializable
         return $object;
     }
 
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress MixedAssignment
+     */
     public static function createFromArray(array $data): StreamMetadata
     {
         $internals = [
@@ -186,6 +189,7 @@ class StreamMetadata implements JsonSerializable
             if (\in_array($key, $internals, true)) {
                 $params[$key] = $value;
             } elseif ($key === SystemMetadata::ACL) {
+                /** @var array<string, list<string>> $value */
                 $params[SystemMetadata::ACL] = StreamAcl::fromArray($value);
             } else {
                 $params['customMetadata'][$key] = $value;

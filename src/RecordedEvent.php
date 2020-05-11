@@ -15,6 +15,7 @@ namespace Prooph\EventStore;
 
 use DateTimeImmutable;
 
+/** @psalm-immutable */
 class RecordedEvent
 {
     protected string $eventStreamId;
@@ -47,41 +48,49 @@ class RecordedEvent
         $this->created = $created;
     }
 
+    /** @psalm-pure */
     public function eventStreamId(): string
     {
         return $this->eventStreamId;
     }
 
+    /** @psalm-pure */
     public function eventNumber(): int
     {
         return $this->eventNumber;
     }
 
+    /** @psalm-pure */
     public function eventId(): EventId
     {
         return $this->eventId;
     }
 
+    /** @psalm-pure */
     public function eventType(): string
     {
         return $this->eventType;
     }
 
+    /** @psalm-pure */
     public function isJson(): bool
     {
         return $this->isJson;
     }
 
+    /** @psalm-pure */
     public function data(): string
     {
         return $this->data;
     }
 
+    /** @psalm-pure */
     public function metadata(): string
     {
         return $this->metadata;
     }
 
+    /** @psalm-pure */
     public function created(): DateTimeImmutable
     {
         return $this->created;

@@ -15,25 +15,23 @@ namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
+/** @psam-immutable */
 class ConditionalWriteResult
 {
     private ConditionalWriteStatus $status;
     private ?int $nextExpectedVersion;
     private ?Position $logPosition;
 
-    private function __construct()
+    private function __construct(ConditionalWriteStatus $status, ?int $nextExpectedVersion, ?Position $logPosition)
     {
+        $this->status = $status;
+        $this->nextExpectedVersion = $nextExpectedVersion;
+        $this->logPosition = $logPosition;
     }
 
     public static function success(int $nextExpectedVersion, Position $logPosition): ConditionalWriteResult
     {
-        $self = new self();
-
-        $self->status = ConditionalWriteStatus::succeeded();
-        $self->nextExpectedVersion = $nextExpectedVersion;
-        $self->logPosition = $logPosition;
-
-        return $self;
+        return new self(ConditionalWriteStatus::succeeded(), $nextExpectedVersion, $logPosition);
     }
 
     public static function fail(ConditionalWriteStatus $status): ConditionalWriteResult
@@ -42,22 +40,22 @@ class ConditionalWriteResult
             throw new InvalidArgumentException('For successful write pass next expected version and log position');
         }
 
-        $self = new self();
-        $self->status = $status;
-
-        return $self;
+        return new self($status, null, null);
     }
 
+    /** @psalm-pure */
     public function status(): ConditionalWriteStatus
     {
         return $this->status;
     }
 
+    /** @psalm-pure */
     public function nextExpectedVersion(): ?int
     {
         return $this->nextExpectedVersion;
     }
 
+    /** @psalm-pure */
     public function logPosition(): ?Position
     {
         return $this->logPosition;

@@ -21,13 +21,27 @@ class StreamMetadataBuilder
     private ?int $maxAge;
     private ?int $truncateBefore;
     private ?int $cacheControl;
+    /** @var list<string> */
     private array $aclRead;
+    /** @var list<string> */
     private array $aclWrite;
+    /** @var list<string> */
     private array $aclDelete;
+    /** @var list<string> */
     private array $aclMetaRead;
+    /** @var list<string> */
     private array $aclMetaWrite;
+    /** @var array<string, mixed> */
     private array $customMetadata;
 
+    /**
+     * @param list<string> $aclRead
+     * @param list<string> $aclWrite
+     * @param list<string> $aclDelete
+     * @param list<string> $aclMetaRead
+     * @param list<string> $aclMetaWrite
+     * @param array<string, mixed> $customMetadata
+     */
     public function __construct(
         ?int $maxCount = null,
         ?int $maxAge = null,
@@ -54,11 +68,11 @@ class StreamMetadataBuilder
 
     public function build(): StreamMetadata
     {
-        $acl = null === $this->aclRead
-                && null === $this->aclWrite
-                && null === $this->aclDelete
-                && null === $this->aclMetaRead
-                && null === $this->aclMetaWrite
+        $acl = empty($this->aclRead)
+                && empty($this->aclWrite)
+                && empty($this->aclDelete)
+                && empty($this->aclMetaRead)
+                && empty($this->aclMetaWrite)
             ? null
             : new StreamAcl($this->aclRead, $this->aclWrite, $this->aclDelete, $this->aclMetaRead, $this->aclMetaWrite);
 
@@ -160,6 +174,9 @@ class StreamMetadataBuilder
         return $this;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function setCustomProperty(string $key, $value): StreamMetadataBuilder
     {
         $this->customMetadata[$key] = $value;

@@ -59,7 +59,7 @@ class EventStoreTransaction
     }
 
     /**
-     * @param EventData[] $events
+     * @param list<EventData> $events
      *
      * @return Promise<void>
      */

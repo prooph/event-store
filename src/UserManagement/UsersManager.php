@@ -25,7 +25,7 @@ interface UsersManager
     /** @throws UserCommandFailed */
     public function deleteUser(string $login, ?UserCredentials $userCredentials = null): void;
 
-    /** @return UserDetails[] */
+    /** @return list<UserDetails> */
     public function listAll(?UserCredentials $userCredentials = null): array;
 
     public function getCurrentUser(?UserCredentials $userCredentials = null): UserDetails;
@@ -33,13 +33,7 @@ interface UsersManager
     public function getUser(string $login, ?UserCredentials $userCredentials = null): UserDetails;
 
     /**
-     * @param string $login
-     * @param string $fullName
-     * @param string[] $groups
-     * @param string $password
-     * @param UserCredentials|null $userCredentials
-     *
-     * @return void
+     * @param list<string> $groups
      */
     public function createUser(
         string $login,
@@ -50,12 +44,7 @@ interface UsersManager
     ): void;
 
     /**
-     * @param string $login
-     * @param string $fullName
-     * @param string[] $groups
-     * @param UserCredentials|null $userCredentials
-     *
-     * @return void
+     * @param list<string> $groups
      */
     public function updateUser(
         string $login,

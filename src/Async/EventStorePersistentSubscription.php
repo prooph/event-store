@@ -25,10 +25,6 @@ interface EventStorePersistentSubscription
     /**
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
      * Note: There is no need to ack a message if you have Auto Ack enabled
-     *
-     * @param ResolvedEvent $event
-     *
-     * @return void
      */
     public function acknowledge(ResolvedEvent $event): void;
 
@@ -36,19 +32,13 @@ interface EventStorePersistentSubscription
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
      * Note: There is no need to ack a message if you have Auto Ack enabled
      *
-     * @param ResolvedEvent[] $events
-     *
-     * @return void
+     * @param list<ResolvedEvent> $events
      */
     public function acknowledgeMultiple(array $events): void;
 
     /**
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
      * Note: There is no need to ack a message if you have Auto Ack enabled
-     *
-     * @param EventId $eventId
-     *
-     * @return void
      */
     public function acknowledgeEventId(EventId $eventId): void;
 
@@ -56,9 +46,7 @@ interface EventStorePersistentSubscription
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
      * Note: There is no need to ack a message if you have Auto Ack enabled
      *
-     * @param EventId[] $eventIds
-     *
-     * @return void
+     * @param list<EventId> $eventIds
      */
     public function acknowledgeMultipleEventIds(array $eventIds): void;
 
@@ -74,9 +62,7 @@ interface EventStorePersistentSubscription
     /**
      * Mark n messages that have failed processing. The server will take action based upon the action parameter
      *
-     * @param ResolvedEvent[] $events
-     * @param PersistentSubscriptionNakEventAction $action
-     * @param string $reason
+     * @param list<ResolvedEvent> $events
      */
     public function failMultiple(
         array $events,
@@ -96,9 +82,7 @@ interface EventStorePersistentSubscription
     /**
      * Mark n messages that have failed processing. The server will take action based upon the action parameter
      *
-     * @param EventId[] $eventIds
-     * @param PersistentSubscriptionNakEventAction $action
-     * @param string $reason
+     * @param list<EventId> $eventIds
      */
     public function failMultipleEventIds(
         array $eventIds,

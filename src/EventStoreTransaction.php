@@ -52,7 +52,7 @@ class EventStoreTransaction
     }
 
     /**
-     * @param EventData[] $events
+     * @param list<EventData> $events
      */
     public function write(array $events = []): void
     {

@@ -20,10 +20,13 @@ final class UserCreationInformation implements JsonSerializable
 {
     private string $loginName;
     private string $fullName;
-    /** @var string[] */
+    /** @var list<string> */
     private array $groups;
     private string $password;
 
+    /**
+     * @param list<string> $groups
+     */
     public function __construct(string $loginName, string $fullName, array $groups, string $password)
     {
         $this->loginName = $loginName;

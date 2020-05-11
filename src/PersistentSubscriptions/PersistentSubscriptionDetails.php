@@ -13,15 +13,16 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\PersistentSubscriptions;
 
+/** @psalm-immutable */
 final class PersistentSubscriptionDetails
 {
     /**
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
-    private PersistentSubscriptionConfigDetails $config;
+    private ?PersistentSubscriptionConfigDetails $config;
     /**
-     * @var PersistentSubscriptionConfigDetails[]
+     * @var list<PersistentSubscriptionConnectionDetails>
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
@@ -42,124 +43,186 @@ final class PersistentSubscriptionDetails
     private string $parkedMessageUri;
     private string $getMessagesUri;
 
-    private function __construct()
-    {
+    /**
+     * @param list<PersistentSubscriptionConnectionDetails> $connections
+     */
+    private function __construct(
+        ?PersistentSubscriptionConfigDetails $config,
+        array $connections,
+        string $eventStreamId,
+        string $groupName,
+        string $status,
+        float $averageItemsPerSecond,
+        int $totalItemsProcessed,
+        int $countSinceLastMeasurement,
+        int $lastProcessedEventNumber,
+        int $lastKnownEventNumber,
+        int $readBufferCount,
+        int $liveBufferCount,
+        int $retryBufferCount,
+        int $totalInFlightMessages,
+        int $connectionCount,
+        string $parkedMessageUri,
+        string $getMessagesUri
+    ) {
+        $this->config = $config;
+        $this->connections = $connections;
+        $this->eventStreamId = $eventStreamId;
+        $this->groupName = $groupName;
+        $this->status = $status;
+        $this->averageItemsPerSecond = $averageItemsPerSecond;
+        $this->totalItemsProcessed = $totalItemsProcessed;
+        $this->countSinceLastMeasurement = $countSinceLastMeasurement;
+        $this->lastProcessedEventNumber = $lastProcessedEventNumber;
+        $this->lastKnownEventNumber = $lastKnownEventNumber;
+        $this->readBufferCount = $readBufferCount;
+        $this->liveBufferCount = $liveBufferCount;
+        $this->retryBufferCount = $retryBufferCount;
+        $this->totalInFlightMessages = $totalInFlightMessages;
+        $this->connectionCount = $connectionCount;
+        $this->parkedMessageUri = $parkedMessageUri;
+        $this->getMessagesUri = $getMessagesUri;
     }
 
     public static function fromArray(array $data): self
     {
-        $details = new self();
+        $config = null;
 
         if (isset($data['config'])) {
-            $details->config = PersistentSubscriptionConfigDetails::fromArray($data['config']);
+            /** @var array<string, bool|int|string> $data['config'] */
+            $config = PersistentSubscriptionConfigDetails::fromArray($data['config']);
         }
 
+        $connections = [];
+
         if (isset($data['connections'])) {
+            /** @var array<string, string|float|int> $connection */
             foreach ($data['connections'] as $connection) {
-                $details->connections[] = PersistentSubscriptionConnectionDetails::fromArray($connection);
+                $connections[] = PersistentSubscriptionConnectionDetails::fromArray($connection);
             }
         }
 
-        $details->eventStreamId = $data['eventStreamId'];
-        $details->groupName = $data['groupName'];
-        $details->status = $data['status'];
-        $details->averageItemsPerSecond = $data['averageItemsPerSecond'];
-        $details->totalItemsProcessed = $data['totalItemsProcessed'];
-        $details->countSinceLastMeasurement = $data['countSinceLastMeasurement'] ?? 0;
-        $details->lastProcessedEventNumber = $data['lastProcessedEventNumber'];
-        $details->lastKnownEventNumber = $data['lastKnownEventNumber'];
-        $details->readBufferCount = $data['readBufferCount'] ?? 0;
-        $details->liveBufferCount = $data['liveBufferCount'] ?? 0;
-        $details->retryBufferCount = $data['retryBufferCount'] ?? 0;
-        $details->totalInFlightMessages = $data['totalInFlightMessages'];
-        $details->parkedMessageUri = $data['parkedMessageUri'];
-        $details->getMessagesUri = $data['getMessagesUri'];
-        $details->connectionCount = $data['connectionCount'] ?? 0;
-
-        return $details;
+        return new self(
+            $config,
+            $connections,
+            (string) $data['eventStreamId'],
+            (string) $data['groupName'],
+            (string) $data['status'],
+            (float) $data['averageItemsPerSecond'],
+            (int) $data['totalItemsProcessed'],
+            (int) ($data['countSinceLastMeasurement'] ?? 0),
+            (int) $data['lastProcessedEventNumber'],
+            (int) $data['lastKnownEventNumber'],
+            (int) ($data['readBufferCount'] ?? 0),
+            (int) ($data['liveBufferCount'] ?? 0),
+            (int) ($data['retryBufferCount'] ?? 0),
+            (int) $data['totalInFlightMessages'],
+            (int) ($data['connectionCount'] ?? 0),
+            (string) $data['parkedMessageUri'],
+            (string) $data['getMessagesUri']
+        );
     }
 
-    public function config(): PersistentSubscriptionConfigDetails
+    /** @psalm-pure */
+    public function config(): ?PersistentSubscriptionConfigDetails
     {
         return $this->config;
     }
 
-    /** @return PersistentSubscriptionConfigDetails[] */
+    /**
+     * @return list<PersistentSubscriptionConnectionDetails>
+     * @psalm-pure
+     */
     public function connections(): array
     {
         return $this->connections;
     }
 
+    /** @psalm-pure */
     public function eventStreamId(): string
     {
         return $this->eventStreamId;
     }
 
+    /** @psalm-pure */
     public function groupName(): string
     {
         return $this->groupName;
     }
 
+    /** @psalm-pure */
     public function status(): string
     {
         return $this->status;
     }
 
+    /** @psalm-pure */
     public function averageItemsPerSecond(): float
     {
         return $this->averageItemsPerSecond;
     }
 
+    /** @psalm-pure */
     public function totalItemsProcessed(): int
     {
         return $this->totalItemsProcessed;
     }
 
+    /** @psalm-pure */
     public function countSinceLastMeasurement(): int
     {
         return $this->countSinceLastMeasurement;
     }
 
+    /** @psalm-pure */
     public function lastProcessedEventNumber(): int
     {
         return $this->lastProcessedEventNumber;
     }
 
+    /** @psalm-pure */
     public function lastKnownEventNumber(): int
     {
         return $this->lastKnownEventNumber;
     }
 
+    /** @psalm-pure */
     public function readBufferCount(): int
     {
         return $this->readBufferCount;
     }
 
+    /** @psalm-pure */
     public function liveBufferCount(): int
     {
         return $this->liveBufferCount;
     }
 
+    /** @psalm-pure */
     public function retryBufferCount(): int
     {
         return $this->retryBufferCount;
     }
 
+    /** @psalm-pure */
     public function totalInFlightMessages(): int
     {
         return $this->totalInFlightMessages;
     }
 
+    /** @psalm-pure */
     public function connectionCount(): int
     {
         return $this->connectionCount;
     }
 
+    /** @psalm-pure */
     public function parkedMessageUri(): string
     {
         return $this->parkedMessageUri;
     }
 
+    /** @psalm-pure */
     public function getMessagesUri(): string
     {
         return $this->getMessagesUri;

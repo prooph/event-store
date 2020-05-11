@@ -17,6 +17,8 @@ use Prooph\EventStore\Internal\ResolvedEvent as InternalResolvedEvent;
 
 /**
  * A structure representing a single event or a resolved link event.
+ *
+ * @psalm-immutable
  */
 class ResolvedEvent implements InternalResolvedEvent
 {
@@ -53,38 +55,45 @@ class ResolvedEvent implements InternalResolvedEvent
         $this->originalPosition = $originalPosition;
     }
 
+    /** @psalm-pure */
     public function event(): ?RecordedEvent
     {
         return $this->event;
     }
 
+    /** @psalm-pure */
     public function link(): ?RecordedEvent
     {
         return $this->link;
     }
 
+    /** @psalm-pure */
     public function originalEvent(): ?RecordedEvent
     {
         return $this->originalEvent;
     }
 
+    /** @psalm-pure */
     public function isResolved(): bool
     {
         return $this->isResolved;
     }
 
+    /** @psalm-pure */
     public function originalPosition(): ?Position
     {
         return $this->originalPosition;
     }
 
+    /** @psalm-pure */
     public function originalStreamName(): string
     {
-        return $this->originalEvent->eventStreamId();
+        return null !== $this->originalEvent ? $this->originalEvent->eventStreamId() : '';
     }
 
+    /** @psalm-pure */
     public function originalEventNumber(): int
     {
-        return $this->originalEvent->eventNumber();
+        return null !== $this->originalEvent ? $this->originalEvent->eventNumber() : 0;
     }
 }

@@ -17,7 +17,6 @@ class Json
 {
     /**
      * @param mixed $value
-     * @return string
      */
     public static function encode($value): string
     {
@@ -27,7 +26,6 @@ class Json
     }
 
     /**
-     * @param string $json
      * @return mixed
      */
     public static function decode(string $json)
