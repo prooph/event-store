@@ -15,14 +15,17 @@ namespace Prooph\EventStore\Projections;
 
 final class State
 {
+    /** @var string|int|float|bool|array */
     private array $payload;
 
-    public function __construct(array $payload)
+    /** @param string|int|float|bool|array $payload */
+    public function __construct($payload)
     {
         $this->payload = $payload;
     }
 
-    public function payload(): array
+    /** @return string|int|float|bool|array */
+    public function payload()
     {
         return $this->payload;
     }
