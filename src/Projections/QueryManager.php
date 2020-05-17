@@ -22,7 +22,7 @@ interface QueryManager
      *
      * Creates a new transient projection and polls its status until it is Completed
      *
-     * returns String of JSON containing query result
+     * @return State
      */
     public function execute(
         string $name,
@@ -31,5 +31,5 @@ interface QueryManager
         int $maximumPollingDelay,
         string $type = 'JS',
         ?UserCredentials $userCredentials = null
-    ): string;
+    ): State;
 }

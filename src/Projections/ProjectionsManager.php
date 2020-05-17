@@ -86,57 +86,59 @@ interface ProjectionsManager
     /**
      * Synchronously gets the status of a projection
      *
-     * returns String of JSON containing projection status
+     * @return ProjectionDetails
      */
-    public function getStatus(string $name, ?UserCredentials $userCredentials = null): string;
+    public function getStatus(string $name, ?UserCredentials $userCredentials = null): ProjectionDetails;
 
     /**
      * Synchronously gets the state of a projection.
      *
-     * returns String of JSON containing projection state
+     * @return State
      */
-    public function getState(string $name, ?UserCredentials $userCredentials = null): string;
+    public function getState(string $name, ?UserCredentials $userCredentials = null): State;
 
     /**
      * Synchronously gets the state of a projection for a specified partition
      *
-     * returns String of JSON containing projection state
+     * @return State
      */
     public function getPartitionState(
         string $name,
         string $partition,
         ?UserCredentials $userCredentials = null
-    ): string;
+    ): State;
 
     /**
      * Synchronously gets the resut of a projection
      *
-     * returns String of JSON containing projection result
+     * @return State
      */
-    public function getResult(string $name, ?UserCredentials $userCredentials = null): string;
+    public function getResult(string $name, ?UserCredentials $userCredentials = null): State;
 
     /**
      * Synchronously gets the result of a projection for a specified partition
      *
-     * returns String of JSON containing projection result
+     * @return State
      */
     public function getPartitionResult(
         string $name,
         string $partition,
         ?UserCredentials $userCredentials = null
-    ): string;
+    ): State;
 
     /**
      * Synchronously gets the statistics of a projection
      *
-     * returns String of JSON containing projection statistics
+     * @return ProjectionStatistics
      */
-    public function getStatistics(string $name, ?UserCredentials $userCredentials = null): string;
+    public function getStatistics(string $name, ?UserCredentials $userCredentials = null): ProjectionStatistics;
 
     /**
      * Synchronously gets the status of a query
+     *
+     * @return Query
      */
-    public function getQuery(string $name, ?UserCredentials $userCredentials = null): string;
+    public function getQuery(string $name, ?UserCredentials $userCredentials = null): Query;
 
     /**
      * Synchronously updates the definition of a query

@@ -15,27 +15,38 @@ namespace Prooph\EventStore\Async\Projections;
 
 use Amp\Promise;
 use Prooph\EventStore\Projections\ProjectionDetails;
+use Prooph\EventStore\Projections\ProjectionStatistics;
+use Prooph\EventStore\Projections\Query;
+use Prooph\EventStore\Projections\State;
 use Prooph\EventStore\UserCredentials;
 
 interface ProjectionsManager
 {
     /**
      * Asynchronously enables a projection
+     *
+     * @return Promise<void>
      */
     public function enableAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously aborts and disables a projection without writing a checkpoint
+     *
+     * @return Promise<void>
      */
     public function disableAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously disables a projection
+     *
+     * @return Promise<void>
      */
     public function abortAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously creates a one-time query
+     *
+     * @return Promise<void>
      */
     public function createOneTimeAsync(
         string $query,
@@ -45,6 +56,8 @@ interface ProjectionsManager
 
     /**
      * Asynchronously creates a one-time query
+     *
+     * @return Promise<void>
      */
     public function createTransientAsync(
         string $name,
@@ -55,6 +68,8 @@ interface ProjectionsManager
 
     /**
      * Asynchronously creates a continuous projection
+     *
+     * @return Promise<void>
      */
     public function createContinuousAsync(
         string $name,
@@ -99,7 +114,7 @@ interface ProjectionsManager
      *
      * returns String of JSON containing projection state
      *
-     * @return Promise<string>
+     * @return Promise<State>
      */
     public function getStateAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
@@ -108,7 +123,7 @@ interface ProjectionsManager
      *
      * returns String of JSON containing projection state
      *
-     * @return Promise<string>
+     * @return Promise<State>
      */
     public function getPartitionStateAsync(
         string $name,
@@ -121,7 +136,7 @@ interface ProjectionsManager
      *
      * returns String of JSON containing projection result
      *
-     * @return Promise<string>
+     * @return Promise<State>
      */
     public function getResultAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
@@ -130,7 +145,7 @@ interface ProjectionsManager
      *
      * returns String of JSON containing projection result
      *
-     * @return Promise<string>
+     * @return Promise<State>
      */
     public function getPartitionResultAsync(
         string $name,
@@ -143,19 +158,21 @@ interface ProjectionsManager
      *
      * returns String of JSON containing projection statistics
      *
-     * @return Promise<string>
+     * @return Promise<ProjectionStatistics>
      */
     public function getStatisticsAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously gets the status of a query
      *
-     * @return Promise<string>
+     * @return Promise<Query>
      */
     public function getQueryAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously updates the definition of a query
+     *
+     * @return Promise<void>
      */
     public function updateQueryAsync(
         string $name,
@@ -166,6 +183,8 @@ interface ProjectionsManager
 
     /**
      * Asynchronously deletes a projection
+     *
+     * @return Promise<void>
      */
     public function deleteAsync(
         string $name,
@@ -175,6 +194,8 @@ interface ProjectionsManager
 
     /**
      * Asynchronously resets a projection
+     *
+     * @return Promise<void>
      */
     public function resetAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 }

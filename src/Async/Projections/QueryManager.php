@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Async\Projections;
 
 use Amp\Promise;
+use Prooph\EventStore\Projections\State;
 use Prooph\EventStore\UserCredentials;
 
 interface QueryManager
@@ -25,7 +26,7 @@ interface QueryManager
      *
      * returns String of JSON containing query result
      *
-     * @return Promise<string>
+     * @return Promise<State>
      */
     public function executeAsync(
         string $name,
