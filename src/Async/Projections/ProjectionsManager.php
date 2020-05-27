@@ -103,8 +103,6 @@ interface ProjectionsManager
     /**
      * Asynchronously gets the status of a projection
      *
-     * returns String of JSON containing projection status
-     *
      * @return Promise<ProjectionDetails>
      */
     public function getStatusAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
@@ -112,16 +110,12 @@ interface ProjectionsManager
     /**
      * Asynchronously gets the state of a projection.
      *
-     * returns String of JSON containing projection state
-     *
      * @return Promise<State>
      */
     public function getStateAsync(string $name, ?UserCredentials $userCredentials = null): Promise;
 
     /**
      * Asynchronously gets the state of a projection for a specified partition
-     *
-     * returns String of JSON containing projection state
      *
      * @return Promise<State>
      */
@@ -132,9 +126,7 @@ interface ProjectionsManager
     ): Promise;
 
     /**
-     * Asynchronously gets the resut of a projection
-     *
-     * returns String of JSON containing projection result
+     * Asynchronously gets the result of a projection
      *
      * @return Promise<State>
      */
@@ -142,8 +134,6 @@ interface ProjectionsManager
 
     /**
      * Asynchronously gets the result of a projection for a specified partition
-     *
-     * returns String of JSON containing projection result
      *
      * @return Promise<State>
      */
@@ -155,8 +145,6 @@ interface ProjectionsManager
 
     /**
      * Asynchronously gets the statistics of a projection
-     *
-     * returns String of JSON containing projection statistics
      *
      * @return Promise<ProjectionStatistics>
      */

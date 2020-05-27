@@ -24,8 +24,6 @@ interface QueryManager
      *
      * Creates a new transient projection and polls its status until it is Completed
      *
-     * returns String of JSON containing query result
-     *
      * @return Promise<State>
      */
     public function executeAsync(

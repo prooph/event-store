@@ -26,6 +26,7 @@ interface PersistentSubscriptionsManager
         ?UserCredentials $userCredentials = null
     ): Promise;
 
+    /** @return Promise<void> */
     public function replayParkedMessages(
         string $stream,
         string $subscriptionName,
