@@ -11,14 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Internal;
+namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
-/**
- * @internal
- * @psalm-immutable
- */
+/** @psalm-immutable */
 class PersistentSubscriptionCreateStatus
 {
     public const OPTIONS = [

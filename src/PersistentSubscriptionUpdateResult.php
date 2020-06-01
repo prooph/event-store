@@ -11,19 +11,20 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Internal;
+namespace Prooph\EventStore;
 
-class PersistentSubscriptionDeleteResult
+/** @psalm-immutable */
+class PersistentSubscriptionUpdateResult
 {
-    private PersistentSubscriptionDeleteStatus $status;
+    private PersistentSubscriptionUpdateStatus $status;
 
     /** @internal */
-    public function __construct(PersistentSubscriptionDeleteStatus $status)
+    public function __construct(PersistentSubscriptionUpdateStatus $status)
     {
         $this->status = $status;
     }
 
-    public function status(): PersistentSubscriptionDeleteStatus
+    public function status(): PersistentSubscriptionUpdateStatus
     {
         return $this->status;
     }

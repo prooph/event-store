@@ -11,25 +11,20 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Internal;
+namespace Prooph\EventStore;
 
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
-/**
- * @internal
- * @psalm-immutable
- */
-class PersistentSubscriptionUpdateStatus
+/** @psalm-immutable */
+class PersistentSubscriptionDeleteStatus
 {
     public const OPTIONS = [
         'Success' => 0,
-        'NotFound' => 1,
-        'Failure' => 2,
+        'Failure' => 1,
     ];
 
     public const SUCCESS = 0;
-    public const NOT_FOUND = 1;
-    public const FAILURE = 2;
+    public const FAILURE = 1;
 
     private string $name;
     private int $value;
@@ -43,11 +38,6 @@ class PersistentSubscriptionUpdateStatus
     public static function success(): self
     {
         return new self('Success');
-    }
-
-    public static function notFound(): self
-    {
-        return new self('NotFound');
     }
 
     public static function failure(): self
@@ -76,7 +66,7 @@ class PersistentSubscriptionUpdateStatus
     }
 
     /** @psalm-pure */
-    public function equals(PersistentSubscriptionUpdateStatus $other): bool
+    public function equals(PersistentSubscriptionDeleteStatus $other): bool
     {
         return \get_class($this) === \get_class($other) && $this->name === $other->name;
     }
