@@ -14,9 +14,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use Closure;
-use Prooph\EventStore\Internal\PersistentSubscriptionCreateResult;
-use Prooph\EventStore\Internal\PersistentSubscriptionDeleteResult;
-use Prooph\EventStore\Internal\PersistentSubscriptionUpdateResult;
 use Throwable;
 
 interface EventStoreConnection

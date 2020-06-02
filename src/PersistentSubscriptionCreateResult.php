@@ -11,8 +11,9 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Internal;
+namespace Prooph\EventStore;
 
+/** @psalm-immutable */
 class PersistentSubscriptionCreateResult
 {
     private PersistentSubscriptionCreateStatus $status;
