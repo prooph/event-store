@@ -29,9 +29,9 @@
         "prooph/common": "^4.1.0"
     },
     "require-dev": {
-        "phpspec/prophecy": "^1.7",
+        "phpspec/prophecy": "^1.10.3",
         "phpunit/php-invoker": "^2.0",
-        "phpunit/phpunit": "^7.1.4",
+        "phpunit/phpunit": "^7.5.20",
         "prooph/bookdown-template": "^0.2.3",
         "prooph/php-cs-fixer-config": "v0.3.1",
         "psr/container": "^1.0",
