@@ -83,7 +83,80 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
      */
     public function it_returns_messages_in_order(): void
     {
-        $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
+        $streams = $this->getStreams();
+        $iterator = new MergedStreamIterator(\array_keys($streams), ...\array_values($streams));
+
+        $index = 0;
+        foreach ($iterator as $position => $message) {
+            $this->assertEquals($index, $message->payload()['expected_index']);
+            $this->assertEquals($iterator->streamName(), $message->payload()['expected_stream_name']);
+
+            $index++;
+        }
+    }
+
+    public function getStreamsLarge($numberOfEvents = 977): array
+    {
+        $datetimeList = [];
+        for ($i = 0; $i < $numberOfEvents; $i++) {
+            $millis = 100000 + $i;
+            $datetimeList[] = \sprintf('2019-05-10T10:%d:%d.%d', 10, 10, $millis);
+        }
+
+        foreach ($datetimeList as $key => &$value) {
+            $value = [
+                'payload' => ['expected_index' => $key],
+                'createdAt' => DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $value),
+            ];
+        }
+        unset($value);
+
+        \shuffle($datetimeList);
+
+        $length = (int) \floor($numberOfEvents / 3);
+        $chunkThree = (int) \floor($length / 3) * 3;
+
+        $streamsThreeEvents = \array_chunk(\array_slice($datetimeList, 0, $chunkThree), 3);
+        $streamsTwoEvents = \array_chunk(\array_slice($datetimeList, $chunkThree, $length), 2);
+        $streamsOneEvents = \array_chunk(\array_slice($datetimeList, $length + $chunkThree), 1);
+
+        $streamEvents = \array_merge($streamsOneEvents, $streamsTwoEvents, $streamsThreeEvents);
+        \shuffle($streamEvents);
+
+        $streams = [];
+
+        foreach ($streamEvents as $streamNo => $stream) {
+            $events = [];
+            $streamName = 'stream' . $streamNo;
+
+            // must be sorted
+            \usort($stream, static function ($a, $b) {
+                return $a['payload']['expected_index'] <=> $b['payload']['expected_index'];
+            });
+
+            foreach ($stream as $eventNo => $event) {
+                $events[$eventNo + 1] = TestDomainEvent::withPayloadAndSpecifiedCreatedAt(
+                    \array_merge(
+                        $event['payload'],
+                        ['expected_position' => $eventNo + 1, 'expected_stream_name' => $streamName]
+                    ),
+                    $eventNo + 1,
+                    $event['createdAt']
+                );
+            }
+            $streams[$streamName] = new InMemoryStreamIterator($events);
+        }
+
+        return $streams;
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_messages_in_order_for_large_streams(): void
+    {
+        $streams = $this->getStreamsLarge();
+        $iterator = new MergedStreamIterator(\array_keys($streams), ...\array_values($streams));
 
         $index = 0;
         foreach ($iterator as $position => $message) {

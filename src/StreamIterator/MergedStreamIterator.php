@@ -13,28 +13,27 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\StreamIterator;
 
-use Prooph\Common\Messaging\Message;
-
 class MergedStreamIterator implements StreamIterator
 {
-    /**
-     * @var StreamIterator[]
-     */
-    private $iterators;
+    use TimSort;
 
     /**
-     * @var string[]
+     * @var array
      */
-    private $streamNames;
+    private $iterators = [];
+
+    /**
+     * @var int
+     */
+    private $numberOfIterators;
 
     public function __construct(array $streamNames, StreamIterator ...$iterators)
     {
-        $this->iterators = [];
-        $this->streamNames = $streamNames;
-
         foreach ($iterators as $key => $iterator) {
-            $this->iterators[$key] = $iterator;
+            $this->iterators[$key][0] = $iterator;
+            $this->iterators[$key][1] = $streamNames[$key];
         }
+        $this->numberOfIterators = \count($this->iterators);
 
         $this->prioritizeIterators();
     }
@@ -42,7 +41,7 @@ class MergedStreamIterator implements StreamIterator
     public function rewind(): void
     {
         foreach ($this->iterators as $iter) {
-            $iter->rewind();
+            $iter[0]->rewind();
         }
 
         $this->prioritizeIterators();
@@ -51,7 +50,7 @@ class MergedStreamIterator implements StreamIterator
     public function valid(): bool
     {
         foreach ($this->iterators as $key => $iterator) {
-            if ($iterator->valid()) {
+            if ($iterator[0]->valid()) {
                 return true;
             }
         }
@@ -62,31 +61,31 @@ class MergedStreamIterator implements StreamIterator
     public function next(): void
     {
         // only advance the prioritized iterator
-        $this->iterators[\array_keys($this->iterators)[0]]->next();
+        $this->iterators[0][0]->next();
 
         $this->prioritizeIterators();
     }
 
     public function current()
     {
-        return $this->iterators[\array_keys($this->iterators)[0]]->current();
+        return $this->iterators[0][0]->current();
     }
 
     public function streamName(): string
     {
-        return $this->streamNames[\array_keys($this->iterators)[0]];
+        return $this->iterators[0][1];
     }
 
     public function key(): int
     {
-        return $this->iterators[\array_keys($this->iterators)[0]]->key();
+        return $this->iterators[0][0]->key();
     }
 
     public function count(): int
     {
         $count = 0;
         foreach ($this->iterators as $iterator) {
-            $count += \count($iterator);
+            $count += \count($iterator[0]);
         }
 
         return $count;
@@ -100,22 +99,8 @@ class MergedStreamIterator implements StreamIterator
      */
     private function prioritizeIterators(): void
     {
-        $compareValue = function (\Iterator $iterator): \DateTimeImmutable {
-            /** @var Message $message */
-            $message = $iterator->current();
-
-            return $message->createdAt();
-        };
-
-        $compareFunction = function (\Iterator $a, \Iterator $b) use ($compareValue) {
-            // valid iterators should be prioritized over invalid ones
-            if (! $a->valid() or ! $b->valid()) {
-                return $b->valid() <=> $a->valid();
-            }
-
-            return $compareValue($a) <=> $compareValue($b);
-        };
-
-        \uasort($this->iterators, $compareFunction);
+        if ($this->numberOfIterators > 1) {
+            $this->timSort($this->iterators, $this->numberOfIterators);
+        }
     }
 }
