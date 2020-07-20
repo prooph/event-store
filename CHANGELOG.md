@@ -1,5 +1,13 @@
 # Change Log
 
+## [v7.5.8](https://github.com/prooph/event-store/tree/v7.5.8)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.7...v7.5.8)
+
+** Implemented enhancements:**
+
+-  Improve MergeStreamIterator performance by using TimSort [\#408](https://github.com/prooph/event-store/pull/408) ([sandrokeil](https://github.com/sandrokeil))
+
 ## [v7.5.7](https://github.com/prooph/event-store/tree/v7.5.7)
 
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.5.6...v7.5.7)
