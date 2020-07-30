@@ -161,7 +161,7 @@ interface EventStoreConnection
 
     /**
      * @param Closure(EventStoreSubscription, ResolvedEvent): void $eventAppeared
-     * @param Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
+     * @param null|Closure(EventStoreSubscription, SubscriptionDropReason, null|Throwable): void $subscriptionDropped
      */
     public function subscribeToAll(
         bool $resolveLinkTos,
