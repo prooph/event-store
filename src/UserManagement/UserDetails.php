@@ -53,7 +53,7 @@ final class UserDetails
     public static function fromArray(array $data): self
     {
         $dateLastUpdated = isset($data['dateLastUpdated'])
-            ? DateTime::create((string) $data['dateLastUpdated'])
+            ? DateTime::create(DateTimeStringBugWorkaround::fixDateTimeString((string) $data['dateLastUpdated']))
             : null;
 
         $links = [];
