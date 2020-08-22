@@ -15,6 +15,7 @@ namespace Prooph\EventStore\UserManagement;
 
 use DateTimeImmutable;
 use Prooph\EventStore\Exception\RuntimeException;
+use Prooph\EventStore\Internal\DateTimeStringBugWorkaround;
 use Prooph\EventStore\Util\DateTime;
 
 /** @psalm-immutable */
