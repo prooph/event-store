@@ -38,6 +38,8 @@ final class DateTimeStringBugWorkaround
             $micros = \substr($micros, 0, 6);
         }
 
+        $micros = \str_replace('+', '0', $micros);
+
         return \substr($dateTimeString, 0, 20) . $micros . 'Z';
     }
 }
