@@ -27,6 +27,11 @@ class MergedStreamIterator implements StreamIterator
      */
     private $numberOfIterators;
 
+    /**
+     * @var array
+     */
+    private $originalIteratorOrder;
+
     public function __construct(array $streamNames, StreamIterator ...$iterators)
     {
         foreach ($iterators as $key => $iterator) {
@@ -34,6 +39,7 @@ class MergedStreamIterator implements StreamIterator
             $this->iterators[$key][1] = $streamNames[$key];
         }
         $this->numberOfIterators = \count($this->iterators);
+        $this->originalIteratorOrder = $this->iterators;
 
         $this->prioritizeIterators();
     }
@@ -100,6 +106,8 @@ class MergedStreamIterator implements StreamIterator
     private function prioritizeIterators(): void
     {
         if ($this->numberOfIterators > 1) {
+            $this->iterators = $this->originalIteratorOrder;
+
             $this->timSort($this->iterators, $this->numberOfIterators);
         }
     }
