@@ -98,7 +98,7 @@ class StreamMetadataBuilder
         return $this;
     }
 
-    /** Sets the event number from which previous events can be scavenged */
+    /** Sets the maximum age of events allowed in the stream */
     public function setMaxAge(int $maxAge): StreamMetadataBuilder
     {
         if ($maxAge < 0) {
