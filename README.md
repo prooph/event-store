@@ -57,11 +57,11 @@ To establish a consistent code quality, please provide unit tests for all your c
 
 ## Version Guidance
 
-| Version | Status     | PHP Version | Support Until |
-|---------|------------|-------------|---------------|
-| 5.x     | EOL        | >= 5.5      | EOL           |
-| 6.x     | Maintained | >= 5.5      | 3 Dec 2017    |
-| 7.x     | Latest     | >= 7.1      | active        |
+| Version | Status     | PHP Version   | Support Until |
+|---------|------------|---------------|---------------|
+| 5.x     | EOL        | \>= 5.5        | EOL           |
+| 6.x     | Maintained | \>= 5.5        | 3 Dec 2017    |
+| 7.x     | Latest     | \>= 7.1 \| 8.0  | active        |
 
 ## License
 
