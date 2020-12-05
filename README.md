@@ -2,8 +2,8 @@
 
 PHP 7.1 EventStore Implementation.
 
-[![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
-[![Coverage Status](https://coveralls.io/repos/prooph/event-store/badge.svg?branch=master&service=github)](https://coveralls.io/github/prooph/event-store?branch=master)
+[![Build Status](https://travis-ci.com/prooph/event-store.svg?branch=7.x)](https://travis-ci.com/prooph/event-store)
+[![Coverage Status](https://coveralls.io/repos/prooph/event-store/badge.svg?branch=7.x&service=github)](https://coveralls.io/github/prooph/event-store?branch=7.x)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/prooph/improoph)
 
 ## Overview
