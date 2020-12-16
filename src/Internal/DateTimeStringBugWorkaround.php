@@ -23,7 +23,6 @@ final class DateTimeStringBugWorkaround
     {
         $micros = \substr($dateTimeString, 20, -1);
 
-        // PHP versions before v8 returned false instead of an empty string
         if (false === $micros || '' === $micros) {
             // no microseconds given
             $dateTimeString = \substr($dateTimeString, 0, 19) . '.';
