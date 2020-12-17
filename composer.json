@@ -17,7 +17,7 @@
   ],
   "prefer-stable": true,
   "require": {
-    "php": "^7.4||^8.0",
+    "php": "^7.4",
     "ext-json": "*",
     "ramsey/uuid": "^3.9.3"
   },
@@ -28,7 +28,7 @@
     "phpspec/prophecy": "^1.10.3",
     "phpunit/phpunit": "^9.1",
     "prooph/php-cs-fixer-config": "^0.3.1",
-    "vimeo/psalm": "^3.11.2"
+    "vimeo/psalm": "^3.11.2,<3.12"
   },
   "autoload": {
     "psr-4": {
