@@ -3,20 +3,15 @@ language: php
 matrix:
   fast_finish: true
   include:
-    - php: 7.1
+    - php: 7.3
       env:
         - DEPENDENCIES=""
-        - EXECUTE_CS_CHECK=true
+        - XDEBUG_MODE="coverage"
         - TEST_COVERAGE=true
-    - php: 7.1
-      env:
-        - DEPENDENCIES="--prefer-lowest --prefer-stable"
-    - php: 7.2
+    - php: 7.3
       env:
         - DEPENDENCIES=""
-    - php: 7.2
-      env:
-        - DEPENDENCIES="--prefer-lowest --prefer-stable"
+        - PHP_CS=true
     - php: 7.3
       env:
         - DEPENDENCIES=""
@@ -49,8 +44,7 @@ before_script:
   - composer update --prefer-dist $DEPENDENCIES
 
 script:
-  - if [[ $TEST_COVERAGE == 'true' ]]; then php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml; else ./vendor/bin/phpunit; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml; elif [[ $PHP_CS == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run; else ./vendor/bin/phpunit; fi
 
 after_success:
   - if [[ $TEST_COVERAGE == 'true' ]]; then php vendor/bin/coveralls -v; fi
