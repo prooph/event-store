@@ -18,10 +18,13 @@ use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
 class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

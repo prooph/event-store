@@ -28,13 +28,15 @@ use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * Common tests for all event store implementations
  */
 abstract class AbstractEventStoreTest extends TestCase
 {
-    use EventStoreTestStreamTrait;
+    use EventStoreTestStreamTrait,
+        ProphecyTrait;
 
     /**
      * @var EventStore

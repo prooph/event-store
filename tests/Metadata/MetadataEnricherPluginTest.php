@@ -25,9 +25,12 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class MetadataEnricherPluginTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

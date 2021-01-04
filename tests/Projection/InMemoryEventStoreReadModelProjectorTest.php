@@ -189,6 +189,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
 
     /**
      * @test
+     * @medium
      */
     public function it_dispatches_pcntl_signals_when_enabled(): void
     {

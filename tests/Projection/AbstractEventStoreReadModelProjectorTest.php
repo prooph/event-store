@@ -29,12 +29,15 @@ use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\ReadModelMock;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * Common tests for all event store read model projector implementations
  */
 abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ProjectionManager
      */
@@ -418,13 +421,13 @@ abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
 
         $state = $projection->getState();
 
-        $this->assertInternalType('array', $state);
+        $this->assertIsArray($state);
 
         $projection->reset();
 
         $state2 = $projection->getState();
 
-        $this->assertInternalType('array', $state2);
+        $this->assertIsArray($state2);
     }
 
     /**

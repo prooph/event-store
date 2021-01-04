@@ -31,10 +31,13 @@ use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
 class InMemoryEventStoreFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

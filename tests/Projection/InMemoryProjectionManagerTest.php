@@ -20,15 +20,18 @@ use Prooph\EventStore\Exception\RuntimeException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
 {
+    use ProphecyTrait;
+
     /**
      * @var InMemoryProjectionManager
      */
     protected $projectionManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->projectionManager = new InMemoryProjectionManager(new InMemoryEventStore());
     }

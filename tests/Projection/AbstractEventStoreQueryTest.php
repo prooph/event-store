@@ -300,13 +300,13 @@ abstract class AbstractEventStoreQueryTest extends TestCase
 
         $state = $query->getState();
 
-        $this->assertInternalType('array', $state);
+        $this->assertIsArray($state);
 
         $query->reset();
 
         $state2 = $query->getState();
 
-        $this->assertInternalType('array', $state2);
+        $this->assertIsArray($state2);
     }
 
     /**

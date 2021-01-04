@@ -26,14 +26,15 @@
     "require": {
         "php": "^7.1 || ^8.0",
         "marc-mabe/php-enum": "^2.3.1 || ^3.0.0 || ^4.0.0",
-        "prooph/common": "^4.1.0"
+        "prooph/common": "^4.5.0"
     },
     "require-dev": {
         "phpspec/prophecy": "^1.10.3",
-        "phpunit/php-invoker": "^2.0",
-        "phpunit/phpunit": "^7.5.20",
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpunit/php-invoker": "^3.1",
+        "phpunit/phpunit": "^9.0",
         "prooph/bookdown-template": "^0.2.3",
-        "prooph/php-cs-fixer-config": "v0.3.1",
+        "prooph/php-cs-fixer-config": "^0.4",
         "psr/container": "^1.0",
         "sandrokeil/interop-config": "^2.0.1",
         "satooshi/php-coveralls": "^1.0"

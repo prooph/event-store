@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ProophTest\EventStore;
 
 use ArrayIterator;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterEventStore;
@@ -28,7 +29,8 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 
 class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestCase
 {
-    use EventStoreTestStreamTrait;
+    use EventStoreTestStreamTrait,
+        ProphecyTrait;
 
     /**
      * @test

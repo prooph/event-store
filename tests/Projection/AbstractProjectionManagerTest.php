@@ -32,6 +32,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
 
     /**
      * @test
+     * @medium
      */
     public function it_fetches_projection_names(): void
     {
@@ -157,6 +158,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
 
     /**
      * @test
+     * @medium
      */
     public function it_fetches_projection_names_using_regex(): void
     {

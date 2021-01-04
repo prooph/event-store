@@ -20,9 +20,12 @@ use Prooph\EventStore\StreamIterator\InMemoryStreamIterator;
 use Prooph\EventStore\StreamIterator\StreamIterator;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
 use Prooph\EventStore\Upcasting\UpcastingIterator;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class UpcastingIteratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

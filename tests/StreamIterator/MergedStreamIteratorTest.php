@@ -152,6 +152,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
 
     /**
      * @test
+     * @large
      */
     public function it_returns_messages_in_order_for_large_streams(): void
     {
