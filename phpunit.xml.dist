@@ -13,6 +13,7 @@
          enforceTimeLimit="true"
          failOnWarning="true"
          failOnRisky="true"
+         timeoutForLargeTests="180"
 >
     <testsuite name="Prooph EventStore Test Suite">
         <directory>./tests</directory>
