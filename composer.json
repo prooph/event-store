@@ -32,7 +32,7 @@
         "phpspec/prophecy": "^1.10.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/php-invoker": "^3.1",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^9.3",
         "prooph/bookdown-template": "^0.2.3",
         "prooph/php-cs-fixer-config": "^0.4",
         "psr/container": "^1.0",
