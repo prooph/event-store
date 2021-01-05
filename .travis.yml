@@ -42,7 +42,7 @@ before_script:
   - phpenv config-rm xdebug.ini
   - composer self-update
   - composer update --prefer-dist $DEPENDENCIES
-  - rm -rf .php_cs.cache
+  - rm -rf $HOME/.php-cs-fixer/.php_cs.cache
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml; elif [[ $PHP_CS == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run; else ./vendor/bin/phpunit; fi
