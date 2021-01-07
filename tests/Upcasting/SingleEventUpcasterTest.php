@@ -16,9 +16,12 @@ namespace ProophTest\EventStore\Upcasting;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class SingleEventUpcasterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */
@@ -35,7 +38,7 @@ class SingleEventUpcasterTest extends TestCase
 
         $messages = $upcaster->upcast($message);
 
-        $this->assertInternalType('array', $messages);
+        $this->assertIsArray($messages);
         $this->assertNotEmpty($messages);
         $this->assertSame($upcastedMessage, $messages[0]);
     }
@@ -53,7 +56,7 @@ class SingleEventUpcasterTest extends TestCase
 
         $messages = $upcaster->upcast($message);
 
-        $this->assertInternalType('array', $messages);
+        $this->assertIsArray($messages);
         $this->assertNotEmpty($messages);
         $this->assertSame($message, $messages[0]);
     }

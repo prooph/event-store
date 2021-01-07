@@ -20,9 +20,12 @@ use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryEventStoreProjector;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class InMemoryEventStoreProjectorTest extends AbstractEventStoreProjectorTest
 {
+    use ProphecyTrait;
+
     /**
      * @var InMemoryProjectionManager
      */

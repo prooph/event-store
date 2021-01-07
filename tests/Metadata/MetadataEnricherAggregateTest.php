@@ -20,9 +20,12 @@ use Prooph\EventStore\Metadata\MetadataEnricher;
 use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class MetadataEnricherAggregateTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

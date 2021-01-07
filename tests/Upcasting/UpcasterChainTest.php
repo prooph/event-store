@@ -19,9 +19,12 @@ use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
 use Prooph\EventStore\Upcasting\Upcaster;
 use Prooph\EventStore\Upcasting\UpcasterChain;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class UpcasterChainTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */
@@ -50,7 +53,7 @@ class UpcasterChainTest extends TestCase
 
         $messages = $upcasterChain->upcast($message);
 
-        $this->assertInternalType('array', $messages);
+        $this->assertIsArray($messages);
         $this->assertNotEmpty($messages);
         $this->assertSame($upcastedMessage2, $messages[0]);
         $this->assertSame($upcastedMessage3, $messages[1]);

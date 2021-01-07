@@ -21,10 +21,12 @@ use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class TransactionalActionEventEmitterEventStoreTest extends TestCase
 {
     use EventStoreTestStreamTrait;
+    use ProphecyTrait;
 
     /**
      * @var TransactionalActionEventEmitterEventStore

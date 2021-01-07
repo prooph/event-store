@@ -418,13 +418,13 @@ abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
 
         $state = $projection->getState();
 
-        $this->assertInternalType('array', $state);
+        $this->assertIsArray($state);
 
         $projection->reset();
 
         $state2 = $projection->getState();
 
-        $this->assertInternalType('array', $state2);
+        $this->assertIsArray($state2);
     }
 
     /**

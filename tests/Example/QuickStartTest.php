@@ -27,7 +27,7 @@ class QuickStartTest extends TestCase
             '\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
         );
 
-        $this->assertRegExp($pattern, $this->getQuickstartOutput());
+        $this->assertMatchesRegularExpression($pattern, $this->getQuickstartOutput());
     }
 
     private function getQuickstartOutput(): string

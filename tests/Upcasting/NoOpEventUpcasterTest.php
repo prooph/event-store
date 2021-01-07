@@ -16,9 +16,12 @@ namespace ProophTest\EventStore\Upcasting;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class NoOpEventUpcasterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */
@@ -30,7 +33,7 @@ class NoOpEventUpcasterTest extends TestCase
         $upcaster = new NoOpEventUpcaster();
 
         $messages = $upcaster->upcast($message);
-        $this->assertInternalType('array', $messages);
+        $this->assertIsArray($messages);
         $this->assertNotEmpty($messages);
         $this->assertSame($message, $messages[0]);
     }

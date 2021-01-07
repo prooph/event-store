@@ -19,9 +19,12 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Psr\Container\ContainerInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class InMemoryProjectionManagerFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

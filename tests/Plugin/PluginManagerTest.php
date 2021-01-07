@@ -19,9 +19,12 @@ use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
 use Psr\Container\ContainerInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

@@ -25,9 +25,11 @@ use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\StreamName;
 use ProophTest\EventStore\Mock\UsernameChanged;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ActionEventEmitterEventStoreTest extends ActionEventEmitterEventStoreTestCase
 {
+    use ProphecyTrait;
     use EventStoreTestStreamTrait;
 
     /**

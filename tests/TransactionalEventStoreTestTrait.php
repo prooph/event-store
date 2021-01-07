@@ -22,12 +22,15 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\TransactionalEventStore;
 use ProophTest\EventStore\Mock\UsernameChanged;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * Common tests for all transactional event store implementations
  */
 trait TransactionalEventStoreTestTrait
 {
+    use ProphecyTrait;
+
     /**
      * @var TransactionalEventStore
      */

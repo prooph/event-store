@@ -21,9 +21,12 @@ use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjector;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use ProophTest\EventStore\Mock\ReadModelMock;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadModelProjectorTest
 {
+    use ProphecyTrait;
+
     /**
      * @var InMemoryProjectionManager
      */

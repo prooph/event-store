@@ -32,9 +32,12 @@ use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 use Prophecy\Argument;
 use Psr\Container\ContainerInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class InMemoryEventStoreFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */
@@ -43,7 +46,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['default'] = [];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->once())->method('get')->with('config')->willReturn($config);
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
@@ -59,7 +62,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->once())->method('get')->with('config')->willReturn($config);
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
@@ -75,7 +78,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false, 'transactional' => false];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->once())->method('get')->with('config')->willReturn($config);
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
@@ -91,7 +94,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['default'] = ['wrap_action_event_emitter' => false, 'read_only' => true];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->once())->method('get')->with('config')->willReturn($config);
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
@@ -107,7 +110,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['another'] = [];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->once())->method('get')->with('config')->willReturn($config);
 
         $type = 'another';
         $eventStore = InMemoryEventStoreFactory::$type($containerMock);
@@ -123,7 +126,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $config['prooph']['event_store']['another'] = ['transactional' => false];
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
+        $containerMock->expects($this->once())->method('get')->with('config')->willReturn($config);
 
         $type = 'another';
         $eventStore = InMemoryEventStoreFactory::$type($containerMock);
@@ -141,8 +144,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $eventEmitterMock = $this->getMockForAbstractClass(ActionEventEmitter::class);
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with('event_emitter')->willReturn($eventEmitterMock);
+        $containerMock->expects($this->any())->method('get')->willReturnMap([
+            ['config', $config],
+            ['event_emitter', $eventEmitterMock]
+        ]);
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
@@ -152,6 +157,7 @@ class InMemoryEventStoreFactoryTest extends TestCase
 
     /**
      * @test
+     * @group only
      */
     public function it_injects_plugins(): void
     {
@@ -161,8 +167,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $featureMock->attachToEventStore(Argument::type(TransactionalActionEventEmitterEventStore::class))->shouldBeCalled();
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock->reveal());
+        $containerMock->expects($this->any())->method('get')->willReturnMap([
+            ['config', $config],
+            ['plugin', $featureMock->reveal()]
+        ]);
 
         $factory = new InMemoryEventStoreFactory();
         $eventStore = $factory($containerMock);
@@ -183,8 +191,10 @@ class InMemoryEventStoreFactoryTest extends TestCase
         $featureMock = 'foo';
 
         $containerMock = $this->getMockForAbstractClass(ContainerInterface::class);
-        $containerMock->expects($this->at(0))->method('get')->with('config')->willReturn($config);
-        $containerMock->expects($this->at(1))->method('get')->with('plugin')->willReturn($featureMock);
+        $containerMock->expects($this->any())->method('get')->willReturnMap([
+            ['config', $config],
+            ['plugin', $featureMock]
+        ]);
 
         $factory = new InMemoryEventStoreFactory();
         $factory($containerMock);

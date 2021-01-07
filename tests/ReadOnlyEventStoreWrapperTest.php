@@ -18,9 +18,12 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\ReadOnlyEventStoreWrapper;
 use Prooph\EventStore\StreamName;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ReadOnlyEventStoreWrapperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */
