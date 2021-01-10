@@ -1014,6 +1014,7 @@ abstract class AbstractEventStoreTest extends TestCase
 
     /**
      * @test
+     * @medium
      */
     public function it_fetches_stream_names(): void
     {
@@ -1077,6 +1078,7 @@ abstract class AbstractEventStoreTest extends TestCase
 
     /**
      * @test
+     * @medium
      */
     public function it_fetches_stream_categories(): void
     {
