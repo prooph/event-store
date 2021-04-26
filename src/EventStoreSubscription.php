@@ -50,7 +50,9 @@ abstract class EventStoreSubscription
 
     public function __destruct()
     {
-        $this->unsubscribe();
+        // This can cause segmentation fault.
+        // https://github.com/protocolbuffers/protobuf/issues/8454
+        // $this->unsubscribe();
     }
 
     public function close(): void
