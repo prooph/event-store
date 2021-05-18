@@ -27,8 +27,8 @@
     "php-coveralls/php-coveralls": "^2.2",
     "phpspec/prophecy": "^1.10.3",
     "phpunit/phpunit": "^9.1",
-    "prooph/php-cs-fixer-config": "^0.3.1",
-    "vimeo/psalm": "^3.11.2"
+    "prooph/php-cs-fixer-config": "^0.4.0",
+    "vimeo/psalm": "^3.11.2,<3.12"
   },
   "autoload": {
     "psr-4": {

@@ -5,6 +5,7 @@
 /build
 .idea
 .php_cs.cache
+.phpunit.result.cache
 nbproject
 composer.lock
 docs/html

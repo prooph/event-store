@@ -23,7 +23,7 @@ final class DateTimeStringBugWorkaround
     {
         $micros = \substr($dateTimeString, 20, -1);
 
-        if (false === $micros) {
+        if (false === $micros || '' === $micros) {
             // no microseconds given
             $dateTimeString = \substr($dateTimeString, 0, 19) . '.';
             $micros = '';
