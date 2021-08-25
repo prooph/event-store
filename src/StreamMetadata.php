@@ -196,6 +196,7 @@ class StreamMetadata implements JsonSerializable
             }
         }
 
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         return new self(
             $params[SystemMetadata::MAX_COUNT] ?? null,
             $params[SystemMetadata::MAX_AGE] ?? null,

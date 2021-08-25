@@ -96,151 +96,151 @@ final class ProjectionDetails
         $this->writePendingEventsAfterCheckpoint = $writePendingEventsAfterCheckpoint;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function coreProcessingTime(): int
     {
         return $this->coreProcessingTime;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function version(): int
     {
         return $this->version;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function epoch(): int
     {
         return $this->epoch;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function effectiveName(): string
     {
         return $this->effectiveName;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function writesInProgress(): int
     {
         return $this->writesInProgress;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function readsInProgress(): int
     {
         return $this->readsInProgress;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function partitionsCached(): int
     {
         return $this->partitionsCached;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function status(): string
     {
         return $this->status;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function stateReason(): ?string
     {
         return $this->stateReason;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function name(): string
     {
         return $this->name;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function mode(): string
     {
         return $this->mode;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function position(): string
     {
         return $this->position;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function progress(): float
     {
         return $this->progress;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function lastCheckpoint(): ?string
     {
         return $this->lastCheckpoint;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function eventsProcessedAfterRestart(): int
     {
         return $this->eventsProcessedAfterRestart;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function statusUrl(): string
     {
         return $this->statusUrl;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function stateUrl(): string
     {
         return $this->stateUrl;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function resultUrl(): string
     {
         return $this->resultUrl;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function queryUrl(): string
     {
         return $this->queryUrl;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function enableCommandUrl(): string
     {
         return $this->enableCommandUrl;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function disableCommandUrl(): string
     {
         return $this->disableCommandUrl;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function checkpointStatus(): ?string
     {
         return $this->checkpointStatus;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function bufferedEvents(): int
     {
         return $this->bufferedEvents;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function writePendingEventsBeforeCheckpoint(): int
     {
         return $this->writePendingEventsBeforeCheckpoint;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function writePendingEventsAfterCheckpoint(): int
     {
         return $this->writePendingEventsAfterCheckpoint;

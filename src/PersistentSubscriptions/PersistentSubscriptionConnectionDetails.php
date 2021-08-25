@@ -47,7 +47,7 @@ final class PersistentSubscriptionConnectionDetails
 
     /**
      * @param array<string, string|float|int> $data
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public static function fromArray(array $data): self
     {
@@ -62,43 +62,43 @@ final class PersistentSubscriptionConnectionDetails
         );
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function from(): string
     {
         return $this->from;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function username(): string
     {
         return $this->username;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function averageItemsPerSecond(): float
     {
         return $this->averageItemsPerSecond;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function totalItemsProcessed(): int
     {
         return $this->totalItemsProcessed;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function countSinceLastMeasurement(): int
     {
         return $this->countSinceLastMeasurement;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function availableSlots(): int
     {
         return $this->availableSlots;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function inFlightMessages(): int
     {
         return $this->inFlightMessages;

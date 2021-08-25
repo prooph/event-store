@@ -33,8 +33,12 @@ class Guid
 
     public static function generateAsHex(): string
     {
-        // string cast is a BC layer for ramsey/uuid v3
-        // to be refactor when dropping retrocompatibility
+        /**
+         * @psalm-suppress RedundantCastGivenDocblockType
+         *
+         * string cast is a BC layer for ramsey/uuid v3
+         * to be refactor when dropping retrocompatibility
+         */
         return (string) self::generate()->getHex();
     }
 

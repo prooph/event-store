@@ -89,85 +89,85 @@ final class PersistentSubscriptionConfigDetails
         );
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function resolveLinktos(): bool
     {
         return $this->resolveLinktos;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function startFrom(): int
     {
         return $this->startFrom;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function messageTimeoutMilliseconds(): int
     {
         return $this->messageTimeoutMilliseconds;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function extraStatistics(): bool
     {
         return $this->extraStatistics;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function maxRetryCount(): int
     {
         return $this->maxRetryCount;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function liveBufferSize(): int
     {
         return $this->liveBufferSize;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function bufferSize(): int
     {
         return $this->bufferSize;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function readBatchSize(): int
     {
         return $this->readBatchSize;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function checkPointAfterMilliseconds(): int
     {
         return $this->checkPointAfterMilliseconds;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function minCheckPointCount(): int
     {
         return $this->minCheckPointCount;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function maxCheckPointCount(): int
     {
         return $this->maxCheckPointCount;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function maxSubscriberCount(): int
     {
         return $this->maxSubscriberCount;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function namedConsumerStrategy(): string
     {
         return $this->namedConsumerStrategy;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function preferRoundRobin(): bool
     {
         return $this->preferRoundRobin;

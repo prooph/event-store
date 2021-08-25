@@ -48,49 +48,49 @@ class RecordedEvent
         $this->created = $created;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function eventStreamId(): string
     {
         return $this->eventStreamId;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function eventNumber(): int
     {
         return $this->eventNumber;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function eventId(): EventId
     {
         return $this->eventId;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function eventType(): string
     {
         return $this->eventType;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function isJson(): bool
     {
         return $this->isJson;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function data(): string
     {
         return $this->data;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function metadata(): string
     {
         return $this->metadata;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function created(): DateTimeImmutable
     {
         return $this->created;

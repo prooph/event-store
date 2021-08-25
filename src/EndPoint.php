@@ -25,25 +25,25 @@ class EndPoint
         $this->port = $port;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function host(): string
     {
         return $this->host;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function port(): int
     {
         return $this->port;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function equals(EndPoint $endPoint): bool
     {
         return $this->host === $endPoint->host && $this->port === $endPoint->port;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function __toString(): string
     {
         return $this->host . ':' . $this->port;

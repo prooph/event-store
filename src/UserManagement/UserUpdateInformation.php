@@ -28,7 +28,7 @@ class UserUpdateInformation implements JsonSerializable
     /**
      * @param list<string> $groups
      *
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function __construct(string $fullName, array $groups)
     {

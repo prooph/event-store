@@ -21,19 +21,20 @@ class RelLink
     private string $href;
     private string $rel;
 
+    /** @psalm-mutation-free */
     public function __construct(string $href, string $rel)
     {
         $this->href = $href;
         $this->rel = $rel;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function href(): string
     {
         return $this->href;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function rel(): string
     {
         return $this->rel;

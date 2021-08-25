@@ -55,43 +55,43 @@ class ResolvedEvent implements InternalResolvedEvent
         $this->originalPosition = $originalPosition;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function event(): ?RecordedEvent
     {
         return $this->event;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function link(): ?RecordedEvent
     {
         return $this->link;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function originalEvent(): ?RecordedEvent
     {
         return $this->originalEvent;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function isResolved(): bool
     {
         return $this->isResolved;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function originalPosition(): ?Position
     {
         return $this->originalPosition;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function originalStreamName(): string
     {
         return null !== $this->originalEvent ? $this->originalEvent->eventStreamId() : '';
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function originalEventNumber(): int
     {
         return null !== $this->originalEvent ? $this->originalEvent->eventNumber() : 0;

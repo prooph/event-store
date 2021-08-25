@@ -33,6 +33,8 @@ final class UserDetails
     /**
      * @param list<string> $groups
      * @param list<RelLink> $links
+     *
+     * @psalm-mutation-free
      */
     private function __construct(
         string $loginName,
@@ -62,7 +64,7 @@ final class UserDetails
         if (isset($data['links'])) {
             /** @var list<array<string, string>> $data['links'] */
             foreach ($data['links'] as $link) {
-                $links[] = new RelLink((string) $link['href'], (string) $link['rel']);
+                $links[] = new RelLink($link['href'], $link['rel']);
             }
         }
 
@@ -78,13 +80,13 @@ final class UserDetails
         );
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function loginName(): string
     {
         return $this->loginName;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function fullName(): string
     {
         return $this->fullName;
@@ -92,20 +94,20 @@ final class UserDetails
 
     /**
      * @return list<string>
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function groups(): array
     {
         return $this->groups;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function dateLastUpdated(): ?DateTimeImmutable
     {
         return $this->dateLastUpdated;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function disabled(): bool
     {
         return $this->disabled;
@@ -113,7 +115,7 @@ final class UserDetails
 
     /**
      * @return list<RelLink>
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function links(): array
     {
@@ -122,7 +124,7 @@ final class UserDetails
 
     /**
      * @throws RuntimeException if rel not found
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function getRelLink(string $rel): string
     {

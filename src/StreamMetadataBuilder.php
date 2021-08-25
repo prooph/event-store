@@ -137,6 +137,7 @@ class StreamMetadataBuilder
     /** Sets role names with read permission for the stream */
     public function setReadRoles(string ...$readRole): StreamMetadataBuilder
     {
+        /** @psalm-suppress MixedPropertyTypeCoercion */
         $this->aclRead = $readRole;
 
         return $this;
@@ -145,6 +146,7 @@ class StreamMetadataBuilder
     /** Sets role names with write permission for the stream */
     public function setWriteRoles(string ...$writeRole): StreamMetadataBuilder
     {
+        /** @psalm-suppress MixedPropertyTypeCoercion */
         $this->aclWrite = $writeRole;
 
         return $this;
@@ -153,6 +155,7 @@ class StreamMetadataBuilder
     /** Sets role names with delete permission for the stream */
     public function setDeleteRoles(string ...$deleteRole): StreamMetadataBuilder
     {
+        /** @psalm-suppress MixedPropertyTypeCoercion */
         $this->aclDelete = $deleteRole;
 
         return $this;
@@ -161,6 +164,7 @@ class StreamMetadataBuilder
     /** Sets role names with metadata read permission for the stream */
     public function setMetadataReadRoles(string ...$metaReadRoles): StreamMetadataBuilder
     {
+        /** @psalm-suppress MixedPropertyTypeCoercion */
         $this->aclMetaRead = $metaReadRoles;
 
         return $this;
@@ -169,6 +173,7 @@ class StreamMetadataBuilder
     /** Sets role names with metadata write permission for the stream */
     public function setMetadataWriteRoles(string ...$metaWriteRoles): StreamMetadataBuilder
     {
+        /** @psalm-suppress MixedPropertyTypeCoercion */
         $this->aclMetaWrite = $metaWriteRoles;
 
         return $this;

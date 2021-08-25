@@ -142,25 +142,25 @@ class SubscriptionDropReason
         throw new InvalidArgumentException('Unknown enum value given');
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function equals(SubscriptionDropReason $other): bool
     {
         return \get_class($this) === \get_class($other) && $this->name === $other->name;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function name(): string
     {
         return $this->name;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function value(): int
     {
         return $this->value;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function __toString(): string
     {
         return $this->name;

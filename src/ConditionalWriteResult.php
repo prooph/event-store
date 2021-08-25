@@ -43,19 +43,19 @@ class ConditionalWriteResult
         return new self($status, null, null);
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function status(): ConditionalWriteStatus
     {
         return $this->status;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function nextExpectedVersion(): ?int
     {
         return $this->nextExpectedVersion;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function logPosition(): ?Position
     {
         return $this->logPosition;

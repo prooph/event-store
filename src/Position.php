@@ -64,58 +64,58 @@ class Position
         return new Position($commitPosition, $preparePosition);
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function commitPosition(): int
     {
         return $this->commitPosition;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function preparePosition(): int
     {
         return $this->preparePosition;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function asString(): string
     {
         return \substr('000000000000000' . \dechex($this->commitPosition), -16)
             . \substr('000000000000000' . \dechex($this->preparePosition), -16);
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function __toString(): string
     {
         return 'C:' . $this->commitPosition . '/P:' . $this->preparePosition;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function equals(Position $other): bool
     {
         return $this->commitPosition === $other->commitPosition && $this->preparePosition === $other->preparePosition;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function greater(Position $other): bool
     {
         return $this->commitPosition > $other->commitPosition
             || ($this->commitPosition === $other->commitPosition && $this->preparePosition > $other->preparePosition);
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function smaller(Position $other): bool
     {
         return $this->commitPosition < $other->commitPosition
             || ($this->commitPosition === $other->commitPosition && $this->preparePosition < $other->preparePosition);
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function greaterOrEquals(Position $other): bool
     {
         return $this->greater($other) || $this->equals($other);
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function smallerOrEquals(Position $other): bool
     {
         return $this->smaller($other) || $this->equals($other);

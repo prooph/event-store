@@ -42,28 +42,28 @@ class EventId
         $this->uuid = $eventId;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function toString(): string
     {
         /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->toString();
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function toBinary(): string
     {
         /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->getBytes();
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function __toString(): string
     {
         /** @psalm-suppress ImpureMethodCall */
         return $this->uuid->toString();
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function equals(EventId $other): bool
     {
         /** @psalm-suppress ImpureMethodCall */

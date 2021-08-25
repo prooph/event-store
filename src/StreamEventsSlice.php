@@ -51,25 +51,25 @@ class StreamEventsSlice
         $this->isEndOfStream = $isEndOfStream;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function status(): SliceReadStatus
     {
         return $this->status;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function stream(): string
     {
         return $this->stream;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function fromEventNumber(): int
     {
         return $this->fromEventNumber;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function readDirection(): ReadDirection
     {
         return $this->readDirection;
@@ -78,26 +78,26 @@ class StreamEventsSlice
     /**
      * @return list<ResolvedEvent>
      *
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function events(): array
     {
         return $this->events;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function nextEventNumber(): int
     {
         return $this->nextEventNumber;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function lastEventNumber(): int
     {
         return $this->lastEventNumber;
     }
 
-    /** @psalm-pure */
+    /** @psalm-mutation-free */
     public function isEndOfStream(): bool
     {
         return $this->isEndOfStream;
