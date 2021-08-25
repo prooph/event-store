@@ -48,11 +48,6 @@ abstract class EventStoreSubscription
         return $this->lastEventNumber;
     }
 
-    public function __destruct()
-    {
-        $this->unsubscribe();
-    }
-
     public function close(): void
     {
         $this->unsubscribe();
