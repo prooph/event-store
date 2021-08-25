@@ -13,10 +13,10 @@ matrix:
     - DEPENDENCIES="--prefer-lowest --prefer-stable"
   - php: 8.0
     env:
-    - DEPENDENCIES="--ignore-platform-req=php"
+    - DEPENDENCIES=""
   - php: 8.0
     env:
-    - DEPENDENCIES="--ignore-platform-req=php --prefer-lowest --prefer-stable"
+    - DEPENDENCIES="--prefer-lowest --prefer-stable"
 
 cache:
   directories:
