@@ -27,7 +27,7 @@
     "php-coveralls/php-coveralls": "^2.2",
     "phpspec/prophecy": "^1.10.3",
     "phpunit/phpunit": "^9.5",
-    "prooph/php-cs-fixer-config": "^0.4",
+    "prooph/php-cs-fixer-config": "^0.4 || ^0.5",
     "vimeo/psalm": "^4.9.3"
   },
   "autoload": {
