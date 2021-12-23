@@ -131,6 +131,18 @@ class UpcastingIteratorTest extends TestCase
         $this->assertNull($upcastingIterator->current());
     }
 
+    /**
+     * @test
+     */
+    public function it_delegates_count_to_wrapped_iterator(): void
+    {
+        $iterator = new EmptyStreamIterator();
+
+        $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
+
+        $this->assertTrue(0 === \count($iterator));
+    }
+
     protected function createUpcaster(): SingleEventUpcaster
     {
         return new class() extends SingleEventUpcaster {

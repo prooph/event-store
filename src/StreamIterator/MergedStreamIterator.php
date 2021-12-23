@@ -72,6 +72,7 @@ class MergedStreamIterator implements StreamIterator
         $this->prioritizeIterators();
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->iterators[0][0]->current();

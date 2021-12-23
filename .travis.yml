@@ -1,23 +1,18 @@
+dist: focal
 language: php
 
 matrix:
   fast_finish: true
   include:
-    - php: 7.3
+    - php: 7.4
       env:
         - DEPENDENCIES=""
         - XDEBUG_MODE="coverage"
         - TEST_COVERAGE=true
-    - php: 7.3
+    - php: 7.4
       env:
         - DEPENDENCIES=""
         - PHP_CS=true
-    - php: 7.3
-      env:
-        - DEPENDENCIES=""
-    - php: 7.3
-      env:
-        - DEPENDENCIES="--prefer-lowest --prefer-stable"
     - php: 7.4
       env:
         - DEPENDENCIES=""
@@ -28,6 +23,12 @@ matrix:
       env:
         - DEPENDENCIES=""
     - php: 8.0
+      env:
+        - DEPENDENCIES="--prefer-lowest --prefer-stable"
+    - php: 8.1.0
+      env:
+        - DEPENDENCIES=""
+    - php: 8.1.0
       env:
         - DEPENDENCIES="--prefer-lowest --prefer-stable"
 

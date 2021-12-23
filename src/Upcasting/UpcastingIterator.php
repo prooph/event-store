@@ -91,9 +91,7 @@ final class UpcastingIterator implements StreamIterator
         }
     }
 
-    /**
-     * @return bool|int
-     */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->innerIterator->key();
