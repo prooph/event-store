@@ -2,19 +2,38 @@ name: integration
 on: [push]
 
 jobs:
+  code-standard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+      - name: Install dependencies
+        run: composer update --prefer-dist
+      - name: Building
+        run: ./vendor/bin/php-cs-fixer fix -v --diff --dry-run;
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+      - name: Install dependencies
+        run: composer update --prefer-dist
+      - name: Building
+        run: php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
+
   tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
         include:
-          - php: 7.4
-            dependencies: ''
-            test_coverage: true
-          - php: 7.4
-            dependencies: ''
-            php_cs: true
-
           - php: 7.3
             dependencies: ''
           - php: 7.3
@@ -34,17 +53,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-
       - name: Install dependencies
         run: composer update --prefer-dist ${{ matrix.dependencies }}
-
       - name: Building
-        env:
-          TEST_COVERAGE: ${{ matrix.test_coverage }}
-          PHP_CS: ${{ matrix.php_cs }}
-        run: if [[ $TEST_COVERAGE == 'true' ]]; then php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml; elif [[ $PHP_CS == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run; else ./vendor/bin/phpunit; fi
+        run: ./vendor/bin/phpunit
