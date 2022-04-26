@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,9 +23,7 @@ abstract class AbstractStreamIteratorTest extends TestCase
      */
     public function it_implements_iterator(): void
     {
-        $iterator = $this->getMockBuilder(StreamIterator::class)->getMock();
-
-        $this->assertInstanceOf(\Iterator::class, $iterator);
+        $this->assertInstanceOf(\Iterator::class, $this->getStreamIteratorMock());
     }
 
     /**
@@ -33,8 +31,39 @@ abstract class AbstractStreamIteratorTest extends TestCase
      */
     public function it_implements_countable(): void
     {
-        $iterator = $this->getMockBuilder(StreamIterator::class)->getMock();
+        $this->assertInstanceOf(\Countable::class, $this->getStreamIteratorMock());
+    }
 
-        $this->assertInstanceOf(\Countable::class, $iterator);
+    private function getStreamIteratorMock(): StreamIterator
+    {
+        return new class() implements StreamIterator {
+            public function count(): int
+            {
+                return 0;
+            }
+
+            public function current(): mixed
+            {
+                return null;
+            }
+
+            public function key(): mixed
+            {
+                return null;
+            }
+
+            public function next(): void
+            {
+            }
+
+            public function rewind(): void
+            {
+            }
+
+            public function valid(): bool
+            {
+                return false;
+            }
+        };
     }
 }
