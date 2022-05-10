@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,29 +17,53 @@ namespace Prooph\EventStore\Projections;
 final class ProjectionDetails
 {
     private int $coreProcessingTime;
+
     private int $version;
+
     private int $epoch;
+
     private string $effectiveName;
+
     private int $writesInProgress;
+
     private int $readsInProgress;
+
     private int $partitionsCached;
+
     private string $status;
+
     private ?string $stateReason;
+
     private string $name;
+
     private string $mode;
+
     private string $position;
+
     private float $progress;
+
     private ?string $lastCheckpoint;
+
     private int $eventsProcessedAfterRestart;
+
     private string $statusUrl;
+
     private string $stateUrl;
+
     private string $resultUrl;
+
     private string $queryUrl;
+
     private string $enableCommandUrl;
+
     private string $disableCommandUrl;
+
     private ?string $checkpointStatus;
+
     private int $bufferedEvents;
+
     private int $writePendingEventsBeforeCheckpoint;
+
     private int $writePendingEventsAfterCheckpoint;
 
     public function __construct(

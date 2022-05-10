@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,18 +20,31 @@ namespace Prooph\EventStore\PersistentSubscriptions;
 final class PersistentSubscriptionConfigDetails
 {
     private bool $resolveLinktos;
+
     private int $startFrom;
+
     private int $messageTimeoutMilliseconds;
+
     private bool $extraStatistics;
+
     private int $maxRetryCount;
+
     private int $liveBufferSize;
+
     private int $bufferSize;
+
     private int $readBatchSize;
+
     private int $checkPointAfterMilliseconds;
+
     private int $minCheckPointCount;
+
     private int $maxCheckPointCount;
+
     private int $maxSubscriberCount;
+
     private string $namedConsumerStrategy;
+
     private bool $preferRoundRobin;
 
     private function __construct(

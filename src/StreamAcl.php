@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,21 +22,25 @@ class StreamAcl
      * @var list<string>
      */
     private array $readRoles;
+
     /**
      * Roles and users permitted to write to the stream
      * @var list<string>
      */
     private array $writeRoles;
+
     /**
      * Roles and users permitted to delete the stream
      * @var list<string>
      */
     private array $deleteRoles;
+
     /**
      * Roles and users permitted to read stream metadata
      * @var list<string>
      */
     private array $metaReadRoles;
+
     /**
      * Roles and users permitted to write stream metadata
      * @var list<string>

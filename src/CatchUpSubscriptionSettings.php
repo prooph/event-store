@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,12 +23,16 @@ class CatchUpSubscriptionSettings
      * Going above this value will drop the subscription.
      */
     private int $maxLiveQueueSize;
+
     /**
      * The number of events to read per batch when reading the history.
      */
     private int $readBatchSize;
+
     private bool $verboseLogging;
+
     private bool $resolveLinkTos;
+
     private string $subscriptionName;
 
     public function __construct(

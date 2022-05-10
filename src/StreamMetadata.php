@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,23 +25,28 @@ class StreamMetadata implements JsonSerializable
      * The maximum number of events allowed in the stream.
      */
     private ?int $maxCount;
+
     /**
      * The maximum age in seconds for events allowed in the stream.
      */
     private ?int $maxAge;
+
     /**
      * The event number from which previous events can be scavenged.
      * This is used to implement soft-deletion of streams.
      */
     private ?int $truncateBefore;
+
     /**
      * The amount of time in seconds for which the stream head is cachable.
      */
     private ?int $cacheControl;
+
     /**
      * The access control list for the stream.
      */
     private ?StreamAcl $acl;
+
     /**
      * key => value pairs of custom metadata
      * @var array<string, mixed>

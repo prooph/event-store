@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,10 +16,15 @@ namespace Prooph\EventStore\Common;
 class SystemStreams
 {
     public const PersistentSubscriptionConfig = '$persistentSubscriptionConfig';
+
     public const AllStream = '$all';
+
     public const StreamsStream = '$streams';
+
     public const SettingsStream = '$settings';
+
     public const StatsStreamPrefix = '$stats';
+
     public const ScavangeStream = '$scavenges';
 
     public static function metastreamOf(string $streamId): string
