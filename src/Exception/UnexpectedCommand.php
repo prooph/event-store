@@ -13,22 +13,21 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Exception;
 
+use Prooph\EventStoreClient\SystemData\TcpCommand;
+
 class UnexpectedCommand extends RuntimeException
 {
-    public static function withName(string $actualCommand): UnexpectedCommand
+    public static function with(TcpCommand $actual, ?TcpCommand $expected = null): UnexpectedCommand
     {
-        return new self(\sprintf(
-            'Unexpected command \'%s\'',
-            $actualCommand
-        ));
-    }
-
-    public static function with(string $expectedCommand, string $actualCommand): UnexpectedCommand
-    {
-        return new self(\sprintf(
-            'Unexpected command \'%s\': expected \'%s\'',
-            $actualCommand,
-            $expectedCommand
-        ));
+        return null === $expected
+            ? new self(\sprintf(
+                'Unexpected command \'%s\'',
+                $actual
+            ))
+            : new self(\sprintf(
+                'Unexpected command \'%s\': expected \'%s\'',
+                $actual->name(),
+                $expected->name()
+            ));
     }
 }

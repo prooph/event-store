@@ -109,23 +109,23 @@ class StreamAcl
         $data = [];
 
         if (! empty($this->readRoles)) {
-            $data[SystemMetadata::ACL_READ] = $this->exportRoles($this->readRoles);
+            $data[SystemMetadata::AclRead] = $this->exportRoles($this->readRoles);
         }
 
         if (! empty($this->writeRoles)) {
-            $data[SystemMetadata::ACL_WRITE] = $this->exportRoles($this->writeRoles);
+            $data[SystemMetadata::AclWrite] = $this->exportRoles($this->writeRoles);
         }
 
         if (! empty($this->deleteRoles)) {
-            $data[SystemMetadata::ACL_DELETE] = $this->exportRoles($this->deleteRoles);
+            $data[SystemMetadata::AclDelete] = $this->exportRoles($this->deleteRoles);
         }
 
         if (! empty($this->metaReadRoles)) {
-            $data[SystemMetadata::ACL_META_READ] = $this->exportRoles($this->metaReadRoles);
+            $data[SystemMetadata::AclMetaRead] = $this->exportRoles($this->metaReadRoles);
         }
 
         if (! empty($this->metaWriteRoles)) {
-            $data[SystemMetadata::ACL_META_WRITE] = $this->exportRoles($this->metaWriteRoles);
+            $data[SystemMetadata::AclMetaWrite] = $this->exportRoles($this->metaWriteRoles);
         }
 
         return $data;
@@ -136,13 +136,24 @@ class StreamAcl
      */
     public static function fromArray(array $data): StreamAcl
     {
-        return new self(
-            ($data[SystemMetadata::ACL_READ] ?? []),
-            ($data[SystemMetadata::ACL_WRITE] ?? []),
-            ($data[SystemMetadata::ACL_DELETE] ?? []),
-            ($data[SystemMetadata::ACL_META_READ] ?? []),
-            ($data[SystemMetadata::ACL_META_WRITE] ?? [])
-        );
+        return new self(...\array_map(
+            function (string $role) use ($data): array {
+                if (! isset($data[$role])) {
+                    return [];
+                }
+
+                $roles = $data[$role];
+
+                return ! \is_array($roles) ? [$roles] : $roles;
+            },
+            [
+                SystemMetadata::AclRead,
+                SystemMetadata::AclWrite,
+                SystemMetadata::AclDelete,
+                SystemMetadata::AclMetaRead,
+                SystemMetadata::AclMetaWrite,
+            ]
+        ));
     }
 
     /**

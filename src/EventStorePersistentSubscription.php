@@ -17,9 +17,7 @@ use Prooph\EventStore\Internal\ResolvedEvent;
 
 interface EventStorePersistentSubscription
 {
-    public const DEFAULT_BUFFER_SIZE = 10;
-
-    public function start(): void;
+    public const DefaultBufferSize = 10;
 
     /**
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
@@ -89,5 +87,7 @@ interface EventStorePersistentSubscription
         string $reason
     ): void;
 
-    public function stop(): void;
+    public function start(): void;
+
+    public function stop(?float $timeout = null): void;
 }

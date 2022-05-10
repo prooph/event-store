@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use Prooph\EventStore\Common\SystemConsumerStrategies;
+use Prooph\EventStore\Common\SystemConsumerStrategy;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class PersistentSubscriptionSettingsBuilder
@@ -68,7 +68,7 @@ class PersistentSubscriptionSettingsBuilder
      * The minimum number of messages to write a checkpoint for.
      */
     private int $minCheckPointCount = 10;
-    private string $namedConsumerStrategy = SystemConsumerStrategies::ROUND_ROBIN;
+    private SystemConsumerStrategy $namedConsumerStrategy = SystemConsumerStrategy::RoundRobin;
 
     /** @internal */
     public function __construct()
@@ -98,14 +98,14 @@ class PersistentSubscriptionSettingsBuilder
 
     public function preferRoundRobin(): self
     {
-        $this->namedConsumerStrategy = SystemConsumerStrategies::ROUND_ROBIN;
+        $this->namedConsumerStrategy = SystemConsumerStrategy::RoundRobin;
 
         return $this;
     }
 
     public function preferDispatchToSingle(): self
     {
-        $this->namedConsumerStrategy = SystemConsumerStrategies::DISPATCH_TO_SINGLE;
+        $this->namedConsumerStrategy = SystemConsumerStrategy::DispatchToSingle;
 
         return $this;
     }

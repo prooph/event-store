@@ -21,7 +21,5 @@ interface EventStoreCatchUpSubscription
 
     public function subscriptionName(): string;
 
-    public function start(): void;
-
-    public function stop(): void;
+    public function stop(?float $timeout = null): void;
 }

@@ -46,10 +46,10 @@ class CatchUpSubscriptionSettings
             throw new InvalidArgumentException('Max live queue size must be positive');
         }
 
-        if ($readBatchSize > Consts::MAX_READ_SIZE) {
+        if ($readBatchSize > Consts::MaxReadSize) {
             throw new InvalidArgumentException(\sprintf(
                 'Read batch size should be less than \'%s\'. For larger reads you should page',
-                Consts::MAX_READ_SIZE
+                Consts::MaxReadSize
             ));
         }
 
@@ -63,8 +63,8 @@ class CatchUpSubscriptionSettings
     public static function default(): self
     {
         return new self(
-            Consts::CATCH_UP_DEFAULT_MAX_PUSH_QUEUE_SIZE,
-            Consts::CATCH_UP_DEFAULT_READ_BATCH_SIZE,
+            Consts::CatchUpDefaultMaxPushQueueSize,
+            Consts::CatchUpDefaultReadBatchSize,
             false,
             true,
             ''

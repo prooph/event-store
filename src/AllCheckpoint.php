@@ -15,12 +15,12 @@ namespace Prooph\EventStore;
 
 /**
  * This class contains constants to be used when setting up subscriptions
- * using the EventStoreAsyncConnection::subscribeToAllFromAsync method
+ * using the EventStoreConnection::subscribeToAllFrom method
  */
 class AllCheckpoint
 {
     /**
      * Indicates that a catch-up subscription should receive all events in the database.
      */
-    public const ALL_START = null;
+    public const AllStart = null;
 }

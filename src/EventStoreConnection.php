@@ -13,11 +13,19 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+use Amp\Future;
+use Amp\Promise;
 use Closure;
 use Throwable;
 
 interface EventStoreConnection
 {
+    public function connectionName(): string;
+
+    public function connect(): void;
+
+    public function close(): void;
+
     public function deleteStream(
         string $stream,
         int $expectedVersion,
@@ -27,8 +35,6 @@ interface EventStoreConnection
 
     /**
      * @param list<EventData> $events
-     *
-     * @return WriteResult
      */
     public function appendToStream(
         string $stream,
@@ -197,4 +203,36 @@ interface EventStoreConnection
         bool $autoAck = true,
         ?UserCredentials $userCredentials = null
     ): EventStorePersistentSubscription;
+
+    /**
+     * @param Closure(ClientConnectionEventArgs): void $handler
+     */
+    public function onConnected(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientConnectionEventArgs): void $handler
+     */
+    public function onDisconnected(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientReconnectingEventArgs): void $handler
+     */
+    public function onReconnecting(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientClosedEventArgs): void $handler
+     */
+    public function onClosed(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientErrorEventArgs): void $handler
+     */
+    public function onErrorOccurred(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientAuthenticationFailedEventArgs): void $handler
+     */
+    public function onAuthenticationFailed(Closure $handler): ListenerHandler;
+
+    public function detach(ListenerHandler $handler): void;
 }

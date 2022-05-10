@@ -16,22 +16,22 @@ namespace Prooph\EventStore\Internal;
 /** @internal */
 class Consts
 {
-    public const DEFAULT_MAX_QUEUE_SIZE = 5000;
-    public const DEFAULT_MAX_CONCURRENT_ITEMS = 5000;
-    public const DEFAULT_MAX_OPERATIONS_RETRY = 10;
-    public const DEFAULT_MAX_RECONNECTIONS = 10;
+    public const DefaultMaxQueueSize = 5000;
+    public const DefaultMaxConcurrentItems = 5000;
+    public const DefaultMaxOperationsRetry = 10;
+    public const DefaultMaxReconnections = 10;
 
-    public const DEFAULT_REQUIRE_MASTER = true;
+    public const DefaultRequireMaster = true;
 
-    public const DEFAULT_RECONNECTION_DELAY = 100; // milliseconds
-    public const DEFAULT_OPERATION_TIMEOUT = 7000; // milliseconds
-    public const DEFAULT_OPERATION_TIMEOUT_CHECK_PERIOD = 1000; // milliseconds
+    public const DefaultReconnectionDelay = 0.1; // seconds
+    public const DefaultOperationTimeout = 7; // seconds
+    public const DefaultOperationTimeoutPeriod = 1; // seconds
 
-    public const TIMER_PERIOD = 200; // milliseconds
-    public const MAX_READ_SIZE = 4096;
-    public const DEFAULT_MAX_CLUSTER_DISCOVER_ATTEMPTS = 10;
-    public const DEFAULT_CLUSTER_MANAGER_EXTERNAL_HTTP_PORT = 30778;
+    public const TimerPeriod = 0.2; // seconds
+    public const MaxReadSize = 4096;
+    public const DefaultMaxClusterDiscoverAttempts = 10;
+    public const DefaultClusterManagerExternalHttpPort = 30778;
 
-    public const CATCH_UP_DEFAULT_READ_BATCH_SIZE = 500;
-    public const CATCH_UP_DEFAULT_MAX_PUSH_QUEUE_SIZE = 10000;
+    public const CatchUpDefaultReadBatchSize = 500;
+    public const CatchUpDefaultMaxPushQueueSize = 10000;
 }

@@ -16,14 +16,19 @@ namespace Prooph\EventStore\Transport\Http;
 use Prooph\EventStore\EndPoint;
 
 /** @internal */
-class EndpointExtensions
+enum EndpointExtensions: string
 {
-    public const HTTP_SCHEMA = 'http';
-    public const HTTPS_SCHEMA = 'https';
+    case HttpSchema = 'http';
+    case HttpsSchema = 'https';
+
+    public static function useHttps(bool $useHttps): self
+    {
+        return $useHttps ? self::HttpsSchema : self::HttpSchema;
+    }
 
     public static function rawUrlToHttpUrl(
         EndPoint $endPoint,
-        string $schema,
+        self $schema,
         string $rawUrl = ''
     ): string {
         return self::createHttpUrl(
@@ -36,7 +41,7 @@ class EndpointExtensions
 
     public static function formatStringToHttpUrl(
         EndPoint $endPoint,
-        string $schema,
+        self $schema,
         string $formatString,
         string ...$args
     ): string {
@@ -48,11 +53,11 @@ class EndpointExtensions
         );
     }
 
-    private static function createHttpUrl(string $schema, string $host, int $port, string $path): string
+    private static function createHttpUrl(self $schema, string $host, int $port, string $path): string
     {
         return \sprintf(
             '%s://%s:%d/%s',
-            $schema,
+            $schema->value,
             $host,
             $port,
             $path

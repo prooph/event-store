@@ -138,26 +138,26 @@ class StreamMetadata implements JsonSerializable
         $object = new stdClass();
 
         if (null !== $this->maxCount) {
-            $object->{SystemMetadata::MAX_COUNT} = $this->maxCount;
+            $object->{SystemMetadata::MaxCount} = $this->maxCount;
         }
 
         if (null !== $this->maxAge) {
-            $object->{SystemMetadata::MAX_AGE} = $this->maxAge;
+            $object->{SystemMetadata::MaxAge} = $this->maxAge;
         }
 
         if (null !== $this->truncateBefore) {
-            $object->{SystemMetadata::TRUNCATE_BEFORE} = $this->truncateBefore;
+            $object->{SystemMetadata::TruncateBefore} = $this->truncateBefore;
         }
 
         if (null !== $this->cacheControl) {
-            $object->{SystemMetadata::CACHE_CONTROL} = $this->cacheControl;
+            $object->{SystemMetadata::CacheControl} = $this->cacheControl;
         }
 
         if (null !== $this->acl) {
             $acl = $this->acl->toArray();
 
             if (! empty($acl)) {
-                $object->{SystemMetadata::ACL} = $acl;
+                $object->{SystemMetadata::Acl} = $acl;
             }
         }
 
@@ -177,10 +177,10 @@ class StreamMetadata implements JsonSerializable
     public static function createFromArray(array $data): StreamMetadata
     {
         $internals = [
-            SystemMetadata::MAX_COUNT,
-            SystemMetadata::MAX_AGE,
-            SystemMetadata::TRUNCATE_BEFORE,
-            SystemMetadata::CACHE_CONTROL,
+            SystemMetadata::MaxCount,
+            SystemMetadata::MaxAge,
+            SystemMetadata::TruncateBefore,
+            SystemMetadata::CacheControl,
         ];
 
         $params = [];
@@ -188,9 +188,9 @@ class StreamMetadata implements JsonSerializable
         foreach ($data as $key => $value) {
             if (\in_array($key, $internals, true)) {
                 $params[$key] = $value;
-            } elseif ($key === SystemMetadata::ACL) {
+            } elseif ($key === SystemMetadata::Acl) {
                 /** @var array<string, list<string>> $value */
-                $params[SystemMetadata::ACL] = StreamAcl::fromArray($value);
+                $params[SystemMetadata::Acl] = StreamAcl::fromArray($value);
             } else {
                 $params['customMetadata'][$key] = $value;
             }
@@ -198,11 +198,11 @@ class StreamMetadata implements JsonSerializable
 
         /** @psalm-suppress MixedArgumentTypeCoercion */
         return new self(
-            $params[SystemMetadata::MAX_COUNT] ?? null,
-            $params[SystemMetadata::MAX_AGE] ?? null,
-            $params[SystemMetadata::TRUNCATE_BEFORE] ?? null,
-            $params[SystemMetadata::CACHE_CONTROL] ?? null,
-            $params[SystemMetadata::ACL] ?? null,
+            $params[SystemMetadata::MaxCount] ?? null,
+            $params[SystemMetadata::MaxAge] ?? null,
+            $params[SystemMetadata::TruncateBefore] ?? null,
+            $params[SystemMetadata::CacheControl] ?? null,
+            $params[SystemMetadata::Acl] ?? null,
             $params['customMetadata'] ?? []
         );
     }

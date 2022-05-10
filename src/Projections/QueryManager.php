@@ -18,11 +18,9 @@ use Prooph\EventStore\UserCredentials;
 interface QueryManager
 {
     /**
-     * Synchronously executes a query
+     * Executes a query
      *
      * Creates a new transient projection and polls its status until it is Completed
-     *
-     * @return State
      */
     public function execute(
         string $name,

@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-class StreamPosition
+enum StreamPosition: int
 {
     // The first event in a stream
-    public const START = 0;
+    case Start = 0;
     // The last event in a stream
-    public const END = -1;
+    case End = -1;
 }

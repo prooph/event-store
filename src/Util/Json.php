@@ -17,6 +17,8 @@ class Json
 {
     /**
      * @param mixed $value
+     *
+     * @psalm-pure
      */
     public static function encode($value): string
     {
@@ -25,10 +27,8 @@ class Json
         return \json_encode($value, $flags);
     }
 
-    /**
-     * @return mixed
-     */
-    public static function decode(string $json)
+    /** @psalm-pure */
+    public static function decode(string $json): array
     {
         return \json_decode($json, true, 512, \JSON_BIGINT_AS_STRING | \JSON_THROW_ON_ERROR);
     }
