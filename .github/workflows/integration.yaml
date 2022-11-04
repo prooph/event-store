@@ -34,10 +34,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - php: 7.3
-            dependencies: ''
-          - php: 7.3
-            dependencies: '--prefer-lowest --prefer-stable'
           - php: 7.4
             dependencies: ''
           - php: 7.4
