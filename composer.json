@@ -39,10 +39,10 @@
         "sandrokeil/interop-config": "^2.0.1",
         "satooshi/php-coveralls": "^1.0"
     },
-    "suggest" : {
+    "suggest": {
         "prooph/pdo-event-store": "For usage with MySQL or Postgres as event store",
-        "prooph/event-sourcing" : "Basic functionality for event sourced aggregates",
-        "prooph/service-bus" : "Message bus facade to connect the event store with messaging systems",
+        "prooph/event-sourcing": "Basic functionality for event sourced aggregates",
+        "prooph/service-bus": "Message bus facade to connect the event store with messaging systems",
         "psr/container": "^1.0 for usage of provided factories",
         "sandrokeil/interop-config": "For usage of provided factories"
     },
