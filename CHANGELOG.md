@@ -1,70 +1,108 @@
-# Change Log
+# Changelog
 
-## [v7.5.8](https://github.com/prooph/event-store/tree/v7.5.8)
+## [v7.8.0](https://github.com/prooph/event-store/tree/v7.8.0)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.7.0...v7.8.0)
+
+**Implemented enhancements:**
+
+- Php81 dependencies comp [\#427](https://github.com/prooph/event-store/pull/427) ([basz](https://github.com/basz))
+
+## [v7.7.0](https://github.com/prooph/event-store/tree/v7.7.0) (2022-04-26)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.6.1...v7.7.0)
+
+**Implemented enhancements:**
+
+- PHP 8 support [\#419](https://github.com/prooph/event-store/issues/419)
+
+**Closed issues:**
+
+- DateTimeStringBugWorkaround fails in PHP 8 [\#414](https://github.com/prooph/event-store/issues/414)
+- Detaching listener handlers from event store [\#410](https://github.com/prooph/event-store/issues/410)
+
+## [v7.6.1](https://github.com/prooph/event-store/tree/v7.6.1) (2021-04-20)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.6.0...v7.6.1)
+
+## [v7.6.0](https://github.com/prooph/event-store/tree/v7.6.0) (2021-01-07)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.9...v7.6.0)
+
+## [v7.5.9](https://github.com/prooph/event-store/tree/v7.5.9) (2020-09-06)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.8...v7.5.9)
+
+## [v7.5.8](https://github.com/prooph/event-store/tree/v7.5.8) (2020-07-20)
 
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.5.7...v7.5.8)
 
-** Implemented enhancements:**
-
--  Improve MergeStreamIterator performance by using TimSort [\#408](https://github.com/prooph/event-store/pull/408) ([sandrokeil](https://github.com/sandrokeil))
-
-## [v7.5.7](https://github.com/prooph/event-store/tree/v7.5.7)
-
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.6...v7.5.7)
-
 **Implemented enhancements:**
 
-- fix upcasting iterator [\#389](https://github.com/prooph/event-store/pull/389) ([prolic](https://github.com/prolic))
-
-## [v7.5.6](https://github.com/prooph/event-store/tree/v7.5.6)
-
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.5...v7.5.6)
-
-**Implemented enhancements:**
-
-- Fix subsequent messages raised within upcasting chain [\#381](https://github.com/prooph/event-store/pull/381) ([chrisharrison](https://github.com/chrisharrison))
-
-## [v7.5.5](https://github.com/prooph/event-store/tree/v7.5.5)
-
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.4...v7.5.5)
-
-**Implemented enhancements:**
-
-- Adds beberlei/assert 3.2.3 - 3.2.4 to composer conflict section, because those two releases are incompatible with Util\Assertion [\#378](https://github.com/prooph/event-store/pull/378) ([codeliner](https://github.com/codeliner))
-
-## [v7.5.4](https://github.com/prooph/event-store/tree/v7.5.4)
-
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.3...v7.5.4)
-
-**Implemented enhancements:**
-
-- Allow marc-mabe/php-enum v4 [\#370](https://github.com/prooph/event-store/pull/370) ([Lctrs](https://github.com/Lctrs))
-
-## [v7.5.3](https://github.com/prooph/event-store/tree/v7.5.3) (2019-05-21)
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.1...v7.5.3)
-
-**Implemented enhancements:**
-
-- Improvement/merged stream iterator [\#367](https://github.com/prooph/event-store/pull/367) ([basz](https://github.com/basz))
+- Remove further json strings from managers [\#401](https://github.com/prooph/event-store/issues/401)
+- Let ProjectionsManager return objects instead of json-strings [\#390](https://github.com/prooph/event-store/issues/390)
 
 **Fixed bugs:**
 
-- Improvement/persist after blocksize processed events [\#368](https://github.com/prooph/event-store/pull/368) ([basz](https://github.com/basz))
+- PersistentSubscriptionCreateStatus wrongly internal ? [\#406](https://github.com/prooph/event-store/issues/406)
+- Upcasting broken for projections in v7 [\#389](https://github.com/prooph/event-store/issues/389)
+
+**Closed issues:**
+
+- Tests are missing [\#394](https://github.com/prooph/event-store/issues/394)
+
+## [v7.5.7](https://github.com/prooph/event-store/tree/v7.5.7) (2020-04-26)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.6...v7.5.7)
+
+**Closed issues:**
+
+- Tips for database migration? [\#379](https://github.com/prooph/event-store/issues/379)
+- Emit Enabled default configuration [\#366](https://github.com/prooph/event-store/issues/366)
+
+## [v7.5.6](https://github.com/prooph/event-store/tree/v7.5.6) (2019-10-24)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.5...v7.5.6)
+
+## [v7.5.5](https://github.com/prooph/event-store/tree/v7.5.5) (2019-10-10)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-RC-1...v7.5.5)
+
+## [v8.0.0-RC-1](https://github.com/prooph/event-store/tree/v8.0.0-RC-1) (2019-07-21)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.4...v8.0.0-RC-1)
+
+**Fixed bugs:**
+
+- Uncaught InvalidArgumentException: Could not create DateTimeImmutable [\#371](https://github.com/prooph/event-store/issues/371)
+- Remove workaround in DateTime parsing [\#375](https://github.com/prooph/event-store/pull/375) ([prolic](https://github.com/prolic))
+- fix acl settings [\#372](https://github.com/prooph/event-store/pull/372) ([prolic](https://github.com/prolic))
 - Improve DateTime::create\(\) [\#364](https://github.com/prooph/event-store/pull/364) ([enumag](https://github.com/enumag))
 
 **Merged pull requests:**
 
+- Change copyright [\#376](https://github.com/prooph/event-store/pull/376) ([codeliner](https://github.com/codeliner))
 - Fix DateTime parsing [\#365](https://github.com/prooph/event-store/pull/365) ([enumag](https://github.com/enumag))
-
-## [v7.5.1](https://github.com/prooph/event-store/tree/v7.5.1) (2019-03-26)
-[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-2...v7.5.1)
-
-**Merged pull requests:**
-
-- Add Support for "event\_name" field for MetadataMatcher in InMemoryEventStore [\#363](https://github.com/prooph/event-store/pull/363) ([fjogeleit](https://github.com/fjogeleit))
 - Improve docblocks of ResolvedEvent [\#360](https://github.com/prooph/event-store/pull/360) ([enumag](https://github.com/enumag))
 
+## [v7.5.4](https://github.com/prooph/event-store/tree/v7.5.4) (2019-05-28)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.3...v7.5.4)
+
+**Closed issues:**
+
+- 7.5.2 is completely breaking from 7.5.1 [\#369](https://github.com/prooph/event-store/issues/369)
+
+## [v7.5.3](https://github.com/prooph/event-store/tree/v7.5.3) (2019-05-21)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.5.1...v7.5.3)
+
+## [v7.5.1](https://github.com/prooph/event-store/tree/v7.5.1) (2019-03-26)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-2...v7.5.1)
+
 ## [v8.0.0-BETA-2](https://github.com/prooph/event-store/tree/v8.0.0-BETA-2) (2019-02-03)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v8.0.0-BETA-1...v8.0.0-BETA-2)
 
 **Implemented enhancements:**
@@ -72,6 +110,7 @@
 - add fail \(multiple\) eventId\(s\) to EventStorePersistentSubscription [\#359](https://github.com/prooph/event-store/pull/359) ([prolic](https://github.com/prolic))
 
 ## [v8.0.0-BETA-1](https://github.com/prooph/event-store/tree/v8.0.0-BETA-1) (2019-01-26)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.5.0...v8.0.0-BETA-1)
 
 **Implemented enhancements:**
@@ -98,6 +137,7 @@
 - Event Store v8 [\#354](https://github.com/prooph/event-store/pull/354) ([prolic](https://github.com/prolic))
 
 ## [v7.5.0](https://github.com/prooph/event-store/tree/v7.5.0) (2018-11-03)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.4.0...v7.5.0)
 
 **Implemented enhancements:**
@@ -111,6 +151,7 @@
 - Fix method name in doc [\#347](https://github.com/prooph/event-store/pull/347) ([rodion-k](https://github.com/rodion-k))
 
 ## [v7.4.0](https://github.com/prooph/event-store/tree/v7.4.0) (2018-09-23)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.8...v7.4.0)
 
 **Implemented enhancements:**
@@ -118,6 +159,7 @@
 - \[WIP\] feature/countable stream iterator [\#346](https://github.com/prooph/event-store/pull/346) ([basz](https://github.com/basz))
 
 ## [v7.3.8](https://github.com/prooph/event-store/tree/v7.3.8) (2018-08-27)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.7...v7.3.8)
 
 **Implemented enhancements:**
@@ -134,6 +176,7 @@
 - InMemoryEventStore can't read it's own events if in transaction [\#342](https://github.com/prooph/event-store/issues/342)
 
 ## [v7.3.7](https://github.com/prooph/event-store/tree/v7.3.7) (2018-06-12)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.6...v7.3.7)
 
 **Implemented enhancements:**
@@ -145,6 +188,7 @@
 - add missing closing bracket [\#340](https://github.com/prooph/event-store/pull/340) ([darrylhein](https://github.com/darrylhein))
 
 ## [v7.3.6](https://github.com/prooph/event-store/tree/v7.3.6) (2018-04-30)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.5...v7.3.6)
 
 **Implemented enhancements:**
@@ -157,6 +201,7 @@
 - Add query option OPTION\_PCNTL\_DISPATCH \(\#337\) [\#339](https://github.com/prooph/event-store/pull/339) ([sandrokeil](https://github.com/sandrokeil))
 
 ## [v7.3.5](https://github.com/prooph/event-store/tree/v7.3.5) (2018-04-26)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.4...v7.3.5)
 
 **Implemented enhancements:**
@@ -168,6 +213,7 @@
 - InMemoryProjectionManager could not handle NonTransactional..EventStore [\#335](https://github.com/prooph/event-store/issues/335)
 
 ## [v7.3.4](https://github.com/prooph/event-store/tree/v7.3.4) (2018-04-26)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.3...v7.3.4)
 
 **Implemented enhancements:**
@@ -184,6 +230,7 @@
 - Fix time unit for lock timeout ms [\#333](https://github.com/prooph/event-store/pull/333) ([codeliner](https://github.com/codeliner))
 
 ## [v7.3.3](https://github.com/prooph/event-store/tree/v7.3.3) (2018-03-25)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.2...v7.3.3)
 
 **Fixed bugs:**
@@ -195,29 +242,28 @@
 - Fix typo [\#323](https://github.com/prooph/event-store/pull/323) ([denniskoenig](https://github.com/denniskoenig))
 
 ## [v7.3.2](https://github.com/prooph/event-store/tree/v7.3.2) (2018-02-10)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.6.1...v7.3.2)
 
 **Fixed bugs:**
 
 - Metadata Aggregate ID can be an integer and causes errors \(v6\) [\#314](https://github.com/prooph/event-store/issues/314)
-- fixed metadata enum class doc-blocks [\#320](https://github.com/prooph/event-store/pull/320) ([ged15](https://github.com/ged15))
+- fixed metadata enum class doc-blocks [\#320](https://github.com/prooph/event-store/pull/320) ([gedimin45](https://github.com/gedimin45))
 
 **Merged pull requests:**
 
 - it's 2018! [\#321](https://github.com/prooph/event-store/pull/321) ([prolic](https://github.com/prolic))
 
 ## [v6.6.1](https://github.com/prooph/event-store/tree/v6.6.1) (2017-12-17)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.1...v6.6.1)
 
 **Closed issues:**
 
 - Thank you all and happy Thanksgiving [\#312](https://github.com/prooph/event-store/issues/312)
 
-**Merged pull requests:**
-
-- Add explicit string type cast for metadata aggregate id \(fix \#314\) [\#315](https://github.com/prooph/event-store/pull/315) ([sandrokeil](https://github.com/sandrokeil))
-
 ## [v7.3.1](https://github.com/prooph/event-store/tree/v7.3.1) (2017-12-05)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.3.0...v7.3.1)
 
 **Implemented enhancements:**
@@ -225,6 +271,7 @@
 - test php 7.2 [\#313](https://github.com/prooph/event-store/pull/313) ([prolic](https://github.com/prolic))
 
 ## [v7.3.0](https://github.com/prooph/event-store/tree/v7.3.0) (2017-11-18)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.2.2...v7.3.0)
 
 **Implemented enhancements:**
@@ -255,21 +302,21 @@
 - add version guidance [\#298](https://github.com/prooph/event-store/pull/298) ([prolic](https://github.com/prolic))
 
 ## [v7.2.2](https://github.com/prooph/event-store/tree/v7.2.2) (2017-09-11)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.2.1...v7.2.2)
 
 **Fixed bugs:**
 
 - Bug in UpcastingIterator [\#295](https://github.com/prooph/event-store/issues/295)
 - Fixed compability issues EmptyIterator [\#296](https://github.com/prooph/event-store/pull/296) ([hiddeco](https://github.com/hiddeco))
-
-## [v7.2.1](https://github.com/prooph/event-store/tree/v7.2.1) (2017-07-15)
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.2.0...v7.2.1)
-
-**Fixed bugs:**
-
 - fix InMemoryEventStore [\#294](https://github.com/prooph/event-store/pull/294) ([prolic](https://github.com/prolic))
 
+## [v7.2.1](https://github.com/prooph/event-store/tree/v7.2.1) (2017-07-15)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.2.0...v7.2.1)
+
 ## [v7.2.0](https://github.com/prooph/event-store/tree/v7.2.0) (2017-07-01)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.3...v7.2.0)
 
 **Implemented enhancements:**
@@ -277,9 +324,11 @@
 - Add projection option constants to trigger pcntl\_signal\_dispatch  [\#293](https://github.com/prooph/event-store/pull/293) ([fritz-gerneth](https://github.com/fritz-gerneth))
 
 ## [v7.1.3](https://github.com/prooph/event-store/tree/v7.1.3) (2017-06-24)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.2...v7.1.3)
 
 ## [v7.1.2](https://github.com/prooph/event-store/tree/v7.1.2) (2017-06-24)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.1...v7.1.2)
 
 **Implemented enhancements:**
@@ -287,6 +336,7 @@
 - add projection not found exception [\#291](https://github.com/prooph/event-store/pull/291) ([prolic](https://github.com/prolic))
 
 ## [v7.1.1](https://github.com/prooph/event-store/tree/v7.1.1) (2017-06-18)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.1.0...v7.1.1)
 
 **Fixed bugs:**
@@ -298,6 +348,7 @@
 - Fix spelling in test [\#289](https://github.com/prooph/event-store/pull/289) ([prolic](https://github.com/prolic))
 
 ## [v7.1.0](https://github.com/prooph/event-store/tree/v7.1.0) (2017-05-22)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/1.1.1...v7.1.0)
 
 **Implemented enhancements:**
@@ -306,22 +357,22 @@
 - better validation in metadata matcher [\#288](https://github.com/prooph/event-store/pull/288) ([prolic](https://github.com/prolic))
 - reduce duplicate code [\#287](https://github.com/prooph/event-store/pull/287) ([prolic](https://github.com/prolic))
 - Support message property filters + new operators [\#286](https://github.com/prooph/event-store/pull/286) ([prolic](https://github.com/prolic))
+- add read only event store wrapper [\#285](https://github.com/prooph/event-store/pull/285) ([prolic](https://github.com/prolic))
 
 ## [1.1.1](https://github.com/prooph/event-store/tree/1.1.1) (2017-05-16)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/1.1...1.1.1)
 
 ## [1.1](https://github.com/prooph/event-store/tree/1.1) (2017-05-11)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.0.1...1.1)
-
-**Implemented enhancements:**
-
-- add read only event store wrapper [\#285](https://github.com/prooph/event-store/pull/285) ([prolic](https://github.com/prolic))
 
 **Closed issues:**
 
 - Trackable transaction in TransactionalActionEventEmitterEventStore [\#283](https://github.com/prooph/event-store/issues/283)
 
 ## [v7.0.1](https://github.com/prooph/event-store/tree/v7.0.1) (2017-03-30)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0...v7.0.1)
 
 **Closed issues:**
@@ -329,6 +380,7 @@
 - Link @prolic's blog post in the docs [\#178](https://github.com/prooph/event-store/issues/178)
 
 ## [v7.0.0](https://github.com/prooph/event-store/tree/v7.0.0) (2017-03-30)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0-beta3...v7.0.0)
 
 **Implemented enhancements:**
@@ -345,109 +397,27 @@
 - adds a clustered events constant to event emitter event stores [\#278](https://github.com/prooph/event-store/pull/278) ([oqq](https://github.com/oqq))
 
 ## [v7.0.0-beta3](https://github.com/prooph/event-store/tree/v7.0.0-beta3) (2017-03-13)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/1.0...v7.0.0-beta3)
 
 **Implemented enhancements:**
 
-- rename projection =\> projector where applicable [\#275](https://github.com/prooph/event-store/pull/275) ([prolic](https://github.com/prolic))
-
-## [1.0](https://github.com/prooph/event-store/tree/1.0) (2017-03-13)
-[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.0...1.0)
-
-**Implemented enhancements:**
-
-- Make Projections more abstract [\#265](https://github.com/prooph/event-store/issues/265)
-- Provide abstract event store test [\#257](https://github.com/prooph/event-store/issues/257)
-- Add support for inline upcasting [\#254](https://github.com/prooph/event-store/issues/254)
 - updates unit tests to reflect current implementation [\#276](https://github.com/prooph/event-store/pull/276) ([oqq](https://github.com/oqq))
+- rename projection =\> projector where applicable [\#275](https://github.com/prooph/event-store/pull/275) ([prolic](https://github.com/prolic))
 - Remove PHP\_INT\_MAX constant from interface [\#274](https://github.com/prooph/event-store/pull/274) ([prolic](https://github.com/prolic))
 - improves fetchProjectionNames method [\#268](https://github.com/prooph/event-store/pull/268) ([oqq](https://github.com/oqq))
 - Projection manager [\#267](https://github.com/prooph/event-store/pull/267) ([prolic](https://github.com/prolic))
 - allow to fetch stream names, category names and projection names [\#261](https://github.com/prooph/event-store/pull/261) ([prolic](https://github.com/prolic))
 - reset/stop/delete projections [\#258](https://github.com/prooph/event-store/pull/258) ([prolic](https://github.com/prolic))
 - Upcasting [\#255](https://github.com/prooph/event-store/pull/255) ([prolic](https://github.com/prolic))
-
-**Fixed bugs:**
-
-- remove / from regexes [\#262](https://github.com/prooph/event-store/pull/262) ([prolic](https://github.com/prolic))
-
-**Closed issues:**
-
-- Remove PHP\_INT\_MAX constant [\#271](https://github.com/prooph/event-store/issues/271)
-- count\($stream\) [\#269](https://github.com/prooph/event-store/issues/269)
-
-**Merged pull requests:**
-
-- renames some vars [\#277](https://github.com/prooph/event-store/pull/277) ([oqq](https://github.com/oqq))
-- Small doc-block change, states are arrays not objects. [\#272](https://github.com/prooph/event-store/pull/272) ([bweston92](https://github.com/bweston92))
-- update prophecy [\#270](https://github.com/prooph/event-store/pull/270) ([basz](https://github.com/basz))
-- update to use psr\container [\#263](https://github.com/prooph/event-store/pull/263) ([basz](https://github.com/basz))
-- Update test it\_resumes\_projection\_from\_position [\#260](https://github.com/prooph/event-store/pull/260) ([rabbl](https://github.com/rabbl))
-
-## [v6.6.0](https://github.com/prooph/event-store/tree/v6.6.0) (2017-02-10)
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0-beta2...v6.6.0)
-
-**Implemented enhancements:**
-
-- RFC: EventStore::load method changes [\#252](https://github.com/prooph/event-store/issues/252)
 - Change EventStore::load / loadReverse methods [\#253](https://github.com/prooph/event-store/pull/253) ([prolic](https://github.com/prolic))
 - add ReadOnlyEventStore interface [\#251](https://github.com/prooph/event-store/pull/251) ([prolic](https://github.com/prolic))
-
-**Closed issues:**
-
-- Read-only event store interface [\#250](https://github.com/prooph/event-store/issues/250)
-- ConfigurableAggregateTranslator: method\_exists vs. is\_callable [\#235](https://github.com/prooph/event-store/issues/235)
-
-**Merged pull requests:**
-
-- Replace method\_exists\(\) calls with is\_callable\(\) to fix \#235 [\#256](https://github.com/prooph/event-store/pull/256) ([shochdoerfer](https://github.com/shochdoerfer))
-- remove older suggestions [\#249](https://github.com/prooph/event-store/pull/249) ([basz](https://github.com/basz))
-
-## [v7.0.0-beta2](https://github.com/prooph/event-store/tree/v7.0.0-beta2) (2017-01-12)
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0-beta1...v7.0.0-beta2)
-
-**Implemented enhancements:**
-
-- RFC projections: if no new events found at all, sleep for 0.25 secs [\#236](https://github.com/prooph/event-store/issues/236)
-- \[RFC\] Projection implementation [\#234](https://github.com/prooph/event-store/issues/234)
 - updated interfaces in ActionEventEmitterEventStore [\#248](https://github.com/prooph/event-store/pull/248) ([prolic](https://github.com/prolic))
 - update event store decorator + query factory [\#247](https://github.com/prooph/event-store/pull/247) ([prolic](https://github.com/prolic))
 - Improve projection factories, use a simple callable definition [\#246](https://github.com/prooph/event-store/pull/246) ([sandrokeil](https://github.com/sandrokeil))
 - Add EventStoreDecorator interface [\#245](https://github.com/prooph/event-store/pull/245) ([prolic](https://github.com/prolic))
-- Outsource aggregate translator configuration again [\#242](https://github.com/prooph/event-store/pull/242) ([dropdevcoding](https://github.com/dropdevcoding))
 - Remove abstract classes in projections + sleep when no new events found + projection factories [\#239](https://github.com/prooph/event-store/pull/239) ([prolic](https://github.com/prolic))
 - update plugin registration [\#233](https://github.com/prooph/event-store/pull/233) ([prolic](https://github.com/prolic))
-
-**Fixed bugs:**
-
-- Problem with ActionEventEmitterEventStore and Projections [\#240](https://github.com/prooph/event-store/issues/240)
-
-**Closed issues:**
-
-- Add EventStoreDecorator interface [\#244](https://github.com/prooph/event-store/issues/244)
-- Outsource AggregateTranslator configuration [\#237](https://github.com/prooph/event-store/issues/237)
-- \[RFC\] Simplify Event Store plugin registration [\#232](https://github.com/prooph/event-store/issues/232)
-- RFC problem with TransactionalEventStore and ArangoDB [\#221](https://github.com/prooph/event-store/issues/221)
-
-**Merged pull requests:**
-
-- Bump year and correct package name in docheader [\#243](https://github.com/prooph/event-store/pull/243) ([codeliner](https://github.com/codeliner))
-- Revert "outsourced configuration from ConfigurableAggregateTranslator" [\#241](https://github.com/prooph/event-store/pull/241) ([codeliner](https://github.com/codeliner))
-- outsourced configuration from ConfigurableAggregateTranslator [\#238](https://github.com/prooph/event-store/pull/238) ([dropdevcoding](https://github.com/dropdevcoding))
-
-## [v7.0.0-beta1](https://github.com/prooph/event-store/tree/v7.0.0-beta1) (2016-12-13)
-[Full Changelog](https://github.com/prooph/event-store/compare/v6.5.1...v7.0.0-beta1)
-
-**Implemented enhancements:**
-
-- Wrap action event emitter [\#229](https://github.com/prooph/event-store/issues/229)
-- Add convenience methods to event store [\#226](https://github.com/prooph/event-store/issues/226)
-- Add "updateStreamMetadata" to event store interface [\#225](https://github.com/prooph/event-store/issues/225)
-- RFC sha1 on stream names [\#196](https://github.com/prooph/event-store/issues/196)
-- RFC event-store HTTP API [\#194](https://github.com/prooph/event-store/issues/194)
-- RFC stream to stream projections [\#193](https://github.com/prooph/event-store/issues/193)
-- RFC query-stream-api [\#192](https://github.com/prooph/event-store/issues/192)
-- make rollback consistent with beginTransaction and commit [\#169](https://github.com/prooph/event-store/issues/169)
 - plugins require ActionEventEmitterEventStore [\#231](https://github.com/prooph/event-store/pull/231) ([prolic](https://github.com/prolic))
 - Wrap action event emitter [\#230](https://github.com/prooph/event-store/pull/230) ([prolic](https://github.com/prolic))
 - Add convenience methods to event store [\#228](https://github.com/prooph/event-store/pull/228) ([prolic](https://github.com/prolic))
@@ -464,26 +434,6 @@
 - Projections [\#213](https://github.com/prooph/event-store/pull/213) ([prolic](https://github.com/prolic))
 - add AbstractActionEventEmitterAwareEventStore [\#212](https://github.com/prooph/event-store/pull/212) ([prolic](https://github.com/prolic))
 - Add EventStore interface - remove Adapters [\#211](https://github.com/prooph/event-store/pull/211) ([prolic](https://github.com/prolic))
-
-**Fixed bugs:**
-
-- Minor fixes and clean up [\#222](https://github.com/prooph/event-store/pull/222) ([prolic](https://github.com/prolic))
-
-**Closed issues:**
-
-- Remove nesting from $recordedEvents   [\#202](https://github.com/prooph/event-store/issues/202)
-
-## [v6.5.1](https://github.com/prooph/event-store/tree/v6.5.1) (2016-11-07)
-[Full Changelog](https://github.com/prooph/event-store/compare/v6.5.0...v6.5.1)
-
-**Implemented enhancements:**
-
-- RFC load max events and direction [\#198](https://github.com/prooph/event-store/issues/198)
-- RFC stream metadata [\#197](https://github.com/prooph/event-store/issues/197)
-- RFC Remove Adapter::replay method [\#190](https://github.com/prooph/event-store/issues/190)
-- Use aggregate root marker interface for PHP 7.1 [\#188](https://github.com/prooph/event-store/issues/188)
-- Remove deprecated AbstractAggregateRepositoryFactory [\#171](https://github.com/prooph/event-store/issues/171)
-- Optimize package for PHP7 [\#170](https://github.com/prooph/event-store/issues/170)
 - add hasStream method to adapter & event store [\#207](https://github.com/prooph/event-store/pull/207) ([prolic](https://github.com/prolic))
 - improve metadata matcher [\#206](https://github.com/prooph/event-store/pull/206) ([prolic](https://github.com/prolic))
 - improved metadatamatcher [\#205](https://github.com/prooph/event-store/pull/205) ([prolic](https://github.com/prolic))
@@ -497,18 +447,117 @@
 
 **Fixed bugs:**
 
+- remove / from regexes [\#262](https://github.com/prooph/event-store/pull/262) ([prolic](https://github.com/prolic))
+- Minor fixes and clean up [\#222](https://github.com/prooph/event-store/pull/222) ([prolic](https://github.com/prolic))
 - bypass append iterator problems [\#210](https://github.com/prooph/event-store/pull/210) ([prolic](https://github.com/prolic))
+
+**Merged pull requests:**
+
+- Small doc-block change, states are arrays not objects. [\#272](https://github.com/prooph/event-store/pull/272) ([bweston92](https://github.com/bweston92))
+- update prophecy [\#270](https://github.com/prooph/event-store/pull/270) ([basz](https://github.com/basz))
+- update to use psr\container [\#263](https://github.com/prooph/event-store/pull/263) ([basz](https://github.com/basz))
+- Update test it\_resumes\_projection\_from\_position [\#260](https://github.com/prooph/event-store/pull/260) ([rabbl](https://github.com/rabbl))
+- remove older suggestions [\#249](https://github.com/prooph/event-store/pull/249) ([basz](https://github.com/basz))
+- removes nesting from recorded events [\#208](https://github.com/prooph/event-store/pull/208) ([oqq](https://github.com/oqq))
+
+## [1.0](https://github.com/prooph/event-store/tree/1.0) (2017-03-13)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.6.0...1.0)
+
+**Implemented enhancements:**
+
+- Make Projections more abstract [\#265](https://github.com/prooph/event-store/issues/265)
+- Provide abstract event store test [\#257](https://github.com/prooph/event-store/issues/257)
+- Add support for inline upcasting [\#254](https://github.com/prooph/event-store/issues/254)
+
+**Closed issues:**
+
+- Remove PHP\_INT\_MAX constant [\#271](https://github.com/prooph/event-store/issues/271)
+- count\($stream\) [\#269](https://github.com/prooph/event-store/issues/269)
+
+## [v6.6.0](https://github.com/prooph/event-store/tree/v6.6.0) (2017-02-10)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0-beta2...v6.6.0)
+
+**Implemented enhancements:**
+
+- RFC: EventStore::load method changes [\#252](https://github.com/prooph/event-store/issues/252)
+- Outsource aggregate translator configuration again [\#242](https://github.com/prooph/event-store/pull/242) ([dropdevcoding](https://github.com/dropdevcoding))
+
+**Closed issues:**
+
+- Read-only event store interface [\#250](https://github.com/prooph/event-store/issues/250)
+- ConfigurableAggregateTranslator: method\_exists vs. is\_callable [\#235](https://github.com/prooph/event-store/issues/235)
+
+**Merged pull requests:**
+
+- Replace method\_exists\(\) calls with is\_callable\(\) to fix \#235 [\#256](https://github.com/prooph/event-store/pull/256) ([shochdoerfer](https://github.com/shochdoerfer))
+- Bump year and correct package name in docheader [\#243](https://github.com/prooph/event-store/pull/243) ([codeliner](https://github.com/codeliner))
+- Revert "outsourced configuration from ConfigurableAggregateTranslator" [\#241](https://github.com/prooph/event-store/pull/241) ([codeliner](https://github.com/codeliner))
+- outsourced configuration from ConfigurableAggregateTranslator [\#238](https://github.com/prooph/event-store/pull/238) ([dropdevcoding](https://github.com/dropdevcoding))
+
+## [v7.0.0-beta2](https://github.com/prooph/event-store/tree/v7.0.0-beta2) (2017-01-12)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.0.0-beta1...v7.0.0-beta2)
+
+**Implemented enhancements:**
+
+- RFC projections: if no new events found at all, sleep for 0.25 secs [\#236](https://github.com/prooph/event-store/issues/236)
+- \[RFC\] Projection implementation [\#234](https://github.com/prooph/event-store/issues/234)
+
+**Fixed bugs:**
+
+- Problem with ActionEventEmitterEventStore and Projections [\#240](https://github.com/prooph/event-store/issues/240)
+
+**Closed issues:**
+
+- Add EventStoreDecorator interface [\#244](https://github.com/prooph/event-store/issues/244)
+- Outsource AggregateTranslator configuration [\#237](https://github.com/prooph/event-store/issues/237)
+- \[RFC\] Simplify Event Store plugin registration [\#232](https://github.com/prooph/event-store/issues/232)
+- RFC problem with TransactionalEventStore and ArangoDB [\#221](https://github.com/prooph/event-store/issues/221)
+
+## [v7.0.0-beta1](https://github.com/prooph/event-store/tree/v7.0.0-beta1) (2016-12-13)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.5.1...v7.0.0-beta1)
+
+**Implemented enhancements:**
+
+- Wrap action event emitter [\#229](https://github.com/prooph/event-store/issues/229)
+- Add convenience methods to event store [\#226](https://github.com/prooph/event-store/issues/226)
+- Add "updateStreamMetadata" to event store interface [\#225](https://github.com/prooph/event-store/issues/225)
+- RFC sha1 on stream names [\#196](https://github.com/prooph/event-store/issues/196)
+- RFC event-store HTTP API [\#194](https://github.com/prooph/event-store/issues/194)
+- RFC stream to stream projections [\#193](https://github.com/prooph/event-store/issues/193)
+- RFC query-stream-api [\#192](https://github.com/prooph/event-store/issues/192)
+- make rollback consistent with beginTransaction and commit [\#169](https://github.com/prooph/event-store/issues/169)
+
+**Closed issues:**
+
+- Remove nesting from $recordedEvents   [\#202](https://github.com/prooph/event-store/issues/202)
+
+## [v6.5.1](https://github.com/prooph/event-store/tree/v6.5.1) (2016-11-07)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.5.0...v6.5.1)
+
+**Implemented enhancements:**
+
+- RFC load max events and direction [\#198](https://github.com/prooph/event-store/issues/198)
+- RFC stream metadata [\#197](https://github.com/prooph/event-store/issues/197)
+- RFC Remove Adapter::replay method [\#190](https://github.com/prooph/event-store/issues/190)
+- Use aggregate root marker interface for PHP 7.1 [\#188](https://github.com/prooph/event-store/issues/188)
+- Remove deprecated AbstractAggregateRepositoryFactory [\#171](https://github.com/prooph/event-store/issues/171)
+- Optimize package for PHP7 [\#170](https://github.com/prooph/event-store/issues/170)
+
+**Fixed bugs:**
+
 - fix unit test [\#183](https://github.com/prooph/event-store/pull/183) ([prolic](https://github.com/prolic))
 
 **Closed issues:**
 
 - Logo for github [\#86](https://github.com/prooph/event-store/issues/86)
 
-**Merged pull requests:**
-
-- removes nesting from recorded events [\#208](https://github.com/prooph/event-store/pull/208) ([oqq](https://github.com/oqq))
-
 ## [v6.5.0](https://github.com/prooph/event-store/tree/v6.5.0) (2016-09-14)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.4.0...v6.5.0)
 
 **Implemented enhancements:**
@@ -517,6 +566,7 @@
 - Revise files header license - add docheader [\#181](https://github.com/prooph/event-store/pull/181) ([prolic](https://github.com/prolic))
 
 ## [v6.4.0](https://github.com/prooph/event-store/tree/v6.4.0) (2016-09-05)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.3.0...v6.4.0)
 
 **Implemented enhancements:**
@@ -531,13 +581,14 @@
 
 **Closed issues:**
 
-- Calling `$this-\>repository-\>get` for the same AR twice will not find recorded events on the first result. [\#179](https://github.com/prooph/event-store/issues/179)
+- Calling `$this->repository->get` for the same AR twice will not find recorded events on the first result. [\#179](https://github.com/prooph/event-store/issues/179)
 
 **Merged pull requests:**
 
 - fix event store tests [\#174](https://github.com/prooph/event-store/pull/174) ([prolic](https://github.com/prolic))
 
 ## [v6.3.0](https://github.com/prooph/event-store/tree/v6.3.0) (2016-06-27)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.2.0...v6.3.0)
 
 **Implemented enhancements:**
@@ -554,14 +605,8 @@
 - Fix/example array to iterator [\#168](https://github.com/prooph/event-store/pull/168) ([anthonysterling](https://github.com/anthonysterling))
 
 ## [v6.2.0](https://github.com/prooph/event-store/tree/v6.2.0) (2016-05-08)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.1.2...v6.2.0)
-
-**Merged pull requests:**
-
-- Prepare 6.2.0 Release [\#167](https://github.com/prooph/event-store/pull/167) ([codeliner](https://github.com/codeliner))
-
-## [v6.1.2](https://github.com/prooph/event-store/tree/v6.1.2) (2016-04-22)
-[Full Changelog](https://github.com/prooph/event-store/compare/v6.1.1...v6.1.2)
 
 **Implemented enhancements:**
 
@@ -572,9 +617,18 @@
 
 **Merged pull requests:**
 
+- Prepare 6.2.0 Release [\#167](https://github.com/prooph/event-store/pull/167) ([codeliner](https://github.com/codeliner))
+
+## [v6.1.2](https://github.com/prooph/event-store/tree/v6.1.2) (2016-04-22)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v6.1.1...v6.1.2)
+
+**Merged pull requests:**
+
 - Move ramsey/uuid to require-dev [\#166](https://github.com/prooph/event-store/pull/166) ([sbacelic](https://github.com/sbacelic))
 
 ## [v6.1.1](https://github.com/prooph/event-store/tree/v6.1.1) (2016-02-27)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.1...v6.1.1)
 
 **Fixed bugs:**
@@ -593,6 +647,7 @@
 - Housekeeping [\#160](https://github.com/prooph/event-store/pull/160) ([prolic](https://github.com/prolic))
 
 ## [v6.1](https://github.com/prooph/event-store/tree/v6.1) (2016-02-25)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.0...v6.1)
 
 **Implemented enhancements:**
@@ -609,6 +664,7 @@
 - add inheritance docs [\#155](https://github.com/prooph/event-store/pull/155) ([prolic](https://github.com/prolic))
 
 ## [v6.0](https://github.com/prooph/event-store/tree/v6.0) (2015-11-22)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v6.0-beta.1...v6.0)
 
 **Implemented enhancements:**
@@ -641,6 +697,7 @@
 - change homepage [\#139](https://github.com/prooph/event-store/pull/139) ([prolic](https://github.com/prolic))
 
 ## [v6.0-beta.1](https://github.com/prooph/event-store/tree/v6.0-beta.1) (2015-10-21)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v5.1...v6.0-beta.1)
 
 **Implemented enhancements:**
@@ -672,10 +729,7 @@
 
 **Fixed bugs:**
 
-- Improve pendingEvents index [\#99](https://github.com/prooph/event-store/issues/99)
 - fix order of events with same date time [\#109](https://github.com/prooph/event-store/pull/109) ([prolic](https://github.com/prolic))
-- Adjust AggregateTranslator contract [\#101](https://github.com/prooph/event-store/pull/101) ([codeliner](https://github.com/codeliner))
-- Improve pendingEvents index [\#100](https://github.com/prooph/event-store/pull/100) ([prolic](https://github.com/prolic))
 
 **Closed issues:**
 
@@ -697,6 +751,7 @@
 - Handle pending events of new aggregates correctly [\#102](https://github.com/prooph/event-store/pull/102) ([codeliner](https://github.com/codeliner))
 
 ## [v5.1](https://github.com/prooph/event-store/tree/v5.1) (2015-09-18)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v5.0...v5.1)
 
 **Merged pull requests:**
@@ -704,13 +759,18 @@
 - Add method to check whether event store is in transaction [\#94](https://github.com/prooph/event-store/pull/94) ([codeliner](https://github.com/codeliner))
 
 ## [v5.0](https://github.com/prooph/event-store/tree/v5.0) (2015-09-08)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v5.0-beta.3...v5.0)
 
 **Merged pull requests:**
 
 - Remove InMemoryAdapter as default [\#93](https://github.com/prooph/event-store/pull/93) ([prolic](https://github.com/prolic))
+- cleanup .php\_cs config file [\#65](https://github.com/prooph/event-store/pull/65) ([prolic](https://github.com/prolic))
+- Fix php-cs for all files in repo [\#63](https://github.com/prooph/event-store/pull/63) ([prolic](https://github.com/prolic))
+- Add php-cs-fixer to travis [\#62](https://github.com/prooph/event-store/pull/62) ([prolic](https://github.com/prolic))
 
 ## [v5.0-beta.3](https://github.com/prooph/event-store/tree/v5.0-beta.3) (2015-09-02)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v5.0-beta.2...v5.0-beta.3)
 
 **Implemented enhancements:**
@@ -719,15 +779,12 @@
 - Add tests [\#92](https://github.com/prooph/event-store/pull/92) ([prolic](https://github.com/prolic))
 - Fixes and tests [\#91](https://github.com/prooph/event-store/pull/91) ([prolic](https://github.com/prolic))
 
-**Fixed bugs:**
-
-- Fixes and tests [\#91](https://github.com/prooph/event-store/pull/91) ([prolic](https://github.com/prolic))
-
 **Merged pull requests:**
 
 - test php7 on travis [\#90](https://github.com/prooph/event-store/pull/90) ([prolic](https://github.com/prolic))
 
 ## [v5.0-beta.2](https://github.com/prooph/event-store/tree/v5.0-beta.2) (2015-08-25)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v5.0-beta.1...v5.0-beta.2)
 
 **Implemented enhancements:**
@@ -773,15 +830,13 @@
 - Change constructor signature of AggregateRepository [\#76](https://github.com/prooph/event-store/pull/76) ([prolic](https://github.com/prolic))
 - Move EventStoreFactory one namespace level up [\#73](https://github.com/prooph/event-store/pull/73) ([prolic](https://github.com/prolic))
 - Move event-store related factories from proophessor to this repo [\#67](https://github.com/prooph/event-store/pull/67) ([prolic](https://github.com/prolic))
-- cleanup .php\_cs config file [\#65](https://github.com/prooph/event-store/pull/65) ([prolic](https://github.com/prolic))
-- Fix php-cs for all files in repo [\#63](https://github.com/prooph/event-store/pull/63) ([prolic](https://github.com/prolic))
-- Add php-cs-fixer to travis [\#62](https://github.com/prooph/event-store/pull/62) ([prolic](https://github.com/prolic))
 - Add AdapterMessageConverter trait and a payload serializer [\#59](https://github.com/prooph/event-store/pull/59) ([codeliner](https://github.com/codeliner))
 - Mark nested transactions as deprecated [\#58](https://github.com/prooph/event-store/pull/58) ([codeliner](https://github.com/codeliner))
 - Improve readme [\#53](https://github.com/prooph/event-store/pull/53) ([codeliner](https://github.com/codeliner))
 - Type hint message interface [\#52](https://github.com/prooph/event-store/pull/52) ([codeliner](https://github.com/codeliner))
 
 ## [v5.0-beta.1](https://github.com/prooph/event-store/tree/v5.0-beta.1) (2015-07-26)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v2.1.1...v5.0-beta.1)
 
 **Merged pull requests:**
@@ -789,9 +844,11 @@
 - Feature/v5.0 [\#50](https://github.com/prooph/event-store/pull/50) ([codeliner](https://github.com/codeliner))
 
 ## [v2.1.1](https://github.com/prooph/event-store/tree/v2.1.1) (2015-07-03)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v4.0.1...v2.1.1)
 
 ## [v4.0.1](https://github.com/prooph/event-store/tree/v4.0.1) (2015-07-01)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v4.0...v4.0.1)
 
 **Merged pull requests:**
@@ -799,6 +856,7 @@
 - Reset event store recorded events collection before triggering post commit event [\#44](https://github.com/prooph/event-store/pull/44) ([dottorbabba](https://github.com/dottorbabba))
 
 ## [v4.0](https://github.com/prooph/event-store/tree/v4.0) (2015-06-23)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v3.1...v4.0)
 
 **Closed issues:**
@@ -811,6 +869,7 @@
 - Update composer.json [\#40](https://github.com/prooph/event-store/pull/40) ([prolic](https://github.com/prolic))
 
 ## [v3.1](https://github.com/prooph/event-store/tree/v3.1) (2015-05-09)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v3.0...v3.1)
 
 **Closed issues:**
@@ -818,12 +877,15 @@
 - Document/Wiki [\#38](https://github.com/prooph/event-store/issues/38)
 
 ## [v3.0](https://github.com/prooph/event-store/tree/v3.0) (2015-05-01)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v2.1.0...v3.0)
 
 ## [v2.1.0](https://github.com/prooph/event-store/tree/v2.1.0) (2015-04-16)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v2.0.1...v2.1.0)
 
 ## [v2.0.1](https://github.com/prooph/event-store/tree/v2.0.1) (2015-01-13)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v2.0...v2.0.1)
 
 **Merged pull requests:**
@@ -831,6 +893,7 @@
 - Fix broken super class strategy by reorganizing all strategies [\#36](https://github.com/prooph/event-store/pull/36) ([codeliner](https://github.com/codeliner))
 
 ## [v2.0](https://github.com/prooph/event-store/tree/v2.0) (2015-01-13)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v1.1.2...v2.0)
 
 **Merged pull requests:**
@@ -838,6 +901,7 @@
 - Simplified aggregate repo [\#35](https://github.com/prooph/event-store/pull/35) ([codeliner](https://github.com/codeliner))
 
 ## [v1.1.2](https://github.com/prooph/event-store/tree/v1.1.2) (2014-12-11)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v1.1.1...v1.1.2)
 
 **Fixed bugs:**
@@ -846,9 +910,11 @@
 - AggregateRepository::aggregateType attribute not initialized in the constructor [\#32](https://github.com/prooph/event-store/issues/32)
 
 ## [v1.1.1](https://github.com/prooph/event-store/tree/v1.1.1) (2014-10-25)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v1.1.0...v1.1.1)
 
 ## [v1.1.0](https://github.com/prooph/event-store/tree/v1.1.0) (2014-10-20)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/v1.0.0...v1.1.0)
 
 **Closed issues:**
@@ -858,9 +924,11 @@
 - Add rtd documentation [\#10](https://github.com/prooph/event-store/issues/10)
 
 ## [v1.0.0](https://github.com/prooph/event-store/tree/v1.0.0) (2014-09-28)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.5.0...v1.0.0)
 
 ## [0.5.0](https://github.com/prooph/event-store/tree/0.5.0) (2014-09-07)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.4.2...0.5.0)
 
 **Closed issues:**
@@ -871,6 +939,7 @@
 - Optimize ES performance [\#12](https://github.com/prooph/event-store/issues/12)
 
 ## [0.4.2](https://github.com/prooph/event-store/tree/0.4.2) (2014-08-20)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.4.1...0.4.2)
 
 **Merged pull requests:**
@@ -879,6 +948,7 @@
 - Composer tweaks [\#15](https://github.com/prooph/event-store/pull/15) ([jsor](https://github.com/jsor))
 
 ## [0.4.1](https://github.com/prooph/event-store/tree/0.4.1) (2014-08-19)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.4.0...0.4.1)
 
 **Implemented enhancements:**
@@ -896,6 +966,7 @@
 - Relax rhumsaa/uuid version constraint [\#14](https://github.com/prooph/event-store/pull/14) ([jsor](https://github.com/jsor))
 
 ## [0.4.0](https://github.com/prooph/event-store/tree/0.4.0) (2014-07-02)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.3.1...0.4.0)
 
 **Implemented enhancements:**
@@ -903,9 +974,11 @@
 - Add possibility to load all aggregates of an aggregateFQCN [\#2](https://github.com/prooph/event-store/issues/2)
 
 ## [0.3.1](https://github.com/prooph/event-store/tree/0.3.1) (2014-06-08)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.3.0...0.3.1)
 
 ## [0.3.0](https://github.com/prooph/event-store/tree/0.3.0) (2014-06-08)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.2.0...0.3.0)
 
 **Implemented enhancements:**
@@ -913,6 +986,7 @@
 - Introduce DomainEventHydratorManager [\#5](https://github.com/prooph/event-store/issues/5)
 
 ## [0.2.0](https://github.com/prooph/event-store/tree/0.2.0) (2014-06-05)
+
 [Full Changelog](https://github.com/prooph/event-store/compare/0.1.0...0.2.0)
 
 **Implemented enhancements:**
@@ -926,5 +1000,8 @@
 
 ## [0.1.0](https://github.com/prooph/event-store/tree/0.1.0) (2014-04-20)
 
+[Full Changelog](https://github.com/prooph/event-store/compare/b5986d2493843b7d31ad7482bb4725cc3007a072...0.1.0)
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
