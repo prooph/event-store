@@ -64,6 +64,7 @@ To establish a consistent code quality, please provide unit tests for all your c
 | 7.5.x   | Latest     | \>= 7.1          | active        |
 | 7.6     | Latest     | \>= 7.3 \| 8.0   | active        |
 | 7.7     | Latest     | \>= 7.3 \| >=8.0 | active        |
+| 7.8     | Latest     | \>= 7.4 \| >=8.0 | active        |
 
 ## License
 
