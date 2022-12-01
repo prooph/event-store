@@ -28,7 +28,7 @@
     "phpspec/prophecy": "^1.10.3",
     "phpunit/phpunit": "^9.5",
     "prooph/php-cs-fixer-config": "^0.4",
-    "vimeo/psalm": "^4.9.3"
+    "vimeo/psalm": "^4.9.3 || ^5.0.0"
   },
   "autoload": {
     "psr-4": {
