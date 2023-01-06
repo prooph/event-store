@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,20 +15,11 @@ namespace Prooph\EventStore\Util;
 
 class ArrayCache
 {
-    /**
-     * @var array
-     */
-    private $container = [];
+    private array $container;
 
-    /**
-     * @var int
-     */
-    private $size;
+    private int $size;
 
-    /**
-     * @var int
-     */
-    private $position = -1;
+    private int $position = -1;
 
     public function __construct(int $size)
     {

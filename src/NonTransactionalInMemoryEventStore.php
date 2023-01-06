@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,15 +26,9 @@ use Prooph\EventStore\Util\Assertion;
 
 final class NonTransactionalInMemoryEventStore implements EventStore
 {
-    /**
-     * @var array
-     */
-    private $streams = [];
+    private array $streams = [];
 
-    /**
-     * @var array
-     */
-    private $cachedStreams = [];
+    private array $cachedStreams = [];
 
     public function create(Stream $stream): void
     {
@@ -434,12 +428,12 @@ final class NonTransactionalInMemoryEventStore implements EventStore
                 }
                 break;
             case Operator::GREATER_THAN():
-                if (! ($value > $expected)) {
+                if ($value <= $expected) {
                     return false;
                 }
                 break;
             case Operator::GREATER_THAN_EQUALS():
-                if (! ($value >= $expected)) {
+                if ($value < $expected) {
                     return false;
                 }
                 break;
@@ -449,12 +443,12 @@ final class NonTransactionalInMemoryEventStore implements EventStore
                 }
                 break;
             case Operator::LOWER_THAN():
-                if (! ($value < $expected)) {
+                if ($value >= $expected) {
                     return false;
                 }
                 break;
             case Operator::LOWER_THAN_EQUALS():
-                if (! ($value <= $expected)) {
+                if ($value > $expected) {
                     return false;
                 }
                 break;

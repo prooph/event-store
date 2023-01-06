@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,33 +16,22 @@ namespace ProophTest\EventStore\Mock;
 use Iterator;
 use Prooph\Common\Messaging\DomainEvent;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class User
 {
-    /**
-     * @var Uuid
-     */
-    private $userId;
+    private ?UuidInterface $userId = null;
+
+    private string $name;
+
+    private string $email;
 
     /**
-     * @var string
+     * @var DomainEvent[]|null
      */
-    private $name;
+    private ?array $recordedEvents = null;
 
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var DomainEvent[]
-     */
-    private $recordedEvents;
-
-    /**
-     * @var int
-     */
-    private $version = 0;
+    private int $version = 0;
 
     public static function create(string $name, string $email): User
     {
@@ -93,7 +82,7 @@ class User
         return $this->email;
     }
 
-    public function changeName(string $newName)
+    public function changeName(string $newName): void
     {
         $this->recordThat(UsernameChanged::with(
             [

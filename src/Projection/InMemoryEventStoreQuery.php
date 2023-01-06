@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,65 +26,29 @@ use Prooph\EventStore\StreamName;
 
 final class InMemoryEventStoreQuery implements Query
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var EventStore
-     */
-    private $innerEventStore;
+    private EventStore $innerEventStore;
 
-    /**
-     * @var array
-     */
-    private $streamPositions = [];
+    private array $streamPositions = [];
 
-    /**
-     * @var array
-     */
-    private $state = [];
+    private array $state = [];
 
-    /**
-     * @var callable|null
-     */
-    private $initCallback;
+    private ?Closure $initCallback = null;
 
-    /**
-     * @var Closure|null
-     */
-    private $handler;
+    private ?Closure $handler = null;
 
-    /**
-     * @var array
-     */
-    private $handlers = [];
+    private array $handlers = [];
 
-    /**
-     * @var boolean
-     */
-    private $isStopped = false;
+    private bool $isStopped = false;
 
-    /**
-     * @var ?string
-     */
-    private $currentStreamName = null;
+    private ?string $currentStreamName = null;
 
-    /**
-     * @var array|null
-     */
-    private $query;
+    private ?array $query;
 
-    /**
-     * @var bool
-     */
-    private $triggerPcntlSignalDispatch;
+    private bool $triggerPcntlSignalDispatch;
 
-    /**
-     * @var MetadataMatcher|null
-     */
-    private $metadataMatcher;
+    private ?MetadataMatcher $metadataMatcher = null;
 
     public function __construct(EventStore $eventStore, bool $triggerPcntlSignalDispatch = false)
     {
@@ -96,10 +60,7 @@ final class InMemoryEventStoreQuery implements Query
         }
 
         if (
-        ! (
-            $eventStore instanceof InMemoryEventStore
-            || $eventStore instanceof NonTransactionalInMemoryEventStore
-        )
+        ! $eventStore instanceof InMemoryEventStore && ! $eventStore instanceof NonTransactionalInMemoryEventStore
         ) {
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
@@ -188,7 +149,7 @@ final class InMemoryEventStoreQuery implements Query
 
     public function when(array $handlers): Query
     {
-        if (null !== $this->handler || ! empty($this->handlers)) {
+        if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');
         }
 
@@ -209,7 +170,7 @@ final class InMemoryEventStoreQuery implements Query
 
     public function whenAny(Closure $handler): Query
     {
-        if (null !== $this->handler || ! empty($this->handlers)) {
+        if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');
         }
 
@@ -240,7 +201,7 @@ final class InMemoryEventStoreQuery implements Query
     public function run(): void
     {
         if (null === $this->query
-            || (null === $this->handler && empty($this->handlers))
+            || (null === $this->handler && $this->handlers === [])
         ) {
             throw new Exception\RuntimeException('No handlers configured');
         }
@@ -334,15 +295,9 @@ final class InMemoryEventStoreQuery implements Query
     private function createHandlerContext(?string &$streamName)
     {
         return new class($this, $streamName) {
-            /**
-             * @var Query
-             */
-            private $query;
+            private Query $query;
 
-            /**
-             * @var ?string
-             */
-            private $streamName;
+            private ?string $streamName = null;
 
             public function __construct(Query $query, ?string &$streamName)
             {

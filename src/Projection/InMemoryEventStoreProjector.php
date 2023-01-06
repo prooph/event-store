@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -29,90 +29,39 @@ use Prooph\EventStore\Util\ArrayCache;
 
 final class InMemoryEventStoreProjector implements Projector
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var ProjectionStatus
-     */
-    private $status;
+    private ProjectionStatus $status;
 
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var EventStore
-     */
-    private $innerEventStore;
+    private EventStore $innerEventStore;
 
-    /**
-     * @var array
-     */
-    private $streamPositions = [];
+    private array $streamPositions = [];
 
-    /**
-     * @var array
-     */
-    private $state = [];
+    private array $state = [];
 
-    /**
-     * @var callable|null
-     */
-    private $initCallback;
+    private ?Closure $initCallback = null;
 
-    /**
-     * @var Closure|null
-     */
-    private $handler;
+    private ?Closure $handler = null;
 
-    /**
-     * @var array
-     */
-    private $handlers = [];
+    private array $handlers = [];
 
-    /**
-     * @var ArrayCache
-     */
-    private $cachedStreamNames;
+    private ArrayCache $cachedStreamNames;
 
-    /**
-     * @var boolean
-     */
-    private $isStopped = false;
+    private bool $isStopped = false;
 
-    /**
-     * @var ?string
-     */
-    private $currentStreamName = null;
+    private ?string $currentStreamName = null;
 
-    /**
-     * @var int
-     */
-    private $sleep;
+    private int $sleep;
 
-    /**
-     * @var bool
-     */
-    private $triggerPcntlSignalDispatch;
+    private bool $triggerPcntlSignalDispatch;
 
-    /**
-     * @var array|null
-     */
-    private $query;
+    private ?array $query = null;
 
-    /**
-     * @var bool
-     */
-    private $streamCreated = false;
+    private bool $streamCreated = false;
 
-    /**
-     * @var MetadataMatcher|null
-     */
-    private $metadataMatcher;
+    private ?MetadataMatcher $metadataMatcher = null;
 
     public function __construct(
         EventStore $eventStore,
@@ -145,10 +94,7 @@ final class InMemoryEventStoreProjector implements Projector
         }
 
         if (
-            ! (
-                $eventStore instanceof InMemoryEventStore
-                || $eventStore instanceof NonTransactionalInMemoryEventStore
-            )
+            ! $eventStore instanceof InMemoryEventStore && ! $eventStore instanceof NonTransactionalInMemoryEventStore
         ) {
             throw new Exception\InvalidArgumentException('Unknown event store instance given');
         }
@@ -237,7 +183,7 @@ final class InMemoryEventStoreProjector implements Projector
 
     public function when(array $handlers): Projector
     {
-        if (null !== $this->handler || ! empty($this->handlers)) {
+        if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');
         }
 
@@ -258,7 +204,7 @@ final class InMemoryEventStoreProjector implements Projector
 
     public function whenAny(Closure $handler): Projector
     {
-        if (null !== $this->handler || ! empty($this->handlers)) {
+        if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');
         }
 
@@ -338,7 +284,7 @@ final class InMemoryEventStoreProjector implements Projector
     public function run(bool $keepRunning = true): void
     {
         if (null === $this->query
-            || (null === $this->handler && empty($this->handlers))
+            || (null === $this->handler && $this->handlers === [])
         ) {
             throw new Exception\RuntimeException('No handlers configured');
         }
@@ -455,15 +401,9 @@ final class InMemoryEventStoreProjector implements Projector
     private function createHandlerContext(?string &$streamName)
     {
         return new class($this, $streamName) {
-            /**
-             * @var Projector
-             */
-            private $projector;
+            private Projector $projector;
 
-            /**
-             * @var ?string
-             */
-            private $streamName;
+            private ?string $streamName = null;
 
             public function __construct(Projector $projector, ?string &$streamName)
             {
