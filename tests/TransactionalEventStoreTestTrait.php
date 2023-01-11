@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -64,7 +64,7 @@ trait TransactionalEventStoreTestTrait
      */
     public function it_wraps_up_code_in_transaction_properly(): void
     {
-        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore): string {
             $this->eventStore->create($this->getTestStream());
             $this->assertSame($this->eventStore, $eventStore);
 
@@ -78,7 +78,7 @@ trait TransactionalEventStoreTestTrait
             2
         );
 
-        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent) {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) use ($secondStreamEvent): string {
             $this->eventStore->appendTo(new StreamName('Prooph\Model\User'), new ArrayIterator([$secondStreamEvent]));
             $this->assertSame($this->eventStore, $eventStore);
 
@@ -127,7 +127,7 @@ trait TransactionalEventStoreTestTrait
 
         $eventStore = $this->eventStore;
 
-        $this->eventStore->transactional(function (EventStore $es) use ($eventStore) {
+        $this->eventStore->transactional(function (EventStore $es) use ($eventStore): void {
             $this->assertSame($es, $eventStore);
             throw new \Exception('Transaction failed');
         });
@@ -138,7 +138,7 @@ trait TransactionalEventStoreTestTrait
      */
     public function it_should_return_true_by_default_if_transaction_is_used(): void
     {
-        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore) {
+        $transactionResult = $this->eventStore->transactional(function (EventStore $eventStore): void {
             $this->eventStore->create($this->getTestStream());
             $this->assertSame($this->eventStore, $eventStore);
         });

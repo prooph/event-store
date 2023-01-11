@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -1118,14 +1118,14 @@ abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
     /**
      * @test
      */
-    public function it_calls_reset_projection_also_if_init_callback_returns_state()
+    public function it_calls_reset_projection_also_if_init_callback_returns_state(): void
     {
         $readModel = $this->prophesize(ReadModel::class);
         $readModel->reset()->shouldBeCalled();
 
         $readModelProjection = $this->projectionManager->createReadModelProjection('test-projection', $readModel->reveal());
 
-        $readModelProjection->init(function () {
+        $readModelProjection->init(function (): array {
             return ['state' => 'some value'];
         });
 

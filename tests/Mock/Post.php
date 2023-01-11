@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,33 +16,24 @@ namespace ProophTest\EventStore\Mock;
 use Prooph\Common\Messaging\DomainEvent;
 use Prooph\Common\Messaging\Message;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class Post
 {
-    /**
-     * @var Uuid
-     */
-    private $postId;
+    private string $name;
+
+    private ?UuidInterface $postId = null;
+
+    private string $text;
+
+    private string $email;
 
     /**
-     * @var string
+     * @var DomainEvent[]|null
      */
-    private $text;
+    private ?array $recordedEvents = null;
 
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var DomainEvent[]
-     */
-    private $recordedEvents;
-
-    /**
-     * @var int
-     */
-    private $version = 0;
+    private int $version = 0;
 
     public static function create(string $text, string $email): Post
     {
@@ -61,7 +52,7 @@ class Post
     }
 
     /**
-     * @param Message[] $historyEvents
+     * @param DomainEvent[] $historyEvents
      * @return Post
      */
     public static function reconstituteFromHistory(array $historyEvents): Post
@@ -77,9 +68,6 @@ class Post
     {
     }
 
-    /**
-     * @return Uuid
-     */
     public function getId(): Uuid
     {
         return $this->postId;
@@ -124,7 +112,7 @@ class Post
     /**
      * @param DomainEvent[] $streamEvents
      */
-    private function replay($streamEvents): void
+    private function replay(array $streamEvents): void
     {
         foreach ($streamEvents as $streamEvent) {
             $this->apply($streamEvent);

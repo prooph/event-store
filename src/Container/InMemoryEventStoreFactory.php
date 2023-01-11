@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -42,15 +42,9 @@ final class InMemoryEventStoreFactory implements
 {
     use ConfigurationTrait;
 
-    /**
-     * @var string
-     */
-    private $configId;
+    private string $configId;
 
-    /**
-     * @var bool
-     */
-    private $isTransactional;
+    private ?bool $isTransactional = null;
 
     /**
      * Creates a new instance from a specified config, specifically meant to be used as static factory.
@@ -75,7 +69,7 @@ final class InMemoryEventStoreFactory implements
             );
         }
 
-        return (new static($name))->__invoke($arguments[0]);
+        return (new self($name))->__invoke($arguments[0]);
     }
 
     public function __construct(string $configId = 'default')
@@ -164,6 +158,7 @@ final class InMemoryEventStoreFactory implements
 
     /**
      * {@inheritdoc}
+     * @return array{metadata_enrichers: never[], plugins: never[], wrap_action_event_emitter: true, transactional: true, read_only: true}
      */
     public function defaultOptions(): iterable
     {

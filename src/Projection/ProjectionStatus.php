@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,10 +25,10 @@ use MabeEnum\Enum;
  */
 final class ProjectionStatus extends Enum
 {
-    const RUNNING = 'running';
-    const STOPPING = 'stopping';
-    const DELETING = 'deleting';
-    const DELETING_INCL_EMITTED_EVENTS = 'deleting incl emitted events';
-    const RESETTING = 'resetting';
-    const IDLE = 'idle';
+    public const RUNNING = 'running';
+    public const STOPPING = 'stopping';
+    public const DELETING = 'deleting';
+    public const DELETING_INCL_EMITTED_EVENTS = 'deleting incl emitted events';
+    public const RESETTING = 'resetting';
+    public const IDLE = 'idle';
 }

@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -120,7 +120,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         $streamsTwoEvents = \array_chunk(\array_slice($datetimeList, $chunkThree, $length), 2);
         $streamsOneEvents = \array_chunk(\array_slice($datetimeList, $length + $chunkThree), 1);
 
-        $streamEvents = \array_merge($streamsOneEvents, $streamsTwoEvents, $streamsThreeEvents);
+        $streamEvents = [...$streamsOneEvents, ...$streamsTwoEvents, ...$streamsThreeEvents];
         \shuffle($streamEvents);
 
         $streams = [];
@@ -130,7 +130,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
             $streamName = 'stream' . $streamNo;
 
             // must be sorted
-            \usort($stream, static function ($a, $b) {
+            \usort($stream, static function ($a, $b): int {
                 return $a['payload']['expected_index'] <=> $b['payload']['expected_index'];
             });
 

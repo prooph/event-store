@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,20 +17,11 @@ class MergedStreamIterator implements StreamIterator
 {
     use TimSort;
 
-    /**
-     * @var array
-     */
-    private $iterators = [];
+    private array $iterators = [];
 
-    /**
-     * @var int
-     */
-    private $numberOfIterators;
+    private int $numberOfIterators;
 
-    /**
-     * @var array
-     */
-    private $originalIteratorOrder;
+    private array $originalIteratorOrder;
 
     public function __construct(array $streamNames, StreamIterator ...$iterators)
     {

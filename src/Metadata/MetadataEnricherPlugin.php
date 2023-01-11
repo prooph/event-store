@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,10 +22,7 @@ use Prooph\EventStore\Stream;
 
 final class MetadataEnricherPlugin extends AbstractPlugin
 {
-    /**
-     * @var MetadataEnricher
-     */
-    private $metadataEnricher;
+    private MetadataEnricher $metadataEnricher;
 
     public function __construct(MetadataEnricher $metadataEnricher)
     {
@@ -36,13 +33,17 @@ final class MetadataEnricherPlugin extends AbstractPlugin
     {
         $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_CREATE,
-            [$this, 'onEventStoreCreateStream'],
+            function (ActionEvent $createEvent): void {
+                $this->onEventStoreCreateStream($createEvent);
+            },
             1000
         );
 
         $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_APPEND_TO,
-            [$this, 'onEventStoreAppendToStream'],
+            function (ActionEvent $appendToStreamEvent): void {
+                $this->onEventStoreAppendToStream($appendToStreamEvent);
+            },
             1000
         );
     }

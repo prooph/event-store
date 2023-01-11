@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2022 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -37,14 +37,14 @@ $query = $projectionManager->createQuery(
     ]
 );
 
-\pcntl_signal(SIGQUIT, function () use ($query) {
+\pcntl_signal(SIGQUIT, function () use ($query): void {
     $query->stop();
     exit(SIGUSR1);
 });
 
 $query
     ->fromStreams('user-123')
-    ->whenAny(function () {
+    ->whenAny(function (): void {
         \usleep(500000);
     })
     ->run();
