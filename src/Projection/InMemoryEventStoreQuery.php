@@ -44,7 +44,7 @@ final class InMemoryEventStoreQuery implements Query
 
     private ?string $currentStreamName = null;
 
-    private ?array $query;
+    private ?array $query = null;
 
     private bool $triggerPcntlSignalDispatch;
 
