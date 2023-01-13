@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Mock;
 
 use Prooph\Common\Messaging\DomainEvent;
-use Prooph\Common\Messaging\Message;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 

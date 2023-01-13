@@ -1,5 +1,5 @@
 name: integration
-on: [push]
+on: [push, pull_request]
 
 jobs:
   code-standard:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.2
       - name: Install dependencies
         run: composer update --prefer-dist
       - name: Building
@@ -45,6 +45,10 @@ jobs:
           - php: 8.1
             dependencies: ''
           - php: 8.1
+            dependencies: '--prefer-lowest --prefer-stable'
+          - php: 8.2
+            dependencies: ''
+          - php: 8.2
             dependencies: '--prefer-lowest --prefer-stable'
 
     steps:
