@@ -37,9 +37,9 @@ To establish a consistent code quality, please provide unit tests for all your c
 | Version | Status      | PHP Version | Support Until |
 |---------|-------------|-------------|---------------|
 | 5.x     | EOL         | >= 5.5      | EOL           |
-| 6.x     | Maintained  | >= 5.5      | 3 Dec 2017    |
-| 7.x     | Latest      | >= 7.1      | active        |
-| 8.x     | Development | >= 7.4      | active        |
+| 6.x     | EOL         | >= 5.5      | 3 Dec 2017    |
+| 7.x     | Latest      | >= 7.4      | active        |
+| 8.x     | Development | >= 8.1      | active        |
 
 ## License
 
