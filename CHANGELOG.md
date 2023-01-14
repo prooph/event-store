@@ -1,12 +1,25 @@
 # Changelog
 
-## [v7.8.0](https://github.com/prooph/event-store/tree/v7.8.0)
+## [v7.9.0](https://github.com/prooph/event-store/tree/v7.9.0)
 
-[Full Changelog](https://github.com/prooph/event-store/compare/v7.7.0...v7.8.0)
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.8.0...v7.9.0)
 
 **Implemented enhancements:**
 
-- Php81 dependencies comp [\#427](https://github.com/prooph/event-store/pull/427) ([basz](https://github.com/basz))
+- Ensure compatibility with PHP 8.2
+- Add explicit public visibility to remaining constants
+- Use array spread operator instead of array_merge where possible
+- Add null default to nullable properties properties that have no
+default
+- Add typed properties and return types where possible
+- Simplify empty() function calls on empty arrays
+- Update licenses to 2023
+- Add missing null default to nullable query property
+- Adjust github actions config to include php 8.2
+
+## [v7.8.0](https://github.com/prooph/event-store/tree/v7.8.0) (2022-11-07)
+
+[Full Changelog](https://github.com/prooph/event-store/compare/v7.7.0...v7.8.0)
 
 ## [v7.7.0](https://github.com/prooph/event-store/tree/v7.7.0) (2022-04-26)
 
