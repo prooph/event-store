@@ -23,7 +23,7 @@
   },
   "require-dev": {
     "amphp/amp": "^3.0",
-    "doctrine/instantiator": "^1.4",
+    "doctrine/instantiator": "^1.4 || ^2.0",
     "php-coveralls/php-coveralls": "^2.2",
     "phpspec/prophecy": "^1.15",
     "phpunit/phpunit": "^9.6",
