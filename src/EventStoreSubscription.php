@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,19 +13,14 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
+/** @psalm-immutable */
 abstract class EventStoreSubscription
 {
     private bool $isSubscribedToAll;
-    private string $streamId;
-    private int $lastCommitPosition;
-    private ?int $lastEventNumber;
 
-    public function __construct(string $streamId, int $lastCommitPosition, ?int $lastEventNumber)
+    public function __construct(private string $streamId, private int $lastCommitPosition, private ?int $lastEventNumber)
     {
         $this->isSubscribedToAll = empty($streamId);
-        $this->streamId = $streamId;
-        $this->lastCommitPosition = $lastCommitPosition;
-        $this->lastEventNumber = $lastEventNumber;
     }
 
     public function isSubscribedToAll(): bool

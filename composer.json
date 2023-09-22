@@ -17,18 +17,17 @@
   ],
   "prefer-stable": true,
   "require": {
-    "php": "^7.4|^8.0",
+    "php": "^8.1",
     "ext-json": "*",
     "ramsey/uuid": "^3.9.3"
   },
   "require-dev": {
-    "amphp/amp": "^2.4.4",
-    "doctrine/instantiator": "^1.3",
+    "amphp/amp": "^3.0",
+    "doctrine/instantiator": "^1.4",
     "php-coveralls/php-coveralls": "^2.2",
-    "phpspec/prophecy": "^1.10.3",
-    "phpunit/phpunit": "^9.5",
-    "prooph/php-cs-fixer-config": "^0.4",
-    "vimeo/psalm": "^4.9.3"
+    "phpspec/prophecy": "^1.15",
+    "phpunit/phpunit": "^9.6",
+    "prooph/php-cs-fixer-config": "^0.5"
   },
   "autoload": {
     "psr-4": {

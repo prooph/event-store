@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,8 +18,11 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 class RawStreamMetadataResult
 {
     private string $stream;
+
     private bool $isStreamDeleted;
+
     private int $metastreamVersion;
+
     private string $streamMetadata;
 
     public function __construct(string $stream, bool $isStreamDeleted, int $metastreamVersion, string $streamMetadata)

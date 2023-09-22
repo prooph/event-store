@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,6 +17,8 @@ class Json
 {
     /**
      * @param mixed $value
+     *
+     * @psalm-pure
      */
     public static function encode($value): string
     {
@@ -25,10 +27,8 @@ class Json
         return \json_encode($value, $flags);
     }
 
-    /**
-     * @return mixed
-     */
-    public static function decode(string $json)
+    /** @psalm-pure */
+    public static function decode(string $json): array
     {
         return \json_decode($json, true, 512, \JSON_BIGINT_AS_STRING | \JSON_THROW_ON_ERROR);
     }

@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,6 +18,12 @@ use Throwable;
 
 interface EventStoreConnection
 {
+    public function connectionName(): string;
+
+    public function connect(): void;
+
+    public function close(): void;
+
     public function deleteStream(
         string $stream,
         int $expectedVersion,
@@ -27,8 +33,6 @@ interface EventStoreConnection
 
     /**
      * @param list<EventData> $events
-     *
-     * @return WriteResult
      */
     public function appendToStream(
         string $stream,
@@ -197,4 +201,36 @@ interface EventStoreConnection
         bool $autoAck = true,
         ?UserCredentials $userCredentials = null
     ): EventStorePersistentSubscription;
+
+    /**
+     * @param Closure(ClientConnectionEventArgs): void $handler
+     */
+    public function onConnected(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientConnectionEventArgs): void $handler
+     */
+    public function onDisconnected(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientReconnectingEventArgs): void $handler
+     */
+    public function onReconnecting(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientClosedEventArgs): void $handler
+     */
+    public function onClosed(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientErrorEventArgs): void $handler
+     */
+    public function onErrorOccurred(Closure $handler): ListenerHandler;
+
+    /**
+     * @param Closure(ClientAuthenticationFailedEventArgs): void $handler
+     */
+    public function onAuthenticationFailed(Closure $handler): ListenerHandler;
+
+    public function detach(ListenerHandler $handler): void;
 }

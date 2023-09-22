@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,21 +22,25 @@ class StreamAcl
      * @var list<string>
      */
     private array $readRoles;
+
     /**
      * Roles and users permitted to write to the stream
      * @var list<string>
      */
     private array $writeRoles;
+
     /**
      * Roles and users permitted to delete the stream
      * @var list<string>
      */
     private array $deleteRoles;
+
     /**
      * Roles and users permitted to read stream metadata
      * @var list<string>
      */
     private array $metaReadRoles;
+
     /**
      * Roles and users permitted to write stream metadata
      * @var list<string>
@@ -109,23 +113,23 @@ class StreamAcl
         $data = [];
 
         if (! empty($this->readRoles)) {
-            $data[SystemMetadata::ACL_READ] = $this->exportRoles($this->readRoles);
+            $data[SystemMetadata::AclRead] = $this->exportRoles($this->readRoles);
         }
 
         if (! empty($this->writeRoles)) {
-            $data[SystemMetadata::ACL_WRITE] = $this->exportRoles($this->writeRoles);
+            $data[SystemMetadata::AclWrite] = $this->exportRoles($this->writeRoles);
         }
 
         if (! empty($this->deleteRoles)) {
-            $data[SystemMetadata::ACL_DELETE] = $this->exportRoles($this->deleteRoles);
+            $data[SystemMetadata::AclDelete] = $this->exportRoles($this->deleteRoles);
         }
 
         if (! empty($this->metaReadRoles)) {
-            $data[SystemMetadata::ACL_META_READ] = $this->exportRoles($this->metaReadRoles);
+            $data[SystemMetadata::AclMetaRead] = $this->exportRoles($this->metaReadRoles);
         }
 
         if (! empty($this->metaWriteRoles)) {
-            $data[SystemMetadata::ACL_META_WRITE] = $this->exportRoles($this->metaWriteRoles);
+            $data[SystemMetadata::AclMetaWrite] = $this->exportRoles($this->metaWriteRoles);
         }
 
         return $data;
@@ -136,13 +140,24 @@ class StreamAcl
      */
     public static function fromArray(array $data): StreamAcl
     {
-        return new self(
-            ($data[SystemMetadata::ACL_READ] ?? []),
-            ($data[SystemMetadata::ACL_WRITE] ?? []),
-            ($data[SystemMetadata::ACL_DELETE] ?? []),
-            ($data[SystemMetadata::ACL_META_READ] ?? []),
-            ($data[SystemMetadata::ACL_META_WRITE] ?? [])
-        );
+        return new self(...\array_map(
+            function (string $role) use ($data): array {
+                if (! isset($data[$role])) {
+                    return [];
+                }
+
+                $roles = $data[$role];
+
+                return ! \is_array($roles) ? [$roles] : $roles;
+            },
+            [
+                SystemMetadata::AclRead,
+                SystemMetadata::AclWrite,
+                SystemMetadata::AclDelete,
+                SystemMetadata::AclMetaRead,
+                SystemMetadata::AclMetaWrite,
+            ]
+        ));
     }
 
     /**

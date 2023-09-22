@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,26 +21,42 @@ final class PersistentSubscriptionDetails
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
     private ?PersistentSubscriptionConfigDetails $config;
+
     /**
      * @var list<PersistentSubscriptionConnectionDetails>
      *
      * Only populated when retrieved via PersistentSubscriptionsManager::describe() method.
      */
     private array $connections = [];
+
     private string $eventStreamId;
+
     private string $groupName;
+
     private string $status;
+
     private float $averageItemsPerSecond;
+
     private int $totalItemsProcessed;
+
     private int $countSinceLastMeasurement;
+
     private int $lastProcessedEventNumber;
+
     private int $lastKnownEventNumber;
+
     private int $readBufferCount;
+
     private int $liveBufferCount;
+
     private int $retryBufferCount;
+
     private int $totalInFlightMessages;
+
     private int $connectionCount;
+
     private string $parkedMessageUri;
+
     private string $getMessagesUri;
 
     /**

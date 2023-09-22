@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore;
 
 use JsonSerializable;
+use Prooph\EventStore\Common\SystemConsumerStrategy;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use stdClass;
 
@@ -23,55 +24,67 @@ class PersistentSubscriptionSettings implements JsonSerializable
      * Tells the subscription to resolve link events.
      */
     private bool $resolveLinkTos;
+
     /**
      * Start the subscription from the position-of the event in the stream.
      * If the value is set to `-1` that the subscription should start from
      * where the stream is when the subscription is first connected.
      */
     private int $startFrom;
+
     /**
      * Tells the backend to measure timings on the clients so statistics will contain histograms of them.
      */
     private bool $extraStatistics;
+
     /**
      * The amount of time the system should try to checkpoint after.
      */
     private int $checkPointAfterMilliseconds;
+
     /**
      * The size of the live buffer (in memory) before resorting to paging.
      */
     private int $liveBufferSize;
+
     /**
      * The size of the read batch when in paging mode.
      */
     private int $readBatchSize;
+
     /**
      * The number of messages that should be buffered when in paging mode.
      */
     private int $bufferSize;
+
     /**
      * The maximum number of messages not checkpointed before forcing a checkpoint.
      */
     private int $maxCheckPointCount;
+
     /**
      * Sets the number of times a message should be retried before considered a bad message.
      */
     private int $maxRetryCount;
+
     /**
      * Sets the maximum number of allowed subscribers.
      */
     private int $maxSubscriberCount;
+
     /**
      * Sets the timeout for a client before the message will be retried.
      */
     private int $messageTimeoutMilliseconds;
+
     /**
      * The minimum number of messages to write a checkpoint for.
      */
     private int $minCheckPointCount;
-    private string $namedConsumerStrategy;
 
-    private const INT_32_MAX = 2147483647;
+    private SystemConsumerStrategy $namedConsumerStrategy;
+
+    private const Int32Max = 2147483647;
 
     public static function default(): self
     {
@@ -97,14 +110,14 @@ class PersistentSubscriptionSettings implements JsonSerializable
         int $minCheckPointCount,
         int $maxCheckPointCount,
         int $maxSubscriberCount,
-        string $namedConsumerStrategy
+        SystemConsumerStrategy $namedConsumerStrategy
     ) {
-        if ($checkPointAfterMilliseconds > self::INT_32_MAX) {
-            throw new InvalidArgumentException('checkPointAfterMilliseconds must smaller than ' . self::INT_32_MAX);
+        if ($checkPointAfterMilliseconds > self::Int32Max) {
+            throw new InvalidArgumentException('checkPointAfterMilliseconds must smaller than ' . self::Int32Max);
         }
 
-        if ($messageTimeoutMilliseconds > self::INT_32_MAX) {
-            throw new InvalidArgumentException('messageTimeoutMilliseconds must smaller than ' . self::INT_32_MAX);
+        if ($messageTimeoutMilliseconds > self::Int32Max) {
+            throw new InvalidArgumentException('messageTimeoutMilliseconds must smaller than ' . self::Int32Max);
         }
 
         $this->resolveLinkTos = $resolveLinkTos;
@@ -182,7 +195,7 @@ class PersistentSubscriptionSettings implements JsonSerializable
         return $this->minCheckPointCount;
     }
 
-    public function namedConsumerStrategy(): string
+    public function namedConsumerStrategy(): SystemConsumerStrategy
     {
         return $this->namedConsumerStrategy;
     }
@@ -202,7 +215,7 @@ class PersistentSubscriptionSettings implements JsonSerializable
         $object->maxSubscriberCount = $this->maxSubscriberCount;
         $object->messageTimeoutMilliseconds = $this->messageTimeoutMilliseconds;
         $object->minCheckPointCount = $this->minCheckPointCount;
-        $object->namedConsumerStrategy = $this->namedConsumerStrategy;
+        $object->namedConsumerStrategy = $this->namedConsumerStrategy->name;
 
         return $object;
     }

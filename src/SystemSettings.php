@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,6 +24,7 @@ class SystemSettings implements JsonSerializable
      * Default access control list for new user streams.
      */
     private ?StreamAcl $userStreamAcl;
+
     /**
      * Default access control list for new system streams.
      */
@@ -33,18 +34,18 @@ class SystemSettings implements JsonSerializable
     {
         return new self(
             new StreamAcl(
-                [SystemRoles::ALL],
-                [SystemRoles::ALL],
-                [SystemRoles::ALL],
-                [SystemRoles::ALL],
-                [SystemRoles::ALL]
+                [SystemRoles::All],
+                [SystemRoles::All],
+                [SystemRoles::All],
+                [SystemRoles::All],
+                [SystemRoles::All]
             ),
             new StreamAcl(
-                [SystemRoles::ALL, SystemRoles::ADMINS],
-                [SystemRoles::ALL, SystemRoles::ADMINS],
-                [SystemRoles::ALL, SystemRoles::ADMINS],
-                [SystemRoles::ALL, SystemRoles::ADMINS],
-                [SystemRoles::ALL, SystemRoles::ADMINS]
+                [SystemRoles::All, SystemRoles::Admins],
+                [SystemRoles::All, SystemRoles::Admins],
+                [SystemRoles::All, SystemRoles::Admins],
+                [SystemRoles::All, SystemRoles::Admins],
+                [SystemRoles::All, SystemRoles::Admins]
             )
         );
     }
@@ -70,11 +71,11 @@ class SystemSettings implements JsonSerializable
         $object = new stdClass();
 
         if ($this->userStreamAcl) {
-            $object->{SystemMetadata::USER_STREAM_ACL} = $this->userStreamAcl->toArray();
+            $object->{SystemMetadata::UserStreamAcl} = $this->userStreamAcl->toArray();
         }
 
         if ($this->systemStreamAcl) {
-            $object->{SystemMetadata::SYSTEM_STREAM_ACL} = $this->systemStreamAcl->toArray();
+            $object->{SystemMetadata::SystemStreamAcl} = $this->systemStreamAcl->toArray();
         }
 
         return $object;
@@ -84,11 +85,11 @@ class SystemSettings implements JsonSerializable
     {
         /** @var array<string, array<string, list<string>>> $data */
         return new self(
-            isset($data[SystemMetadata::USER_STREAM_ACL])
-                ? StreamAcl::fromArray($data[SystemMetadata::USER_STREAM_ACL])
+            isset($data[SystemMetadata::UserStreamAcl])
+                ? StreamAcl::fromArray($data[SystemMetadata::UserStreamAcl])
                 : null,
-            isset($data[SystemMetadata::SYSTEM_STREAM_ACL])
-                ? StreamAcl::fromArray($data[SystemMetadata::SYSTEM_STREAM_ACL])
+            isset($data[SystemMetadata::SystemStreamAcl])
+                ? StreamAcl::fromArray($data[SystemMetadata::SystemStreamAcl])
                 : null
         );
     }

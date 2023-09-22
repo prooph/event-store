@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,23 +25,28 @@ class StreamMetadata implements JsonSerializable
      * The maximum number of events allowed in the stream.
      */
     private ?int $maxCount;
+
     /**
      * The maximum age in seconds for events allowed in the stream.
      */
     private ?int $maxAge;
+
     /**
      * The event number from which previous events can be scavenged.
      * This is used to implement soft-deletion of streams.
      */
     private ?int $truncateBefore;
+
     /**
      * The amount of time in seconds for which the stream head is cachable.
      */
     private ?int $cacheControl;
+
     /**
      * The access control list for the stream.
      */
     private ?StreamAcl $acl;
+
     /**
      * key => value pairs of custom metadata
      * @var array<string, mixed>
@@ -138,26 +143,26 @@ class StreamMetadata implements JsonSerializable
         $object = new stdClass();
 
         if (null !== $this->maxCount) {
-            $object->{SystemMetadata::MAX_COUNT} = $this->maxCount;
+            $object->{SystemMetadata::MaxCount} = $this->maxCount;
         }
 
         if (null !== $this->maxAge) {
-            $object->{SystemMetadata::MAX_AGE} = $this->maxAge;
+            $object->{SystemMetadata::MaxAge} = $this->maxAge;
         }
 
         if (null !== $this->truncateBefore) {
-            $object->{SystemMetadata::TRUNCATE_BEFORE} = $this->truncateBefore;
+            $object->{SystemMetadata::TruncateBefore} = $this->truncateBefore;
         }
 
         if (null !== $this->cacheControl) {
-            $object->{SystemMetadata::CACHE_CONTROL} = $this->cacheControl;
+            $object->{SystemMetadata::CacheControl} = $this->cacheControl;
         }
 
         if (null !== $this->acl) {
             $acl = $this->acl->toArray();
 
             if (! empty($acl)) {
-                $object->{SystemMetadata::ACL} = $acl;
+                $object->{SystemMetadata::Acl} = $acl;
             }
         }
 
@@ -177,10 +182,10 @@ class StreamMetadata implements JsonSerializable
     public static function createFromArray(array $data): StreamMetadata
     {
         $internals = [
-            SystemMetadata::MAX_COUNT,
-            SystemMetadata::MAX_AGE,
-            SystemMetadata::TRUNCATE_BEFORE,
-            SystemMetadata::CACHE_CONTROL,
+            SystemMetadata::MaxCount,
+            SystemMetadata::MaxAge,
+            SystemMetadata::TruncateBefore,
+            SystemMetadata::CacheControl,
         ];
 
         $params = [];
@@ -188,9 +193,9 @@ class StreamMetadata implements JsonSerializable
         foreach ($data as $key => $value) {
             if (\in_array($key, $internals, true)) {
                 $params[$key] = $value;
-            } elseif ($key === SystemMetadata::ACL) {
+            } elseif ($key === SystemMetadata::Acl) {
                 /** @var array<string, list<string>> $value */
-                $params[SystemMetadata::ACL] = StreamAcl::fromArray($value);
+                $params[SystemMetadata::Acl] = StreamAcl::fromArray($value);
             } else {
                 $params['customMetadata'][$key] = $value;
             }
@@ -198,11 +203,11 @@ class StreamMetadata implements JsonSerializable
 
         /** @psalm-suppress MixedArgumentTypeCoercion */
         return new self(
-            $params[SystemMetadata::MAX_COUNT] ?? null,
-            $params[SystemMetadata::MAX_AGE] ?? null,
-            $params[SystemMetadata::TRUNCATE_BEFORE] ?? null,
-            $params[SystemMetadata::CACHE_CONTROL] ?? null,
-            $params[SystemMetadata::ACL] ?? null,
+            $params[SystemMetadata::MaxCount] ?? null,
+            $params[SystemMetadata::MaxAge] ?? null,
+            $params[SystemMetadata::TruncateBefore] ?? null,
+            $params[SystemMetadata::CacheControl] ?? null,
+            $params[SystemMetadata::Acl] ?? null,
             $params['customMetadata'] ?? []
         );
     }

@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,19 +18,28 @@ use Prooph\EventStore\Exception\InvalidArgumentException;
 class StreamMetadataBuilder
 {
     private ?int $maxCount;
+
     private ?int $maxAge;
+
     private ?int $truncateBefore;
+
     private ?int $cacheControl;
+
     /** @var list<string> */
     private array $aclRead;
+
     /** @var list<string> */
     private array $aclWrite;
+
     /** @var list<string> */
     private array $aclDelete;
+
     /** @var list<string> */
     private array $aclMetaRead;
+
     /** @var list<string> */
     private array $aclMetaWrite;
+
     /** @var array<string, mixed> */
     private array $customMetadata;
 

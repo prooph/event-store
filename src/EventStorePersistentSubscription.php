@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,9 +17,7 @@ use Prooph\EventStore\Internal\ResolvedEvent;
 
 interface EventStorePersistentSubscription
 {
-    public const DEFAULT_BUFFER_SIZE = 10;
-
-    public function start(): void;
+    public const DefaultBufferSize = 10;
 
     /**
      * Acknowledge that a message have completed processing (this will tell the server it has been processed)
@@ -89,5 +87,7 @@ interface EventStorePersistentSubscription
         string $reason
     ): void;
 
-    public function stop(): void;
+    public function start(): void;
+
+    public function stop(?float $timeout = null): void;
 }

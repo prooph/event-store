@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2021 Alexander Miertsch <kontakt@codeliner.ws>
- * (c) 2015-2021 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2022 Alexander Miertsch <kontakt@codeliner.ws>
+ * (c) 2015-2022 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore;
 
-use Prooph\EventStore\Common\SystemConsumerStrategies;
+use Prooph\EventStore\Common\SystemConsumerStrategy;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 
 class PersistentSubscriptionSettingsBuilder
@@ -22,53 +22,65 @@ class PersistentSubscriptionSettingsBuilder
      * Tells the subscription to resolve link events.
      */
     private bool $resolveLinkTos = false;
+
     /**
      * Start the subscription from the position-of the event in the stream.
      * If the value is set to `-1` that the subscription should start from
      * where the stream is when the subscription is first connected.
      */
     private int $startFrom = -1;
+
     /**
      * Tells the backend to measure timings on the clients so statistics will contain histograms of them.
      */
     private bool $extraStatistics = false;
+
     /**
      * The amount of time the system should try to checkpoint after.
      */
     private int $checkPointAfterMilliseconds = 2000;
+
     /**
      * The size of the live buffer (in memory) before resorting to paging.
      */
     private int $liveBufferSize = 500;
+
     /**
      * The size of the read batch when in paging mode.
      */
     private int $readBatchSize = 20;
+
     /**
      * The number of messages that should be buffered when in paging mode.
      */
     private int $bufferSize = 500;
+
     /**
      * The maximum number of messages not checkpointed before forcing a checkpoint.
      */
     private int $maxCheckPointCount = 1000;
+
     /**
      * Sets the number of times a message should be retried before considered a bad message.
      */
     private int $maxRetryCount = 10;
+
     /**
      * Sets the maximum number of allowed subscribers.
      */
     private int $maxSubscriberCount = 0;
+
     /**
      * Sets the timeout for a client before the message will be retried.
      */
     private int $messageTimeoutMilliseconds = 30000;
+
     /**
      * The minimum number of messages to write a checkpoint for.
      */
     private int $minCheckPointCount = 10;
-    private string $namedConsumerStrategy = SystemConsumerStrategies::ROUND_ROBIN;
+
+    private SystemConsumerStrategy $namedConsumerStrategy = SystemConsumerStrategy::RoundRobin;
 
     /** @internal */
     public function __construct()
@@ -98,14 +110,14 @@ class PersistentSubscriptionSettingsBuilder
 
     public function preferRoundRobin(): self
     {
-        $this->namedConsumerStrategy = SystemConsumerStrategies::ROUND_ROBIN;
+        $this->namedConsumerStrategy = SystemConsumerStrategy::RoundRobin;
 
         return $this;
     }
 
     public function preferDispatchToSingle(): self
     {
-        $this->namedConsumerStrategy = SystemConsumerStrategies::DISPATCH_TO_SINGLE;
+        $this->namedConsumerStrategy = SystemConsumerStrategy::DispatchToSingle;
 
         return $this;
     }
