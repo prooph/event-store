@@ -121,7 +121,7 @@ final class InMemoryEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromStream(string $streamName, MetadataMatcher $metadataMatcher = null): Projector
+    public function fromStream(string $streamName, ?MetadataMatcher $metadataMatcher = null): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
