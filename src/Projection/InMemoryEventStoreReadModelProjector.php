@@ -131,7 +131,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         return $this;
     }
 
-    public function fromStream(string $streamName, MetadataMatcher $metadataMatcher = null): ReadModelProjector
+    public function fromStream(string $streamName, ?MetadataMatcher $metadataMatcher = null): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');

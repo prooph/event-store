@@ -87,7 +87,7 @@ final class InMemoryEventStoreQuery implements Query
         return $this;
     }
 
-    public function fromStream(string $streamName, MetadataMatcher $metadataMatcher = null): Query
+    public function fromStream(string $streamName, ?MetadataMatcher $metadataMatcher = null): Query
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');

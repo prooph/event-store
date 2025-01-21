@@ -38,17 +38,17 @@ final class ReadOnlyEventStoreWrapper implements ReadOnlyEventStore
     public function load(
         StreamName $streamName,
         int $fromNumber = 1,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
+        ?int $count = null,
+        ?MetadataMatcher $metadataMatcher = null
     ): Iterator {
         return $this->eventStore->load($streamName, $fromNumber, $count, $metadataMatcher);
     }
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = null,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
+        ?int $fromNumber = null,
+        ?int $count = null,
+        ?MetadataMatcher $metadataMatcher = null
     ): Iterator {
         return $this->eventStore->loadReverse($streamName, $fromNumber, $count, $metadataMatcher);
     }

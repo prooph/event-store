@@ -28,7 +28,7 @@ class MetadataMatcher
         string $field,
         Operator $operator,
         $value,
-        FieldType $fieldType = null
+        ?FieldType $fieldType = null
     ): MetadataMatcher {
         $this->validateValue($operator, $value);
 
