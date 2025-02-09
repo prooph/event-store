@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -191,7 +191,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         return $this;
     }
 
-    public function fromStream(string $streamName, MetadataMatcher $metadataMatcher = null): ReadModelProjector
+    public function fromStream(string $streamName, ?MetadataMatcher $metadataMatcher = null): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -396,7 +396,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
                 \pcntl_signal_dispatch();
             }
 
-            /* @var Message $event */
+            // @var Message $event
             $this->streamPositions[$streamName]++;
             $this->eventCounter++;
 
@@ -425,7 +425,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
             if ($this->triggerPcntlSignalDispatch) {
                 \pcntl_signal_dispatch();
             }
-            /* @var Message $event */
+            // @var Message $event
             $this->streamPositions[$streamName]++;
 
             if (! isset($this->handlers[$event->messageName()])) {
@@ -515,6 +515,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
                 foreach ($this->query['categories'] as $category) {
                     if (\substr($stream, 0, \strlen($category) + 1) === $category . '-') {
                         $streamPositions[$stream] = 0;
+
                         break;
                     }
                 }

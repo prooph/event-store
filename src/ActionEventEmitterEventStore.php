@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,16 +26,27 @@ use Prooph\EventStore\Util\Assertion;
 class ActionEventEmitterEventStore implements EventStoreDecorator
 {
     public const EVENT_APPEND_TO = 'appendTo';
+
     public const EVENT_CREATE = 'create';
+
     public const EVENT_LOAD = 'load';
+
     public const EVENT_LOAD_REVERSE = 'loadReverse';
+
     public const EVENT_DELETE = 'delete';
+
     public const EVENT_HAS_STREAM = 'hasStream';
+
     public const EVENT_FETCH_STREAM_METADATA = 'fetchStreamMetadata';
+
     public const EVENT_UPDATE_STREAM_METADATA = 'updateStreamMetadata';
+
     public const EVENT_FETCH_STREAM_NAMES = 'fetchStreamNames';
+
     public const EVENT_FETCH_STREAM_NAMES_REGEX = 'fetchStreamNamesRegex';
+
     public const EVENT_FETCH_CATEGORY_NAMES = 'fetchCategoryNames';
+
     public const EVENT_FETCH_CATEGORY_NAMES_REGEX = 'fetchCategoryNamesRegex';
 
     public const ALL_EVENTS = [
@@ -233,8 +244,8 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
     public function load(
         StreamName $streamName,
         int $fromNumber = 1,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
+        ?int $count = null,
+        ?MetadataMatcher $metadataMatcher = null
     ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
@@ -265,9 +276,9 @@ class ActionEventEmitterEventStore implements EventStoreDecorator
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = null,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
+        ?int $fromNumber = null,
+        ?int $count = null,
+        ?MetadataMatcher $metadataMatcher = null
     ): Iterator {
         Assertion::nullOrGreaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);

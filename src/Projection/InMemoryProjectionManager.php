@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -52,7 +52,7 @@ final class InMemoryProjectionManager implements ProjectionManager
         }
     }
 
-    public function createQuery(array $options = null): Query
+    public function createQuery(?array $options = null): Query
     {
         return new InMemoryEventStoreQuery(
             $this->eventStore,
@@ -62,7 +62,7 @@ final class InMemoryProjectionManager implements ProjectionManager
 
     public function createProjection(
         string $name,
-        array $options = null
+        ?array $options = null
     ): Projector {
         $projector = new InMemoryEventStoreProjector(
             $this->eventStore,
@@ -82,7 +82,7 @@ final class InMemoryProjectionManager implements ProjectionManager
     public function createReadModelProjection(
         string $name,
         ReadModel $readModel,
-        array $options = null
+        ?array $options = null
     ): ReadModelProjector {
         $projector = new InMemoryEventStoreReadModelProjector(
             $this->eventStore,

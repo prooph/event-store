@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2019 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2019 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -91,8 +91,8 @@ final class InMemoryEventStore implements TransactionalEventStore
     public function load(
         StreamName $streamName,
         int $fromNumber = 1,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
+        ?int $count = null,
+        ?MetadataMatcher $metadataMatcher = null
     ): Iterator {
         Assertion::greaterOrEqualThan($fromNumber, 1);
         Assertion::nullOrGreaterOrEqualThan($count, 1);
@@ -109,7 +109,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $key => $streamEvent) {
-            /* @var Message $streamEvent */
+            // @var Message $streamEvent
             if (($key + 1) >= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
                 && $this->matchesMessagesProperty($metadataMatcher, $streamEvent)
@@ -132,9 +132,9 @@ final class InMemoryEventStore implements TransactionalEventStore
 
     public function loadReverse(
         StreamName $streamName,
-        int $fromNumber = null,
-        int $count = null,
-        MetadataMatcher $metadataMatcher = null
+        ?int $fromNumber = null,
+        ?int $count = null,
+        ?MetadataMatcher $metadataMatcher = null
     ): Iterator {
         if (null === $fromNumber) {
             $fromNumber = PHP_INT_MAX;
@@ -155,7 +155,7 @@ final class InMemoryEventStore implements TransactionalEventStore
         $streamEvents = [];
 
         foreach (\array_reverse($this->streams[$streamName->toString()]['events'], true) as $key => $streamEvent) {
-            /* @var Message $streamEvent */
+            // @var Message $streamEvent
             if (($key + 1) <= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
                 && $this->matchesMessagesProperty($metadataMatcher, $streamEvent)
@@ -268,6 +268,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             $this->commit();
         } catch (\Throwable $e) {
             $this->rollback();
+
             throw $e;
         }
 
@@ -303,6 +304,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             if (null === $filter || $filter === $streamName) {
                 if ($offset > $skipped) {
                     ++$skipped;
+
                     continue;
                 }
 
@@ -389,6 +391,7 @@ final class InMemoryEventStore implements TransactionalEventStore
             if (null === $filter || $filter === $category) {
                 if ($offset > $skipped) {
                     ++$skipped;
+
                     continue;
                 }
 
@@ -436,6 +439,7 @@ final class InMemoryEventStore implements TransactionalEventStore
 
             if ($offset > $skipped) {
                 ++$skipped;
+
                 continue;
             }
 
@@ -481,15 +485,18 @@ final class InMemoryEventStore implements TransactionalEventStore
             switch ($match['field']) {
                 case 'uuid':
                     $value = $message->uuid()->toString();
+
                     break;
                 case 'event_name':
                 case 'message_name':
                 case 'messageName':
                     $value = $message->messageName();
+
                     break;
                 case 'created_at':
                 case 'createdAt':
                     $value = $message->createdAt()->format('Y-m-d\TH:i:s.u');
+
                     break;
                 default:
                     throw new \UnexpectedValueException(\sprintf('Unexpected field "%s" given', $match['field']));
@@ -510,46 +517,55 @@ final class InMemoryEventStore implements TransactionalEventStore
                 if ($value !== $expected) {
                     return false;
                 }
+
                 break;
             case Operator::GREATER_THAN():
                 if (! ($value > $expected)) {
                     return false;
                 }
+
                 break;
             case Operator::GREATER_THAN_EQUALS():
                 if (! ($value >= $expected)) {
                     return false;
                 }
+
                 break;
             case Operator::IN():
                 if (! \in_array($value, $expected, true)) {
                     return false;
                 }
+
                 break;
             case Operator::LOWER_THAN():
                 if (! ($value < $expected)) {
                     return false;
                 }
+
                 break;
             case Operator::LOWER_THAN_EQUALS():
                 if (! ($value <= $expected)) {
                     return false;
                 }
+
                 break;
             case Operator::NOT_EQUALS():
                 if ($value === $expected) {
                     return false;
                 }
+
                 break;
             case Operator::NOT_IN():
                 if (\in_array($value, $expected, true)) {
                     return false;
                 }
+
                 break;
             case Operator::REGEX():
                 if (! \preg_match('/' . $expected . '/', $value)) {
                     return false;
                 }
+
                 break;
             default:
                 throw new \UnexpectedValueException('Unknown operator found');
