@@ -1,6 +1,6 @@
 # Prooph Event Store
 
-PHP 7.4 EventStore Implementation.
+PHP 8.2 EventStore Implementation.
 
 [![Build Status](https://travis-ci.com/prooph/event-store.svg?branch=7.x)](https://travis-ci.com/prooph/event-store)
 [![Coverage Status](https://coveralls.io/repos/prooph/event-store/badge.svg?branch=7.x&service=github)](https://coveralls.io/github/prooph/event-store?branch=7.x)
@@ -61,7 +61,7 @@ To establish a consistent code quality, please provide unit tests for all your c
 |---------|-------------|-------------|------------------|
 | 5.x     | EOL         | >= 5.5      | EOL              |
 | 6.x     | EOL         | >= 5.5      | EOL (3 Dec 2017) |
-| 7.x     | Latest      | >= 7.4      | active           |
+| 7.x     | Latest      | >= 8.2      | active           |
 | 8.x     | Development | >= 8.1      | active           |
 
 ## License

@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -116,13 +116,11 @@ trait TimSort
         // start merging from size RUN (or 32). It will merge
         // to form size 64, then 128, 256 and so on ....
         for ($size = $this->timSortRun; $size < $n; $size = 2 * $size) {
-
             // pick starting point of left sub $array. We
             // are going to merge $arr[left..left+size-1]
             // and $arr[left+size, left+2*size-1]
             // After every merge, we increase left by 2*size
             for ($left = 0; $left < $n; $left += 2 * $size) {
-
                 // find ending point of left sub $array
                 // mid+1 is starting point of right sub $array
                 $mid = $left + $size - 1;
