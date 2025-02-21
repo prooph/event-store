@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -82,18 +82,23 @@ abstract class AbstractEventStoreReadModelProjectorTest extends TestCase
                     switch (true) {
                         case $calledTimes < 10:
                             $testCase->assertSame(null, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 'none'));
+
                             break;
                         case $calledTimes < 20:
                             $testCase->assertSame(10, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 10));
+
                             break;
                         case $calledTimes < 30:
                             $testCase->assertSame(20, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 20));
+
                             break;
                         case $calledTimes < 40:
                             $testCase->assertSame(30, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 30));
+
                             break;
                         case $calledTimes < 50:
                             $testCase->assertSame(40, $position, \sprintf("for handled event '%s' the persisted position expectation is '%s'", $calledTimes, 40));
+
                             break;
                     }
 

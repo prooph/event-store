@@ -2,8 +2,8 @@
 
 /**
  * This file is part of prooph/event-store.
- * (c) 2014-2023 prooph software GmbH <contact@prooph.de>
- * (c) 2015-2023 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2014-2025 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2025 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -83,7 +83,7 @@ final class NonTransactionalInMemoryEventStore implements EventStore
         $streamEvents = [];
 
         foreach ($this->streams[$streamName->toString()]['events'] as $key => $streamEvent) {
-            /* @var Message $streamEvent */
+            // @var Message $streamEvent
             if (
                 ($key + 1) >= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
@@ -130,7 +130,7 @@ final class NonTransactionalInMemoryEventStore implements EventStore
         $streamEvents = [];
 
         foreach (\array_reverse($this->streams[$streamName->toString()]['events'], true) as $key => $streamEvent) {
-            /* @var Message $streamEvent */
+            // @var Message $streamEvent
             if (
                 ($key + 1) <= $fromNumber
                 && $this->matchesMetadata($metadataMatcher, $streamEvent->metadata())
@@ -216,6 +216,7 @@ final class NonTransactionalInMemoryEventStore implements EventStore
             if (null === $filter || $filter === $streamName) {
                 if ($offset > $skipped) {
                     ++$skipped;
+
                     continue;
                 }
 
@@ -303,6 +304,7 @@ final class NonTransactionalInMemoryEventStore implements EventStore
             if (null === $filter || $filter === $category) {
                 if ($offset > $skipped) {
                     ++$skipped;
+
                     continue;
                 }
 
@@ -352,6 +354,7 @@ final class NonTransactionalInMemoryEventStore implements EventStore
 
             if ($offset > $skipped) {
                 ++$skipped;
+
                 continue;
             }
 
@@ -397,15 +400,18 @@ final class NonTransactionalInMemoryEventStore implements EventStore
             switch ($match['field']) {
                 case 'uuid':
                     $value = $message->uuid()->toString();
+
                     break;
                 case 'event_name':
                 case 'message_name':
                 case 'messageName':
                     $value = $message->messageName();
+
                     break;
                 case 'created_at':
                 case 'createdAt':
                     $value = $message->createdAt()->format('Y-m-d\TH:i:s.u');
+
                     break;
                 default:
                     throw new \UnexpectedValueException(\sprintf('Unexpected field "%s" given', $match['field']));
@@ -426,46 +432,55 @@ final class NonTransactionalInMemoryEventStore implements EventStore
                 if ($value !== $expected) {
                     return false;
                 }
+
                 break;
             case Operator::GREATER_THAN():
                 if ($value <= $expected) {
                     return false;
                 }
+
                 break;
             case Operator::GREATER_THAN_EQUALS():
                 if ($value < $expected) {
                     return false;
                 }
+
                 break;
             case Operator::IN():
                 if (! \in_array($value, $expected, true)) {
                     return false;
                 }
+
                 break;
             case Operator::LOWER_THAN():
                 if ($value >= $expected) {
                     return false;
                 }
+
                 break;
             case Operator::LOWER_THAN_EQUALS():
                 if ($value > $expected) {
                     return false;
                 }
+
                 break;
             case Operator::NOT_EQUALS():
                 if ($value === $expected) {
                     return false;
                 }
+
                 break;
             case Operator::NOT_IN():
                 if (\in_array($value, $expected, true)) {
                     return false;
                 }
+
                 break;
             case Operator::REGEX():
                 if (! \preg_match('/' . $expected . '/', $value)) {
                     return false;
                 }
+
                 break;
             default:
                 throw new \UnexpectedValueException('Unknown operator found');

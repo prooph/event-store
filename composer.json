@@ -24,20 +24,20 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.2",
         "marc-mabe/php-enum": "^4.4",
-        "prooph/common": "^4.5.2"
+        "prooph/common": "^4.6.0"
     },
     "require-dev": {
         "phpspec/prophecy": "^1.10.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/php-invoker": "^3.1",
-        "phpunit/phpunit": "^9.3",
+        "phpunit/phpunit": "^9.6 || ^10.0",
         "prooph/bookdown-template": "^0.2.3",
-        "prooph/php-cs-fixer-config": "^0.4",
+        "prooph/php-cs-fixer-config": "^0.6",
         "psr/container": "^1.0",
         "sandrokeil/interop-config": "^2.0.1",
-        "satooshi/php-coveralls": "^1.0"
+        "php-coveralls/php-coveralls": "^2.7"
     },
     "suggest": {
         "prooph/pdo-event-store": "For usage with MySQL or Postgres as event store",
