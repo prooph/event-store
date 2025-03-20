@@ -52,13 +52,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Prooph\\EventStore\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
+            "Prooph\\EventStore\\": "src/",
             "ProophTest\\EventStore\\": "tests/"
-        }
+        },
+        "exclude-from-classmap": ["tests/"]
     },
     "extra": {
         "branch-alias": {
