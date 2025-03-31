@@ -24,7 +24,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "marc-mabe/php-enum": "^4.4",
         "prooph/common": "^4.6.0"
     },
