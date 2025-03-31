@@ -131,14 +131,25 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         return $this;
     }
 
-    public function fromStream(string $streamName, ?MetadataMatcher $metadataMatcher = null): ReadModelProjector
+    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): ReadModelProjector
+    {
+        $this->metadataMatcher = $metadataMatcher;
+
+        return $this;
+    }
+
+    public function fromStream(string $streamName/**, ?MetadataMatcher $metadataMatcher = null*/): ReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
+        if (\func_num_args() > 1) {
+            \trigger_error('The $metadataMatcher parameter is deprecated. Use withMetadataMatcher() instead.', E_USER_DEPRECATED);
+            $this->metadataMatcher = \func_get_arg(1);
+        }
+
         $this->query['streams'][] = $streamName;
-        $this->metadataMatcher = $metadataMatcher;
 
         return $this;
     }

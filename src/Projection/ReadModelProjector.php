@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Projection;
 
 use Closure;
+use Prooph\EventStore\Metadata\MetadataMatcher;
 
 interface ReadModelProjector
 {
@@ -45,6 +46,8 @@ interface ReadModelProjector
      * The callback has to return an array
      */
     public function init(Closure $callback): ReadModelProjector;
+
+    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): ReadModelProjector;
 
     public function fromStream(string $streamName): ReadModelProjector;
 
@@ -79,7 +82,7 @@ interface ReadModelProjector
      *     return $state;
      * }
      */
-    public function whenAny(Closure $closure): ReadModelProjector;
+    public function whenAny(Closure $handler): ReadModelProjector;
 
     public function reset(): void;
 
