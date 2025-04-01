@@ -25,7 +25,7 @@ use Prooph\EventStore\StreamIterator\MergedStreamIterator;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
-final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
+final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadModelProjector
 {
     private string $name;
 
@@ -131,7 +131,7 @@ final class InMemoryEventStoreReadModelProjector implements ReadModelProjector
         return $this;
     }
 
-    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): ReadModelProjector
+    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): MetadataAwareReadModelProjector
     {
         $this->metadataMatcher = $metadataMatcher;
 
