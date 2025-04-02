@@ -224,7 +224,8 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
             ->init(function (): array {
                 return ['count' => 0, 'version' => null];
             })
-            ->fromStream('user-123', $metadataMatcher)
+            ->fromStream('user-123')
+            ->withMetadataMatcher($metadataMatcher)
             ->whenAny(
                 function (array $state, Message $event): array {
                     $state['count']++;

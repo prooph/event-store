@@ -22,13 +22,13 @@ interface ProjectionManager
     public function createProjection(
         string $name,
         array $options = []
-    ): Projector;
+    ): MetadataAwareProjector;
 
     public function createReadModelProjection(
         string $name,
         ReadModel $readModel,
         array $options = []
-    ): ReadModelProjector;
+    ): MetadataAwareReadModelProjector;
 
     /**
      * @throws ProjectionNotFound

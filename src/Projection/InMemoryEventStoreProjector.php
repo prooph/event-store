@@ -27,7 +27,7 @@ use Prooph\EventStore\StreamIterator\MergedStreamIterator;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Util\ArrayCache;
 
-final class InMemoryEventStoreProjector implements Projector
+final class InMemoryEventStoreProjector implements MetadataAwareProjector
 {
     private string $name;
 
@@ -121,14 +121,25 @@ final class InMemoryEventStoreProjector implements Projector
         return $this;
     }
 
-    public function fromStream(string $streamName, ?MetadataMatcher $metadataMatcher = null): Projector
+    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): MetadataAwareProjector
+    {
+        $this->metadataMatcher = $metadataMatcher;
+
+        return $this;
+    }
+
+    public function fromStream(string $streamName/**, ?MetadataMatcher $metadataMatcher = null*/): Projector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
         }
 
+        if (\func_num_args() > 1) {
+            \trigger_error('The $metadataMatcher parameter is deprecated. Use withMetadataMatcher() instead.', E_USER_DEPRECATED);
+            $this->metadataMatcher = \func_get_arg(1);
+        }
+
         $this->query['streams'][] = $streamName;
-        $this->metadataMatcher = $metadataMatcher;
 
         return $this;
     }
