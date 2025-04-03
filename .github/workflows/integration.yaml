@@ -36,7 +36,8 @@ jobs:
           fetch-depth: 0
       - name: "Check for BC breaks"
         run: |
-          docker run -u $(id -u) -v $(pwd):/app nyholm/roave-bc-check-ga
+          composer require --dev roave/backward-compatibility-check
+          vendor/bin/roave-backward-compatibility-check --install-development-dependencies --format=github-actions
 
   tests:
     runs-on: ubuntu-latest
