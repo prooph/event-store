@@ -28,6 +28,17 @@ jobs:
       - name: Building
         run: php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
 
+  bc-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: "Check for BC breaks"
+        run: |
+          composer require --dev roave/backward-compatibility-check
+          vendor/bin/roave-backward-compatibility-check --install-development-dependencies --format=github-actions
+
   tests:
     runs-on: ubuntu-latest
     strategy:
