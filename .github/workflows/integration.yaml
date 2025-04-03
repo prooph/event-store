@@ -28,6 +28,15 @@ jobs:
       - name: Building
         run: php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
 
+  bc-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: "Check for BC breaks"
+        uses: docker://nyholm/roave-bc-check-ga
+
   tests:
     runs-on: ubuntu-latest
     strategy:
