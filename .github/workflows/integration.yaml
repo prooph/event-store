@@ -35,7 +35,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: "Check for BC breaks"
-        uses: docker://nyholm/roave-bc-check-ga
+        run: |
+          docker run -u $(id -u) -v $(pwd):/app nyholm/roave-bc-check-ga
 
   tests:
     runs-on: ubuntu-latest
