@@ -102,7 +102,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         $this->innerEventStore = $eventStore;
     }
 
-    public function init(Closure $callback): Projector
+    public function init(Closure $callback): InMemoryEventStoreProjector
     {
         if (null !== $this->initCallback) {
             throw new Exception\RuntimeException('Projection already initialized');
@@ -121,14 +121,14 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): MetadataAwareProjector
+    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): InMemoryEventStoreProjector
     {
         $this->metadataMatcher = $metadataMatcher;
 
         return $this;
     }
 
-    public function fromStream(string $streamName/**, ?MetadataMatcher $metadataMatcher = null*/): Projector
+    public function fromStream(string $streamName/**, ?MetadataMatcher $metadataMatcher = null*/): InMemoryEventStoreProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -144,7 +144,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): Projector
+    public function fromStreams(string ...$streamNames): InMemoryEventStoreProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -157,7 +157,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function fromCategory(string $name): Projector
+    public function fromCategory(string $name): InMemoryEventStoreProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -168,7 +168,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function fromCategories(string ...$names): Projector
+    public function fromCategories(string ...$names): InMemoryEventStoreProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -181,7 +181,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function fromAll(): Projector
+    public function fromAll(): InMemoryEventStoreProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -192,7 +192,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function when(array $handlers): Projector
+    public function when(array $handlers): InMemoryEventStoreProjector
     {
         if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');
@@ -213,7 +213,7 @@ final class InMemoryEventStoreProjector implements MetadataAwareProjector
         return $this;
     }
 
-    public function whenAny(Closure $handler): Projector
+    public function whenAny(Closure $handler): InMemoryEventStoreProjector
     {
         if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');

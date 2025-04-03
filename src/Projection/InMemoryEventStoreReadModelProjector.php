@@ -112,7 +112,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         $this->innerEventStore = $eventStore;
     }
 
-    public function init(Closure $callback): ReadModelProjector
+    public function init(Closure $callback): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->initCallback) {
             throw new Exception\RuntimeException('Projector is already initialized');
@@ -131,14 +131,14 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): MetadataAwareReadModelProjector
+    public function withMetadataMatcher(?MetadataMatcher $metadataMatcher = null): InMemoryEventStoreReadModelProjector
     {
         $this->metadataMatcher = $metadataMatcher;
 
         return $this;
     }
 
-    public function fromStream(string $streamName/**, ?MetadataMatcher $metadataMatcher = null*/): ReadModelProjector
+    public function fromStream(string $streamName/**, ?MetadataMatcher $metadataMatcher = null*/): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -154,7 +154,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function fromStreams(string ...$streamNames): ReadModelProjector
+    public function fromStreams(string ...$streamNames): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -167,7 +167,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function fromCategory(string $name): ReadModelProjector
+    public function fromCategory(string $name): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -178,7 +178,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function fromCategories(string ...$names): ReadModelProjector
+    public function fromCategories(string ...$names): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -191,7 +191,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function fromAll(): ReadModelProjector
+    public function fromAll(): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->query) {
             throw new Exception\RuntimeException('From was already called');
@@ -202,7 +202,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function when(array $handlers): ReadModelProjector
+    public function when(array $handlers): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');
@@ -223,7 +223,7 @@ final class InMemoryEventStoreReadModelProjector implements MetadataAwareReadMod
         return $this;
     }
 
-    public function whenAny(Closure $handler): ReadModelProjector
+    public function whenAny(Closure $handler): InMemoryEventStoreReadModelProjector
     {
         if (null !== $this->handler || $this->handlers !== []) {
             throw new Exception\RuntimeException('When was already called');

@@ -57,7 +57,7 @@ final class InMemoryProjectionManager implements ProjectionManager
     public function createProjection(
         string $name,
         ?array $options = null
-    ): MetadataAwareProjector {
+    ): InMemoryEventStoreProjector {
         $projector = new InMemoryEventStoreProjector(
             $this->eventStore,
             $name,
@@ -77,7 +77,7 @@ final class InMemoryProjectionManager implements ProjectionManager
         string $name,
         ReadModel $readModel,
         ?array $options = null
-    ): MetadataAwareReadModelProjector {
+    ): InMemoryEventStoreReadModelProjector {
         $projector = new InMemoryEventStoreReadModelProjector(
             $this->eventStore,
             $name,

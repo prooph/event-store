@@ -80,7 +80,7 @@ interface Projector
      *     return $state;
      * }
      */
-    public function whenAny(Closure $closure): Projector;
+    public function whenAny(Closure $handler): Projector;
 
     public function reset(): void;
 
