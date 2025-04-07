@@ -36,7 +36,7 @@ jobs:
           fetch-depth: 0
       - name: "Check for BC breaks"
         run: |
-          composer require --dev roave/backward-compatibility-check
+          composer require --dev roave/backward-compatibility-check:^8.0
           vendor/bin/roave-backward-compatibility-check --install-development-dependencies --format=github-actions
 
   tests:
