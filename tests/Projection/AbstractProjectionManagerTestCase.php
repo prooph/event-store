@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Exception\OutOfRangeException;
@@ -23,17 +24,11 @@ use Prooph\EventStore\Projection\ProjectionStatus;
 /**
  * Common tests for all projection manager implementations
  */
-abstract class AbstractProjectionManagerTest extends TestCase
+abstract class AbstractProjectionManagerTestCase extends TestCase
 {
-    /**
-     * @var ProjectionManager
-     */
-    protected $projectionManager;
+    protected ProjectionManager $projectionManager;
 
-    /**
-     * @test
-     * @medium
-     */
+    #[Test]
     public function it_fetches_projection_names(): void
     {
         $projections = [];
@@ -73,9 +68,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_fetches_projection_names_with_filter(): void
     {
         $projection = $this->projectionManager->createProjection('user-1');
@@ -103,9 +96,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertSame([], $this->projectionManager->fetchProjectionNames('foo', 10, 100));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_fetches_projection_names_sorted(): void
     {
         $projection = $this->projectionManager->createProjection('user-100');
@@ -134,9 +125,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_fetching_projection_names_using_invalid_limit(): void
     {
         $this->expectException(OutOfRangeException::class);
@@ -145,9 +134,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionNames(null, -1, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_fetching_projection_names_using_invalid_offset(): void
     {
         $this->expectException(OutOfRangeException::class);
@@ -156,10 +143,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionNames(null, 1, -1);
     }
 
-    /**
-     * @test
-     * @medium
-     */
+    #[Test]
     public function it_fetches_projection_names_using_regex(): void
     {
         for ($i = 0; $i < 50; $i++) {
@@ -181,9 +165,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertCount(5, $this->projectionManager->fetchProjectionNamesRegex('rand', 100, 15));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_fetches_projection_names_sorted_using_regex(): void
     {
         $projection = $this->projectionManager->createProjection('user-100');
@@ -212,9 +194,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_fetching_projection_names_using_regex_with_invalid_limit(): void
     {
         $this->expectException(OutOfRangeException::class);
@@ -223,9 +203,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionNamesRegex('foo', -1, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_fetching_projection_names_using_regex_with_invalid_offset(): void
     {
         $this->expectException(OutOfRangeException::class);
@@ -234,9 +212,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionNamesRegex('bar', 1, -1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_fetching_projection_names_using_invalid_regex(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -245,9 +221,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionNamesRegex('invalid)', 10, 0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_asked_for_unknown_projection_status(): void
     {
         $this->expectException(ProjectionNotFound::class);
@@ -255,9 +229,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionStatus('unkown');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_asked_for_unknown_projection_stream_positions(): void
     {
         $this->expectException(ProjectionNotFound::class);
@@ -265,9 +237,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionStreamPositions('unkown');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_asked_for_unknown_projection_state(): void
     {
         $this->expectException(ProjectionNotFound::class);
@@ -275,9 +245,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->fetchProjectionState('unkown');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_fetches_projection_status(): void
     {
         $projection = $this->projectionManager->createProjection('test-projection');
@@ -287,9 +255,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertSame(ProjectionStatus::IDLE(), $this->projectionManager->fetchProjectionStatus('test-projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_fetches_projection_stream_positions(): void
     {
         $projection = $this->projectionManager->createProjection('test-projection');
@@ -299,9 +265,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertSame([], $this->projectionManager->fetchProjectionStreamPositions('test-projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_fetches_projection_state(): void
     {
         $projection = $this->projectionManager->createProjection('test-projection');
@@ -311,9 +275,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertSame([], $this->projectionManager->fetchProjectionState('test-projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_delete_non_existing_projection(): void
     {
         $this->expectException(ProjectionNotFound::class);
@@ -321,9 +283,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->deleteProjection('unknown', false);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_reset_non_existing_projection(): void
     {
         $this->expectException(ProjectionNotFound::class);
@@ -331,9 +291,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->resetProjection('unknown');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_stop_non_existing_projection(): void
     {
         $this->expectException(ProjectionNotFound::class);
@@ -341,9 +299,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->projectionManager->stopProjection('unknown');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_fail_deleting_twice(): void
     {
         $projection = $this->projectionManager->createProjection('test-projection');
@@ -356,9 +312,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertTrue($this->projectionManager->fetchProjectionStatus('test-projection')->is(ProjectionStatus::DELETING()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_fail_resetting_twice(): void
     {
         $projection = $this->projectionManager->createProjection('test-projection');
@@ -371,9 +325,7 @@ abstract class AbstractProjectionManagerTest extends TestCase
         $this->assertTrue($this->projectionManager->fetchProjectionStatus('test-projection')->is(ProjectionStatus::RESETTING()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_fail_stopping_twice(): void
     {
         $projection = $this->projectionManager->createProjection('test-projection');

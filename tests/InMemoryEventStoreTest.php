@@ -15,15 +15,10 @@ namespace ProophTest\EventStore;
 
 use Prooph\EventStore\InMemoryEventStore;
 
-class InMemoryEventStoreTest extends AbstractEventStoreTest
+class InMemoryEventStoreTest extends AbstractEventStoreTestCase
 {
     use EventStoreTestStreamTrait;
     use TransactionalEventStoreTestTrait;
-
-    /**
-     * @var InMemoryEventStore
-     */
-    protected $eventStore;
 
     protected function setUp(): void
     {

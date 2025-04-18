@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Upcasting;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
@@ -25,9 +26,7 @@ class UpcasterChainTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_chains_upcasts(): void
     {
         $upcastedMessage3 = $this->prophesize(Message::class);
@@ -59,9 +58,7 @@ class UpcasterChainTest extends TestCase
         $this->assertSame($upcastedMessage3, $messages[1]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_doesnt_remove_messages_when_a_subsequent_upcaster_returns_fewer_messages(): void
     {
         $initialMessage = $this->prophesize(Message::class);

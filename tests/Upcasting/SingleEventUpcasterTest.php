@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Upcasting;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
@@ -22,9 +23,7 @@ class SingleEventUpcasterTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_upcasts(): void
     {
         $upcastedMessage = $this->prophesize(Message::class);
@@ -43,9 +42,7 @@ class SingleEventUpcasterTest extends TestCase
         $this->assertSame($upcastedMessage, $messages[0]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_upcast_when_impossible(): void
     {
         $message = $this->prophesize(Message::class);

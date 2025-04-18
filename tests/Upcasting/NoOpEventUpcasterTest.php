@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Upcasting;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
@@ -22,9 +23,7 @@ class NoOpEventUpcasterTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_nothing_during_upcast(): void
     {
         $message = $this->prophesize(Message::class);

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
+use PHPUnit\Framework\Attributes\Test;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -22,19 +23,9 @@ use Prooph\EventStore\Projection\InMemoryEventStoreQuery;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prophecy\PhpUnit\ProphecyTrait;
 
-class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
+class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTestCase
 {
     use ProphecyTrait;
-
-    /**
-     * @var InMemoryProjectionManager
-     */
-    protected $projectionManager;
-
-    /**
-     * @var InMemoryEventStore
-     */
-    protected $eventStore;
 
     protected function setUp(): void
     {
@@ -42,9 +33,7 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
         $this->projectionManager = new InMemoryProjectionManager($this->eventStore);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_unknown_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -54,9 +43,7 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
         new InMemoryEventStoreQuery($eventStore->reveal());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -68,9 +55,7 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
         new InMemoryEventStoreQuery($wrappedEventStore->reveal());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_allows_non_transactional_event_store_instance(): void
     {
         $eventStore = new NonTransactionalInMemoryEventStore();
@@ -79,10 +64,7 @@ class InMemoryEventStoreQueryTest extends AbstractEventStoreQueryTest
         $this->assertInstanceOf(InMemoryEventStoreQuery::class, $query);
     }
 
-    /**
-     * @test
-     * @small
-     */
+    #[Test]
     public function it_stops_immediately_after_pcntl_signal_was_received(): void
     {
         if (! \extension_loaded('pcntl')) {

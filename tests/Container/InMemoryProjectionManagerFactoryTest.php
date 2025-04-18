@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Container;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Container\InMemoryProjectionManagerFactory;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -25,9 +26,7 @@ class InMemoryProjectionManagerFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_projection_manager(): void
     {
         $config['prooph']['projection_manager']['default'] = [
@@ -46,9 +45,7 @@ class InMemoryProjectionManagerFactoryTest extends TestCase
         $this->assertInstanceOf(InMemoryProjectionManager::class, $projectionManager);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_projection_manager_via_callstatic(): void
     {
         $config['prooph']['projection_manager']['default'] = [
@@ -67,9 +64,7 @@ class InMemoryProjectionManagerFactoryTest extends TestCase
         $this->assertInstanceOf(InMemoryProjectionManager::class, $projectionManager);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_container_given_to_callstatic(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Plugin;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Plugin\UpcastingPlugin;
@@ -20,15 +22,13 @@ use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Prooph\EventStore\Upcasting\NoOpEventUpcaster;
 use Prooph\EventStore\Upcasting\SingleEventUpcaster;
-use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
+use ProophTest\EventStore\AbstractActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\UserCreated;
 use ProophTest\EventStore\Mock\UsernameChanged;
 
-class UpcastingPluginTest extends ActionEventEmitterEventStoreTestCase
+class UpcastingPluginTest extends AbstractActionEventEmitterEventStoreTestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_attaches_to_event_store(): void
     {
         $upcaster = new class() extends SingleEventUpcaster {
@@ -51,7 +51,7 @@ class UpcastingPluginTest extends ActionEventEmitterEventStoreTestCase
         $this->eventStore->create(
             new Stream(
                 $streamName,
-                new \ArrayIterator([
+                new ArrayIterator([
                     UserCreated::with(
                         [
                             'name' => 'Alex',
@@ -86,9 +86,7 @@ class UpcastingPluginTest extends ActionEventEmitterEventStoreTestCase
         $this->assertEquals(['key' => 'value', '_aggregate_version' => 1], $iterator->current()->metadata());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_ignores_when_no_iterator_in_result(): void
     {
         $this->expectException(StreamNotFound::class);

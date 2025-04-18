@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\StreamIterator;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\StreamIterator\InMemoryStreamIterator;
 use Prooph\EventStore\StreamIterator\StreamIterator;
 
-class InMemoryStreamIteratorTest extends AbstractStreamIteratorTest
+class InMemoryStreamIteratorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_stream_iterator(): void
     {
         $iterator = new InMemoryStreamIterator();
@@ -28,13 +29,11 @@ class InMemoryStreamIteratorTest extends AbstractStreamIteratorTest
         $this->assertInstanceOf(StreamIterator::class, $iterator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_array_iterator(): void
     {
         $iterator = new InMemoryStreamIterator();
 
-        $this->assertInstanceOf(\ArrayIterator::class, $iterator);
+        $this->assertInstanceOf(ArrayIterator::class, $iterator);
     }
 }

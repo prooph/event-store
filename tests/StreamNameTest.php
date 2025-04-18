@@ -13,14 +13,13 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\StreamName;
 
 class StreamNameTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_delegates_to_string(): void
     {
         $streamName = new StreamName('foo');

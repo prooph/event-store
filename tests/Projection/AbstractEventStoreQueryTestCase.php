@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Projection;
 
 use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
@@ -30,21 +31,13 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 /**
  * Common tests for all event store query implementations
  */
-abstract class AbstractEventStoreQueryTest extends TestCase
+abstract class AbstractEventStoreQueryTestCase extends TestCase
 {
-    /**
-     * @var ProjectionManager
-     */
-    protected $projectionManager;
+    protected ProjectionManager $projectionManager;
 
-    /**
-     * @var EventStore
-     */
-    protected $eventStore;
+    protected EventStore $eventStore;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_stream_and_reset(): void
     {
         $this->prepareEventStream('user-123');
@@ -74,9 +67,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(49, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_be_stopped_while_processing(): void
     {
         $this->prepareEventStream('user-123');
@@ -102,9 +93,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(10, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_streams(): void
     {
         $this->prepareEventStream('user-123');
@@ -129,9 +118,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(100, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_stream_and_filter_with_metadata_matcher(): void
     {
         $this->prepareEventStream('user-123');
@@ -159,9 +146,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(10, $projection->getState()['version']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_all_ignoring_internal_streams(): void
     {
         $this->prepareEventStream('user-123');
@@ -194,9 +179,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(100, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_category_with_when_any(): void
     {
         $this->prepareEventStream('user-123');
@@ -221,9 +204,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(100, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_categories_with_when(): void
     {
         $this->prepareEventStream('user-123');
@@ -250,9 +231,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(4, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resumes_query_from_position(): void
     {
         $this->prepareEventStream('user-123');
@@ -291,9 +270,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertEquals(148, $query->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resets_to_empty_array(): void
     {
         $query = $this->projectionManager->createQuery();
@@ -309,9 +286,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $this->assertIsArray($state2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_init_callback_provided_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -326,9 +301,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -339,9 +312,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $query->fromStream('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_2(): void
     {
         $this->expectException(RuntimeException::class);
@@ -352,9 +323,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $query->fromCategory('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_3(): void
     {
         $this->expectException(RuntimeException::class);
@@ -365,9 +334,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $query->fromStreams('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_4(): void
     {
         $this->expectException(RuntimeException::class);
@@ -378,9 +345,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $query->fromCategories('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_5(): void
     {
         $this->expectException(RuntimeException::class);
@@ -391,9 +356,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $query->fromAll('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_when_called_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -406,9 +369,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         }]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_handlers_configured(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -419,9 +380,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         }]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_handlers_configured_2(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -431,9 +390,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         $query->when(['foo' => 'invalid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_whenAny_called_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -446,9 +403,7 @@ abstract class AbstractEventStoreQueryTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_on_run_when_nothing_configured(): void
     {
         $this->expectException(RuntimeException::class);

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -21,14 +22,13 @@ use Prooph\EventStore\Metadata\MetadataEnricherAggregate;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
+use stdClass;
 
 class MetadataEnricherAggregateTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_aggregates_metadata_enrichers(): void
     {
         // Mocks
@@ -69,16 +69,14 @@ class MetadataEnricherAggregateTest extends TestCase
         $this->assertEquals($expectedMetadata, $enrichedEvent->metadata());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_only_accept_correct_instances(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new MetadataEnricherAggregate([
             $this->prophesize(MetadataEnricher::class)->reveal(),
-            new \stdClass(),
+            new stdClass(),
             $this->prophesize(MetadataEnricher::class)->reveal(),
         ]);
     }
