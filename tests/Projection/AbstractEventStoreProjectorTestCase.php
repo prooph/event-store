@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Projection;
 
 use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
@@ -33,23 +34,13 @@ use ProophTest\EventStore\Mock\UsernameChanged;
 /**
  * Common tests for all event store projector implementations
  */
-abstract class AbstractEventStoreProjectorTest extends TestCase
+abstract class AbstractEventStoreProjectorTestCase extends TestCase
 {
-    /**
-     * @var ProjectionManager
-     */
-    protected $projectionManager;
+    protected ProjectionManager $projectionManager;
 
-    /**
-     * @var EventStore
-     */
-    protected $eventStore;
+    protected EventStore $eventStore;
 
-    /**
-     * @test
-     *
-     * This tests works because this projection does not handle the first event in the stream.
-     */
+    #[Test]
     public function it_persists_after_blocksize_processed_events_for_multiple_handlers(): void
     {
         $this->prepareEventStream('user-123');
@@ -108,9 +99,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $testCase->assertSame(50, $position, \sprintf("finally the persisted position expectation is '%s'", 50));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_project_from_stream_and_reset(): void
     {
         $this->prepareEventStream('user-123');
@@ -154,9 +143,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_be_stopped_while_processing(): void
     {
         $this->prepareEventStream('user-123');
@@ -182,9 +169,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(10, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_streams(): void
     {
         $this->prepareEventStream('user-123');
@@ -209,9 +194,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(100, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_stream_and_filter_with_metadata_matcher(): void
     {
         $this->prepareEventStream('user-123');
@@ -240,9 +223,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(10, $projection->getState()['version']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_all_ignoring_internal_streams(): void
     {
         $this->prepareEventStream('user-123');
@@ -275,9 +256,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(100, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_category_with_when_any(): void
     {
         $this->prepareEventStream('user-123');
@@ -302,9 +281,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(100, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_query_from_categories_with_when(): void
     {
         $this->prepareEventStream('user-123');
@@ -331,9 +308,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(4, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resumes_projection_from_position(): void
     {
         $this->prepareEventStream('user-123');
@@ -372,9 +347,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(148, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_ignores_error_on_delete_of_not_created_stream_projections(): void
     {
         $this->prepareEventStream('user-123');
@@ -397,12 +370,10 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEmpty($this->projectionManager->fetchProjectionNames('test-projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_run_two_projections_at_the_same_time(): void
     {
-        $this->expectException(\Prooph\EventStore\Exception\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Another projection process is already running');
 
         $this->prepareEventStream('user-123');
@@ -432,9 +403,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
             ->run();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -477,9 +446,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(49, $calledTimes);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_incl_emitting_events_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -522,9 +489,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(49, $calledTimes);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -564,9 +529,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_incl_emitted_events_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -606,9 +569,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals([], $projectionManager->fetchProjectionNames('test_projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resets_projection_before_start_when_it_was_reset_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -649,9 +610,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(148, $calledTimes);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resets_projection_during_run_when_it_was_reset_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -690,9 +649,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(98, $calledTimes);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_stops_when_projection_before_start_when_it_was_stopped_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -733,9 +690,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(49, $calledTimes);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_stops_projection_during_run_when_it_was_stopped_from_outside(): void
     {
         $this->prepareEventStream('user-123');
@@ -774,9 +729,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(49, $calledTimes);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resets_to_empty_array(): void
     {
         $projection = $this->projectionManager->createProjection('test_projection');
@@ -792,9 +745,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertIsArray($state2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_init_callback_provided_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -809,9 +760,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -822,9 +771,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->fromStream('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_2(): void
     {
         $this->expectException(RuntimeException::class);
@@ -835,9 +782,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->fromCategory('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_3(): void
     {
         $this->expectException(RuntimeException::class);
@@ -848,9 +793,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->fromStreams('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_4(): void
     {
         $this->expectException(RuntimeException::class);
@@ -861,9 +804,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->fromCategories('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_from_called_twice_5(): void
     {
         $this->expectException(RuntimeException::class);
@@ -874,9 +815,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->fromAll('bar');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_when_called_twice_(): void
     {
         $this->expectException(RuntimeException::class);
@@ -889,9 +828,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         }]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_handlers_configured(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -902,9 +839,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         }]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_handlers_configured_2(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -914,9 +849,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->when(['foo' => 'invalid']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_whenAny_called_twice(): void
     {
         $this->expectException(RuntimeException::class);
@@ -929,9 +862,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_on_run_when_nothing_configured(): void
     {
         $this->expectException(RuntimeException::class);
@@ -940,9 +871,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $projection->run();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_links_to_and_loads_and_continues_again(): void
     {
         $this->prepareEventStream('user-123');
@@ -989,9 +918,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertCount(100, $events);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_emits_events_and_resets(): void
     {
         $this->prepareEventStream('user-123');
@@ -1022,9 +949,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->eventStore->load(new StreamName('test_projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_emits_events_and_deletes(): void
     {
         $this->prepareEventStream('user-123');
@@ -1052,9 +977,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->eventStore->load(new StreamName('test_projection'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_persists_in_single_handler(): void
     {
         $this->prepareEventStream('user-123');
@@ -1076,9 +999,7 @@ abstract class AbstractEventStoreProjectorTest extends TestCase
         $this->assertEquals(50, $projection->getState()['count']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_persists_in_handlers(): void
     {
         $this->prepareEventStream('user-123');

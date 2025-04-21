@@ -13,17 +13,11 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
-use Prooph\EventStore\InMemoryEventStore;
 use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 
-class NonTransactionalInMemoryEventStoreTest extends AbstractEventStoreTest
+class NonTransactionalInMemoryEventStoreTest extends AbstractEventStoreTestCase
 {
     use EventStoreTestStreamTrait;
-
-    /**
-     * @var InMemoryEventStore
-     */
-    protected $eventStore;
 
     protected function setUp(): void
     {

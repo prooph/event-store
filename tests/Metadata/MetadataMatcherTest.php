@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Exception\InvalidArgumentException;
 use Prooph\EventStore\Metadata\FieldType;
@@ -21,9 +22,7 @@ use Prooph\EventStore\Metadata\Operator;
 
 class MetadataMatcherTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_on_invalid_value_for_in_operator(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -33,9 +32,7 @@ class MetadataMatcherTest extends TestCase
         $metadataMatcher->withMetadataMatch('foo', Operator::IN(), 'bar', FieldType::METADATA());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_on_invalid_value_for_not_in_operator(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -45,9 +42,7 @@ class MetadataMatcherTest extends TestCase
         $metadataMatcher->withMetadataMatch('foo', Operator::NOT_IN(), 'bar', FieldType::METADATA());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_on_invalid_value_for_regex_operator(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -57,9 +52,7 @@ class MetadataMatcherTest extends TestCase
         $metadataMatcher->withMetadataMatch('foo', Operator::REGEX(), false, FieldType::METADATA());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_on_invalid_value_for_equals_operator(): void
     {
         $this->expectException(InvalidArgumentException::class);

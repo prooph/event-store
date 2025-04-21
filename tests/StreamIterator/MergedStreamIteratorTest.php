@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\StreamIterator;
 
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\StreamIterator\InMemoryStreamIterator;
 use Prooph\EventStore\StreamIterator\MergedStreamIterator;
 use Prooph\EventStore\StreamIterator\StreamIterator;
 use ProophTest\EventStore\Mock\TestDomainEvent;
 
-class MergedStreamIteratorTest extends AbstractStreamIteratorTest
+class MergedStreamIteratorTest extends TestCase
 {
     public function getStreams(): array
     {
@@ -42,9 +44,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_stream_iterator(): void
     {
         $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
@@ -52,9 +52,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         $this->assertInstanceOf(StreamIterator::class, $iterator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_counts_correct(): void
     {
         $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
@@ -62,9 +60,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         $this->assertEquals(9, $iterator->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_rewind(): void
     {
         $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
@@ -78,16 +74,14 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         $this->assertEquals(0, $message->payload()['expected_index']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_messages_in_order(): void
     {
         $streams = $this->getStreams();
         $iterator = new MergedStreamIterator(\array_keys($streams), ...\array_values($streams));
 
         $index = 0;
-        foreach ($iterator as $position => $message) {
+        foreach ($iterator as $message) {
             $this->assertEquals($index, $message->payload()['expected_index']);
             $this->assertEquals($iterator->streamName(), $message->payload()['expected_stream_name']);
 
@@ -150,17 +144,14 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         return $streams;
     }
 
-    /**
-     * @test
-     * @large
-     */
+    #[Test]
     public function it_returns_messages_in_order_for_large_streams(): void
     {
         $streams = $this->getStreamsLarge();
         $iterator = new MergedStreamIterator(\array_keys($streams), ...\array_values($streams));
 
         $index = 0;
-        foreach ($iterator as $position => $message) {
+        foreach ($iterator as $message) {
             $this->assertEquals($index, $message->payload()['expected_index']);
             $this->assertEquals($iterator->streamName(), $message->payload()['expected_stream_name']);
 
@@ -168,9 +159,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_messages_in_order_in_consideration_of_provided_stream_order(): void
     {
         $streams = [
@@ -187,7 +176,7 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         $iterator = new MergedStreamIterator(\array_keys($streams), ...\array_values($streams));
 
         $index = 0;
-        foreach ($iterator as $position => $message) {
+        foreach ($iterator as $message) {
             $this->assertEquals($index, $message->payload()['expected_index']);
             $this->assertEquals($iterator->streamName(), $message->payload()['expected_stream_name']);
 
@@ -195,21 +184,17 @@ class MergedStreamIteratorTest extends AbstractStreamIteratorTest
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_correct_stream_name(): void
     {
         $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));
 
-        foreach ($iterator as $position => $message) {
+        foreach ($iterator as $message) {
             $this->assertEquals($iterator->streamName(), $message->payload()['expected_stream_name']);
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function key_represents_event_position(): void
     {
         $iterator = new MergedStreamIterator(\array_keys($this->getStreams()), ...\array_values($this->getStreams()));

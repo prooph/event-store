@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\StreamIterator;
 
+use EmptyIterator;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\StreamIterator\EmptyStreamIterator;
 use Prooph\EventStore\StreamIterator\StreamIterator;
 
-class EmptyStreamIteratorTest extends AbstractStreamIteratorTest
+class EmptyStreamIteratorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_stream_iterator(): void
     {
         $iterator = new EmptyStreamIterator();
@@ -28,19 +29,15 @@ class EmptyStreamIteratorTest extends AbstractStreamIteratorTest
         $this->assertInstanceOf(StreamIterator::class, $iterator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_empty_iterator(): void
     {
         $iterator = new EmptyStreamIterator();
 
-        $this->assertInstanceOf(\EmptyIterator::class, $iterator);
+        $this->assertInstanceOf(EmptyIterator::class, $iterator);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_counts_correct(): void
     {
         $iterator = new EmptyStreamIterator();

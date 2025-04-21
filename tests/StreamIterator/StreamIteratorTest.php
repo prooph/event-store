@@ -13,25 +13,24 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\StreamIterator;
 
+use Countable;
+use Iterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\StreamIterator\StreamIterator;
 
-abstract class AbstractStreamIteratorTest extends TestCase
+class StreamIteratorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_iterator(): void
     {
-        $this->assertInstanceOf(\Iterator::class, $this->getStreamIteratorMock());
+        $this->assertInstanceOf(Iterator::class, $this->getStreamIteratorMock());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_countable(): void
     {
-        $this->assertInstanceOf(\Countable::class, $this->getStreamIteratorMock());
+        $this->assertInstanceOf(Countable::class, $this->getStreamIteratorMock());
     }
 
     private function getStreamIteratorMock(): StreamIterator

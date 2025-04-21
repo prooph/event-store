@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         backupGlobals="false"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
          bootstrap="vendor/autoload.php"
-         timeoutForSmallTests="2"
-         enforceTimeLimit="true"
          failOnWarning="true"
          failOnRisky="true"
          timeoutForLargeTests="180"
+         backupStaticProperties="false"
 >
     <testsuite name="Prooph EventStore Test Suite">
         <directory>./tests</directory>
     </testsuite>
-
-    <coverage>
+    <source>
         <include>
             <directory suffix=".php">src</directory>
         </include>
-    </coverage>
+    </source>
 </phpunit>

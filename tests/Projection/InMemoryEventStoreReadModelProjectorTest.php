@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
+use PHPUnit\Framework\Attributes\Test;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -22,107 +23,75 @@ use Prooph\EventStore\Projection\InMemoryEventStoreReadModelProjector;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use ProophTest\EventStore\Mock\ReadModelMock;
 
-class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadModelProjectorTest
+class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadModelProjectorTestCase
 {
-    /**
-     * @var InMemoryProjectionManager
-     */
-    protected $projectionManager;
-
-    /**
-     * @var InMemoryEventStore
-     */
-    protected $eventStore;
-
     protected function setUp(): void
     {
         $this->eventStore = new InMemoryEventStore();
         $this->projectionManager = new InMemoryProjectionManager($this->eventStore);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_persists_after_blocksize_processed_events_for_multiple_handlers(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager does not honor blocksize');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_run_two_projections_at_the_same_time(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot guard agains concurrent projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_incl_emitted_events_before_start_when_it_was_deleted_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_deletes_projection_incl_emitted_events_during_run_when_it_was_deleted_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot delete projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resets_projection_before_start_when_it_was_reset_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot reset projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_resets_projection_during_run_when_it_was_reset_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot reset projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_stops_when_projection_before_start_when_it_was_stopped_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot stop projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_stops_projection_during_run_when_it_was_stopped_from_outside(): void
     {
         $this->markTestSkipped('InMemoryProjectionManager cannot stop projections');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_cache_size_given(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -130,9 +99,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         new InMemoryEventStoreReadModelProjector($this->eventStore, 'test_projection', new ReadModelMock(), -1, 1, 1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_persist_block_size_given(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -140,9 +107,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         new InMemoryEventStoreReadModelProjector($this->eventStore, 'test_projection', new ReadModelMock(), 1, -1, 25);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_sleep_given(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -150,9 +115,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         new InMemoryEventStoreReadModelProjector($this->eventStore, 'test_projection', new ReadModelMock(), 1, 1, -1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_unknown_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -162,9 +125,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         new InMemoryEventStoreReadModelProjector($eventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -176,9 +137,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         new InMemoryEventStoreReadModelProjector($wrappedEventStore->reveal(), 'test_projection', new ReadModelMock(), 1, 1, 1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_allows_non_transactional_event_store_instance(): void
     {
         $eventStore = new NonTransactionalInMemoryEventStore();
@@ -187,10 +146,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         $this->assertInstanceOf(InMemoryEventStoreReadModelProjector::class, $projector);
     }
 
-    /**
-     * @test
-     * @medium
-     */
+    #[Test]
     public function it_dispatches_pcntl_signals_when_enabled(): void
     {
         if (! \extension_loaded('pcntl')) {
@@ -222,10 +178,7 @@ class InMemoryEventStoreReadModelProjectorTest extends AbstractEventStoreReadMod
         );
     }
 
-    /**
-     * @test
-     * @small
-     */
+    #[Test]
     public function it_stops_immediately_after_pcntl_signal_was_received(): void
     {
         if (! \extension_loaded('pcntl')) {

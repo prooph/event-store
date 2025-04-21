@@ -13,27 +13,25 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Util;
 
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Util\ArrayCache;
 
 class ArrayCacheTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_size_given(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new ArrayCache(-1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_too_high_position_given(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $cache = new ArrayCache(100);
 
@@ -42,21 +40,17 @@ class ArrayCacheTest extends TestCase
         $cache->get(101);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_too_low_position_given(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $cache = new ArrayCache(100);
 
         $cache->get(-1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_gets_checks_for_values(): void
     {
         $cache = new ArrayCache(4);

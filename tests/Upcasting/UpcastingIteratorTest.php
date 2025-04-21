@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Upcasting;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\StreamIterator\EmptyStreamIterator;
@@ -26,9 +28,7 @@ class UpcastingIteratorTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_iterates(): void
     {
         $upcastedMessage1 = $this->prophesize(Message::class);
@@ -85,9 +85,7 @@ class UpcastingIteratorTest extends TestCase
         $this->assertNull($upcastingIterator->current());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_iterates_on_iterator_with_removed_messages_only(): void
     {
         $message = $this->prophesize(Message::class);
@@ -103,12 +101,10 @@ class UpcastingIteratorTest extends TestCase
         $this->assertNull($upcastingIterator->current());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_iterates_over_array_iterator(): void
     {
-        $iterator = new class() extends \ArrayIterator implements StreamIterator {
+        $iterator = new class() extends ArrayIterator implements StreamIterator {
         };
 
         $upcastingIterator = new UpcastingIterator($this->createUpcaster(), $iterator);
@@ -118,9 +114,7 @@ class UpcastingIteratorTest extends TestCase
         $this->assertNull($upcastingIterator->current());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_iterates_over_empty_iterator(): void
     {
         $iterator = new EmptyStreamIterator();
@@ -131,9 +125,7 @@ class UpcastingIteratorTest extends TestCase
         $this->assertNull($upcastingIterator->current());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_delegates_count_to_wrapped_iterator(): void
     {
         $iterator = new EmptyStreamIterator();

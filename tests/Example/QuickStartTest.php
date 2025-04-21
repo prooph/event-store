@@ -13,13 +13,12 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Example;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class QuickStartTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_provides_the_correct_example_output(): void
     {
         $pattern = \sprintf(

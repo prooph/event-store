@@ -60,7 +60,7 @@ jobs:
           - php: 8.4
             dependencies: ''
           - php: 8.4
-            depdendencies: '--prefer-lowest --prefer-stable'
+            dependencies: '--prefer-lowest --prefer-stable'
 
     steps:
       - uses: actions/checkout@v2

@@ -28,7 +28,7 @@ class Post
     private string $email;
 
     /**
-     * @var DomainEvent[]|null
+     * @var list<DomainEvent>|null
      */
     private ?array $recordedEvents = null;
 
@@ -51,7 +51,7 @@ class Post
     }
 
     /**
-     * @param DomainEvent[] $historyEvents
+     * @param list<DomainEvent> $historyEvents
      * @return Post
      */
     public static function reconstituteFromHistory(array $historyEvents): Post
@@ -67,7 +67,7 @@ class Post
     {
     }
 
-    public function getId(): Uuid
+    public function getId(): UuidInterface
     {
         return $this->postId;
     }
@@ -77,13 +77,13 @@ class Post
         return $this->text;
     }
 
-    private function recordThat(TestDomainEvent $domainEvent): void
+    private function recordThat(DomainEvent $domainEvent): void
     {
         $this->recordedEvents[] = $domainEvent;
         $this->apply($domainEvent);
     }
 
-    public function apply(TestDomainEvent $event): void
+    public function apply(DomainEvent $event): void
     {
         if ($event instanceof PostCreated) {
             $this->whenPostCreated($event);
@@ -109,7 +109,7 @@ class Post
     }
 
     /**
-     * @param DomainEvent[] $streamEvents
+     * @param list<DomainEvent> $streamEvents
      */
     private function replay(array $streamEvents): void
     {

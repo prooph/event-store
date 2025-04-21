@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\Exception\TransactionAlreadyStarted;
@@ -28,10 +30,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
     use EventStoreTestStreamTrait;
     use ProphecyTrait;
 
-    /**
-     * @var TransactionalActionEventEmitterEventStore
-     */
-    protected $eventStore;
+    protected TransactionalActionEventEmitterEventStore $eventStore;
 
     protected function setUp(): void
     {
@@ -40,9 +39,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $this->eventStore = new TransactionalActionEventEmitterEventStore(new InMemoryEventStore(), $eventEmitter);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_works_transactional(): void
     {
         $streamName = $this->prophesize(StreamName::class);
@@ -52,7 +49,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $stream = $this->prophesize(Stream::class);
         $stream->streamName()->willReturn($streamName);
         $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
-        $stream->streamEvents()->willReturn(new \ArrayIterator());
+        $stream->streamEvents()->willReturn(new ArrayIterator());
 
         $this->eventStore->beginTransaction();
 
@@ -65,9 +62,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $this->assertTrue($this->eventStore->hasStream($streamName));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_rolls_back_transaction(): void
     {
         $streamName = $this->prophesize(StreamName::class);
@@ -77,7 +72,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $stream = $this->prophesize(Stream::class);
         $stream->streamName()->willReturn($streamName);
         $stream->metadata()->willReturn(['foo' => 'bar'])->shouldBeCalled();
-        $stream->streamEvents()->willReturn(new \ArrayIterator());
+        $stream->streamEvents()->willReturn(new ArrayIterator());
 
         $this->eventStore->beginTransaction();
 
@@ -92,9 +87,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $this->assertFalse($this->eventStore->hasStream($streamName));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_no_transaction_started_on_commit(): void
     {
         $this->expectException(TransactionNotStarted::class);
@@ -102,9 +95,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $this->eventStore->commit();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_no_transaction_started_on_rollback(): void
     {
         $this->expectException(TransactionNotStarted::class);
@@ -112,9 +103,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $this->eventStore->rollback();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_transaction_already_started(): void
     {
         $this->expectException(TransactionAlreadyStarted::class);
@@ -123,9 +112,7 @@ class TransactionalActionEventEmitterEventStoreTest extends TestCase
         $this->eventStore->beginTransaction();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_wraps_up_code_in_transaction_properly(): void
     {
         $transactionResult = $this->eventStore->transactional(function (): string {

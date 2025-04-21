@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Metadata;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\DefaultActionEvent;
 use Prooph\Common\Event\ProophActionEventEmitter;
@@ -31,9 +33,7 @@ class MetadataEnricherPluginTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_enrich_metadata_on_stream_create(): void
     {
         $metadataEnricher = new class() implements MetadataEnricher {
@@ -48,7 +48,7 @@ class MetadataEnricherPluginTest extends TestCase
         $plugin = new MetadataEnricherPlugin($metadataEnricher);
         $plugin->attachToEventStore($eventStore);
 
-        $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
+        $eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
 
         $streamEvents = $eventStore->load(new StreamName('foo'));
 
@@ -58,9 +58,7 @@ class MetadataEnricherPluginTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_enrich_metadata_on_create_if_stream_is_not_set(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
@@ -72,9 +70,7 @@ class MetadataEnricherPluginTest extends TestCase
         $plugin->onEventStoreCreateStream($actionEvent);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_enrich_metadata_on_stream_appendTo(): void
     {
         $metadataEnricher = new class() implements MetadataEnricher {
@@ -86,12 +82,12 @@ class MetadataEnricherPluginTest extends TestCase
 
         $eventStore = new ActionEventEmitterEventStore(new InMemoryEventStore(), new ProophActionEventEmitter());
 
-        $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator()));
+        $eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator()));
 
         $plugin = new MetadataEnricherPlugin($metadataEnricher);
         $plugin->attachToEventStore($eventStore);
 
-        $eventStore->appendTo(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]));
+        $eventStore->appendTo(new StreamName('foo'), new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]));
 
         $streamEvents = $eventStore->load(new StreamName('foo'));
 
@@ -101,9 +97,7 @@ class MetadataEnricherPluginTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_enrich_metadata_on_appendTo_if_stream_is_not_set(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
@@ -115,9 +109,7 @@ class MetadataEnricherPluginTest extends TestCase
         $plugin->onEventStoreAppendToStream($actionEvent);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_detaches_from_event_store(): void
     {
         $metadataEnricher = $this->prophesize(MetadataEnricher::class);
@@ -129,7 +121,7 @@ class MetadataEnricherPluginTest extends TestCase
         $plugin->attachToEventStore($eventStore);
         $plugin->detachFromEventStore($eventStore);
 
-        $eventStore->create(new Stream(new StreamName('foo'), new \ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
+        $eventStore->create(new Stream(new StreamName('foo'), new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])])));
 
         $stream = $eventStore->load(new StreamName('foo'));
 

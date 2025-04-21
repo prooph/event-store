@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Projection;
 
+use PHPUnit\Framework\Attributes\Test;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\EventStoreDecorator;
 use Prooph\EventStore\Exception\InvalidArgumentException;
@@ -22,23 +23,16 @@ use Prooph\EventStore\NonTransactionalInMemoryEventStore;
 use Prooph\EventStore\Projection\InMemoryProjectionManager;
 use Prophecy\PhpUnit\ProphecyTrait;
 
-class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
+class InMemoryProjectionManagerTest extends AbstractProjectionManagerTestCase
 {
     use ProphecyTrait;
-
-    /**
-     * @var InMemoryProjectionManager
-     */
-    protected $projectionManager;
 
     protected function setUp(): void
     {
         $this->projectionManager = new InMemoryProjectionManager(new InMemoryEventStore());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -48,9 +42,7 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         new InMemoryProjectionManager($eventStore->reveal());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_invalid_wrapped_event_store_instance_passed(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -62,9 +54,7 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         new InMemoryProjectionManager($wrappedEventStore->reveal());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_allows_non_transactional_event_store_instance(): void
     {
         $eventStore = new NonTransactionalInMemoryEventStore();
@@ -73,9 +63,7 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         $this->assertInstanceOf(InMemoryProjectionManager::class, $manager);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_cannot_delete_projections(): void
     {
         $this->expectException(RuntimeException::class);
@@ -83,9 +71,7 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         $this->projectionManager->deleteProjection('foo', true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_cannot_reset_projections(): void
     {
         $this->expectException(RuntimeException::class);
@@ -93,9 +79,7 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         $this->projectionManager->resetProjection('foo');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_cannot_stop_projections(): void
     {
         $this->expectException(RuntimeException::class);
@@ -103,49 +87,37 @@ class InMemoryProjectionManagerTest extends AbstractProjectionManagerTest
         $this->projectionManager->stopProjection('foo');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_delete_non_existing_projection(): void
     {
         $this->markTestSkipped('Deleting a projection is not supported in ' . InMemoryProjectionManager::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_reset_non_existing_projection(): void
     {
         $this->markTestSkipped('Resetting a projection is not supported in ' . InMemoryProjectionManager::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_when_trying_to_stop_non_existing_projection(): void
     {
         $this->markTestSkipped('Stopping a projection is not supported in ' . InMemoryProjectionManager::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_fail_deleting_twice(): void
     {
         $this->markTestSkipped('Deleting a projection is not supported in ' . InMemoryProjectionManager::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_fail_resetting_twice(): void
     {
         $this->markTestSkipped('Resetting a projection is not supported in ' . InMemoryProjectionManager::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_fail_stopping_twice(): void
     {
         $this->markTestSkipped('Stopping a projection is not supported in ' . InMemoryProjectionManager::class);

@@ -13,21 +13,21 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Plugin;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
-use ProophTest\EventStore\ActionEventEmitterEventStoreTestCase;
+use ProophTest\EventStore\AbstractActionEventEmitterEventStoreTestCase;
 use ProophTest\EventStore\Mock\EventLoggerPlugin;
 use ProophTest\EventStore\Mock\UserCreated;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
-class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
+class PluginManagerTest extends AbstractActionEventEmitterEventStoreTestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function an_invokable_plugin_is_loaded_by_plugin_manager_and_attached_to_event_store_by_configuration(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
@@ -40,7 +40,7 @@ class PluginManagerTest extends ActionEventEmitterEventStoreTestCase
         $this->eventStore->create(
             new Stream(
                 new StreamName('user'),
-                new \ArrayIterator([
+                new ArrayIterator([
                     UserCreated::with(
                         [
                             'name' => 'Alex',

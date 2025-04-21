@@ -18,12 +18,9 @@ use Prooph\Common\Event\ProophActionEventEmitter;
 use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\InMemoryEventStore;
 
-abstract class ActionEventEmitterEventStoreTestCase extends TestCase
+abstract class AbstractActionEventEmitterEventStoreTestCase extends TestCase
 {
-    /**
-     * @var ActionEventEmitterEventStore
-     */
-    protected $eventStore;
+    protected ActionEventEmitterEventStore $eventStore;
 
     protected function setUp(): void
     {

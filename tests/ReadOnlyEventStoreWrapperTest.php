@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore;
 
+use ArrayIterator;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\ReadOnlyEventStoreWrapper;
@@ -24,16 +26,14 @@ class ReadOnlyEventStoreWrapperTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_delegates_method_calls_to_internal_event_store(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
         $eventStore->fetchStreamMetadata(Argument::type(StreamName::class))->willReturn([])->shouldBeCalled();
         $eventStore->hasStream(Argument::type(StreamName::class))->willReturn(true)->shouldBeCalled();
-        $eventStore->load(Argument::type(StreamName::class), 0, 10, null)->willReturn(new \ArrayIterator())->shouldBeCalled();
-        $eventStore->loadReverse(Argument::type(StreamName::class), 0, 10, null)->willReturn(new \ArrayIterator())->shouldBeCalled();
+        $eventStore->load(Argument::type(StreamName::class), 0, 10, null)->willReturn(new ArrayIterator())->shouldBeCalled();
+        $eventStore->loadReverse(Argument::type(StreamName::class), 0, 10, null)->willReturn(new ArrayIterator())->shouldBeCalled();
         $eventStore->fetchStreamNames('foo', null, 0, 10)->willReturn(['foobar', 'foobaz'])->shouldBeCalled();
         $eventStore->fetchStreamNamesRegex('^foo', null, 0, 10)->willReturn(['foobar', 'foobaz'])->shouldBeCalled();
         $eventStore->fetchCategoryNames('foo', 0, 10)->willReturn(['foo-1', 'foo-2'])->shouldBeCalled();
@@ -45,8 +45,8 @@ class ReadOnlyEventStoreWrapperTest extends TestCase
 
         $this->assertEmpty($readOnlyEventStore->fetchStreamMetadata($testStream));
         $this->assertTrue($readOnlyEventStore->hasStream($testStream));
-        $this->assertInstanceOf(\ArrayIterator::class, $readOnlyEventStore->load($testStream, 0, 10));
-        $this->assertInstanceOf(\ArrayIterator::class, $readOnlyEventStore->loadReverse($testStream, 0, 10));
+        $this->assertInstanceOf(ArrayIterator::class, $readOnlyEventStore->load($testStream, 0, 10));
+        $this->assertInstanceOf(ArrayIterator::class, $readOnlyEventStore->loadReverse($testStream, 0, 10));
         $this->assertSame(['foobar', 'foobaz'], $readOnlyEventStore->fetchStreamNames('foo', null, 0, 10));
         $this->assertSame(['foobar', 'foobaz'], $readOnlyEventStore->fetchStreamNamesRegex('^foo', null, 0, 10));
         $this->assertSame(['foo-1', 'foo-2'], $readOnlyEventStore->fetchCategoryNames('foo', 0, 10));
