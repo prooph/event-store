@@ -82,8 +82,7 @@ final class UpcastingIterator implements StreamIterator
         }
     }
 
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
         return $this->innerIterator->key();
     }
