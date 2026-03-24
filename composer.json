@@ -33,7 +33,6 @@
         "phpspec/prophecy": "^1.10.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^10.0",
-        "prooph/bookdown-template": "^0.2.3",
         "prooph/php-cs-fixer-config": "^0.7.0",
         "psr/container": "^1.0",
         "sandrokeil/interop-config": "^2.0.1"
