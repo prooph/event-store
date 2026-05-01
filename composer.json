@@ -27,7 +27,7 @@
     "php-coveralls/php-coveralls": "^2.2",
     "phpspec/prophecy": "^1.15",
     "phpunit/phpunit": "^9.6 || ^10.0",
-    "prooph/php-cs-fixer-config": "^0.5"
+    "prooph/php-cs-fixer-config": "^0.5 || ^0.7"
   },
   "autoload": {
     "psr-4": {
