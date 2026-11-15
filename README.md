@@ -4,7 +4,7 @@ Common classes and interface for Prooph Event Store implementations.
 
 [![Build Status](https://travis-ci.org/prooph/event-store.svg?branch=master)](https://travis-ci.org/prooph/event-store)
 [![Coverage Status](https://coveralls.io/repos/github/prooph/event-store/badge.svg?branch=master)](https://coveralls.io/github/prooph/event-store?branch=master)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/prooph/improoph)
+
 
 ## Installation
 
